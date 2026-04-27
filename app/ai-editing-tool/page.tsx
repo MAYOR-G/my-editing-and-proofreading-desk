@@ -1,0 +1,76 @@
+import Link from "next/link";
+import { AiEditingTool } from "@/components/AiEditingTool";
+import { AiRefinementVisual } from "@/components/EditorialVisuals";
+import { Reveal } from "@/components/Reveal";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+
+const principles = [
+  ["Fast first pass", "Useful for short passages where you need immediate clarity and polish."],
+  ["Human standard", "Professional review remains the premium path for full documents and high-stakes work."],
+  ["Cost controlled", "Strict word caps, concise prompts, capped output, and daily usage limits keep the tool sustainable."],
+  ["Safe by design", "Frontend and server validation protect the 1,000-word limit before any model call is made."]
+];
+
+export default function AiEditingToolPage() {
+  return (
+    <main className="min-h-screen bg-ivory text-ink">
+      <SiteHeader />
+
+      <section className="relative overflow-hidden border-b border-ink/10 px-5 pb-20 pt-36 sm:px-8 lg:pb-28 lg:pt-44">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(176,138,60,0.11),transparent_32%),linear-gradient(180deg,#fffdf7_0%,#f8f4ec_100%)]" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+          <Reveal>
+            <div>
+              <p className="text-xs uppercase tracking-[0.32em] text-gold-deep">AI Editing Tool</p>
+              <h1 className="mt-6 max-w-5xl font-display text-[clamp(3.4rem,8vw,8.5rem)] leading-[0.88] text-ink">
+                AI-assisted editing, held to editorial standards.
+              </h1>
+            </div>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <div className="border-l border-gold/45 pl-7">
+              <p className="max-w-2xl text-xl leading-9 text-charcoal/72">
+                Paste text or upload a short document for a fast first-pass edit. The trial is capped at 1,000 words to keep quality clear, cost predictable, and the experience responsible.
+              </p>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-charcoal/62">
+                AI can help you see cleaner language quickly. Professional editors still provide deeper judgment, publication-level care, formatting awareness, and full-document confidence.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="#try-tool" className="inline-flex min-h-12 items-center justify-center bg-ink px-7 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.98]">
+                  Try up to 1,000 words
+                </Link>
+                <Link href="/login" className="inline-flex min-h-12 items-center justify-center border border-ink/15 px-7 text-sm text-ink transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                  Submit full document
+                </Link>
+              </div>
+              <div className="mt-10">
+                <AiRefinementVisual compact />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <div className="relative mx-auto mt-16 grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {principles.map(([title, body], index) => (
+            <Reveal key={title} delay={index * 0.05}>
+              <article className="min-h-40 border border-ink/10 bg-ivory/82 p-5 shadow-[0_18px_70px_rgba(17,17,15,0.045)] backdrop-blur-sm">
+                <span className="font-display text-3xl text-gold-deep/55">{String(index + 1).padStart(2, "0")}</span>
+                <h2 className="mt-5 font-display text-2xl leading-tight text-ink">{title}</h2>
+                <p className="mt-3 text-sm leading-6 text-charcoal/62">{body}</p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <AiEditingTool />
+        </div>
+      </section>
+
+      <SiteFooter />
+    </main>
+  );
+}

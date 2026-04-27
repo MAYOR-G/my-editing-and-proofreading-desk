@@ -1,0 +1,330 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fffdf7;
+  --foreground: #11110f;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, Inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::after {
+  pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  border-radius: 0;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #b08a3c;
+  outline-offset: 4px;
+}
+
+::selection {
+  background: rgba(176, 138, 60, 0.25);
+}
+
+/* ─── Premium scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(17, 17, 15, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(176, 138, 60, 0.4);
+}
+
+/* ─── Core keyframes ─── */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes editorialFloat {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+@keyframes editorialDrift {
+  0%,
+  100% {
+    translate: 0 0;
+    opacity: 0.72;
+  }
+
+  50% {
+    translate: 8px 0;
+    opacity: 1;
+  }
+}
+
+@keyframes editorialLineShift {
+  0%,
+  100% {
+    transform: scaleX(0.78);
+    transform-origin: left;
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scaleX(1);
+    opacity: 0.95;
+  }
+}
+
+@keyframes editorialScan {
+  from {
+    transform: translateX(-120%);
+  }
+
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes editorialResolve {
+  0%,
+  100% {
+    transform: translateX(-6px);
+    opacity: 0.52;
+  }
+
+  50% {
+    transform: translateX(0);
+    opacity: 0.92;
+  }
+}
+
+@keyframes editorialPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes editorialInkDraw {
+  from {
+    stroke-dashoffset: 420;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ─── New: smooth accordion ─── */
+@keyframes fadeExpandDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    max-height: 400px;
+    transform: translateY(0);
+  }
+}
+
+/* ─── New: subtle glow pulse ─── */
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(176, 138, 60, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 24px 4px rgba(176, 138, 60, 0.08);
+  }
+}
+
+/* ─── New: text shimmer ─── */
+@keyframes textShimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ─── New: bounce scroll indicator ─── */
+@keyframes scrollBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+/* ─── New: status dot pulse ─── */
+@keyframes statusPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ─── Animation utility classes ─── */
+.editorial-float {
+  animation: editorialFloat 7s var(--ease-in-out) infinite;
+}
+
+.editorial-drift {
+  animation: editorialDrift 5.8s var(--ease-in-out) infinite;
+}
+
+.editorial-line-shift {
+  animation: editorialLineShift 4.8s var(--ease-in-out) infinite;
+}
+
+.editorial-scan {
+  animation: editorialScan 6.5s linear infinite;
+}
+
+.editorial-resolve {
+  animation: editorialResolve 5.4s var(--ease-in-out) infinite;
+}
+
+.editorial-pulse {
+  animation: editorialPulse 4.8s var(--ease-in-out) infinite;
+}
+
+.editorial-ink-draw {
+  stroke-dasharray: 420;
+  animation: editorialInkDraw 4.8s var(--ease-in-out) infinite alternate;
+}
+
+.glow-pulse {
+  animation: glowPulse 3.5s var(--ease-in-out) infinite;
+}
+
+.scroll-bounce {
+  animation: scrollBounce 2s var(--ease-in-out) infinite;
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    currentColor 0%,
+    rgba(176, 138, 60, 0.8) 40%,
+    currentColor 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 4.5s linear infinite;
+}
+
+/* ─── Status indicator ─── */
+.status-dot {
+  position: relative;
+}
+
+.status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: statusPulse 2.2s var(--ease-in-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
