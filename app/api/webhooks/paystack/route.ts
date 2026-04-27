@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { PaystackProvider } from "@/lib/payment";
 import { sendPaymentSuccessEmail, sendEditorNotificationEmail } from "@/lib/email";
-
-// Service role client for webhook processing (no user context)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 /**
  * POST /api/webhooks/paystack
@@ -18,6 +12,8 @@ const supabase = createClient(
  */
 export async function POST(request: Request) {
   try {
+    const supabase = createSupabaseAdminClient();
+
     // ─── Validate webhook signature ────────────────────────────────
     // Clone the request since we need to read the body twice
     const clonedRequest = request.clone();

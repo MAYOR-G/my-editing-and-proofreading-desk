@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export async function POST(request: Request) {
   try {
@@ -27,9 +27,7 @@ export async function POST(request: Request) {
     const friendlyId = match[0]; // e.g. MEP-1024
 
     // 2. Initialize a Supabase Admin Client (since this route has no user session)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createSupabaseAdminClient();
 
     // 3. Find the project and verify the sender matches the client (or admin)
     const { data: project } = await supabase

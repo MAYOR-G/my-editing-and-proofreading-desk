@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export async function requireAdmin() {
   const supabase = createClient();
@@ -12,16 +12,12 @@ export async function requireAdmin() {
     redirect("/admin/login");
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const adminClient = supabaseUrl && serviceRoleKey
-    ? createSupabaseClient(supabaseUrl, serviceRoleKey, {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      })
-    : supabase;
+  let adminClient;
+  try {
+    adminClient = createSupabaseAdminClient();
+  } catch {
+    adminClient = supabase;
+  }
 
   const { data: profile } = await adminClient
     .from("profiles")

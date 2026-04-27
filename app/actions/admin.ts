@@ -1,9 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export async function adminLogin(formData: FormData) {
   const email = formData.get("email") as string;
@@ -30,20 +30,13 @@ export async function adminLogin(formData: FormData) {
     return { error: error?.message || "Authentication failed." };
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !serviceRoleKey) {
+  let adminClient: ReturnType<typeof createSupabaseAdminClient>;
+  try {
+    adminClient = createSupabaseAdminClient();
+  } catch {
     await supabase.auth.signOut();
     return { error: "Admin login is not configured. Missing Supabase service role key on the server." };
   }
-
-  const adminClient = createSupabaseClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
 
   // Password auth has already succeeded; use the server-only service key for
   // the role lookup so RLS/session propagation cannot hide the profile row.

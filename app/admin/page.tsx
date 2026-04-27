@@ -1,7 +1,7 @@
 import { DashboardShell, MetricPanel, StatusBadge } from "@/components/DashboardShell";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
@@ -17,9 +17,7 @@ export default async function AdminDashboardPage() {
   await requireAdmin();
 
   // Using service_role key to bypass RLS for admin operations across all clients
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-  const supabaseAdmin = createSupabaseClient(supabaseUrl, supabaseServiceKey); 
+  const supabaseAdmin = createSupabaseAdminClient();
 
   // Use the admin client to bypass RLS and get ALL projects and ALL users
   const { data: rawProjects, error: projectsError } = await supabaseAdmin
@@ -133,9 +131,7 @@ export default async function AdminDashboardPage() {
                   "use server";
                   await requireAdmin();
                   const status = formData.get("status") as string;
-                  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-                  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-                  const supabaseAdmin = createSupabaseClient(supabaseUrl, supabaseServiceKey);
+                  const supabaseAdmin = createSupabaseAdminClient();
                   await supabaseAdmin.from("projects").update({ status }).eq("id", selected.id);
                   revalidatePath("/admin");
                 }}>

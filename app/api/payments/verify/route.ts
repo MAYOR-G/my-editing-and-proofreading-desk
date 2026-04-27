@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import {
   getProvider,
   isPaymentProviderName,
@@ -9,14 +8,9 @@ import {
 } from "@/lib/payment";
 import { sendPaymentSuccessEmail, sendEditorNotificationEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
-
-// Use service role to bypass RLS — verification is a trusted server operation
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 /**
  * GET /api/payments/verify?reference=xxx&provider=paystack
@@ -26,6 +20,7 @@ const supabase = createClient(
  */
 export async function GET(request: Request) {
   try {
+    const supabase = createSupabaseAdminClient();
     const { searchParams } = new URL(request.url);
     const reference = searchParams.get("reference");
     const provider = searchParams.get("provider") as PaymentProviderName | null;
