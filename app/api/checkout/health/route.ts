@@ -45,9 +45,15 @@ export async function GET() {
   const checks: Record<string, unknown> = {
     env,
     webhook: {
-      configured: Boolean(process.env.PAYSTACK_WEBHOOK_SECRET),
+      endpoint_configured_in_paystack: "manual_check_required",
+      signature_secret_configured: Boolean(process.env.PAYSTACK_WEBHOOK_SECRET || process.env.PAYSTACK_SECRET_KEY),
+      dedicated_webhook_secret_configured: Boolean(process.env.PAYSTACK_WEBHOOK_SECRET),
       required_for_initialize: false,
       endpoint: `${getSafeAppUrl()}/api/webhooks/paystack`,
+    },
+    upload: {
+      endpoint: `${getSafeAppUrl()}/api/uploads/document`,
+      uses_server_side_storage_upload: true,
     },
   };
 

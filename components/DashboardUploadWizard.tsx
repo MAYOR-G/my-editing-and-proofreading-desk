@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
 import {
   DOCUMENT_TYPES,
@@ -28,7 +27,6 @@ const PROVIDER_INITIALS: Record<PaymentProviderName, string> = {
 };
 
 export function DashboardUploadWizard({ userId, userEmail, userName }: WizardProps) {
-  const router = useRouter();
   const [step, setStep] = useState(1);
 
   // Form State
@@ -88,18 +86,26 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     setProviderNotice(null);
 
     try {
-      // 1. Upload file to Supabase Storage
-      const { createClient } = await import("@/utils/supabase/client");
-      const supabase = createClient();
-      const filePath = `${userId}/${Date.now()}_${file.name}`;
+      // 1. Upload file through the authenticated server route.
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
+      const uploadRes = await fetch("/api/uploads/document", {
+        method: "POST",
+        body: uploadFormData,
+      });
+      const uploadData = await uploadRes.json();
 
-      const { error: uploadError } = await supabase.storage
-        .from("uploads")
-        .upload(filePath, file);
-      if (uploadError) {
-        console.error("Supabase upload error:", uploadError);
-        throw new Error("We could not upload your document. Please try again or contact support.");
+      if (!uploadRes.ok || !uploadData.success || !uploadData.file_path) {
+        console.error("Document upload failed:", {
+          status: uploadRes.status,
+          code: uploadData.code,
+          error: uploadData.error,
+          traceId: uploadData.trace_id,
+        });
+        throw new Error(uploadData.error || "We could not upload your document. Please try again or contact support.");
       }
+
+      const filePath = uploadData.file_path;
 
       // 2. Initialize payment (server calculates price)
       const res = await fetch("/api/payments/initialize", {
