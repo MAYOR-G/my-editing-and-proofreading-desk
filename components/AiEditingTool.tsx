@@ -20,13 +20,11 @@ type AiResult = {
   highlights: string[];
   meta?: {
     remainingToday?: number;
-    model?: string;
-    promptVersion?: string;
     wordCount?: number;
   };
 };
 
-const trustStrip = ["1,000-word cost cap", "Server validation", "Human review available", "No replacement for editors", "OpenRouter-ready"];
+const trustStrip = ["1,000-word cost cap", "Server validation", "Human review available", "No replacement for editors", "Professional AI review"];
 
 function statusMessage(status: Status) {
   if (status === "processing") return "Preparing a careful first-pass edit...";
@@ -202,7 +200,7 @@ export function AiEditingTool() {
               ["Limit", `${AI_WORD_LIMIT.toLocaleString()} words maximum`],
               ["Anonymous use", "Limited daily tries"],
               ["Cost control", "Short prompts and capped output"],
-              ["Production path", "OpenRouter-ready server route"]
+              ["Review style", "AI-assisted editing"]
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between gap-5 border-t border-ivory/12 pt-3">
                 <span>{label}</span>
@@ -353,7 +351,7 @@ export function AiEditingTool() {
               ))}
             </div>
             <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/42">
-              {result.meta?.model || "AI preview"} · {result.meta?.promptVersion || "prompt prepared"}
+              Suggested refinement · Professional AI review
             </p>
           </div>
 

@@ -48,18 +48,28 @@ CREATE TABLE public.projects (
   friendly_id TEXT UNIQUE NOT NULL, -- e.g., MEP-1024
   title TEXT NOT NULL,
   service_type TEXT NOT NULL,
+  document_type TEXT DEFAULT 'Other' NOT NULL,
+  formatting_style TEXT DEFAULT 'None / Standard Consistency' NOT NULL,
+  english_type TEXT DEFAULT 'No preference' NOT NULL,
   turnaround TEXT NOT NULL,
+  turnaround_days INTEGER,
+  turnaround_hours INTEGER,
   word_count INTEGER NOT NULL,
   price NUMERIC(10, 2) NOT NULL,
+  calculated_price NUMERIC(10, 2),
+  final_price NUMERIC(10, 2),
+  minimum_applied BOOLEAN DEFAULT false NOT NULL,
   status project_status DEFAULT 'In Progress'::project_status NOT NULL,
   payment_status payment_status DEFAULT 'pending'::payment_status NOT NULL,
   payment_provider TEXT,           -- 'paystack' | 'flutterwave' | 'stripe' | 'paypal'
+  payment_reference TEXT UNIQUE,
   transaction_reference TEXT UNIQUE, -- Provider transaction reference
   transaction_id TEXT,             -- Provider unique transaction ID
   payment_currency TEXT DEFAULT 'USD',
   payment_verified_at TIMESTAMPTZ,
   client_notes TEXT,
   upload_file_path TEXT NOT NULL, -- Path in Supabase Storage
+  uploaded_file_path TEXT,
   delivery_file_path TEXT, -- Path in Supabase Storage
   completed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
@@ -76,8 +86,6 @@ CREATE POLICY "Admins can view all projects" ON public.projects FOR SELECT USING
 CREATE POLICY "Admins can update all projects" ON public.projects FOR UPDATE USING (
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
--- Allow clients to update their own project notes
-CREATE POLICY "Clients can update own projects" ON public.projects FOR UPDATE USING (auth.uid() = client_id);
 
 -- Trigger to auto-generate friendly_id (MEP-XXXX)
 CREATE SEQUENCE project_id_seq START 1000;

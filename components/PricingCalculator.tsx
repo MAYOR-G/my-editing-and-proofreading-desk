@@ -3,21 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-const services = [
-  { id: "proofreading", label: "Proofreading", rate: 0.018, note: "Grammar, spelling, punctuation, consistency." },
-  { id: "editing", label: "Editing", rate: 0.032, note: "Clarity, flow, structure, tone, sentence polish." },
-  { id: "transcribing", label: "Transcribing", rate: 0.026, note: "Clean transcript preparation from supplied material." },
-  { id: "formatting", label: "Formatting", rate: 0.014, note: "Headings, spacing, references, document presentation." },
-  { id: "translation", label: "Translation", rate: 0.048, note: "Meaning-sensitive translation with editorial polish." },
-  { id: "writing-support", label: "Writing support", rate: 0.055, note: "Developmental guidance, reframing, and draft shaping." }
-];
-
-const turnarounds = [
-  { id: "7", label: "7 days", multiplier: 1.35, note: "Priority handling for near deadlines." },
-  { id: "14", label: "14 days", multiplier: 1.0, note: "Balanced pace for careful editorial work." },
-  { id: "28", label: "4 weeks", multiplier: 0.82, note: "Best value for flexible timelines." }
-];
+import { SERVICE_OPTIONS, TURNAROUND_OPTIONS, calculatePrice, validateAutomaticPricing } from "@/lib/pricing";
 
 const quickCounts = [1000, 2500, 5000, 10000];
 
@@ -30,20 +16,17 @@ function currency(value: number) {
 }
 
 export function PricingCalculator({ compact = false }: { compact?: boolean }) {
-  const [serviceId, setServiceId] = useState("editing");
-  const [turnaroundId, setTurnaroundId] = useState("14");
+  const [serviceLabel, setServiceLabel] = useState("Editing");
+  const [turnaroundDays, setTurnaroundDays] = useState(14);
   const [wordCount, setWordCount] = useState(3500);
 
-  const safeWordCount = Math.min(50000, Math.max(250, wordCount || 250));
-  const selectedService = services.find((service) => service.id === serviceId) ?? services[1];
-  const selectedTurnaround = turnarounds.find((turnaround) => turnaround.id === turnaroundId) ?? turnarounds[1];
+  const safeWordCount = Math.max(1, Math.min(60000, wordCount || 1));
+  const selectedService = SERVICE_OPTIONS.find((service) => service.label === serviceLabel) ?? SERVICE_OPTIONS[1];
+  const selectedTurnaround = TURNAROUND_OPTIONS.find((turnaround) => turnaround.days === turnaroundDays) ?? TURNAROUND_OPTIONS[13];
 
-  const price = useMemo(() => {
-    const subtotal = safeWordCount * selectedService.rate * selectedTurnaround.multiplier;
-    return Math.max(35, subtotal);
-  }, [selectedService.rate, selectedTurnaround.multiplier, safeWordCount]);
-
-  const pricePerWord = selectedService.rate * selectedTurnaround.multiplier;
+  const priceBreakdown = useMemo(() => calculatePrice(safeWordCount, selectedService.label, selectedTurnaround.days), [safeWordCount, selectedService.label, selectedTurnaround.days]);
+  const validation = validateAutomaticPricing(safeWordCount, selectedTurnaround.days);
+  const price = priceBreakdown.finalPrice;
 
   return (
     <div className="relative overflow-hidden border border-ink/10 bg-ivory shadow-[0_32px_110px_rgba(17,17,15,0.075)]">
@@ -74,14 +57,14 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
             </div>
 
             <div className="mt-8 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-              {services.map((service) => {
-                const active = service.id === serviceId;
+              {SERVICE_OPTIONS.map((service) => {
+                const active = service.label === serviceLabel;
 
                 return (
                   <button
-                    key={service.id}
+                    key={service.label}
                     type="button"
-                    onClick={() => setServiceId(service.id)}
+                    onClick={() => setServiceLabel(service.label)}
                     className={`group min-h-24 border px-4 py-4 text-left transition duration-200 ease-premium-out active:scale-[0.99] ${
                       active ? "border-gold bg-ivory text-ink shadow-[0_16px_50px_rgba(176,138,60,0.10)]" : "border-ink/10 bg-ivory/62 text-charcoal/68 hover:border-gold/55 hover:bg-ivory hover:text-ink"
                     }`}
@@ -107,11 +90,11 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     id="word-count"
                     type="number"
                     inputMode="numeric"
-                    min={250}
-                    max={50000}
+                  min={250}
+                    max={60000}
                     step={50}
                     value={wordCount}
-                    onChange={(event) => setWordCount(Math.min(50000, Math.max(250, Number(event.target.value) || 250)))}
+                    onChange={(event) => setWordCount(Math.min(60000, Math.max(1, Number(event.target.value) || 1)))}
                     className="w-full bg-transparent font-display text-4xl leading-none text-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                   <span className="text-sm text-charcoal/50">words</span>
@@ -120,9 +103,9 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                   aria-label="Adjust word count"
                   type="range"
                   min={250}
-                  max={20000}
+                  max={50000}
                   step={250}
-                  value={Math.min(safeWordCount, 20000)}
+                  value={Math.min(safeWordCount, 50000)}
                   onChange={(event) => setWordCount(Number(event.target.value))}
                   className="mt-4 w-full accent-[#7b6026]"
                 />
@@ -144,29 +127,39 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
 
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Turnaround</p>
-                <div className="mt-4 grid gap-2">
-                  {turnarounds.map((turnaround) => {
-                    const active = turnaround.id === turnaroundId;
-
-                    return (
-                      <button
-                        key={turnaround.id}
-                        type="button"
-                        onClick={() => setTurnaroundId(turnaround.id)}
-                        className={`grid min-h-16 grid-cols-[auto_1fr_auto] items-center gap-x-4 border px-4 text-left transition duration-200 ease-premium-out active:scale-[0.99] ${
-                          active ? "border-gold bg-ivory text-ink shadow-[0_16px_50px_rgba(176,138,60,0.08)]" : "border-ink/10 bg-ivory/62 text-charcoal/68 hover:border-gold/55 hover:bg-ivory hover:text-ink"
-                        }`}
-                        aria-pressed={active}
-                      >
-                        <span className={`h-2.5 w-2.5 ${active ? "bg-gold-deep" : "bg-ink/18"}`} />
-                        <span>
-                          <span className="block text-sm font-medium">{turnaround.label}</span>
-                          <span className="mt-1 block text-xs text-charcoal/54">{turnaround.note}</span>
-                        </span>
-                        <span className="hidden text-xs text-charcoal/45 sm:block">{turnaround.multiplier > 1 ? "Priority" : turnaround.multiplier < 1 ? "Value" : "Standard"}</span>
-                      </button>
-                    );
-                  })}
+                <div className="mt-4 border border-ink/10 bg-ivory/70 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-ink">{selectedTurnaround.label}</span>
+                    <span className="text-xs uppercase tracking-[0.18em] text-charcoal/45">{selectedTurnaround.multiplier > 1 ? "Timeline premium" : selectedTurnaround.multiplier < 1 ? "Flexible timeline" : "Standard"}</span>
+                  </div>
+                  <input
+                    aria-label="Adjust turnaround"
+                    type="range"
+                    min={1}
+                    max={28}
+                    step={1}
+                    value={turnaroundDays}
+                    onChange={(event) => setTurnaroundDays(Number(event.target.value))}
+                    className="mt-5 w-full accent-[#7b6026]"
+                  />
+                  <div className="mt-3 grid grid-cols-4 gap-2">
+                    {[1, 2, 3, 7, 14, 28].map((days) => {
+                      const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+                      return (
+                        <button
+                          key={days}
+                          type="button"
+                          onClick={() => setTurnaroundDays(days)}
+                          className={`min-h-10 border px-2 text-xs transition duration-200 ease-premium-out hover:border-gold hover:text-ink active:scale-[0.98] ${
+                            turnaroundDays === days ? "border-gold bg-gold/10 text-ink" : "border-ink/10 bg-ivory text-charcoal/66"
+                          }`}
+                        >
+                          {option.label.replace(" / 28 days", "")}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-3 text-xs leading-5 text-charcoal/54">{selectedTurnaround.note} Maximum automatic timeline is 4 weeks / 28 days.</p>
                 </div>
               </div>
             </div>
@@ -180,7 +173,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
             <div className="min-h-[5.7rem] overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.p
-                  key={`${selectedService.id}-${selectedTurnaround.id}-${safeWordCount}-${Math.round(price * 100)}`}
+                  key={`${selectedService.label}-${selectedTurnaround.days}-${safeWordCount}-${Math.round(price * 100)}`}
                   initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -18, filter: "blur(4px)" }}
@@ -192,8 +185,11 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
               </AnimatePresence>
             </div>
             <p className="mt-4 text-sm leading-6 text-ivory/58">
-              Estimated from {safeWordCount.toLocaleString()} words at {currency(pricePerWord)} per word, adjusted for {selectedTurnaround.label.toLowerCase()} delivery.
+              Estimated from {safeWordCount.toLocaleString()} words for {selectedService.label.toLowerCase()} with {selectedTurnaround.label.toLowerCase()} delivery.
             </p>
+            {!validation.allowed ? (
+              <p className="mt-4 border border-gold/25 bg-gold/10 p-3 text-sm leading-6 text-gold">{validation.message}</p>
+            ) : null}
           </div>
 
           <div className="mt-7 grid gap-4 text-sm text-ivory/68">
@@ -201,7 +197,6 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
               ["Service", selectedService.label],
               ["Word count", safeWordCount.toLocaleString()],
               ["Turnaround", selectedTurnaround.label],
-              ["Minimum order", "$35.00"],
               ["Payment step", "Secure checkout after upload"]
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between gap-6 border-b border-ivory/10 pb-3">
@@ -214,7 +209,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
           <div className="mt-7 border border-ivory/12 bg-ivory/[0.055] p-4">
             <p className="text-xs uppercase tracking-[0.24em] text-gold">Next step</p>
             <p className="mt-3 text-sm leading-6 text-ivory/62">
-              Upload your supported file to confirm the word count. Payment is recorded only after server-side verification via Paystack or Flutterwave.
+              Upload your supported file to confirm the word count. Payment is recorded only after server-side verification.
             </p>
           </div>
 

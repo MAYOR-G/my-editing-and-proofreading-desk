@@ -13,7 +13,6 @@ const ANONYMOUS_DAILY_CAP = 3;
 const SIGNED_IN_DAILY_CAP = 12;
 const MAX_INPUT_CHARS = 9000;
 const MAX_OUTPUT_TOKENS = 650;
-const PROMPT_VERSION = "mep-ai-edit-v1";
 
 type RateEntry = {
   count: number;
@@ -259,10 +258,7 @@ export async function POST(request: Request) {
         mode,
         wordCount,
         limit: AI_WORD_LIMIT,
-        remainingToday: rate.remaining,
-        model: process.env.OPENROUTER_API_KEY ? process.env.OPENROUTER_MODEL || "openrouter-configured" : "local-preview-fallback",
-        promptVersion: PROMPT_VERSION,
-        maxOutputTokens: MAX_OUTPUT_TOKENS
+        remainingToday: rate.remaining
       }
     });
   } catch {

@@ -14,7 +14,7 @@ const pricingFactors = [
   },
   {
     title: "Turnaround",
-    body: "Seven days, fourteen days, and four-week timelines can apply different pricing rules."
+    body: "Choose from 24 hours through 4 weeks. Short timelines may carry a visible premium and large documents may require a custom quote."
   }
 ];
 

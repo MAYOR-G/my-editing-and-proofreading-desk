@@ -81,6 +81,7 @@ export default async function AdminDashboardPage() {
                   <th className="p-5 font-medium">Order</th>
                   <th className="p-5 font-medium">Client</th>
                   <th className="p-5 font-medium">Service</th>
+                  <th className="p-5 font-medium">Document</th>
                   <th className="p-5 font-medium">Status</th>
                   <th className="p-5 font-medium">Payment</th>
                   <th className="p-5 font-medium">Provider</th>
@@ -93,6 +94,7 @@ export default async function AdminDashboardPage() {
                     <td className="p-5 text-ink">{order.friendly_id}</td>
                     <td className="p-5">{order.profiles?.email}</td>
                     <td className="p-5">{order.service_type}</td>
+                    <td className="p-5">{order.document_type || "Document"}</td>
                     <td className="p-5"><StatusBadge>{order.status}</StatusBadge></td>
                     <td className="p-5">{order.payment_status}</td>
                     <td className="p-5">{formatProvider(order.payment_provider)}</td>
@@ -116,6 +118,10 @@ export default async function AdminDashboardPage() {
                   {[
                     ["Client", selected.profiles?.email],
                     ["Words", selected.word_count.toString()],
+                    ["Document type", selected.document_type || "N/A"],
+                    ["Formatting", selected.formatting_style || "N/A"],
+                    ["English", selected.english_type || "N/A"],
+                    ["Turnaround", selected.turnaround],
                     ["Payment", selected.payment_status],
                     ["Provider", formatProvider(selected.payment_provider)],
                     ["Reference", selected.transaction_reference || "N/A"],
@@ -175,7 +181,8 @@ export default async function AdminDashboardPage() {
             ["Transaction Ref.", selected.transaction_reference || "N/A", "Unique transaction reference"],
             ["Transaction ID", selected.transaction_id || "N/A", "Provider transaction identifier"],
             ["Amount Paid", selected.payment_status === "paid" ? `$${selected.price.toFixed(2)}` : "$0.00", `Currency: ${selected.payment_currency || "USD"}`],
-            ["Payment Status", selected.payment_status, selected.payment_verified_at ? `Verified ${new Date(selected.payment_verified_at).toLocaleDateString()}` : "Awaiting verification"]
+            ["Payment Status", selected.payment_status, selected.payment_verified_at ? `Verified ${new Date(selected.payment_verified_at).toLocaleDateString()}` : "Awaiting verification"],
+            ["Order Details", `${selected.document_type || "Document"} · ${selected.formatting_style || "Standard"} · ${selected.english_type || "No preference"}`, `${selected.word_count?.toLocaleString()} words · ${selected.turnaround}`]
           ].map(([label, value, detail]) => (
             <div key={label} className="border border-ink/10 bg-paper p-6">
               <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">{label}</p>

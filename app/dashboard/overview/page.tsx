@@ -93,7 +93,9 @@ export default async function DashboardOverviewPage() {
                   </span>
                   <div>
                     <p className="text-sm text-ink">{project.title || project.friendly_id}</p>
-                    <p className="mt-0.5 text-xs text-charcoal/50">{project.service_type} · {project.word_count?.toLocaleString() || 0} words</p>
+                    <p className="mt-0.5 text-xs text-charcoal/50">
+                      {project.service_type} · {project.document_type || "Document"} · {project.word_count?.toLocaleString() || 0} words
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">

@@ -1,16 +1,42 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import {
+  calculatePrice,
   calculateServerPrice,
   generateReference,
   getProvider,
   getSafeAppUrl,
   isPaymentProviderName,
   isProviderEnabled,
+  parseTurnaroundDays,
   ProviderUnavailableError,
+  validateAutomaticPricing,
   type PaymentProviderName,
 } from "@/lib/payment";
 import { checkRateLimit } from "@/lib/rate-limit";
+
+function isSchemaMismatchError(error: { code?: string; message?: string; details?: string | null } | null) {
+  if (!error) return false;
+
+  const text = `${error.message || ""} ${error.details || ""}`.toLowerCase();
+  return (
+    error.code === "PGRST204" ||
+    error.code === "42703" ||
+    text.includes("schema cache") ||
+    text.includes("could not find") ||
+    text.includes("column")
+  );
+}
+
+function setupError(message: string, status = 500) {
+  return NextResponse.json(
+    {
+      error: message,
+      code: "checkout_setup_required",
+    },
+    { status }
+  );
+}
 
 /**
  * POST /api/payments/initialize
@@ -18,7 +44,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
  * Creates a project (pending) and initializes a payment transaction.
  * Price is ALWAYS calculated server-side — frontend price is ignored.
  * 
- * Body: { provider, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style }
+ * Body: { provider, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style, english_type }
  */
 export async function POST(request: Request) {
   try {
@@ -49,6 +75,9 @@ export async function POST(request: Request) {
       file_path,
       title,
       client_notes,
+      document_type,
+      formatting_style,
+      english_type,
     } = body;
 
     // ─── Validate inputs ───────────────────────────────────────────
@@ -71,6 +100,11 @@ export async function POST(request: Request) {
       );
     }
 
+    if (paymentProviderName === "paystack" && !process.env.PAYSTACK_SECRET_KEY) {
+      console.error("Paystack setup error: PAYSTACK_SECRET_KEY is missing.");
+      return setupError("Checkout is not fully configured yet. Please contact support before trying payment again.", 503);
+    }
+
     if (!service_type || !turnaround || !word_count || !file_path) {
       return NextResponse.json(
         { error: "Missing required fields: service_type, turnaround, word_count, file_path" },
@@ -78,15 +112,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeWordCount = Math.min(50000, Math.max(250, Number(word_count) || 0));
-    if (safeWordCount < 250) {
+    if (typeof file_path !== "string" || !file_path.startsWith(`${user.id}/`)) {
       return NextResponse.json(
-        { error: "Word count must be at least 250" },
+        { error: "We could not confirm the uploaded file. Please upload it again." },
         { status: 400 }
       );
     }
 
+    const safeWordCount = Math.max(1, Math.round(Number(word_count) || 0));
+    const timelineValidation = validateAutomaticPricing(safeWordCount, turnaround);
+    if (!timelineValidation.allowed) {
+      return NextResponse.json(
+        {
+          error: timelineValidation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.",
+          code: timelineValidation.contactRequired ? "custom_quote_required" : "invalid_timeline",
+        },
+        { status: 422 }
+      );
+    }
+
     // ─── Calculate price SERVER-SIDE (never trust frontend) ────────
+    const priceBreakdown = calculatePrice(safeWordCount, service_type, turnaround);
     const price = calculateServerPrice(safeWordCount, service_type, turnaround);
     const currency = "USD";
     const amountInCents = Math.round(price * 100);
@@ -114,15 +160,25 @@ export async function POST(request: Request) {
       .insert({
         client_id: user.id,
         title: title || "Untitled Project",
-        service_type,
-        turnaround,
+        service_type: priceBreakdown.serviceType,
+        document_type: document_type || "Other",
+        formatting_style: formatting_style || "None / Standard Consistency",
+        english_type: english_type || "No preference",
+        turnaround: priceBreakdown.turnaroundLabel,
+        turnaround_days: priceBreakdown.turnaroundDays,
+        turnaround_hours: priceBreakdown.turnaroundDays * 24,
         word_count: safeWordCount,
         price,
+        calculated_price: priceBreakdown.calculatedPrice,
+        final_price: priceBreakdown.finalPrice,
+        minimum_applied: priceBreakdown.minimumApplied,
         client_notes: client_notes || "",
         upload_file_path: file_path,
+        uploaded_file_path: file_path,
         status: "In Progress",
         payment_status: "pending",
         payment_provider: paymentProviderName,
+        payment_reference: reference,
         transaction_reference: reference,
         payment_currency: currency,
       })
@@ -131,8 +187,12 @@ export async function POST(request: Request) {
 
     if (insertError) {
       console.error("Project creation error:", insertError);
+      if (isSchemaMismatchError(insertError)) {
+        return setupError("Checkout needs a database update before payment can continue. Please contact support.");
+      }
+
       return NextResponse.json(
-        { error: "Failed to create project" },
+        { error: "We could not prepare your order. Please try again or contact support." },
         { status: 500 }
       );
     }
@@ -158,19 +218,35 @@ export async function POST(request: Request) {
     const callbackUrl = `${siteUrl}/dashboard/payment/success?reference=${encodeURIComponent(reference)}&provider=${paymentProviderName}`;
 
     const paymentProvider = getProvider(paymentProviderName);
-    const result = await paymentProvider.initialize({
-      email: profile.email,
-      amount: amountInCents,
-      currency,
-      reference,
-      callbackUrl,
-      metadata: {
-        project_id: project.id,
-        friendly_id: project.friendly_id,
-        service_type,
-        word_count: safeWordCount,
-      },
-    });
+    let result;
+    try {
+      result = await paymentProvider.initialize({
+        email: profile.email,
+        amount: amountInCents,
+        currency,
+        reference,
+        callbackUrl,
+        metadata: {
+          project_id: project.id,
+          friendly_id: project.friendly_id,
+          service_type: priceBreakdown.serviceType,
+          word_count: safeWordCount,
+          turnaround_days: parseTurnaroundDays(priceBreakdown.turnaroundLabel),
+        },
+      });
+    } catch (paymentError) {
+      console.error("Payment provider initialization error:", paymentError);
+      await supabase
+        .from("projects")
+        .update({ payment_status: "failed" })
+        .eq("id", project.id)
+        .eq("payment_status", "pending");
+
+      return NextResponse.json(
+        { error: "We could not start secure checkout. Please try again or contact support.", code: "payment_provider_failed" },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
@@ -178,6 +254,8 @@ export async function POST(request: Request) {
       reference: result.reference,
       project_id: project.id,
       price,
+      calculated_price: priceBreakdown.calculatedPrice,
+      minimum_applied: priceBreakdown.minimumApplied,
       currency,
     });
   } catch (error: any) {
@@ -187,7 +265,7 @@ export async function POST(request: Request) {
         error:
           error instanceof ProviderUnavailableError
             ? "This payment option will be available soon."
-            : error.message || "Payment initialization failed",
+            : "We could not prepare your order. Please try again or contact support.",
       },
       { status: error instanceof ProviderUnavailableError ? 503 : 500 }
     );

@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { calculateServerPrice, PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
+import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
+import {
+  DOCUMENT_TYPES,
+  ENGLISH_TYPES,
+  FORMATTING_STYLES,
+  SERVICE_OPTIONS,
+  TURNAROUND_OPTIONS,
+  calculatePrice,
+  type PricingValidation,
+  validateAutomaticPricing,
+} from "@/lib/pricing";
 
 type WizardProps = {
   userId: string;
@@ -24,13 +34,14 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   // Form State
   const [documentType, setDocumentType] = useState("Academic Paper");
   const [formattingStyle, setFormattingStyle] = useState("APA");
+  const [englishType, setEnglishType] = useState("No preference");
   const [academicField, setAcademicField] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
   const [isParsing, setIsParsing] = useState(false);
-  const [service, setService] = useState("Academic Editing");
-  const [turnaround, setTurnaround] = useState("7 days");
+  const [service, setService] = useState("Editing");
+  const [turnaroundDays, setTurnaroundDays] = useState(14);
 
   // Payment state
   const [provider, setProvider] = useState<PaymentProviderName>("paystack");
@@ -38,7 +49,11 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [providerNotice, setProviderNotice] = useState<string | null>(null);
 
-  const price = wordCount ? calculateServerPrice(wordCount, service, turnaround) : 0;
+  const priceBreakdown = wordCount ? calculatePrice(wordCount, service, turnaroundDays) : null;
+  const price = priceBreakdown?.finalPrice ?? 0;
+  const turnaround = priceBreakdown?.turnaroundLabel ?? "14 days";
+  const validation: PricingValidation = wordCount ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
+  const checkoutBlocked = !validation.allowed;
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -59,6 +74,10 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
   const handlePayment = async () => {
     if (!file || !wordCount) return;
+    if (checkoutBlocked) {
+      setPaymentError(validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.");
+      return;
+    }
     if (provider !== "paystack") {
       setProviderNotice("This payment option will be available soon.");
       return;
@@ -77,7 +96,10 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
       const { error: uploadError } = await supabase.storage
         .from("uploads")
         .upload(filePath, file);
-      if (uploadError) throw new Error("File upload failed: " + uploadError.message);
+      if (uploadError) {
+        console.error("Supabase upload error:", uploadError);
+        throw new Error("We could not prepare your order. Please try again or contact support.");
+      }
 
       // 2. Initialize payment (server calculates price)
       const res = await fetch("/api/payments/initialize", {
@@ -90,13 +112,30 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           word_count: wordCount,
           file_path: filePath,
           title: file.name,
-          client_notes: notes,
+          client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
+          document_type: documentType,
+          formatting_style: formattingStyle,
+          english_type: englishType,
         }),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Payment initialization failed");
+        console.error("Checkout initialization failed:", {
+          status: res.status,
+          code: data.code,
+          error: data.error,
+        });
+
+        if (data.code === "checkout_setup_required") {
+          throw new Error("Checkout setup needs a quick database update before payment can continue. Please contact support.");
+        }
+
+        if (data.code === "payment_provider_failed") {
+          throw new Error("We could not start secure checkout. Please try again or contact support.");
+        }
+
+        throw new Error(data.error || "We could not prepare your order. Please try again or contact support.");
       }
 
       // 3. Redirect to payment provider
@@ -136,20 +175,20 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             <div className="grid sm:grid-cols-2 gap-5">
               <label className="grid gap-2 text-sm text-ivory/70">Document Type
                 <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                  <option value="Academic Paper">Academic Paper</option>
-                  <option value="Business Proposal">Business Proposal</option>
-                  <option value="Manuscript">Manuscript</option>
-                  <option value="Other">Other</option>
+                  {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
                 </select>
               </label>
               <label className="grid gap-2 text-sm text-ivory/70">Formatting Style
                 <select value={formattingStyle} onChange={(e) => setFormattingStyle(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                  <option value="APA">APA</option><option value="MLA">MLA</option>
-                  <option value="Chicago">Chicago</option><option value="Harvard">Harvard</option>
-                  <option value="None">None</option>
+                  {FORMATTING_STYLES.map((style) => <option key={style} value={style}>{style}</option>)}
                 </select>
               </label>
             </div>
+            <label className="grid gap-2 text-sm text-ivory/70">English Type
+              <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
+                {ENGLISH_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+              </select>
+            </label>
             <label className="grid gap-2 text-sm text-ivory/70">Academic Field / Industry
               <input value={academicField} onChange={(e) => setAcademicField(e.target.value)} type="text" placeholder="e.g. Sociology, Tech Startup" className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory" />
             </label>
@@ -191,25 +230,56 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
               <div className="grid gap-4">
                 <label className="grid gap-2 text-sm text-ivory/70">Service Level
                   <select value={service} onChange={(e) => setService(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                    <option value="Academic Editing">Academic Editing</option>
-                    <option value="Non-Academic Editing">Non-Academic Editing</option>
-                    <option value="Express Service">Express Service</option>
-                    <option value="Manuscript Formatting">Manuscript Formatting</option>
-                    <option value="Translation">Translation</option>
+                    {SERVICE_OPTIONS.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}
                   </select>
                 </label>
-                <label className="grid gap-2 text-sm text-ivory/70">Turnaround Time
-                  <select value={turnaround} onChange={(e) => setTurnaround(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                    <option value="7 days">7 days</option>
-                    <option value="14 days">14 days</option>
-                    <option value="4 weeks">4 weeks</option>
-                  </select>
-                </label>
+                <div className="grid gap-3 text-sm text-ivory/70">
+                  <div className="flex items-center justify-between gap-4">
+                    <span>Turnaround Time</span>
+                    <span className="text-gold">{turnaround}</span>
+                  </div>
+                  <input
+                    aria-label="Turnaround time"
+                    type="range"
+                    min={1}
+                    max={28}
+                    step={1}
+                    value={turnaroundDays}
+                    onChange={(event) => setTurnaroundDays(Number(event.target.value))}
+                    className="w-full accent-[#b08a3c]"
+                  />
+                  <div className="grid grid-cols-4 gap-2">
+                    {[1, 2, 3, 7, 14, 21, 28].map((days) => {
+                      const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+                      return (
+                        <button
+                          key={days}
+                          type="button"
+                          onClick={() => setTurnaroundDays(days)}
+                          className={`min-h-10 border px-2 text-xs transition ${turnaroundDays === days ? "border-gold bg-gold/12 text-gold" : "border-ivory/15 bg-ivory/5 text-ivory/65 hover:border-gold/50"}`}
+                        >
+                          {option.label.replace(" / 28 days", "")}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-ivory/45">Maximum automatic turnaround is 4 weeks / 28 days. Please contact our editors for a custom timeline if you need longer.</p>
+                </div>
               </div>
               <div className="border border-gold/30 bg-gold/5 p-6 flex flex-col justify-center items-center text-center">
                 <p className="text-sm text-ivory/60 mb-2">Estimated Total</p>
                 <p className="text-5xl font-display text-gold">${price.toFixed(2)}</p>
-                <p className="text-xs text-ivory/40 mt-4">Based on {wordCount?.toLocaleString()} words</p>
+                <p className="text-xs text-ivory/40 mt-4">Based on {wordCount?.toLocaleString()} words and your selected timeline.</p>
+                {!validation.allowed ? (
+                  <div className="mt-4 border border-gold/25 bg-gold/10 p-4 text-sm leading-6 text-gold">
+                    {validation.message}
+                    {validation.contactRequired ? (
+                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-gold/40 px-4 text-xs uppercase tracking-[0.16em] text-gold">
+                        Contact our editors
+                      </a>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -296,7 +366,9 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
               <div className="grid gap-3 text-sm">
                 {[
                   ["Document", file?.name],
-                  ["Type & Format", `${documentType} (${formattingStyle})`],
+                  ["Document Type", documentType],
+                  ["Formatting Style", formattingStyle],
+                  ["English Type", englishType],
                   ["Service & Turnaround", `${service} — ${turnaround}`],
                   ["Word Count", wordCount?.toLocaleString()],
                   ["Payment Provider", PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack"],
@@ -313,7 +385,18 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
               </div>
             </div>
 
-            <p className="text-xs text-ivory/40 text-center">Final price is calculated and verified server-side. The amount shown is an estimate.</p>
+            <p className="text-xs text-ivory/40 text-center">Final price is calculated and verified server-side before secure checkout.</p>
+
+            {!validation.allowed ? (
+              <div className="border border-gold/25 bg-gold/10 p-4 text-sm leading-6 text-gold">
+                <p>{validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote."}</p>
+                {validation.contactRequired ? (
+                  <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-gold/40 px-4 text-xs uppercase tracking-[0.16em] text-gold">
+                    Contact our editors
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
 
             {paymentError && (
               <div className="p-4 border border-red-500/30 bg-red-500/10 text-red-300 text-sm flex items-start gap-3">
@@ -327,7 +410,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
             <button
               onClick={handlePayment}
-              disabled={isSubmitting}
+              disabled={isSubmitting || checkoutBlocked}
               className="w-full min-h-14 bg-gold px-5 text-base text-ink font-semibold transition-all duration-300 hover:bg-ivory hover:shadow-[0_0_40px_rgba(176,138,60,0.2)] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {isSubmitting ? (
@@ -336,7 +419,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   Initializing secure payment...
                 </span>
               ) : (
-                `Pay $${price.toFixed(2)} with ${PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack"}`
+                checkoutBlocked ? "Contact our editors" : `Pay $${price.toFixed(2)} with ${PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack"}`
               )}
             </button>
           </div>
@@ -350,7 +433,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {step < totalSteps ? (
           <button
             onClick={() => setStep(step + 1)}
-            disabled={(step === 2 && wordCount === null) || isParsing}
+            disabled={(step === 2 && wordCount === null) || (step === 3 && checkoutBlocked) || isParsing}
             className="px-8 py-3 bg-ivory text-ink text-sm font-semibold hover:bg-gold transition disabled:opacity-50 disabled:cursor-not-allowed"
           >Continue</button>
         ) : <div />}

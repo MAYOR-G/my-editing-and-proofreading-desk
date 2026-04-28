@@ -137,35 +137,21 @@ export function getSafeAppUrl(): string {
 }
 
 // ─── Pricing Engine (Server-Side Only) ───────────────────────────────────────
-
-const SERVICE_RATES: Record<string, number> = {
-  "Academic Editing": 0.032,
-  "Non-Academic Editing": 0.024,
-  "Express Service": 0.045,
-  "Manuscript Formatting": 0.014,
-  Translation: 0.048,
-  "Writing Support": 0.055,
-  Proofreading: 0.018,
-  Editing: 0.032,
-  Transcribing: 0.026,
-  Formatting: 0.014,
-};
-
-const TURNAROUND_MULTIPLIERS: Record<string, number> = {
-  "7 days": 1.35,
-  "14 days": 1.0,
-  "4 weeks": 0.82,
-};
-
-const MINIMUM_ORDER = 35;
-
-export function calculateServerPrice(wordCount: number, serviceType: string, turnaround: string): number {
-  const rate = SERVICE_RATES[serviceType] ?? 0.024;
-  const multiplier = TURNAROUND_MULTIPLIERS[turnaround] ?? 1.0;
-  const safeWordCount = Math.min(50000, Math.max(250, wordCount));
-  const subtotal = safeWordCount * rate * multiplier;
-  return Math.max(MINIMUM_ORDER, Number(subtotal.toFixed(2)));
-}
+export {
+  DOCUMENT_TYPES,
+  ENGLISH_TYPES,
+  FORMATTING_STYLES,
+  MAX_AUTOMATIC_WORD_COUNT,
+  MINIMUM_ORDER,
+  SERVICE_OPTIONS,
+  TURNAROUND_OPTIONS,
+  calculatePrice,
+  calculateServerPrice,
+  parseTurnaroundDays,
+  validateAutomaticPricing,
+  type PriceBreakdown,
+  type PricingValidation,
+} from "@/lib/pricing";
 
 export function generateReference(prefix = "MEP"): string {
   const timestamp = Date.now().toString(36).toUpperCase();
