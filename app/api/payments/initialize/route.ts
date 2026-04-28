@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import {
   calculatePrice,
   calculateServerPrice,
@@ -38,6 +39,10 @@ function setupError(message: string, status = 500) {
   );
 }
 
+function traceId() {
+  return `chk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
 /**
  * POST /api/payments/initialize
  * 
@@ -47,21 +52,25 @@ function setupError(message: string, status = 500) {
  * Body: { provider, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style, english_type }
  */
 export async function POST(request: Request) {
+  const trace = traceId();
+
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Please sign in again before checkout.", code: "auth_required", trace_id: trace },
         { status: 401 }
       );
     }
 
+    const supabaseAdmin = createSupabaseAdminClient();
+
     const rateLimit = await checkRateLimit(`payment:init:${user.id}`, 8, 60);
     if (!rateLimit.success) {
       return NextResponse.json(
-        { error: "Too many payment attempts. Please wait a moment and try again." },
+        { error: "Too many payment attempts. Please wait a moment and try again.", code: "rate_limited", trace_id: trace },
         { status: 429 }
       );
     }
@@ -83,7 +92,7 @@ export async function POST(request: Request) {
     // ─── Validate inputs ───────────────────────────────────────────
     if (!isPaymentProviderName(provider)) {
       return NextResponse.json(
-        { error: "Invalid payment provider." },
+        { error: "Invalid payment provider.", code: "invalid_provider", trace_id: trace },
         { status: 400 }
       );
     }
@@ -95,6 +104,7 @@ export async function POST(request: Request) {
           error: "This payment option will be available soon.",
           code: "provider_not_available",
           provider: paymentProviderName,
+          trace_id: trace,
         },
         { status: 503 }
       );
@@ -107,14 +117,14 @@ export async function POST(request: Request) {
 
     if (!service_type || !turnaround || !word_count || !file_path) {
       return NextResponse.json(
-        { error: "Missing required fields: service_type, turnaround, word_count, file_path" },
+        { error: "Some checkout details are missing. Please review your order and try again.", code: "missing_checkout_fields", trace_id: trace },
         { status: 400 }
       );
     }
 
     if (typeof file_path !== "string" || !file_path.startsWith(`${user.id}/`)) {
       return NextResponse.json(
-        { error: "We could not confirm the uploaded file. Please upload it again." },
+        { error: "We could not confirm the uploaded file. Please upload it again.", code: "invalid_file_path", trace_id: trace },
         { status: 400 }
       );
     }
@@ -126,6 +136,7 @@ export async function POST(request: Request) {
         {
           error: timelineValidation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.",
           code: timelineValidation.contactRequired ? "custom_quote_required" : "invalid_timeline",
+          trace_id: trace,
         },
         { status: 422 }
       );
@@ -141,21 +152,22 @@ export async function POST(request: Request) {
     const reference = generateReference();
 
     // ─── Get user email for payment ────────────────────────────────
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("email")
       .eq("id", user.id)
       .single();
 
     if (!profile?.email) {
+      console.error(`[${trace}] Checkout profile lookup failed for user ${user.id}`);
       return NextResponse.json(
-        { error: "User profile not found" },
+        { error: "We could not find your client profile. Please sign out and sign in again.", code: "profile_not_found", trace_id: trace },
         { status: 400 }
       );
     }
 
     // ─── Create project in DB (pending status) ─────────────────────
-    const { data: project, error: insertError } = await supabase
+    const { data: project, error: insertError } = await supabaseAdmin
       .from("projects")
       .insert({
         client_id: user.id,
@@ -186,18 +198,21 @@ export async function POST(request: Request) {
       .single();
 
     if (insertError) {
-      console.error("Project creation error:", insertError);
+      console.error(`[${trace}] Project creation error:`, insertError);
       if (isSchemaMismatchError(insertError)) {
-        return setupError("Checkout needs a database update before payment can continue. Please contact support.");
+        return NextResponse.json(
+          { error: "Checkout needs a database update before payment can continue. Please contact support.", code: "checkout_setup_required", trace_id: trace },
+          { status: 500 }
+        );
       }
 
       return NextResponse.json(
-        { error: "We could not prepare your order. Please try again or contact support." },
+        { error: "We could not create your order. Please try again or contact support.", code: "order_create_failed", trace_id: trace },
         { status: 500 }
       );
     }
 
-    const { error: paymentRecordError } = await supabase
+    const { error: paymentRecordError } = await supabaseAdmin
       .from("payment_records")
       .insert({
         order_id: project.id,
@@ -210,7 +225,7 @@ export async function POST(request: Request) {
       });
 
     if (paymentRecordError) {
-      console.warn("Payment record creation skipped:", paymentRecordError.message);
+      console.warn(`[${trace}] Payment record creation skipped:`, paymentRecordError.message);
     }
 
     // ─── Initialize payment with provider ──────────────────────────
@@ -235,15 +250,15 @@ export async function POST(request: Request) {
         },
       });
     } catch (paymentError) {
-      console.error("Payment provider initialization error:", paymentError);
-      await supabase
+      console.error(`[${trace}] Payment provider initialization error:`, paymentError);
+      await supabaseAdmin
         .from("projects")
         .update({ payment_status: "failed" })
         .eq("id", project.id)
         .eq("payment_status", "pending");
 
       return NextResponse.json(
-        { error: "We could not start secure checkout. Please try again or contact support.", code: "payment_provider_failed" },
+        { error: "We could not start secure checkout. Please try again or contact support.", code: "payment_provider_failed", trace_id: trace },
         { status: 502 }
       );
     }
@@ -259,13 +274,15 @@ export async function POST(request: Request) {
       currency,
     });
   } catch (error: any) {
-    console.error("Payment initialization error:", error);
+    console.error(`[${trace}] Payment initialization error:`, error);
     return NextResponse.json(
       {
         error:
           error instanceof ProviderUnavailableError
             ? "This payment option will be available soon."
             : "We could not prepare your order. Please try again or contact support.",
+        code: error instanceof ProviderUnavailableError ? "provider_not_available" : "checkout_unexpected",
+        trace_id: trace,
       },
       { status: error instanceof ProviderUnavailableError ? 503 : 500 }
     );

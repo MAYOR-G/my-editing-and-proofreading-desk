@@ -98,7 +98,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         .upload(filePath, file);
       if (uploadError) {
         console.error("Supabase upload error:", uploadError);
-        throw new Error("We could not prepare your order. Please try again or contact support.");
+        throw new Error("We could not upload your document. Please try again or contact support.");
       }
 
       // 2. Initialize payment (server calculates price)
@@ -125,6 +125,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           status: res.status,
           code: data.code,
           error: data.error,
+          traceId: data.trace_id,
         });
 
         if (data.code === "checkout_setup_required") {
@@ -133,6 +134,14 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
         if (data.code === "payment_provider_failed") {
           throw new Error("We could not start secure checkout. Please try again or contact support.");
+        }
+
+        if (data.code === "order_create_failed") {
+          throw new Error("We could not create your order. Please try again or contact support.");
+        }
+
+        if (data.code === "profile_not_found" || data.code === "auth_required") {
+          throw new Error(data.error || "Please sign in again before checkout.");
         }
 
         throw new Error(data.error || "We could not prepare your order. Please try again or contact support.");
