@@ -8,8 +8,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 const principles = [
   ["Fast first pass", "Useful for short passages where you need immediate clarity and polish."],
   ["Human standard", "Professional review remains the premium path for full documents and high-stakes work."],
-  ["Cost controlled", "Strict word caps, concise prompts, capped output, and daily usage limits keep the tool sustainable."],
-  ["Safe by design", "Frontend and server validation protect the 1,000-word limit before any model call is made."]
+  ["Cost controlled", "Strict word caps, concise instructions, capped output, and daily usage limits keep the tool sustainable."],
+  ["Safe by design", "Frontend and server validation protect the 1,000-word limit before any professional AI review begins."]
 ];
 
 export default function AiEditingToolPage() {
@@ -23,14 +23,14 @@ export default function AiEditingToolPage() {
           <Reveal>
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-gold-deep">AI Editing Tool</p>
-              <h1 className="mt-6 max-w-5xl font-display text-[clamp(3.4rem,8vw,8.5rem)] leading-[0.88] text-ink">
+              <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,6.2vw,6.4rem)] leading-[0.98] text-ink">
                 AI-assisted editing, held to editorial standards.
               </h1>
             </div>
           </Reveal>
           <Reveal delay={0.08}>
             <div className="border-l border-gold/45 pl-7">
-              <p className="max-w-2xl text-xl leading-9 text-charcoal/72">
+              <p className="max-w-2xl text-lg leading-8 text-charcoal/72">
                 Paste text or upload a short document for a fast first-pass edit. The trial is capped at 1,000 words to keep quality clear, cost predictable, and the experience responsible.
               </p>
               <p className="mt-6 max-w-2xl text-base leading-8 text-charcoal/62">

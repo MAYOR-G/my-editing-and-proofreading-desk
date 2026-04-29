@@ -29,7 +29,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
   const price = priceBreakdown.finalPrice;
 
   return (
-    <div className="relative overflow-hidden border border-ink/10 bg-ivory shadow-[0_32px_110px_rgba(17,17,15,0.075)]">
+    <div className="relative overflow-hidden border border-ink/10 bg-ivory shadow-[0_24px_80px_rgba(17,17,15,0.06)]">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/55 to-transparent" aria-hidden="true" />
       <div className="grid border-b border-ink/10 text-xs uppercase tracking-[0.24em] text-charcoal/46 sm:grid-cols-3">
         {["Estimate", "Review", "Upload"].map((item, index) => (
@@ -41,13 +41,13 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[1.12fr_0.88fr]">
-        <section className="relative bg-paper/55 p-5 sm:p-7 lg:p-9">
-          <div className="absolute right-8 top-8 hidden h-24 w-24 border border-gold/20 lg:block" aria-hidden="true" />
+        <section className="relative bg-paper/45 p-5 sm:p-7 lg:p-8">
+          <div className="absolute right-8 top-8 hidden h-20 w-20 border border-gold/16 lg:block" aria-hidden="true" />
           <div className="relative">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Service type</p>
-                <h3 className="mt-3 max-w-xl font-display text-[clamp(2.15rem,5vw,4rem)] leading-none text-ink">
+                <h3 className="mt-3 max-w-xl font-display text-[clamp(1.95rem,4vw,3.2rem)] leading-[1.04] text-ink">
                   Compose a live estimate.
                 </h3>
               </div>
@@ -56,7 +56,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
               </span>
             </div>
 
-            <div className="mt-8 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-7 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
               {SERVICE_OPTIONS.map((service) => {
                 const active = service.label === serviceLabel;
 
@@ -65,7 +65,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     key={service.label}
                     type="button"
                     onClick={() => setServiceLabel(service.label)}
-                    className={`group min-h-24 border px-4 py-4 text-left transition duration-200 ease-premium-out active:scale-[0.99] ${
+                    className={`group min-h-20 border px-4 py-4 text-left transition duration-200 ease-premium-out active:scale-[0.99] ${
                       active ? "border-gold bg-ivory text-ink shadow-[0_16px_50px_rgba(176,138,60,0.10)]" : "border-ink/10 bg-ivory/62 text-charcoal/68 hover:border-gold/55 hover:bg-ivory hover:text-ink"
                     }`}
                     aria-pressed={active}
@@ -80,7 +80,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
               })}
             </div>
 
-            <div className="mt-9 grid gap-7 xl:grid-cols-[0.92fr_1.08fr]">
+            <div className="mt-8 grid gap-7 xl:grid-cols-[0.92fr_1.08fr]">
               <div>
                 <label htmlFor="word-count" className="text-xs uppercase tracking-[0.28em] text-gold-deep">
                   Word count
@@ -95,7 +95,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     step={50}
                     value={wordCount}
                     onChange={(event) => setWordCount(Math.min(60000, Math.max(1, Number(event.target.value) || 1)))}
-                    className="w-full bg-transparent font-display text-4xl leading-none text-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="w-full bg-transparent font-display text-3xl leading-none text-ink outline-none [appearance:textfield] sm:text-4xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                   <span className="text-sm text-charcoal/50">words</span>
                 </div>
@@ -166,7 +166,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
           </div>
         </section>
 
-        <aside className="relative overflow-hidden bg-ink p-6 text-ivory shadow-[0_28px_90px_rgba(17,17,15,0.18)] sm:p-8 lg:p-10">
+        <aside className="relative overflow-hidden bg-ink p-6 text-ivory shadow-[0_24px_70px_rgba(17,17,15,0.16)] sm:p-8 lg:p-9">
           <div className="absolute right-0 top-0 h-40 w-40 border-b border-l border-gold/18" aria-hidden="true" />
           <p className="text-xs uppercase tracking-[0.28em] text-gold">Estimated order</p>
           <div className="relative mt-8 border-y border-ivory/12 py-8">
@@ -178,7 +178,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -18, filter: "blur(4px)" }}
                   transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
-                  className="font-display text-[clamp(2.25rem,9vw,6.9rem)] leading-none text-ivory tabular-nums"
+                  className="font-display text-[clamp(2.2rem,7vw,5.1rem)] leading-none text-ivory tabular-nums"
                 >
                   {currency(price)}
                 </motion.p>
@@ -206,7 +206,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
             ))}
           </div>
 
-          <div className="mt-7 border border-ivory/12 bg-ivory/[0.055] p-4">
+          <div className="mt-7 border border-ivory/12 bg-ivory/[0.05] p-4">
             <p className="text-xs uppercase tracking-[0.24em] text-gold">Next step</p>
             <p className="mt-3 text-sm leading-6 text-ivory/62">
               Upload your supported file to confirm the word count. Payment is recorded only after server-side verification.

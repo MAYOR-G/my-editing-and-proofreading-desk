@@ -29,12 +29,25 @@ const PROJECT_COLUMNS = [
   "payment_currency",
 ].join(",");
 
+function keyMode(value: string | undefined, testPrefix: string, livePrefix: string) {
+  if (!value) return "missing";
+  if (value.startsWith(testPrefix)) return "test";
+  if (value.startsWith(livePrefix)) return "live";
+  return "unknown";
+}
+
 export async function GET() {
+  const paystackSecretMode = keyMode(process.env.PAYSTACK_SECRET_KEY, "sk_test_", "sk_live_");
+  const paystackPublicMode = keyMode(process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY, "pk_test_", "pk_live_");
   const env = {
     NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
     SUPABASE_SERVICE_ROLE_KEY: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
     PAYSTACK_SECRET_KEY: Boolean(process.env.PAYSTACK_SECRET_KEY),
+    NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: Boolean(process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY),
+    PAYSTACK_SECRET_KEY_MODE: paystackSecretMode,
+    NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY_MODE: paystackPublicMode,
+    PAYSTACK_KEY_MODE_MATCH: paystackSecretMode !== "missing" && paystackPublicMode !== "missing" && paystackSecretMode === paystackPublicMode,
     PAYSTACK_WEBHOOK_SECRET: Boolean(process.env.PAYSTACK_WEBHOOK_SECRET),
     PAYMENT_ACTIVE_PROVIDER: process.env.PAYMENT_ACTIVE_PROVIDER || "paystack",
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || null,

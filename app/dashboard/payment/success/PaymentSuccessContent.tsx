@@ -7,8 +7,8 @@ import Link from "next/link";
 export default function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const reference = searchParams.get("reference");
-  const provider = searchParams.get("provider");
+  const reference = searchParams.get("reference") || searchParams.get("trxref");
+  const provider = searchParams.get("provider") || "paystack";
   const transactionId = searchParams.get("transaction_id");
 
   const [status, setStatus] = useState<"verifying" | "success" | "failed">("verifying");

@@ -12,6 +12,10 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
 
+function traceId() {
+  return `ver_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
 /**
  * GET /api/payments/verify?reference=xxx&provider=paystack
  * 
@@ -19,29 +23,31 @@ export const dynamic = "force-dynamic";
  * Updates project status ONLY if provider confirms success.
  */
 export async function GET(request: Request) {
+  const trace = traceId();
+
   try {
     const supabase = createSupabaseAdminClient();
     const { searchParams } = new URL(request.url);
-    const reference = searchParams.get("reference");
-    const provider = searchParams.get("provider") as PaymentProviderName | null;
+    const reference = searchParams.get("reference") || searchParams.get("trxref");
+    const provider = (searchParams.get("provider") || "paystack") as PaymentProviderName | null;
 
     if (!reference || !provider) {
       return NextResponse.json(
-        { error: "Missing reference or provider" },
+        { error: "Missing reference or provider", code: "missing_payment_details", trace_id: trace },
         { status: 400 }
       );
     }
 
     if (!isPaymentProviderName(provider)) {
       return NextResponse.json(
-        { error: "Invalid provider" },
+        { error: "Invalid provider", code: "invalid_provider", trace_id: trace },
         { status: 400 }
       );
     }
 
     if (!isProviderEnabled(provider)) {
       return NextResponse.json(
-        { error: "This payment option will be available soon.", verified: false, code: "provider_not_available" },
+        { error: "This payment option will be available soon.", verified: false, code: "provider_not_available", trace_id: trace },
         { status: 503 }
       );
     }
@@ -49,7 +55,7 @@ export async function GET(request: Request) {
     const rateLimit = await checkRateLimit(`payment:verify:${reference}`, 12, 60);
     if (!rateLimit.success) {
       return NextResponse.json(
-        { error: "Too many verification attempts. Please wait a moment and try again." },
+        { error: "Too many verification attempts. Please wait a moment and try again.", code: "rate_limited", trace_id: trace },
         { status: 429 }
       );
     }
@@ -62,15 +68,16 @@ export async function GET(request: Request) {
       .single();
 
     if (fetchError || !project) {
+      console.error(`[${trace}] Payment verify project lookup failed`, { reference, message: fetchError?.message });
       return NextResponse.json(
-        { error: "Project not found for this reference" },
+        { error: "Project not found for this reference", code: "project_not_found", trace_id: trace },
         { status: 404 }
       );
     }
 
     if (project.payment_provider !== provider) {
       return NextResponse.json(
-        { error: "Payment provider mismatch", verified: false },
+        { error: "Payment provider mismatch", verified: false, code: "provider_mismatch", trace_id: trace },
         { status: 400 }
       );
     }
@@ -82,6 +89,7 @@ export async function GET(request: Request) {
         already_processed: true,
         project_id: project.id,
         friendly_id: project.friendly_id,
+        trace_id: trace,
       });
     }
 
@@ -111,6 +119,8 @@ export async function GET(request: Request) {
         verified: false,
         status: verifyResult.status,
         project_id: project.id,
+        code: "provider_not_successful",
+        trace_id: trace,
       });
     }
 
@@ -118,10 +128,10 @@ export async function GET(request: Request) {
     const expectedAmountCents = Math.round(project.price * 100);
     if (verifyResult.amount !== expectedAmountCents) {
       console.error(
-        `Amount mismatch: expected ${expectedAmountCents}, got ${verifyResult.amount} for ref ${reference}`
+        `[${trace}] Amount mismatch: expected ${expectedAmountCents}, got ${verifyResult.amount} for ref ${reference}`
       );
       return NextResponse.json(
-        { error: "Payment amount mismatch", verified: false },
+        { error: "Payment amount mismatch", verified: false, code: "amount_mismatch", trace_id: trace },
         { status: 400 }
       );
     }
@@ -183,15 +193,18 @@ export async function GET(request: Request) {
       friendly_id: project.friendly_id,
       amount: project.price,
       currency: project.payment_currency,
+      trace_id: trace,
     });
   } catch (error: any) {
-    console.error("Payment verification error:", error);
+    console.error(`[${trace}] Payment verification error:`, error);
     return NextResponse.json(
       {
         error:
           error instanceof ProviderUnavailableError
             ? "This payment option will be available soon."
             : error.message || "Verification failed",
+        code: error instanceof ProviderUnavailableError ? "provider_not_available" : "verify_unexpected",
+        trace_id: trace,
       },
       { status: error instanceof ProviderUnavailableError ? 503 : 500 }
     );

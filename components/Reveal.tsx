@@ -60,9 +60,5 @@ export function Reveal({ children, className, delay = 0, variant = "fadeUp" }: R
     { scope: containerRef }
   );
 
-  return (
-    <div ref={containerRef} className={className} style={{ visibility: "hidden" }}>
-      {children}
-    </div>
-  );
+  return <div ref={containerRef} className={className}>{children}</div>;
 }

@@ -22,7 +22,7 @@ function AccordionRow({ item, isOpen, onToggle }: { item: AccordionItem; isOpen:
         aria-expanded={isOpen}
       >
         <span className="pr-4">{item.question}</span>
-        <span className="grid h-9 w-9 shrink-0 place-items-center border border-ink/12 text-gold-deep transition-all duration-300 ease-premium-out group-hover:border-gold group-hover:shadow-gold-glow">
+        <span className="grid h-9 w-9 shrink-0 place-items-center border border-ink/12 text-gold-deep transition duration-300 ease-premium-out group-hover:border-gold group-hover:shadow-gold-glow">
           <motion.span
             animate={{ rotate: isOpen ? 45 : 0 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
