@@ -121,10 +121,11 @@ export default function ContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-charcoal/80">
                     Preferred turnaround
                     <select className="min-h-12 w-full appearance-none border border-ink/10 bg-ivory px-4 text-base text-ink transition duration-200 ease-premium-out focus:border-gold focus:shadow-[0_0_0_3px_rgba(176,138,60,0.08)]">
-                      <option value="Standard (7-10 Days)">Standard (7-10 Days)</option>
-                      <option value="Express (3-5 Days)">Express (3-5 Days)</option>
-                      <option value="Rush (24-48 Hours)">Rush (24-48 Hours)</option>
-                      <option value="Flexible">Flexible / Unsure</option>
+                      <option value="24 to 48 hours">24 to 48 hours</option>
+                      <option value="3 to 5 days">3 to 5 days</option>
+                      <option value="7 to 10 days">7 to 10 days</option>
+                      <option value="10 to 28 days">10 to 28 days</option>
+                      <option value="Flexible or Not sure">Flexible or Not sure</option>
                     </select>
                   </label>
                 </div>
