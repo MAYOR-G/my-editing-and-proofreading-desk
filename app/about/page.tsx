@@ -1,5 +1,6 @@
 import { CareVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { BackgroundCarousel } from "@/components/BackgroundCarousel";
 
 const values = [
   "Premium editorial judgment without noisy process",
@@ -8,12 +9,19 @@ const values = [
   "A polished client experience around serious work"
 ];
 
+const aboutImages = [
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80"
+];
+
 export default function AboutPage() {
   return (
     <div className="relative min-h-screen">
-      <div 
-        className="fixed inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-[0.06] blur-[2px]"
-        aria-hidden="true"
+      <BackgroundCarousel 
+        images={aboutImages} 
+        className="fixed inset-0" 
+        overlayClassName="bg-ivory/88 backdrop-blur-[2px]"
       />
       
       <div className="relative z-10">
@@ -21,6 +29,7 @@ export default function AboutPage() {
           eyebrow="About"
           title="A calm desk for important documents."
           description="My Editing and Proofreading Desk exists for clients who need their writing handled with care, discretion, and exacting editorial standards."
+          isTransparent={true}
         >
           <section className="px-5 py-20 sm:px-8 lg:py-28 backdrop-blur-sm bg-ivory/80">
             <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1fr] lg:items-center">

@@ -27,8 +27,8 @@ export function SiteFooter() {
 
           <div className="border-y border-ivory/10 py-6">
             <p className="text-xs uppercase tracking-[0.28em] text-gold">Editorial inquiries</p>
-            <a href="mailto:business@editandproofread.com" className="mt-3 block break-words font-display text-2xl leading-tight text-ivory transition hover:text-gold-deep">
-              business@editandproofread.com
+            <a href="mailto:hello@business.editandproofread.com" className="mt-3 block break-words font-display text-2xl leading-tight text-ivory transition hover:text-gold-deep">
+              hello@business.editandproofread.com
             </a>
             <p className="mt-4 text-sm leading-6 text-ivory/50">Include document type, expected word count, and deadline.</p>
           </div>

@@ -5,6 +5,10 @@ const nextConfig = {
       {
         pathname: "/assets/**",
         search: ""
+      },
+      {
+        pathname: "/images/**",
+        search: ""
       }
     ],
     remotePatterns: [

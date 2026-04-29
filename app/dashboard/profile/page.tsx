@@ -16,6 +16,9 @@ export default async function DashboardProfilePage() {
     .eq("id", user.id)
     .single();
 
+  const displayName = profile?.full_name || user.user_metadata?.full_name || "Client";
+  const displayEmail = profile?.email || user.email || "No email found";
+
   return (
     <>
       <div className="grid gap-8 border-b border-ink/10 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
@@ -31,9 +34,9 @@ export default async function DashboardProfilePage() {
       </div>
 
       <section className="mt-8 border border-ink/10 bg-ivory/90 p-7 max-w-2xl">
-        <h2 className="font-display text-3xl leading-tight text-ink capitalize">{profile?.full_name || "Client"}</h2>
+        <h2 className="font-display text-3xl leading-tight text-ink capitalize">{displayName}</h2>
         <div className="mt-6 grid gap-3 text-sm text-charcoal/64">
-          <div className="flex justify-between border-t border-ink/10 pt-3"><span>Email</span><span className="text-ink">{profile?.email}</span></div>
+          <div className="flex justify-between border-t border-ink/10 pt-3"><span>Email</span><span className="text-ink">{displayEmail}</span></div>
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Currency</span><span className="text-ink">USD</span></div>
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Files retained</span><span className="text-ink">30 days</span></div>
         </div>

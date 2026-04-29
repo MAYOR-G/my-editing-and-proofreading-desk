@@ -7,7 +7,7 @@ export async function sendPaymentSuccessEmail(to: string, friendlyId: string, am
   try {
     const resend = getResendClient();
     const { data, error } = await resend.emails.send({
-      from: "My Editing Desk <business@editandproofread.com>", // Update with verified domain
+      from: "My Editing Desk <hello@business.editandproofread.com>", // Update with verified domain
       to: [to],
       subject: `Payment Received - Project ${friendlyId}`,
       html: `
@@ -37,7 +37,7 @@ export async function sendProjectReadyEmail(to: string, friendlyId: string) {
   try {
     const resend = getResendClient();
     const { data, error } = await resend.emails.send({
-      from: "My Editing Desk <business@editandproofread.com>", // Update with verified domain
+      from: "My Editing Desk <hello@business.editandproofread.com>", // Update with verified domain
       to: [to],
       subject: `Project Ready for Download - ${friendlyId}`,
       html: `
@@ -63,11 +63,11 @@ export async function sendProjectReadyEmail(to: string, friendlyId: string) {
 
 export async function sendEditorNotificationEmail(friendlyId: string, wordCount: number, service: string, deadline: string) {
   try {
-    const editorEmail = process.env.ADMIN_EMAIL || "admin@editandproofread.com";
+    const editorEmail = process.env.ADMIN_EMAIL || "admin@business.editandproofread.com";
     const resend = getResendClient();
     
     const { data, error } = await resend.emails.send({
-      from: "My Editing Desk <system@editandproofread.com>",
+      from: "My Editing Desk <notifications@business.editandproofread.com>",
       to: [editorEmail],
       subject: `New Project Alert - ${friendlyId}`,
       html: `

@@ -65,10 +65,10 @@ export default function Home() {
           <Reveal>
             <p className="text-[0.68rem] uppercase tracking-[0.3em] text-gold-deep sm:text-xs">Corporate Editorial</p>
             <h2 className="mt-5 max-w-3xl font-display text-[clamp(2.1rem,4.1vw,4.35rem)] leading-[1.02] text-ink">
-              A corporate desk for documents that must land cleanly.
+              Your corporate desk for documents that must land cleanly.
             </h2>
             <p className="mt-6 max-w-2xl text-base font-light leading-7 text-charcoal/72 sm:text-[1.05rem] sm:leading-8">
-              Strategic reports, company profiles, technical documentation, and client-facing material receive the same disciplined review: structure, tone, consistency, and final polish.
+              Your strategic reports, company profiles, technical documentation, and client-facing material receive our disciplined review: structure, tone, consistency, and final polish.
             </p>
             <div className="mt-8 grid max-w-xl grid-cols-2 gap-2 sm:gap-3">
               {["Voice aligned", "Board ready", "Secure flow", "Clear delivery"].map((item) => (
@@ -217,8 +217,8 @@ export default function Home() {
           <Reveal>
             <SectionLabel
               eyebrow="Editor standard"
-              title="Quiet rigor behind every file."
-              body="The standard is not louder editing. It is better judgment: what to change, what to preserve, and how to make the document feel ready."
+              title="Quiet rigor behind every file you submit."
+              body="The standard is not louder editing. It is better judgment: what to change, what to preserve, and how to make your document feel ready."
             />
             <Link href="/editors" className="mt-8 inline-flex min-h-12 items-center border border-ink/15 px-7 text-sm text-ink transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
               Meet the standard
@@ -255,10 +255,10 @@ export default function Home() {
               <div className="absolute bottom-0 left-0 h-px w-3/4 bg-gradient-to-r from-gold/45 to-transparent" aria-hidden="true" />
               <p className="text-xs uppercase tracking-[0.32em] text-gold">AI Editing Suite</p>
               <h2 className="mt-6 max-w-3xl font-display text-[clamp(2.2rem,4.7vw,4.8rem)] leading-[1.03] text-ivory">
-                Drafts refined with professional AI review.
+                Your drafts refined with professional AI review.
               </h2>
               <p className="mt-7 max-w-2xl text-base font-light leading-8 text-ivory/68">
-                Run internal drafts through our custom AI editing suite to eliminate obvious friction points, saving time before passing documents to human editorial review. This strictly focuses on structural editing, not formatting.
+                Run your internal drafts through our custom AI editing suite to eliminate obvious friction points, saving time before passing documents to human editorial review. This strictly focuses on structural editing, not formatting.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link href="/ai-editing-tool" className="inline-flex min-h-12 items-center justify-center bg-gold px-7 text-sm text-ink transition duration-200 ease-premium-out hover:bg-ivory active:scale-[0.98]">
@@ -296,7 +296,7 @@ export default function Home() {
             <div className="lg:sticky lg:top-28">
               <SectionLabel
                 eyebrow="Workflow Operations"
-                title="A frictionless path from upload to delivery."
+                title="Your frictionless path from upload to delivery."
                 body="Our platform handles the logistics—file securely uploaded, transparent quoting, automated tracking, and centralized team delivery."
               />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
@@ -369,7 +369,7 @@ export default function Home() {
       <section className="border-y border-ink/10 bg-paper px-5 py-20 sm:px-8 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr]">
           <Reveal>
-            <SectionLabel eyebrow="FAQ" title="Clear answers before the first document." />
+            <SectionLabel eyebrow="FAQ" title="Clear expectations before the first document." />
             <Link href="/faq" className="mt-8 inline-flex min-h-12 items-center border border-ink/15 px-7 text-sm text-ink transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
               Visit FAQ
             </Link>
@@ -389,7 +389,7 @@ export default function Home() {
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-gold-deep">Initiate Engagement</p>
               <h2 className="mt-5 font-display text-[clamp(2.2rem,4vw,4.4rem)] leading-[1.02] text-ink">
-                Secure your corporate communications today.
+                Secure your final draft today.
               </h2>
             </div>
             <div className="self-end">

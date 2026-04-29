@@ -28,13 +28,16 @@ export default async function DashboardOverviewPage() {
   const totalPaid = projects?.filter(p => p.payment_status === "paid").reduce((acc, curr) => acc + (curr.price || 0), 0) || 0;
   const recentProjects = projects?.slice(0, 3) || [];
 
+  const displayName = profile?.full_name || user.user_metadata?.full_name || "Client";
+  const firstName = displayName.split(" ")[0];
+
   return (
     <>
       <div className="grid gap-8 border-b border-ink/10 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-gold-deep lg:hidden">Overview</p>
           <h1 className="mt-4 font-display text-[clamp(2.6rem,5vw,5.4rem)] leading-[0.96] text-ink">
-            Welcome back, {profile?.full_name?.split(" ")[0] || "Client"}
+            Welcome back, {firstName}
           </h1>
         </div>
         <p className="max-w-xl text-base leading-7 text-charcoal/68 lg:justify-self-end">

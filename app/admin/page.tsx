@@ -125,13 +125,25 @@ export default async function AdminDashboardPage() {
                     ["Payment", selected.payment_status],
                     ["Provider", formatProvider(selected.payment_provider)],
                     ["Reference", selected.transaction_reference || "N/A"],
-                    ["Service", selected.service_type]
+                    ["Service", selected.service_type],
+                    ["Client Note", selected.client_notes || "None"]
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-6 border-t border-ivory/12 pt-4">
                       <span>{label}</span>
                       <span className="text-right text-ivory">{value}</span>
                     </div>
                   ))}
+                </div>
+
+                <div className="mt-8 border-t border-ivory/12 pt-6">
+                  <p className="text-sm font-medium text-ivory">Source File</p>
+                  {selected.uploaded_file_path ? (
+                    <div className="mt-2 text-xs text-gold break-all">
+                      {selected.uploaded_file_path}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-xs text-ivory/50">No file uploaded.</p>
+                  )}
                 </div>
                 <form action={async (formData) => {
                   "use server";

@@ -1,16 +1,31 @@
 import Link from "next/link";
 import { ServiceSystemVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { BackgroundCarousel } from "@/components/BackgroundCarousel";
 import { servicePages } from "@/lib/content";
+
+const serviceImages = [
+  "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1516383740770-fbcc5ccbece0?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
+];
 
 export default function ServicesPage() {
   return (
-    <PublicPageShell
-      eyebrow="Services"
-      title="Editorial support by document need."
-      description="Choose the route that best fits the work: academic, professional, urgent, manuscript, translation, or writing support."
-    >
-      <section className="px-5 py-20 sm:px-8 lg:py-28">
+    <div className="relative min-h-screen">
+      <BackgroundCarousel 
+        images={serviceImages} 
+        className="fixed inset-0" 
+        overlayClassName="bg-ivory/92 backdrop-blur-[4px]"
+      />
+      <div className="relative z-10">
+        <PublicPageShell
+          eyebrow="Services"
+          title="Editorial support by document need."
+          description="Choose the route that best fits the work: academic, professional, urgent, manuscript, translation, or writing support."
+          isTransparent={true}
+        >
+      <section className="px-5 py-20 sm:px-8 lg:py-28 bg-ivory/70 backdrop-blur-lg">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.62fr_1.38fr] lg:items-start">
           <ServiceSystemVisual />
           <div className="divide-y divide-ink/10 border-y border-ink/10">
@@ -35,5 +50,7 @@ export default function ServicesPage() {
         </div>
       </section>
     </PublicPageShell>
+    </div>
+    </div>
   );
 }

@@ -155,7 +155,7 @@ function buildFallbackEdit(text: string, modeLabel: string) {
 
 async function callOpenRouter(text: string, modeId: string) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini";
+  const model = process.env.OPENROUTER_MODEL || "google/gemini-1.5-flash";
   const mode = editingModes.find((item) => item.id === modeId) ?? editingModes[0];
 
   if (!apiKey) {

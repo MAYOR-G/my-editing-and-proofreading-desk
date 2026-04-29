@@ -16,10 +16,10 @@ export default function ContactPage() {
             <aside className="border border-ink/10 bg-paper/60 p-6 shadow-[0_18px_60px_rgba(17,17,15,0.04)] sm:p-8">
               <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Business email</p>
               <a
-                href="mailto:support@editandproofread.com"
+                href="mailto:hello@business.editandproofread.com"
                 className="mt-5 block break-all font-display text-[clamp(1.6rem,3.5vw,2.8rem)] leading-tight text-ink transition duration-200 hover:text-gold-deep"
               >
-                support@editandproofread.com
+                hello@business.editandproofread.com
               </a>
               <p className="mt-6 max-w-md text-base leading-7 text-charcoal/66">
                 Include your document type, word count if known, service interest, and preferred turnaround.

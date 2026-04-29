@@ -61,7 +61,7 @@ export function ScrollSequence() {
     const interval = window.setInterval(() => {
       setActiveIndex((index) => (index + 1) % editorialModes.length);
       setWordIndex((index) => (index + 1) % serviceWords.length);
-    }, 3400);
+    }, 4000);
 
     return () => window.clearInterval(interval);
   }, [reducedMotion]);
@@ -149,18 +149,18 @@ export function ScrollSequence() {
             </AnimatePresence>
 
             <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-4 p-4 sm:p-6">
-              <div className="border border-ivory/40 bg-ink/26 px-3 py-2.5 text-[0.66rem] uppercase tracking-[0.25em] text-ivory backdrop-blur-md sm:text-xs">
+              <div className="border border-ivory/40 bg-ink/30 px-3 py-2.5 text-[0.66rem] uppercase tracking-[0.25em] text-ivory backdrop-blur-md sm:text-xs">
                 {activeMode.label}
               </div>
               <div className="hidden grid-cols-3 gap-1 sm:grid" aria-hidden="true">
                 {proofingLanes.slice(0, 6).map((lane, index) => (
-                  <span key={lane} className="h-1.5 w-10 bg-ivory/35" style={{ opacity: index % editorialModes.length === activeIndex ? 0.95 : 0.42 }} />
+                  <span key={lane} className="h-1.5 w-10 bg-ivory/40" style={{ opacity: index % editorialModes.length === activeIndex ? 0.95 : 0.42 }} />
                 ))}
               </div>
             </div>
 
             <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
-              <div className="max-w-lg bg-ivory/91 p-4 text-ink shadow-[0_16px_56px_rgba(17,17,15,0.14)] backdrop-blur-md sm:p-5">
+              <div className="max-w-lg border border-ink/5 bg-ivory p-5 text-ink shadow-2xl sm:p-7">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={activeMode.title}
@@ -170,7 +170,7 @@ export function ScrollSequence() {
                     transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <h2 className="font-display text-[clamp(1.45rem,2.7vw,2.15rem)] leading-[1.05] text-ink">{activeMode.title}</h2>
-                    <p className="mt-3 text-sm leading-6 text-charcoal/68 sm:text-[0.95rem] sm:leading-7">{activeMode.body}</p>
+                    <p className="mt-3 text-sm leading-6 text-charcoal/70 sm:text-[0.95rem] sm:leading-7">{activeMode.body}</p>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -184,7 +184,7 @@ export function ScrollSequence() {
                 type="button"
                 aria-pressed={index % editorialModes.length === activeIndex}
                 onClick={() => chooseLane(index)}
-                className="group min-h-12 border border-ink/10 bg-ivory/84 px-3 text-left text-[0.68rem] uppercase tracking-[0.16em] text-charcoal/50 shadow-[0_10px_34px_rgba(17,17,15,0.03)] transition duration-200 ease-premium-out hover:border-gold/35 hover:text-gold-deep active:scale-[0.99] aria-pressed:border-gold/45 aria-pressed:bg-paper aria-pressed:text-gold-deep sm:min-h-[3.25rem] sm:px-4 sm:text-xs sm:tracking-[0.18em]"
+                className="group min-h-12 border border-ink/10 bg-ivory/80 px-3 text-left text-[0.68rem] uppercase tracking-[0.16em] text-charcoal/50 shadow-[0_10px_34px_rgba(17,17,15,0.03)] transition duration-200 ease-premium-out hover:border-gold/40 hover:text-gold-deep active:scale-[0.99] aria-pressed:border-gold/50 aria-pressed:bg-paper aria-pressed:text-gold-deep sm:min-h-[3.25rem] sm:px-4 sm:text-xs sm:tracking-[0.18em]"
               >
                 <span className="mr-2 font-display text-sm text-gold-deep/80 sm:mr-3 sm:text-base">{String(index + 1).padStart(2, "0")}</span>
                 {lane}
