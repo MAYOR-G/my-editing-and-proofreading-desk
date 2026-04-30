@@ -98,23 +98,23 @@ export const editorStandards = [
 export const processSteps = [
   {
     label: "01",
-    title: "Upload the document",
-    body: "Submit a .doc, .docx, or .txt file from a secure account and add the editorial notes that matter."
+    title: "Upload Document",
+    body: "Submit your document securely. Add your target audience, tone preferences, and any specific editorial notes."
   },
   {
     label: "02",
-    title: "Review clear pricing",
-    body: "The platform calculates word count, service type, turnaround, and a transparent order total."
+    title: "Profiling & Editing",
+    body: "We profile the text using AI pre-flight tools, then our subject-matter experts refine the flow, grammar, and structure."
   },
   {
     label: "03",
-    title: "Confirm secure payment",
-    body: "Choose Paystack or Flutterwave. Payment is verified server-side before the project moves into production."
+    title: "Quality Checks",
+    body: "A rigorous, multi-layered quality assurance pass ensures consistency, academic rigor, and error-free presentation."
   },
   {
     label: "04",
-    title: "Track and download",
-    body: "Watch progress from your dashboard, then download the completed file when it is ready."
+    title: "Secure Delivery",
+    body: "Your polished, submission-ready file is delivered securely to your dashboard, ahead of your deadline."
   }
 ];
 

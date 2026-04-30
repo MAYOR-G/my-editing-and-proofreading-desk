@@ -5,12 +5,6 @@ import { Reveal } from "@/components/Reveal";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
-const principles = [
-  ["Fast first pass", "Useful for short passages where you need immediate clarity and polish."],
-  ["Human standard", "Professional review remains the premium path for full documents and high-stakes work."],
-  ["Cost controlled", "Strict word caps, concise instructions, capped output, and daily usage limits keep the tool sustainable."],
-  ["Safe by design", "Frontend and server validation protect the 1,000-word limit before any professional AI review begins."]
-];
 
 export default function AiEditingToolPage() {
   return (
@@ -51,17 +45,7 @@ export default function AiEditingToolPage() {
           </Reveal>
         </div>
 
-        <div className="relative mx-auto mt-16 grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {principles.map(([title, body], index) => (
-            <Reveal key={title} delay={index * 0.05}>
-              <article className="min-h-40 border border-ink/10 bg-ivory/82 p-5 shadow-[0_18px_70px_rgba(17,17,15,0.045)] backdrop-blur-sm">
-                <span className="font-display text-3xl text-gold-deep/55">{String(index + 1).padStart(2, "0")}</span>
-                <h2 className="mt-5 font-display text-2xl leading-tight text-ink">{title}</h2>
-                <p className="mt-3 text-sm leading-6 text-charcoal/62">{body}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+
       </section>
 
       <section className="px-5 py-20 sm:px-8 lg:py-28">

@@ -155,7 +155,8 @@ function buildFallbackEdit(text: string, modeLabel: string) {
 
 async function callOpenRouter(text: string, modeId: string) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL || "google/gemini-1.5-flash";
+  // Using a very cost-effective, capable model for JSON instruction following
+  const model = process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-lite-preview-02-05:free";
   const mode = editingModes.find((item) => item.id === modeId) ?? editingModes[0];
 
   if (!apiKey) {
