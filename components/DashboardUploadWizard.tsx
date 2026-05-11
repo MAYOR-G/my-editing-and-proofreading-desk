@@ -228,6 +228,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     }
 
     setTurnaroundDays(days);
+    setPricingNotice("");
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {

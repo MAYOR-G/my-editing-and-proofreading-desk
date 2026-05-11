@@ -20,15 +20,15 @@ function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; i
   
   if (isCard) {
     return (
-      <div className="bg-white border border-ink/5 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+      <div className="overflow-hidden rounded-xl border border-hairline bg-canvas shadow-[0_8px_28px_rgba(17,17,15,0.025)] transition-all duration-200 ease-premium-out hover:border-primary/25 hover:shadow-[0_14px_44px_rgba(17,17,15,0.045)]">
         <button
           type="button"
           onClick={onToggle}
-          className="group flex w-full cursor-pointer items-center justify-between gap-6 p-5 sm:p-6 text-left text-base sm:text-lg font-semibold text-ink hover:text-primary transition-colors"
+          className="group flex w-full cursor-pointer items-center justify-between gap-5 p-5 text-left text-base font-semibold leading-6 text-ink transition-colors hover:text-primary sm:p-6 sm:text-lg"
           aria-expanded={isOpen}
         >
           <span className="pr-4">{item.question}</span>
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f0f7ff] text-primary transition-transform duration-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-primary/10 text-primary transition-transform duration-300">
             <motion.div
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
@@ -46,8 +46,8 @@ function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; i
               transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
               className="overflow-hidden"
             >
-              <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
-                <p className="text-sm sm:text-base leading-relaxed text-charcoal/70">
+              <div className="border-t border-hairline px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+                <p className="max-w-3xl text-sm leading-7 text-body sm:text-base">
                   {item.answer}
                 </p>
               </div>

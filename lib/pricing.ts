@@ -178,8 +178,8 @@ export function getStandardTurnaroundDays(wordCount: number) {
 
 export function getTurnaroundLimitMessage(days: number) {
   if (days === 1) return "24-hour turnaround is available for documents up to 5,000 words.";
-  if (days === 2 || days === 3) return "This turnaround is available for documents up to 10,000 words.";
-  if (days > 3 && days < 7) return "This expedited turnaround is available for documents up to 10,000 words.";
+  if (days >= 2 && days < 7) return "Turnarounds under 7 days are available for documents up to 10,000 words.";
+  if (days >= 7 && days < 28) return "Documents above 30,000 words require a 4-week review window.";
   return null;
 }
 
@@ -189,9 +189,10 @@ export function getValidTurnaroundOptions(wordCount: number, serviceTypes?: stri
   if (isCustomReviewRequired(safeWordCount)) return [];
 
   return TURNAROUND_OPTIONS.filter((option) => {
-    if (option.days === 1) return safeWordCount <= 5000;
-    if (option.days >= 2 && option.days <= 6) return safeWordCount <= 10000;
-    return option.days >= 7 && option.days <= 28;
+    if (safeWordCount <= 5000) return option.days >= 1 && option.days <= 28;
+    if (safeWordCount <= 10000) return option.days >= 2 && option.days <= 28;
+    if (safeWordCount <= 30000) return option.days >= 7 && option.days <= 28;
+    return option.days === 28;
   });
 }
 
@@ -214,8 +215,11 @@ export function getTurnaroundAdjustmentNotice(wordCount: number, requestedTurnar
   if (days === 1 && wordCount > 5000) {
     return "24-hour turnaround is available for documents up to 5,000 words. We have selected the next available timeline for this word count.";
   }
-  if (days >= 2 && days <= 6 && wordCount > 10000) {
-    return "This turnaround is available for documents up to 10,000 words. We have selected a more suitable timeline for this word count.";
+  if (days >= 2 && days < 7 && wordCount > 10000) {
+    return "This document length requires a longer review window. We have selected a suitable timeline for this word count.";
+  }
+  if (days < 28 && wordCount > 30000) {
+    return "Documents above 30,000 words require a 4-week review window. We have adjusted the turnaround for this word count.";
   }
   return null;
 }
@@ -273,14 +277,21 @@ export function validateAutomaticPricing(wordCount: number, turnaround: string |
   if (days === 1 && wordCount > 5000) {
     return {
       allowed: false,
-      message: "24-hour turnaround is available for documents up to 5,000 words. Please choose a longer turnaround.",
+      message: "24-hour turnaround is available for documents up to 5,000 words. Please choose 48 hours or longer.",
     };
   }
 
-  if (days >= 2 && days <= 6 && wordCount > 10000) {
+  if (days >= 2 && days < 7 && wordCount > 10000) {
     return {
       allowed: false,
-      message: "This turnaround is available for documents up to 10,000 words. Please choose a longer turnaround.",
+      message: "Documents above 10,000 words require at least 7 days for review.",
+    };
+  }
+
+  if (days < 28 && wordCount > 30000) {
+    return {
+      allowed: false,
+      message: "Documents above 30,000 words require a 4-week review window.",
     };
   }
 

@@ -82,16 +82,20 @@ export const homepageAudiences = [
 
 export const editorStandards = [
   {
-    title: "Discipline-aware review",
-    body: "Documents are handled with attention to audience, field, purpose, and the standard expected from that type of work."
+    title: "Subject-aware editing",
+    body: "Editors consider the field, audience, document type, and expected standard before making changes."
   },
   {
-    title: "Voice preservation",
-    body: "Editing should make the writing clearer and stronger while keeping the client’s authorship intact."
+    title: "Clear feedback",
+    body: "Changes and comments are written plainly so you understand what was improved and where your decision may be needed."
   },
   {
-    title: "Layered quality control",
-    body: "The review process separates language, structure, formatting, and delivery checks so important details do not blur together."
+    title: "Confidential review",
+    body: "Uploaded documents are handled privately and used only to provide the editing, proofreading, or support service requested."
+  },
+  {
+    title: "Human judgment",
+    body: "Editors improve clarity and correctness while protecting the writer's intent, tone, and authorship."
   }
 ];
 
@@ -120,20 +124,44 @@ export const processSteps = [
 
 export const faqs = [
   {
-    question: "Which file types are accepted?",
-    answer: "Version 1 supports .doc, .docx, and .txt files so word count and pricing can be calculated reliably."
+    question: "How do I upload my document?",
+    answer: "Start from the secure upload flow in your dashboard. Choose your service, upload the file, review the detected word count and estimate, then continue to checkout."
+  },
+  {
+    question: "How is my word count calculated?",
+    answer: "When you upload your document, the system calculates the word count from the file. This detected word count is used for pricing and cannot be manually changed."
+  },
+  {
+    question: "Can I change the word count after upload?",
+    answer: "No. The uploaded file controls the word count so pricing stays consistent and fair. If the count looks wrong, contact support before you pay."
+  },
+  {
+    question: "What happens after I upload?",
+    answer: "You will see the detected word count, selected service, turnaround, and estimated price. If everything looks correct, you can continue to secure checkout."
   },
   {
     question: "How is pricing calculated?",
-    answer: "Pricing is based on service type, total word count, and the selected turnaround option."
+    answer: "Pricing is based on the service you choose, the detected word count, and the selected turnaround. Processing fees are shown only at the final payment step."
   },
   {
-    question: "Can I track my order?",
-    answer: "Yes. Every paid project appears in the user dashboard with status, payment details, files, and notes."
+    question: "Why do documents above 50,000 words require custom review?",
+    answer: "Large documents often need a more careful timeline and review plan. Contact support so we can confirm the best approach before you proceed."
   },
   {
-    question: "Are files private?",
-    answer: "Original and completed files are stored privately, with access limited to the client and authorized internal team."
+    question: "Is my document confidential?",
+    answer: "Yes. Uploaded documents are handled privately and used only to provide the editing or proofreading service you requested."
+  },
+  {
+    question: "Do you use AI instead of human editors?",
+    answer: "No. The free AI tool is for quick suggestions. Human editing is still recommended for important academic, business, or professional documents."
+  },
+  {
+    question: "What file types do you accept?",
+    answer: "The upload flow accepts .doc, .docx, and .txt files so the system can read the document and calculate the word count reliably."
+  },
+  {
+    question: "How do I contact support?",
+    answer: "Use the Contact page or email hello@business.editandproofread.com. Include your document type, expected word count, and deadline if you have one."
   }
 ];
 
