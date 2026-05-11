@@ -189,30 +189,30 @@ export function AiEditingTool() {
   return (
     <div className="grid gap-14">
       <section id="try-tool" className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr]">
-        <aside className="border border-ink/10 bg-ink p-7 text-ivory shadow-[0_28px_90px_rgba(17,17,15,0.18)] sm:p-9 lg:sticky lg:top-28 lg:self-start">
-          <p className="text-xs uppercase tracking-[0.28em] text-gold">AI-assisted first pass</p>
+        <aside className="rounded-2xl border border-hairline bg-surface-soft p-7 text-ink shadow-[0_28px_90px_rgba(17,17,15,0.06)] sm:p-9 lg:sticky lg:top-28 lg:self-start">
+          <p className="text-xs uppercase tracking-[0.28em] text-primary">AI-assisted first pass</p>
           <h2 className="mt-5 font-display text-[clamp(2.7rem,5vw,5.5rem)] leading-[0.92]">Fast support, professional boundaries.</h2>
-          <p className="mt-6 text-base leading-8 text-ivory/66">
+          <p className="mt-6 text-base leading-8 text-body">
             Try up to 1,000 words for a low-cost AI pass. For publication, academic, legal, business, or high-stakes documents, submit the full file for human editorial review.
           </p>
-          <div className="mt-8 grid gap-3 text-sm text-ivory/68">
+          <div className="mt-8 grid gap-3 text-sm text-body">
             {[
               ["Limit", `${AI_WORD_LIMIT.toLocaleString()} words maximum`],
               ["Anonymous use", "Limited daily tries"],
               ["Cost control", "Short prompts and capped output"],
               ["Review style", "AI-assisted editing"]
             ].map(([label, value]) => (
-              <div key={label} className="flex justify-between gap-5 border-t border-ivory/12 pt-3">
+              <div key={label} className="flex justify-between gap-5 border-t border-hairline pt-3">
                 <span>{label}</span>
-                <span className="text-right text-ivory">{value}</span>
+                <span className="text-right text-ink">{value}</span>
               </div>
             ))}
           </div>
         </aside>
 
-        <form onSubmit={handleSubmit} className="border border-ink/10 bg-ivory shadow-[0_24px_90px_rgba(17,17,15,0.06)]">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-hairline bg-canvas shadow-[0_24px_90px_rgba(17,17,15,0.06)]">
           <div className="border-b border-ink/10 p-5 sm:p-7">
-            <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Choose entry method</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary">Choose entry method</p>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
               {[
                 ["paste", "Paste text", "Best for passages, abstracts, letters, and short sections."],
@@ -229,7 +229,7 @@ export function AiEditingTool() {
                       setMessage("");
                     }}
                     className={`min-h-20 border px-5 text-left transition duration-200 ease-premium-out active:scale-[0.99] ${
-                      active ? "border-gold bg-gold/10 text-ink" : "border-ink/10 bg-paper/55 text-charcoal/66 hover:border-gold/50 hover:bg-ivory hover:text-ink"
+                      active ? "border-primary bg-primary/10 text-ink" : "border-ink/10 bg-paper/55 text-charcoal/66 hover:border-primary/50 hover:bg-ivory hover:text-ink"
                     }`}
                     aria-pressed={active}
                   >
@@ -244,7 +244,7 @@ export function AiEditingTool() {
           <div className="border-b border-ink/10 p-5 sm:p-7">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Editing mode</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-primary">Editing mode</p>
                 <h3 className="mt-3 font-display text-4xl leading-none text-ink">Select the editorial lens.</h3>
               </div>
               <p className="max-w-sm text-sm leading-6 text-charcoal/58">{selectedMode.description}</p>
@@ -258,7 +258,7 @@ export function AiEditingTool() {
                     type="button"
                     onClick={() => setMode(item.id)}
                     className={`min-h-14 border px-3 text-left text-sm transition duration-200 ease-premium-out active:scale-[0.99] ${
-                      active ? "border-gold bg-ink text-ivory" : "border-ink/10 bg-paper/55 text-charcoal/68 hover:border-gold/50 hover:bg-ivory hover:text-ink"
+                      active ? "border-primary bg-primary text-white" : "border-ink/10 bg-paper/55 text-charcoal/68 hover:border-primary/50 hover:bg-ivory hover:text-ink"
                     }`}
                     aria-pressed={active}
                   >
@@ -304,18 +304,18 @@ export function AiEditingTool() {
                   setMessage("");
                 }}
                 placeholder="Paste up to 1,000 words for a fast AI-assisted editorial pass..."
-                className="mt-4 min-h-[24rem] w-full resize-y border border-ink/10 bg-paper/70 p-5 text-base leading-8 text-ink placeholder:text-charcoal/38 transition duration-200 ease-premium-out focus:border-gold focus:bg-ivory"
+                    className="mt-4 min-h-[24rem] w-full resize-y border border-ink/10 bg-paper/70 p-5 text-base leading-8 text-ink placeholder:text-charcoal/38 transition duration-200 ease-premium-out focus:border-primary focus:bg-ivory"
               />
             </section>
 
             <aside className="border-t border-ink/10 bg-paper/70 p-5 sm:p-7 xl:border-l xl:border-t-0">
-              <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Validation</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-primary">Validation</p>
               <div className="mt-5 border-y border-ink/10 py-5">
-                <p className={`font-display text-5xl leading-none tabular-nums ${overLimit ? "text-gold-deep" : "text-ink"}`}>{wordCount}</p>
+                <p className={`font-display text-5xl leading-none tabular-nums ${overLimit ? "text-primary" : "text-ink"}`}>{wordCount}</p>
                 <p className="mt-2 text-sm text-charcoal/58">of {AI_WORD_LIMIT.toLocaleString()} words</p>
                 <div className="mt-5 h-1 bg-ink/10">
                   <div
-                    className={`h-full transition-all duration-300 ease-premium-out ${overLimit ? "bg-gold-deep" : "bg-gold"}`}
+                    className={`h-full transition-all duration-300 ease-premium-out ${overLimit ? "bg-primary-active" : "bg-primary"}`}
                     style={{ width: `${Math.min(100, (wordCount / AI_WORD_LIMIT) * 100)}%` }}
                   />
                 </div>
@@ -324,11 +324,11 @@ export function AiEditingTool() {
                 {overLimit ? `Remove ${(wordCount - AI_WORD_LIMIT).toLocaleString()} words to continue.` : `${remainingWords.toLocaleString()} words remaining.`}
               </p>
               <p className="mt-4 text-sm leading-6 text-charcoal/58">{statusMessage(status)}</p>
-              {message ? <p className="mt-4 border-l border-gold bg-ivory p-3 text-sm leading-6 text-charcoal/70" aria-live="polite">{message}</p> : null}
+              {message ? <p className="mt-4 border-l border-primary bg-ivory p-3 text-sm leading-6 text-charcoal/70" aria-live="polite">{message}</p> : null}
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="mt-6 inline-flex min-h-12 w-full items-center justify-center bg-ink px-6 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink/30 disabled:text-ivory/70"
+                className="mt-6 inline-flex min-h-12 w-full items-center justify-center bg-primary px-6 text-sm text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink/30 disabled:text-white/70 rounded-full"
               >
                 {status === "processing" ? "Processing..." : "Run AI first pass"}
               </button>
@@ -342,8 +342,8 @@ export function AiEditingTool() {
 
       {result ? (
         <section ref={resultRef} className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="border border-ink/10 bg-paper p-7">
-            <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">What changed</p>
+          <div className="rounded-2xl border border-hairline bg-paper p-7">
+            <p className="text-xs uppercase tracking-[0.28em] text-primary">What changed</p>
             <h2 className="mt-4 font-display text-5xl leading-none text-ink">First-pass result.</h2>
             <div className="mt-8 grid gap-3">
               {result.highlights.map((highlight) => (
@@ -355,20 +355,20 @@ export function AiEditingTool() {
             </p>
           </div>
 
-          <article className="border border-ink/10 bg-ivory p-6 shadow-[0_24px_90px_rgba(17,17,15,0.06)] sm:p-8">
+          <article className="rounded-2xl border border-hairline bg-ivory p-6 shadow-[0_24px_90px_rgba(17,17,15,0.06)] sm:p-8">
             <div className="flex flex-col gap-4 border-b border-ink/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">
-                  <button onClick={() => setViewMode("original")} className={`mr-4 transition ${viewMode === "original" ? "text-gold-deep" : "text-charcoal/40 hover:text-gold"}`}>Original Text</button>
-                  <button onClick={() => setViewMode("edited")} className={`transition ${viewMode === "edited" ? "text-gold-deep" : "text-charcoal/40 hover:text-gold"}`}>Edited Text</button>
+                <p className="text-xs uppercase tracking-[0.28em] text-primary">
+                  <button type="button" onClick={() => setViewMode("original")} className={`mr-4 transition ${viewMode === "original" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Original Text</button>
+                  <button type="button" onClick={() => setViewMode("edited")} className={`transition ${viewMode === "edited" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Edited Text</button>
                 </p>
                 <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{viewMode === "edited" ? selectedMode.label : "Original Version"}</h3>
               </div>
               <div className="flex gap-2">
-                <button type="button" onClick={copyResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                <button type="button" onClick={copyResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">
                   Copy
                 </button>
-                <button type="button" onClick={downloadResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                <button type="button" onClick={downloadResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">
                   Download
                 </button>
               </div>
@@ -380,23 +380,23 @@ export function AiEditingTool() {
         </section>
       ) : null}
 
-      <section className="border border-ink/10 bg-ink p-8 text-ivory shadow-[0_30px_100px_rgba(17,17,15,0.16)] sm:p-10 lg:p-12">
+      <section className="rounded-2xl border border-hairline bg-surface-soft p-8 text-ink shadow-[0_30px_100px_rgba(17,17,15,0.06)] sm:p-10 lg:p-12">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-gold">Upgrade to human review</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary">Upgrade to human review</p>
             <h2 className="mt-5 max-w-4xl font-display text-[clamp(2.7rem,5vw,5.8rem)] leading-[0.93]">
               When the document matters, bring in the editor.
             </h2>
           </div>
           <div>
-            <p className="text-base leading-8 text-ivory/68">
+            <p className="text-base leading-8 text-body">
               AI is useful for a fast first pass. Professional editors provide deeper judgment, voice preservation, formatting awareness, academic/business context, and final delivery confidence.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-gold px-7 text-sm text-ink transition duration-200 ease-premium-out hover:bg-ivory active:scale-[0.98]">
+              <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-primary px-7 text-sm text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] rounded-full">
                 Submit for full review
               </Link>
-              <Link href="/services" className="inline-flex min-h-12 items-center justify-center border border-ivory/16 px-7 text-sm text-ivory transition duration-200 ease-premium-out hover:border-gold hover:text-gold active:scale-[0.98]">
+              <Link href="/services" className="inline-flex min-h-12 items-center justify-center border border-hairline px-7 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">
                 Compare services
               </Link>
             </div>

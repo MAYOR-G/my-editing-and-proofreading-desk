@@ -1,15 +1,19 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { calculatePrice } from "@/lib/pricing";
+import { calculatePrice, normalizeSelectedServices } from "@/lib/pricing";
 
 type ProjectInput = {
   title: string;
   service_type: string;
+  selected_services?: string[];
   turnaround: string;
   word_count: number;
   document_type?: string;
   formatting_style?: string;
+  formatting_instructions?: string | null;
+  translation_preference?: string | null;
+  translation_target_language?: string | null;
   english_type?: string;
   client_notes: string;
   upload_file_path: string;
@@ -26,7 +30,8 @@ export async function createProject(data: ProjectInput) {
   }
 
   // Server-side price calculation — never trust frontend price
-  const priceBreakdown = calculatePrice(data.word_count, data.service_type, data.turnaround);
+  const selectedServices = normalizeSelectedServices(data.selected_services || data.service_type);
+  const priceBreakdown = calculatePrice(data.word_count, selectedServices, data.turnaround);
 
   const { data: project, error } = await supabase
     .from("projects")
@@ -34,16 +39,23 @@ export async function createProject(data: ProjectInput) {
       client_id: user.id,
       title: data.title,
       service_type: priceBreakdown.serviceType,
+      selected_services: priceBreakdown.serviceTypes,
       document_type: data.document_type || "Other",
       formatting_style: data.formatting_style || "None / Standard Consistency",
+      formatting_instructions: data.formatting_instructions || null,
+      translation_preference: data.translation_preference || null,
+      translation_target_language: data.translation_target_language || null,
       english_type: data.english_type || "No preference",
       turnaround: priceBreakdown.turnaroundLabel,
       turnaround_days: priceBreakdown.turnaroundDays,
       turnaround_hours: priceBreakdown.turnaroundDays * 24,
       word_count: data.word_count,
-      price: priceBreakdown.finalPrice,
+      price: priceBreakdown.finalTotal,
       calculated_price: priceBreakdown.calculatedPrice,
-      final_price: priceBreakdown.finalPrice,
+      subtotal: priceBreakdown.subtotal,
+      service_charge_percentage: priceBreakdown.serviceChargePercentage,
+      service_charge_amount: priceBreakdown.serviceChargeAmount,
+      final_price: priceBreakdown.finalTotal,
       minimum_applied: priceBreakdown.minimumApplied,
       client_notes: data.client_notes,
       upload_file_path: data.upload_file_path,
@@ -51,6 +63,7 @@ export async function createProject(data: ProjectInput) {
       status: "In Progress",
       payment_status: "pending",
       payment_provider: data.payment_provider || null,
+      selected_payment_method: data.payment_provider || null,
       payment_reference: data.transaction_reference || null,
       transaction_reference: data.transaction_reference || null,
       payment_currency: "USD",

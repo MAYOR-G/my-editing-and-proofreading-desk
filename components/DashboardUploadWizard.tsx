@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
+import { type PaymentSettings } from "@/lib/payment-settings";
 import {
   DOCUMENT_TYPES,
   ENGLISH_TYPES,
   FORMATTING_STYLES,
   SERVICE_OPTIONS,
+  TRANSLATION_OPTIONS,
   TURNAROUND_OPTIONS,
   calculatePrice,
   type PricingValidation,
@@ -26,19 +28,44 @@ const PROVIDER_INITIALS: Record<PaymentProviderName, string> = {
   paypal: "PP",
 };
 
+const FORMAT_INSTRUCTION_OPTIONS = new Set(["Custom formatting", "Other", "Non-standard consistency"]);
+
+type PaymentReadiness = Record<PaymentProviderName, { configured: boolean; message: string | null }>;
+
+function includesFormattingService(services: string[]) {
+  return services.some((service) => service === "Formatting" || service === "Formatting Style");
+}
+
+function includesTranslationService(services: string[]) {
+  return services.includes("Translation");
+}
+
+function summarizeFormatting(style: string, instructions: string) {
+  if (!style) return "Not required";
+  return instructions ? `${style} — ${instructions}` : style;
+}
+
+function summarizeTranslation(preference: string, targetLanguage: string) {
+  if (!preference) return "Not required";
+  return targetLanguage ? `${preference} — ${targetLanguage}` : preference;
+}
+
 export function DashboardUploadWizard({ userId, userEmail, userName }: WizardProps) {
   const [step, setStep] = useState(1);
 
   // Form State
   const [documentType, setDocumentType] = useState("Academic Paper");
-  const [formattingStyle, setFormattingStyle] = useState("APA");
+  const [formattingStyle, setFormattingStyle] = useState("");
+  const [formattingInstructions, setFormattingInstructions] = useState("");
+  const [translationPreference, setTranslationPreference] = useState("");
+  const [translationTargetLanguage, setTranslationTargetLanguage] = useState("");
   const [englishType, setEnglishType] = useState("No preference");
   const [academicField, setAcademicField] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
   const [isParsing, setIsParsing] = useState(false);
-  const [service, setService] = useState("Editing");
+  const [selectedServices, setSelectedServices] = useState<string[]>(["Editing"]);
   const [turnaroundDays, setTurnaroundDays] = useState(14);
 
   // Payment state
@@ -46,12 +73,114 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [providerNotice, setProviderNotice] = useState<string | null>(null);
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
+  const [paymentReadiness, setPaymentReadiness] = useState<PaymentReadiness | null>(null);
+  const [isLoadingPaymentSettings, setIsLoadingPaymentSettings] = useState(true);
+  const [paymentSettingsError, setPaymentSettingsError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const priceBreakdown = wordCount ? calculatePrice(wordCount, service, turnaroundDays) : null;
-  const price = priceBreakdown?.finalPrice ?? 0;
+  const priceBreakdown = wordCount ? calculatePrice(wordCount, selectedServices, turnaroundDays) : null;
+  const price = priceBreakdown?.finalTotal ?? 0;
+  const subtotal = priceBreakdown?.subtotal ?? 0;
+  const serviceChargeAmount = priceBreakdown?.serviceChargeAmount ?? 0;
+  const serviceChargePercentage = priceBreakdown?.serviceChargePercentage ?? 5;
   const turnaround = priceBreakdown?.turnaroundLabel ?? "14 days";
   const validation: PricingValidation = wordCount ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
   const checkoutBlocked = !validation.allowed;
+  const selectedProviderLabel = PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack";
+  const activePaymentProviders = useMemo(() => {
+    if (!paymentSettings) return [];
+    return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`]);
+  }, [paymentSettings]);
+  const hasAvailablePaymentMethods = activePaymentProviders.length > 0;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPaymentSettings() {
+      setIsLoadingPaymentSettings(true);
+      setPaymentSettingsError(null);
+
+      try {
+        const response = await fetch("/api/payment-settings", { cache: "no-store" });
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.settings) {
+          throw new Error(data.error || "Payment settings could not be loaded.");
+        }
+
+        if (cancelled) return;
+        setPaymentSettings(data.settings);
+        setPaymentReadiness(data.readiness || null);
+        const enabledProviders = PAYMENT_PROVIDERS.filter((item) => data.settings[`${item.id}_enabled`]);
+        if (enabledProviders.length > 0) {
+          setProvider((current) => enabledProviders.some((item) => item.id === current) ? current : enabledProviders[0].id);
+        }
+      } catch (error: any) {
+        if (!cancelled) setPaymentSettingsError(error.message || "Payment settings could not be loaded.");
+      } finally {
+        if (!cancelled) setIsLoadingPaymentSettings(false);
+      }
+    }
+
+    loadPaymentSettings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const validateServiceExtras = () => {
+    const errors: Record<string, string> = {};
+
+    if (selectedServices.length === 0) {
+      errors.selectedServices = "Please select at least one service.";
+    }
+
+    if (includesFormattingService(selectedServices)) {
+      if (!formattingStyle) {
+        errors.formattingStyle = "Please select a formatting style.";
+      }
+
+      if (formattingStyle && FORMAT_INSTRUCTION_OPTIONS.has(formattingStyle) && !formattingInstructions.trim()) {
+        errors.formattingInstructions = "Please describe the formatting style or instructions.";
+      }
+    }
+
+    if (includesTranslationService(selectedServices)) {
+      if (!translationPreference) {
+        errors.translationPreference = "Please select a translation preference.";
+      }
+
+      if (translationPreference === "Other" && !translationTargetLanguage.trim()) {
+        errors.translationTargetLanguage = "Please enter the target language.";
+      }
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const toggleService = (service: string) => {
+    setFieldErrors({});
+    setSelectedServices((current) => {
+      const nextServices = current.includes(service)
+        ? current.filter((item) => item !== service)
+        : [...current, service];
+
+      if (!includesFormattingService(nextServices)) {
+        setFormattingStyle("");
+        setFormattingInstructions("");
+      }
+
+      if (!includesTranslationService(nextServices)) {
+        setTranslationPreference("");
+        setTranslationTargetLanguage("");
+      }
+
+      return nextServices;
+    });
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -72,12 +201,32 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
   const handlePayment = async () => {
     if (!file || !wordCount) return;
+    if (!validateServiceExtras()) {
+      setPaymentError("Please complete the required service details before checkout.");
+      setStep(3);
+      return;
+    }
     if (checkoutBlocked) {
       setPaymentError(validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.");
       return;
     }
-    if (provider !== "paystack") {
-      setProviderNotice("This payment option will be available soon.");
+    if (isLoadingPaymentSettings) {
+      setPaymentError("Payment methods are still loading. Please wait a moment.");
+      return;
+    }
+    if (paymentSettingsError || !hasAvailablePaymentMethods) {
+      setPaymentError(paymentSettingsError || "No payment method is currently available. Please contact support.");
+      return;
+    }
+    if (!activePaymentProviders.some((item) => item.id === provider)) {
+      setPaymentError("Please choose an available payment method.");
+      setStep(4);
+      return;
+    }
+
+    const providerConfig = PAYMENT_PROVIDERS.find((item) => item.id === provider);
+    if (paymentReadiness?.[provider] && !paymentReadiness[provider].configured) {
+      setPaymentError(`${providerConfig?.label || "This payment method"} is currently unavailable. Please contact support or try another payment method.`);
       return;
     }
 
@@ -113,7 +262,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           provider,
-          service_type: service,
+          selected_services: selectedServices,
+          service_type: selectedServices.join(", "),
           turnaround,
           word_count: wordCount,
           file_path: filePath,
@@ -121,6 +271,9 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
           document_type: documentType,
           formatting_style: formattingStyle,
+          formatting_instructions: formattingInstructions.trim() || null,
+          translation_preference: translationPreference || null,
+          translation_target_language: translationTargetLanguage.trim() || null,
           english_type: englishType,
         }),
       });
@@ -164,51 +317,44 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const totalSteps = 5;
 
   const renderStepIndicator = () => (
-    <div className="mb-8 flex justify-between items-center border-b border-ivory/10 pb-4">
+    <div className="mb-8 flex items-center justify-between border-b border-hairline pb-5">
       {[1, 2, 3, 4, 5].map((s) => (
-        <div key={s} className="flex items-center">
-          <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${step >= s ? "bg-gold text-ink shadow-[0_0_20px_rgba(176,138,60,0.3)]" : "bg-ivory/10 text-ivory/40"}`}>
+        <div key={s} className="flex flex-1 items-center last:flex-none">
+          <div className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${step >= s ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.18)]" : "border-hairline bg-surface-soft text-muted"}`}>
             {step > s ? "✓" : s}
           </div>
-          {s < totalSteps && <div className={`h-px w-8 sm:w-14 transition-colors duration-300 ${step > s ? "bg-gold" : "bg-ivory/10"}`} />}
+          {s < totalSteps && <div className={`h-px flex-1 transition-colors duration-300 ${step > s ? "bg-primary" : "bg-hairline"}`} />}
         </div>
       ))}
     </div>
   );
 
   return (
-    <div className="border border-ink/10 bg-ink p-6 sm:p-10 text-ivory max-w-4xl mx-auto shadow-2xl">
-      <p className="text-xs uppercase tracking-[0.24em] text-gold mb-4">New Project Submission</p>
+    <div className="mx-auto max-w-4xl border border-hairline bg-ivory p-6 text-ink shadow-[0_24px_80px_rgba(17,17,15,0.07)] sm:p-10">
+      <p className="mb-4 text-xs uppercase tracking-[0.24em] text-primary">New project submission</p>
       {renderStepIndicator()}
 
       <div className="min-h-[400px]">
         {/* Step 1: Project Details */}
         {step === 1 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="font-display text-3xl leading-tight text-ivory mb-2">Project Details</h2>
-            <p className="text-ivory/60 text-sm mb-4">Tell us about the document to ensure the right editorial fit.</p>
-            <div className="grid sm:grid-cols-2 gap-5">
-              <label className="grid gap-2 text-sm text-ivory/70">Document Type
-                <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                  {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
-                </select>
-              </label>
-              <label className="grid gap-2 text-sm text-ivory/70">Formatting Style
-                <select value={formattingStyle} onChange={(e) => setFormattingStyle(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                  {FORMATTING_STYLES.map((style) => <option key={style} value={style}>{style}</option>)}
-                </select>
-              </label>
-            </div>
-            <label className="grid gap-2 text-sm text-ivory/70">English Type
-              <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
+            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Project details</h2>
+            <p className="mb-4 text-sm text-charcoal/68">Tell us about the document to ensure the right editorial fit.</p>
+            <label className="grid gap-2 text-sm text-charcoal/72">Document Type
+              <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
+                {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-2 text-sm text-charcoal/72">Style of English
+              <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
                 {ENGLISH_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
               </select>
             </label>
-            <label className="grid gap-2 text-sm text-ivory/70">Academic Field / Industry
-              <input value={academicField} onChange={(e) => setAcademicField(e.target.value)} type="text" placeholder="e.g. Sociology, Tech Startup" className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory" />
+            <label className="grid gap-2 text-sm text-charcoal/72">Academic Field / Industry
+              <input value={academicField} onChange={(e) => setAcademicField(e.target.value)} type="text" placeholder="e.g. Sociology, Tech Startup" className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory" />
             </label>
-            <label className="grid gap-2 text-sm text-ivory/70">Editorial Notes
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Specific concerns, tone preferences, or areas to focus on..." className="min-h-32 border border-ivory/15 bg-ivory/5 p-4 text-ivory" />
+            <label className="grid gap-2 text-sm text-charcoal/72">Notes to editors
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Specific concerns, tone preferences, or areas to focus on..." className="min-h-32 border border-hairline bg-surface-soft p-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory" />
             </label>
           </div>
         )}
@@ -216,21 +362,21 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {/* Step 2: Upload */}
         {step === 2 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="font-display text-3xl leading-tight text-ivory mb-2">Upload Document</h2>
-            <p className="text-ivory/60 text-sm mb-4">We will securely extract the word count to calculate your exact rate.</p>
-            <div className="border-2 border-dashed border-ivory/20 bg-ivory/5 p-10 text-center relative hover:bg-ivory/10 transition">
+            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Upload document</h2>
+            <p className="mb-4 text-sm text-charcoal/68">We will extract the word count to calculate your exact rate.</p>
+            <div className="relative border-2 border-dashed border-primary/25 bg-primary/5 p-10 text-center transition hover:bg-primary/10">
               <input type="file" accept=".docx,.txt" onChange={handleFileSelect} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               <div className="grid gap-3 justify-items-center pointer-events-none">
-                <svg className="h-10 w-10 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                <p className="text-lg font-medium text-ivory">{file ? file.name : "Click or drag file here"}</p>
-                <p className="text-sm text-ivory/50">Supports .docx and .txt files</p>
+                <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                <p className="text-lg font-medium text-ink">{file ? file.name : "Click or drag file here"}</p>
+                <p className="text-sm text-charcoal/55">Supports .docx and .txt files</p>
               </div>
             </div>
-            {isParsing && <div className="p-4 bg-gold/10 text-gold border border-gold/20 text-center animate-pulse">Extracting text and calculating word count...</div>}
+            {isParsing && <div className="border border-primary/20 bg-primary/10 p-4 text-center text-primary animate-pulse">Extracting text and calculating word count...</div>}
             {wordCount !== null && (
-              <div className="bg-ivory/10 p-6 border border-ivory/20 flex justify-between items-center">
-                <div><p className="text-xs uppercase tracking-widest text-gold mb-1">Confirmed Length</p><p className="text-3xl font-display">{wordCount.toLocaleString()} words</p></div>
-                <div className="h-12 w-12 bg-gold/20 flex items-center justify-center rounded-full text-gold">✓</div>
+              <div className="flex items-center justify-between border border-cta/20 bg-cta-soft p-6">
+                <div><p className="mb-1 text-xs uppercase tracking-widest text-cta">Confirmed length</p><p className="font-display text-3xl text-ink">{wordCount.toLocaleString()} words</p></div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cta text-white">✓</div>
               </div>
             )}
           </div>
@@ -239,19 +385,136 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {/* Step 3: Service & Turnaround */}
         {step === 3 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="font-display text-3xl leading-tight text-ivory mb-2">Service & Turnaround</h2>
-            <p className="text-ivory/60 text-sm mb-4">Select your required timeline and service level.</p>
+            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Service & turnaround</h2>
+            <p className="mb-4 text-sm text-charcoal/68">Select your required timeline and service level.</p>
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="grid gap-4">
-                <label className="grid gap-2 text-sm text-ivory/70">Service Level
-                  <select value={service} onChange={(e) => setService(e.target.value)} className="min-h-12 border border-ivory/15 bg-ivory/5 px-4 text-ivory [&>option]:text-ink">
-                    {SERVICE_OPTIONS.map((option) => <option key={option.label} value={option.label}>{option.label}</option>)}
-                  </select>
-                </label>
-                <div className="grid gap-3 text-sm text-ivory/70">
+                <div className="grid gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-ink">Service Level</p>
+                    <p className="mt-1 text-xs leading-5 text-charcoal/58">Select one or more services for this document.</p>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {SERVICE_OPTIONS.map((option) => {
+                      const selected = selectedServices.includes(option.label);
+                      return (
+                        <button
+                          key={option.label}
+                          type="button"
+                          onClick={() => toggleService(option.label)}
+                          className={`min-h-[5.75rem] border p-3 text-left transition ${
+                            selected
+                              ? "border-primary bg-primary/10 text-ink shadow-[0_14px_32px_rgba(23,74,124,0.10)]"
+                              : "border-hairline bg-surface-soft text-charcoal/70 hover:border-primary/40 hover:bg-ivory"
+                          }`}
+                        >
+                          <span className="flex items-start gap-3">
+                            <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border ${selected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-transparent"}`}>
+                              ✓
+                            </span>
+                            <span>
+                              <span className="block text-sm font-semibold text-ink">{option.label}</span>
+                              <span className="mt-1 block text-xs leading-5 text-charcoal/58">{option.note}</span>
+                            </span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {fieldErrors.selectedServices ? <p className="text-xs text-red-600">{fieldErrors.selectedServices}</p> : null}
+                </div>
+                {includesFormattingService(selectedServices) && (
+                  <div className="grid gap-3 border border-primary/15 bg-primary/[0.04] p-4">
+                    <div>
+                      <p className="text-sm font-medium text-ink">Formatting style</p>
+                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Choose the style guide or formatting direction for this service.</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {FORMATTING_STYLES.map((style) => (
+                        <button
+                          key={style}
+                          type="button"
+                          onClick={() => {
+                            setFormattingStyle(style);
+                            if (!FORMAT_INSTRUCTION_OPTIONS.has(style)) setFormattingInstructions("");
+                            setFieldErrors((current) => ({ ...current, formattingStyle: "", formattingInstructions: "" }));
+                          }}
+                          className={`min-h-10 border px-3 text-xs font-medium transition ${
+                            formattingStyle === style
+                              ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
+                              : "border-hairline bg-ivory text-charcoal/68 hover:border-primary/40 hover:text-primary"
+                          }`}
+                        >
+                          {style}
+                        </button>
+                      ))}
+                    </div>
+                    {fieldErrors.formattingStyle ? <p className="text-xs text-red-600">{fieldErrors.formattingStyle}</p> : null}
+                    {FORMAT_INSTRUCTION_OPTIONS.has(formattingStyle) ? (
+                      <label className="grid gap-2 text-sm text-charcoal/72">
+                        Describe the formatting style or instructions
+                        <textarea
+                          value={formattingInstructions}
+                          onChange={(event) => {
+                            setFormattingInstructions(event.target.value);
+                            setFieldErrors((current) => ({ ...current, formattingInstructions: "" }));
+                          }}
+                          className="min-h-24 border border-hairline bg-ivory p-3 text-ink placeholder:text-charcoal/38 transition focus:border-primary"
+                          placeholder="Share the required guide, template, journal instructions, or consistency rules."
+                        />
+                        {fieldErrors.formattingInstructions ? <span className="text-xs text-red-600">{fieldErrors.formattingInstructions}</span> : null}
+                      </label>
+                    ) : null}
+                  </div>
+                )}
+                {includesTranslationService(selectedServices) && (
+                  <div className="grid gap-3 border border-primary/15 bg-primary/[0.04] p-4">
+                    <div>
+                      <p className="text-sm font-medium text-ink">Translation preference</p>
+                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Select the target language or preference for this translation request.</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {TRANSLATION_OPTIONS.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => {
+                            setTranslationPreference(option);
+                            if (option !== "Other") setTranslationTargetLanguage("");
+                            setFieldErrors((current) => ({ ...current, translationPreference: "", translationTargetLanguage: "" }));
+                          }}
+                          className={`min-h-10 border px-3 text-xs font-medium transition ${
+                            translationPreference === option
+                              ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
+                              : "border-hairline bg-ivory text-charcoal/68 hover:border-primary/40 hover:text-primary"
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                    {fieldErrors.translationPreference ? <p className="text-xs text-red-600">{fieldErrors.translationPreference}</p> : null}
+                    {translationPreference === "Other" ? (
+                      <label className="grid gap-2 text-sm text-charcoal/72">
+                        Enter target language
+                        <input
+                          value={translationTargetLanguage}
+                          onChange={(event) => {
+                            setTranslationTargetLanguage(event.target.value);
+                            setFieldErrors((current) => ({ ...current, translationTargetLanguage: "" }));
+                          }}
+                          className="min-h-12 border border-hairline bg-ivory px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary"
+                          placeholder="e.g. Dutch, Hindi, Swahili"
+                        />
+                        {fieldErrors.translationTargetLanguage ? <span className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</span> : null}
+                      </label>
+                    ) : null}
+                  </div>
+                )}
+                <div className="grid gap-3 text-sm text-charcoal/72">
                   <div className="flex items-center justify-between gap-4">
                     <span>Turnaround Time</span>
-                    <span className="text-gold">{turnaround}</span>
+                    <span className="text-primary">{turnaround}</span>
                   </div>
                   <input
                     aria-label="Turnaround time"
@@ -261,7 +524,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     step={1}
                     value={turnaroundDays}
                     onChange={(event) => setTurnaroundDays(Number(event.target.value))}
-                    className="w-full accent-[#b08a3c]"
+                    className="w-full accent-[#174a7c]"
                   />
                   <div className="grid grid-cols-4 gap-2">
                     {[1, 2, 3, 7, 14, 21, 28].map((days) => {
@@ -271,25 +534,39 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                           key={days}
                           type="button"
                           onClick={() => setTurnaroundDays(days)}
-                          className={`min-h-10 border px-2 text-xs transition ${turnaroundDays === days ? "border-gold bg-gold/12 text-gold" : "border-ivory/15 bg-ivory/5 text-ivory/65 hover:border-gold/50"}`}
+                          className={`min-h-10 border px-2 text-xs transition ${turnaroundDays === days ? "border-primary bg-primary/10 text-primary" : "border-hairline bg-surface-soft text-charcoal/65 hover:border-primary/50"}`}
                         >
                           {option.label.replace(" / 28 days", "")}
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-xs text-ivory/45">Maximum automatic turnaround is 4 weeks / 28 days. Please contact our editors for a custom timeline if you need longer.</p>
+                  <p className="text-xs text-charcoal/50">Maximum automatic turnaround is 4 weeks / 28 days. Please contact our editors for a custom timeline if you need longer.</p>
                 </div>
               </div>
-              <div className="border border-gold/30 bg-gold/5 p-6 flex flex-col justify-center items-center text-center">
-                <p className="text-sm text-ivory/60 mb-2">Estimated Total</p>
-                <p className="text-5xl font-display text-gold">${price.toFixed(2)}</p>
-                <p className="text-xs text-ivory/40 mt-4">Based on {wordCount?.toLocaleString()} words and your selected timeline.</p>
+              <div className="flex flex-col items-center justify-center border border-primary/20 bg-primary/5 p-6 text-center">
+                <p className="mb-2 text-sm text-charcoal/62">Estimated total</p>
+                <p className="font-display text-5xl text-primary">${price.toFixed(2)}</p>
+                <div className="mt-5 grid w-full gap-2 border-t border-primary/15 pt-4 text-sm">
+                  <div className="flex justify-between gap-4 text-charcoal/62">
+                    <span>Subtotal</span>
+                    <span className="text-ink">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between gap-4 text-charcoal/62">
+                    <span>Service charge ({serviceChargePercentage}%)</span>
+                    <span className="text-ink">${serviceChargeAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between gap-4 border-t border-primary/15 pt-2 font-semibold text-ink">
+                    <span>Total</span>
+                    <span>${price.toFixed(2)}</span>
+                  </div>
+                </div>
+                <p className="mt-4 text-xs text-charcoal/50">Based on {wordCount?.toLocaleString()} words, selected services, and timeline.</p>
                 {!validation.allowed ? (
-                  <div className="mt-4 border border-gold/25 bg-gold/10 p-4 text-sm leading-6 text-gold">
+                  <div className="mt-4 border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
                     {validation.message}
                     {validation.contactRequired ? (
-                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-gold/40 px-4 text-xs uppercase tracking-[0.16em] text-gold">
+                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-primary/40 px-4 text-xs uppercase tracking-[0.16em] text-primary">
                         Contact our editors
                       </a>
                     ) : null}
@@ -303,70 +580,78 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {/* Step 4: Payment Provider Selection */}
         {step === 4 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="font-display text-3xl leading-tight text-ivory mb-2">Select Payment Method</h2>
-            <p className="text-ivory/60 text-sm mb-6">Paystack is available now. Additional providers are being prepared for future checkout options.</p>
+            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Select payment method</h2>
+            <p className="mb-6 text-sm text-charcoal/68">Choose from the payment methods currently enabled by our admin team.</p>
+            {isLoadingPaymentSettings ? (
+              <div className="border border-primary/20 bg-primary/10 p-5 text-sm text-primary animate-pulse">
+                Loading available payment methods...
+              </div>
+            ) : paymentSettingsError ? (
+              <div className="border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-700">
+                {paymentSettingsError}
+              </div>
+            ) : !hasAvailablePaymentMethods ? (
+              <div className="border border-hairline bg-surface-soft p-6 text-center text-sm text-charcoal/68">
+                No payment method is currently available. Please contact support.
+              </div>
+            ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {PAYMENT_PROVIDERS.map((info) => {
-                const isAvailable = info.status === "available" && info.id === "paystack";
+              {activePaymentProviders.map((info) => {
                 const isSelected = provider === info.id;
+                const readiness = paymentReadiness?.[info.id];
+                const setupPending = readiness ? !readiness.configured : false;
 
                 return (
                 <button
                   key={info.id}
                   type="button"
-                  aria-disabled={!isAvailable}
                   onClick={() => {
-                    if (!isAvailable) {
-                      setProviderNotice("This payment option will be available soon.");
-                      return;
-                    }
-
                     setProvider(info.id);
-                    setProviderNotice(null);
+                    setProviderNotice(setupPending ? `${info.label} is enabled, but API keys are missing.` : null);
                   }}
                   className={`group relative border p-6 text-left transition-all duration-300 ${
                     isSelected
-                      ? "border-gold bg-gold/10 shadow-[0_0_30px_rgba(176,138,60,0.15)]"
-                      : isAvailable
-                        ? "border-ivory/15 bg-ivory/5 hover:border-ivory/30 hover:bg-ivory/8"
-                        : "cursor-not-allowed border-ivory/10 bg-ivory/[0.025] opacity-55"
+                      ? "border-primary bg-primary/10 shadow-[0_20px_50px_rgba(23,74,124,0.12)]"
+                      : "border-hairline bg-surface-soft hover:border-primary/30 hover:bg-ivory"
                   }`}
                 >
                   {isSelected && (
-                    <div className="absolute top-4 right-4 h-6 w-6 bg-gold rounded-full flex items-center justify-center">
-                      <svg className="h-3.5 w-3.5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-primary">
+                      <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     </div>
                   )}
-                  {!isAvailable && (
-                    <span className="absolute right-4 top-4 border border-ivory/15 bg-ink px-2.5 py-1 text-[0.65rem] uppercase tracking-[0.18em] text-ivory/60">
-                      Coming Soon
+                  {setupPending && (
+                    <span className="absolute right-4 top-4 border border-hairline bg-ivory px-2.5 py-1 text-[0.65rem] uppercase tracking-[0.18em] text-charcoal/60">
+                      Setup Pending
                     </span>
                   )}
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`flex h-10 w-10 items-center justify-center border text-sm font-bold ${isSelected ? "border-gold bg-gold text-ink" : "border-ivory/10 bg-ivory/10 text-ivory/60"}`}>
+                    <div className={`flex h-10 w-10 items-center justify-center border text-sm font-bold ${isSelected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-charcoal/60"}`}>
                       {PROVIDER_INITIALS[info.id]}
                     </div>
                     <div>
-                      <p className={`font-semibold text-lg ${isSelected ? "text-gold" : "text-ivory"}`}>{info.label}</p>
-                      <p className="text-xs text-ivory/50">{info.description}</p>
+                      <p className={`text-lg font-semibold ${isSelected ? "text-primary" : "text-ink"}`}>{info.label}</p>
+                      <p className="text-xs text-charcoal/55">{info.description}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-4">
                     {info.methods.map((m) => (
-                      <span key={m} className={`border px-2 py-1 text-xs ${isSelected ? "border-gold/30 text-gold/80" : "border-ivory/10 text-ivory/40"}`}>{m}</span>
+                      <span key={m} className={`border px-2 py-1 text-xs ${isSelected ? "border-primary/30 text-primary" : "border-hairline text-charcoal/50"}`}>{m}</span>
                     ))}
                   </div>
+                  {setupPending ? <p className="mt-4 text-xs leading-5 text-red-700">{readiness?.message}</p> : null}
                 </button>
               )})}
             </div>
+            )}
             {providerNotice && (
-              <div className="border border-gold/25 bg-gold/10 p-4 text-sm text-gold">
+              <div className="border border-primary/25 bg-primary/10 p-4 text-sm text-primary">
                 {providerNotice}
               </div>
             )}
-            <div className="flex items-center gap-3 mt-4 p-4 border border-ivory/10 bg-ivory/[0.03]">
-              <svg className="h-5 w-5 text-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              <p className="text-xs text-ivory/50">Your payment is processed securely. We never store your card details. All transactions are verified server-side before your order is confirmed.</p>
+            <div className="mt-4 flex items-center gap-3 border border-hairline bg-surface-soft p-4">
+              <svg className="h-5 w-5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <p className="text-xs text-charcoal/55">Checkout opens after your file and order details are confirmed.</p>
             </div>
           </div>
         )}
@@ -374,39 +659,50 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {/* Step 5: Order Summary + Pay */}
         {step === 5 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="font-display text-3xl leading-tight text-ivory mb-2">Confirm & Pay</h2>
-            <p className="text-ivory/60 text-sm mb-6">Review your order details and proceed to secure payment.</p>
+            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Confirm & pay</h2>
+            <p className="mb-6 text-sm text-charcoal/68">Review your order details and proceed to payment.</p>
 
-            <div className="border border-ivory/10 bg-ivory/5 p-6 mb-2">
+            <div className="mb-2 border border-hairline bg-surface-soft p-6">
               <div className="grid gap-3 text-sm">
                 {[
                   ["Document", file?.name],
                   ["Document Type", documentType],
-                  ["Formatting Style", formattingStyle],
-                  ["English Type", englishType],
-                  ["Service & Turnaround", `${service} — ${turnaround}`],
+                  ["Formatting Style", summarizeFormatting(formattingStyle, formattingInstructions)],
+                  ["Translation", summarizeTranslation(translationPreference, translationTargetLanguage)],
+                  ["Style of English", englishType],
+                  ["Services & Turnaround", `${selectedServices.join(", ")} — ${turnaround}`],
                   ["Word Count", wordCount?.toLocaleString()],
-                  ["Payment Provider", PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack"],
+                  ["Payment Provider", selectedProviderLabel],
                 ].map(([label, value]) => (
-                  <div key={label} className="flex justify-between border-b border-ivory/10 pb-3">
-                    <span className="text-ivory/60">{label}</span>
-                    <span className="font-medium">{value}</span>
+                  <div key={label} className="flex justify-between gap-4 border-b border-hairline pb-3">
+                    <span className="text-charcoal/60">{label}</span>
+                    <span className="text-right font-medium text-ink">{value}</span>
                   </div>
                 ))}
-                <div className="flex justify-between pt-2">
-                  <span className="text-ivory/80 text-lg">Total Due</span>
-                  <span className="text-gold font-display text-xl">${price.toFixed(2)}</span>
+                <div className="grid gap-2 pt-2">
+                  <div className="flex justify-between gap-4">
+                    <span className="text-charcoal/60">Subtotal</span>
+                    <span className="font-medium text-ink">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <span className="text-charcoal/60">Service charge ({serviceChargePercentage}%)</span>
+                    <span className="font-medium text-ink">${serviceChargeAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-hairline pt-3">
+                    <span className="text-lg text-charcoal/80">Total due</span>
+                    <span className="font-display text-xl text-primary">${price.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-xs text-ivory/40 text-center">Final price is calculated and verified server-side before secure checkout.</p>
+            <p className="text-center text-xs text-charcoal/48">Final price is calculated again before checkout.</p>
 
             {!validation.allowed ? (
-              <div className="border border-gold/25 bg-gold/10 p-4 text-sm leading-6 text-gold">
+              <div className="border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
                 <p>{validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote."}</p>
                 {validation.contactRequired ? (
-                  <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-gold/40 px-4 text-xs uppercase tracking-[0.16em] text-gold">
+                  <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-primary/40 px-4 text-xs uppercase tracking-[0.16em] text-primary">
                     Contact our editors
                   </a>
                 ) : null}
@@ -426,7 +722,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             <button
               onClick={handlePayment}
               disabled={isSubmitting || checkoutBlocked}
-              className="w-full min-h-14 bg-gold px-5 text-base text-ink font-semibold transition-all duration-300 hover:bg-ivory hover:shadow-[0_0_40px_rgba(176,138,60,0.2)] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="min-h-14 w-full rounded-full bg-cta px-5 text-base font-semibold text-white shadow-[0_18px_40px_rgba(31,143,90,0.18)] transition-all duration-300 hover:bg-cta-active disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-3">
@@ -434,22 +730,31 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   Initializing secure payment...
                 </span>
               ) : (
-                checkoutBlocked ? "Contact our editors" : `Pay $${price.toFixed(2)} with ${PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack"}`
+                checkoutBlocked ? "Contact our editors" : `Pay $${price.toFixed(2)} with ${selectedProviderLabel}`
               )}
             </button>
           </div>
         )}
       </div>
 
-      <div className="mt-8 pt-6 border-t border-ivory/10 flex justify-between">
+      <div className="mt-8 flex justify-between border-t border-hairline pt-6">
         {step > 1 ? (
-          <button onClick={() => { setStep(step - 1); setPaymentError(null); }} className="px-6 py-3 border border-ivory/20 text-sm text-ivory hover:bg-ivory/10 transition" disabled={isSubmitting}>Back</button>
+          <button onClick={() => { setStep(step - 1); setPaymentError(null); }} className="rounded-full border border-hairline px-6 py-3 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary" disabled={isSubmitting}>Back</button>
         ) : <div />}
         {step < totalSteps ? (
           <button
-            onClick={() => setStep(step + 1)}
-            disabled={(step === 2 && wordCount === null) || (step === 3 && checkoutBlocked) || isParsing}
-            className="px-8 py-3 bg-ivory text-ink text-sm font-semibold hover:bg-gold transition disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => {
+              setPaymentError(null);
+              if (step === 3 && !validateServiceExtras()) return;
+              setStep(step + 1);
+            }}
+            disabled={
+              (step === 2 && wordCount === null) ||
+              (step === 3 && checkoutBlocked) ||
+              (step === 4 && (isLoadingPaymentSettings || Boolean(paymentSettingsError) || !hasAvailablePaymentMethods)) ||
+              isParsing
+            }
+            className="rounded-full bg-cta px-8 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition hover:bg-cta-active disabled:cursor-not-allowed disabled:opacity-50"
           >Continue</button>
         ) : <div />}
       </div>

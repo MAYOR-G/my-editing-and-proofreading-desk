@@ -207,24 +207,25 @@ export function CareVisual() {
 
 export function AiRefinementVisual({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`relative overflow-hidden border border-ivory/12 bg-ink p-5 text-ivory shadow-[0_30px_110px_rgba(0,0,0,0.20)] backdrop-blur-sm ${compact ? "min-h-[21rem]" : "min-h-[31rem] sm:p-7"}`}>
-      <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(176,138,60,0.10),transparent)] editorial-scan" aria-hidden="true" />
+    <div className={`relative overflow-hidden border border-hairline bg-canvas p-5 text-ink shadow-[0_30px_110px_rgba(17,17,15,0.07)] ${compact ? "min-h-[21rem]" : "min-h-[31rem] sm:p-7"}`}>
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(38,49,63,0.08),transparent)] editorial-scan" aria-hidden="true" />
+      <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(38,49,63,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(38,49,63,0.18)_1px,transparent_1px)] [background-size:34px_34px]" aria-hidden="true" />
       <div className="relative grid gap-5">
-        <div className="flex items-center justify-between border-b border-ivory/12 pb-4">
-          <span className="text-xs uppercase tracking-[0.28em] text-gold">Raw Draft</span>
-          <span className="text-xs uppercase tracking-[0.28em] text-ivory/38">AI Refined</span>
+        <div className="flex items-center justify-between border-b border-hairline pb-4">
+          <span className="text-xs uppercase tracking-[0.28em] text-primary">Raw Draft</span>
+          <span className="text-xs uppercase tracking-[0.28em] text-body">AI Refined</span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="border border-ivory/10 bg-ink/20 p-5 text-sm font-light leading-relaxed text-ivory/60">
-            <span className="bg-red-900/30 text-red-200 line-through">We are currently in the process of attempting to optimize</span> the system <span className="bg-red-900/30 text-red-200 line-through">so that we can</span> improve performance. <span className="bg-red-900/30 text-red-200 line-through">It is our belief that</span> these changes will <span className="bg-red-900/30 text-red-200 line-through">have a major impact on the overall</span> speed.
+          <div className="border border-hairline bg-surface-soft p-5 text-sm font-light leading-relaxed text-body">
+            <span className="bg-red-50 text-red-700 line-through">We are currently in the process of attempting to optimize</span> the system <span className="bg-red-50 text-red-700 line-through">so that we can</span> improve performance. <span className="bg-red-50 text-red-700 line-through">It is our belief that</span> these changes will <span className="bg-red-50 text-red-700 line-through">have a major impact on the overall</span> speed.
           </div>
-          <div className="border border-gold/25 bg-ivory/[0.075] p-5 text-sm font-light leading-relaxed text-ivory">
-            <span className="bg-green-900/40 text-green-300">We are optimizing</span> the system <span className="bg-green-900/40 text-green-300">to</span> improve performance. <span className="bg-green-900/40 text-green-300">We believe</span> these changes will <span className="bg-green-900/40 text-green-300">significantly accelerate</span> speed.
+          <div className="border border-primary/25 bg-primary/[0.035] p-5 text-sm font-light leading-relaxed text-ink">
+            <span className="bg-green-50 text-green-700">We are optimizing</span> the system <span className="bg-green-50 text-green-700">to</span> improve performance. <span className="bg-green-50 text-green-700">We believe</span> these changes will <span className="bg-green-50 text-green-700">significantly accelerate</span> speed.
           </div>
         </div>
         <div className="mt-2 grid gap-3 sm:grid-cols-3">
           {["Clarity", "Tone", "Flow"].map((item, index) => (
-            <span key={item} className="border-y border-ivory/12 py-4 text-center text-xs uppercase tracking-[0.24em] text-ivory/54 editorial-pulse" style={{ animationDelay: `${index * 0.35}s` }}>
+            <span key={item} className="border-y border-hairline py-4 text-center text-xs uppercase tracking-[0.24em] text-body editorial-pulse" style={{ animationDelay: `${index * 0.35}s` }}>
               {item}
             </span>
           ))}
@@ -297,48 +298,48 @@ export function FaqVisual() {
 
 export function PricingVisual() {
   return (
-    <div className="relative min-h-[25rem] overflow-hidden border border-ink/10 bg-ink p-7 shadow-[0_28px_90px_rgba(17,17,15,0.055)] text-ivory">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(176,138,60,0.1),transparent_40%)]" aria-hidden="true" />
+    <div className="relative min-h-[25rem] overflow-hidden border border-hairline bg-canvas p-7 text-ink shadow-[0_28px_90px_rgba(17,17,15,0.055)]">
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(38,49,63,0.08),transparent_44%)]" aria-hidden="true" />
       
       <div className="absolute inset-x-7 top-7 flex items-center justify-between" aria-hidden="true">
-        <span className="text-xs uppercase tracking-[0.26em] text-gold">Transparent Billing</span>
-        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-gold/50">
+        <span className="text-xs uppercase tracking-[0.26em] text-primary">Transparent Billing</span>
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-primary/50">
           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15V9m0 0l-3 3m3-3l3 3M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
         </svg>
       </div>
 
       <div className="relative mx-auto mt-16 grid max-w-[26rem] gap-4">
-        <div className="border border-ivory/20 bg-ivory/5 p-6 backdrop-blur-md editorial-float">
-          <div className="flex justify-between items-end border-b border-ivory/10 pb-4">
+        <div className="border border-hairline bg-surface-soft p-6 editorial-float">
+          <div className="flex justify-between items-end border-b border-hairline pb-4">
             <div>
-              <div className="text-xs uppercase tracking-widest text-ivory/50">Order Summary</div>
-              <div className="text-xl font-display text-ivory mt-1">Research Manuscript</div>
+              <div className="text-xs uppercase tracking-widest text-body">Order Summary</div>
+              <div className="text-xl font-display text-ink mt-1">Research Manuscript</div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-display text-gold">$125.00</div>
+              <div className="text-2xl font-display text-primary">$125.00</div>
             </div>
           </div>
           
-          <div className="mt-5 grid gap-3 text-sm text-ivory/70">
+          <div className="mt-5 grid gap-3 text-sm text-body">
             <div className="flex justify-between">
               <span>Word Count</span>
-              <span className="text-ivory">4,250 words</span>
+              <span className="text-ink">4,250 words</span>
             </div>
             <div className="flex justify-between">
               <span>Service Type</span>
-              <span className="text-ivory">Academic Editing</span>
+              <span className="text-ink">Academic Editing</span>
             </div>
             <div className="flex justify-between">
               <span>Turnaround</span>
-              <span className="text-ivory">48 Hours</span>
+              <span className="text-ink">48 Hours</span>
             </div>
           </div>
 
-          <div className="mt-6 flex items-center justify-between border-t border-ivory/10 pt-4">
-            <span className="text-xs text-ivory/40">Secured payment</span>
+          <div className="mt-6 flex items-center justify-between border-t border-hairline pt-4">
+            <span className="text-xs text-body">Secured payment</span>
             <div className="flex gap-2">
-              <span className="h-6 w-10 rounded bg-ivory/10" />
-              <span className="h-6 w-10 rounded bg-ivory/10" />
+              <span className="h-6 w-10 rounded bg-primary/10" />
+              <span className="h-6 w-10 rounded bg-primary/10" />
             </div>
           </div>
         </div>

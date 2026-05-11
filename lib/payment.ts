@@ -73,6 +73,16 @@ export class ProviderUnavailableError extends Error {
   }
 }
 
+export class ProviderConfigurationError extends Error {
+  provider: PaymentProviderName;
+
+  constructor(provider: PaymentProviderName) {
+    super(`${getProviderConfig(provider).label} is currently unavailable. Please contact support or try another payment method.`);
+    this.name = "ProviderConfigurationError";
+    this.provider = provider;
+  }
+}
+
 export const PAYMENT_PROVIDERS: PaymentProviderConfig[] = [
   {
     id: "paystack",
@@ -118,7 +128,39 @@ export function getProviderConfig(provider: PaymentProviderName): PaymentProvide
 }
 
 export function isProviderEnabled(provider: PaymentProviderName): boolean {
-  return provider === ACTIVE_PAYMENT_PROVIDER && getProviderConfig(provider).status === "available";
+  return getProviderReadiness(provider).configured && getProviderConfig(provider).status === "available";
+}
+
+export function getProviderReadiness(provider: PaymentProviderName) {
+  const configured = (() => {
+    switch (provider) {
+      case "paystack":
+        return Boolean(process.env.PAYSTACK_SECRET_KEY && process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY);
+      case "flutterwave":
+        return Boolean(process.env.FLUTTERWAVE_SECRET_KEY && process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY);
+      case "paypal":
+        return Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
+      case "stripe":
+        return Boolean(process.env.STRIPE_SECRET_KEY && process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+      default:
+        return false;
+    }
+  })();
+
+  return {
+    provider,
+    configured,
+    message: configured ? null : `${getProviderConfig(provider).label} is enabled, but API keys are missing.`,
+  };
+}
+
+export function getPaymentProviderReadiness() {
+  return {
+    paystack: getProviderReadiness("paystack"),
+    flutterwave: getProviderReadiness("flutterwave"),
+    paypal: getProviderReadiness("paypal"),
+    stripe: getProviderReadiness("stripe"),
+  };
 }
 
 export function getSafeAppUrl(): string {
@@ -143,10 +185,13 @@ export {
   FORMATTING_STYLES,
   MAX_AUTOMATIC_WORD_COUNT,
   MINIMUM_ORDER,
+  SERVICE_CHARGE_PERCENTAGE,
   SERVICE_OPTIONS,
+  TRANSLATION_OPTIONS,
   TURNAROUND_OPTIONS,
   calculatePrice,
   calculateServerPrice,
+  normalizeSelectedServices,
   parseTurnaroundDays,
   validateAutomaticPricing,
   type PriceBreakdown,
@@ -319,9 +364,16 @@ export const StripeProvider = createUnavailableProvider("stripe");
 export const PaypalProvider = createUnavailableProvider("paypal");
 
 export function getProvider(name: PaymentProviderName): PaymentProvider {
-  if (!isProviderEnabled(name)) {
+  const readiness = getProviderReadiness(name);
+  if (!readiness.configured) {
+    throw new ProviderConfigurationError(name);
+  }
+
+  if (getProviderConfig(name).status !== "available") {
     return createUnavailableProvider(name);
   }
 
-  return PaystackProvider;
+  if (name === "paystack") return PaystackProvider;
+
+  return createUnavailableProvider(name);
 }

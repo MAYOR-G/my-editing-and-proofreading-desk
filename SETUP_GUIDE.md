@@ -101,11 +101,11 @@ In Supabase Authentication:
 
 1. Enable Email provider.
 2. Set the Site URL:
-   - Local: `http://localhost:3000`
+   - Local: `http://editandproofread.com`
    - Production: your deployed domain
 3. Add redirect URLs:
    - `http://localhost:3000/auth/callback`
-   - `https://your-production-domain.com/auth/callback`
+   - `https://editandproofread.com/auth/callback`
 4. If email confirmation is enabled, users must verify their email before logging in.
 
 ### 4.3 Run Database SQL
@@ -157,7 +157,7 @@ Valid values:
 
 ```text
 client
-admin
+adminnpm run dev
 ```
 
 ### 5.1 Create an Admin User

@@ -1,7 +1,10 @@
 import { DashboardShell, MetricPanel, StatusBadge } from "@/components/DashboardShell";
+import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
+import { getPaymentSettings } from "@/lib/payment-settings";
+import { getPaymentProviderReadiness } from "@/lib/payment";
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
@@ -18,6 +21,8 @@ export default async function AdminDashboardPage() {
 
   // Using service_role key to bypass RLS for admin operations across all clients
   const supabaseAdmin = createSupabaseAdminClient();
+  const paymentSettings = await getPaymentSettings();
+  const paymentReadiness = getPaymentProviderReadiness();
 
   // Use the admin client to bypass RLS and get ALL projects and ALL users
   const { data: rawProjects, error: projectsError } = await supabaseAdmin
@@ -57,6 +62,8 @@ export default async function AdminDashboardPage() {
         <MetricPanel label="Ready" value={activeProjects.filter(p => p.status === "Ready").length.toString()} detail="Completed files awaiting client download." />
         <MetricPanel label="Revenue" value={`$${totalRevenue.toLocaleString()}`} detail="Current verified payments." />
       </section>
+
+      <PaymentSettingsForm initialSettings={paymentSettings} readiness={paymentReadiness} />
 
       <section id="submissions" className="mt-8 grid gap-8 xl:grid-cols-[1.28fr_0.72fr]">
         <div className="border border-ink/10 bg-ivory/90">
@@ -120,12 +127,15 @@ export default async function AdminDashboardPage() {
                     ["Words", selected.word_count.toString()],
                     ["Document type", selected.document_type || "N/A"],
                     ["Formatting", selected.formatting_style || "N/A"],
+                    ["Formatting instructions", selected.formatting_instructions || "N/A"],
+                    ["Translation", selected.translation_preference || "N/A"],
+                    ["Target language", selected.translation_target_language || "N/A"],
                     ["English", selected.english_type || "N/A"],
                     ["Turnaround", selected.turnaround],
                     ["Payment", selected.payment_status],
                     ["Provider", formatProvider(selected.payment_provider)],
                     ["Reference", selected.transaction_reference || "N/A"],
-                    ["Service", selected.service_type],
+                    ["Services", Array.isArray(selected.selected_services) ? selected.selected_services.join(", ") : selected.service_type],
                     ["Client Note", selected.client_notes || "None"]
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between gap-6 border-t border-ivory/12 pt-4">
@@ -192,9 +202,9 @@ export default async function AdminDashboardPage() {
             ["Provider", formatProvider(selected.payment_provider), "Payment gateway used"],
             ["Transaction Ref.", selected.transaction_reference || "N/A", "Unique transaction reference"],
             ["Transaction ID", selected.transaction_id || "N/A", "Provider transaction identifier"],
-            ["Amount Paid", selected.payment_status === "paid" ? `$${selected.price.toFixed(2)}` : "$0.00", `Currency: ${selected.payment_currency || "USD"}`],
+            ["Amount Paid", selected.payment_status === "paid" ? `$${Number(selected.price).toFixed(2)}` : "$0.00", `Subtotal: $${Number(selected.subtotal ?? selected.calculated_price ?? 0).toFixed(2)} · Service charge: $${Number(selected.service_charge_amount ?? 0).toFixed(2)}`],
             ["Payment Status", selected.payment_status, selected.payment_verified_at ? `Verified ${new Date(selected.payment_verified_at).toLocaleDateString()}` : "Awaiting verification"],
-            ["Order Details", `${selected.document_type || "Document"} · ${selected.formatting_style || "Standard"} · ${selected.english_type || "No preference"}`, `${selected.word_count?.toLocaleString()} words · ${selected.turnaround}`]
+            ["Order Details", `${selected.document_type || "Document"} · ${Array.isArray(selected.selected_services) ? selected.selected_services.join(", ") : selected.service_type} · ${selected.formatting_style || "No formatting"} · ${selected.translation_preference || "No translation"}`, `${selected.word_count?.toLocaleString()} words · ${selected.turnaround}`]
           ].map(([label, value, detail]) => (
             <div key={label} className="border border-ink/10 bg-paper p-6">
               <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">{label}</p>

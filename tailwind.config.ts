@@ -9,14 +9,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#11110f",
-        charcoal: "#24221e",
-        paper: "#f8f4ec",
-        ivory: "#fffdf7",
-        linen: "#eee6da",
-        gold: "#b08a3c",
-        "gold-deep": "#7b6026",
-        mist: "#d8d1c6",
+        // New Palette
+        primary: {
+          DEFAULT: "#174a7c",
+          active: "#123b63",
+          light: "#256aa8",
+        },
+        cta: {
+          DEFAULT: "#1f8f5a",
+          active: "#176f47",
+          soft: "#e8f6ef",
+        },
+        canvas: "#ffffff",
+        surface: {
+          soft: "#f7f7f7",
+          strong: "#eef0f3",
+        },
+        ink: "#0a0b0d",
+        body: "#5b616e",
+        muted: "#7c828a",
+        dark: {
+          surface: "#0a0b0d",
+          elevated: "#16181c",
+        },
+        hairline: "#dee1e6",
+        
+        // Legacy Aliases
+        charcoal: "#5b616e",
+        paper: "#f7f7f7",
+        ivory: "#ffffff",
+        linen: "#eef0f3",
+        gold: "#174a7c",
+        "gold-deep": "#123b63",
+        mist: "#dee1e6",
+        accent: {
+          DEFAULT: "#174a7c",
+          light: "#256aa8",
+        },
         /* Semantic status colors */
         status: {
           success: "#16a34a",

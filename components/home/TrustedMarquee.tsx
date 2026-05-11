@@ -16,7 +16,7 @@ const trustLogos = [
 export function TrustedMarquee() {
   return (
     <section className="bg-paper py-16 border-y border-ink/5 overflow-hidden flex flex-col items-center">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-ink/40 mb-8 font-semibold">Trusted by Researchers At</p>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-primary mb-8 font-bold">Trusted by Researchers At</p>
       
       <div className="relative w-full flex overflow-hidden">
         {/* Gradient Masks for smooth fade out at edges */}
@@ -34,7 +34,7 @@ export function TrustedMarquee() {
         >
           {/* Double the array for seamless infinite scroll */}
           {[...trustLogos, ...trustLogos].map((logo, idx) => (
-            <span key={idx} className="text-xl md:text-2xl font-display text-ink/30 tracking-tight shrink-0 px-8">
+            <span key={idx} className="shrink-0 px-8 font-display text-xl font-bold tracking-tight text-ink md:text-2xl">
               {logo}
             </span>
           ))}

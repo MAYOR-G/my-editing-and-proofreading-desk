@@ -6,15 +6,19 @@ import {
   calculateServerPrice,
   generateReference,
   getProvider,
+  getProviderConfig,
+  getProviderReadiness,
   getSafeAppUrl,
   isPaymentProviderName,
-  isProviderEnabled,
+  normalizeSelectedServices,
   parseTurnaroundDays,
+  ProviderConfigurationError,
   ProviderUnavailableError,
   validateAutomaticPricing,
   type PaymentProviderName,
 } from "@/lib/payment";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getPaymentSettings, isProviderVisible } from "@/lib/payment-settings";
 
 function isSchemaMismatchError(error: { code?: string; message?: string; details?: string | null } | null) {
   if (!error) return false;
@@ -29,16 +33,6 @@ function isSchemaMismatchError(error: { code?: string; message?: string; details
   );
 }
 
-function setupError(message: string, status = 500) {
-  return NextResponse.json(
-    {
-      error: message,
-      code: "checkout_setup_required",
-    },
-    { status }
-  );
-}
-
 function traceId() {
   return `chk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -49,7 +43,7 @@ function traceId() {
  * Creates a project (pending) and initializes a payment transaction.
  * Price is ALWAYS calculated server-side — frontend price is ignored.
  * 
- * Body: { provider, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style, english_type }
+ * Body: { provider, selected_services, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style, formatting_instructions, translation_preference, translation_target_language, english_type }
  */
 export async function POST(request: Request) {
   const trace = traceId();
@@ -78,6 +72,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       provider,
+      selected_services,
       service_type,
       turnaround,
       word_count,
@@ -86,6 +81,9 @@ export async function POST(request: Request) {
       client_notes,
       document_type,
       formatting_style,
+      formatting_instructions,
+      translation_preference,
+      translation_target_language,
       english_type,
     } = body;
 
@@ -98,10 +96,11 @@ export async function POST(request: Request) {
     }
 
     const paymentProviderName = provider as PaymentProviderName;
-    if (!isProviderEnabled(paymentProviderName)) {
+    const paymentSettings = await getPaymentSettings();
+    if (!isProviderVisible(paymentProviderName, paymentSettings)) {
       return NextResponse.json(
         {
-          error: "This payment option will be available soon.",
+          error: "This payment method is not currently available. Please choose another option or contact support.",
           code: "provider_not_available",
           provider: paymentProviderName,
           trace_id: trace,
@@ -110,12 +109,31 @@ export async function POST(request: Request) {
       );
     }
 
-    if (paymentProviderName === "paystack" && !process.env.PAYSTACK_SECRET_KEY) {
-      console.error("Paystack setup error: PAYSTACK_SECRET_KEY is missing.");
-      return setupError("Checkout is not fully configured yet. Please contact support before trying payment again.", 503);
+    const readiness = getProviderReadiness(paymentProviderName);
+    if (!readiness.configured) {
+      console.error(`${getProviderConfig(paymentProviderName).label} setup error: API keys are missing.`);
+      return NextResponse.json(
+        {
+          error: `${getProviderConfig(paymentProviderName).label} is currently unavailable. Please contact support or try another payment method.`,
+          code: "provider_not_configured",
+          provider: paymentProviderName,
+          trace_id: trace,
+        },
+        { status: 503 }
+      );
     }
 
-    if (!service_type || !turnaround || !word_count || !file_path) {
+    const submittedServices = Array.isArray(selected_services) ? selected_services : service_type ? [service_type] : [];
+    if (submittedServices.length === 0) {
+      return NextResponse.json(
+        { error: "Please select at least one service.", code: "missing_services", trace_id: trace },
+        { status: 400 }
+      );
+    }
+
+    const selectedServices = normalizeSelectedServices(submittedServices);
+
+    if (!turnaround || !word_count || !file_path) {
       return NextResponse.json(
         { error: "Some checkout details are missing. Please review your order and try again.", code: "missing_checkout_fields", trace_id: trace },
         { status: 400 }
@@ -143,8 +161,8 @@ export async function POST(request: Request) {
     }
 
     // ─── Calculate price SERVER-SIDE (never trust frontend) ────────
-    const priceBreakdown = calculatePrice(safeWordCount, service_type, turnaround);
-    const price = calculateServerPrice(safeWordCount, service_type, turnaround);
+    const priceBreakdown = calculatePrice(safeWordCount, selectedServices, turnaround);
+    const price = calculateServerPrice(safeWordCount, selectedServices, turnaround);
     const currency = "USD";
     const amountInCents = Math.round(price * 100);
 
@@ -173,8 +191,12 @@ export async function POST(request: Request) {
         client_id: user.id,
         title: title || "Untitled Project",
         service_type: priceBreakdown.serviceType,
+        selected_services: priceBreakdown.serviceTypes,
         document_type: document_type || "Other",
         formatting_style: formatting_style || "None / Standard Consistency",
+        formatting_instructions: formatting_instructions || null,
+        translation_preference: translation_preference || null,
+        translation_target_language: translation_target_language || null,
         english_type: english_type || "No preference",
         turnaround: priceBreakdown.turnaroundLabel,
         turnaround_days: priceBreakdown.turnaroundDays,
@@ -182,6 +204,9 @@ export async function POST(request: Request) {
         word_count: safeWordCount,
         price,
         calculated_price: priceBreakdown.calculatedPrice,
+        subtotal: priceBreakdown.subtotal,
+        service_charge_percentage: priceBreakdown.serviceChargePercentage,
+        service_charge_amount: priceBreakdown.serviceChargeAmount,
         final_price: priceBreakdown.finalPrice,
         minimum_applied: priceBreakdown.minimumApplied,
         client_notes: client_notes || "",
@@ -190,6 +215,7 @@ export async function POST(request: Request) {
         status: "In Progress",
         payment_status: "pending",
         payment_provider: paymentProviderName,
+        selected_payment_method: paymentProviderName,
         payment_reference: reference,
         transaction_reference: reference,
         payment_currency: currency,
@@ -245,7 +271,12 @@ export async function POST(request: Request) {
           project_id: project.id,
           friendly_id: project.friendly_id,
           service_type: priceBreakdown.serviceType,
+          selected_services: priceBreakdown.serviceTypes,
           word_count: safeWordCount,
+          subtotal: priceBreakdown.subtotal,
+          service_charge_percentage: priceBreakdown.serviceChargePercentage,
+          service_charge_amount: priceBreakdown.serviceChargeAmount,
+          final_total: priceBreakdown.finalTotal,
           turnaround_days: parseTurnaroundDays(priceBreakdown.turnaroundLabel),
         },
       });
@@ -256,6 +287,17 @@ export async function POST(request: Request) {
         .update({ payment_status: "failed" })
         .eq("id", project.id)
         .eq("payment_status", "pending");
+
+      if (paymentError instanceof ProviderUnavailableError || paymentError instanceof ProviderConfigurationError) {
+        return NextResponse.json(
+          {
+            error: paymentError.message,
+            code: paymentError instanceof ProviderConfigurationError ? "provider_not_configured" : "provider_not_available",
+            trace_id: trace,
+          },
+          { status: 503 }
+        );
+      }
 
       return NextResponse.json(
         { error: "We could not start secure checkout. Please try again or contact support.", code: "payment_provider_failed", trace_id: trace },
@@ -269,6 +311,10 @@ export async function POST(request: Request) {
       reference: result.reference,
       project_id: project.id,
       price,
+      subtotal: priceBreakdown.subtotal,
+      service_charge_percentage: priceBreakdown.serviceChargePercentage,
+      service_charge_amount: priceBreakdown.serviceChargeAmount,
+      final_total: priceBreakdown.finalTotal,
       calculated_price: priceBreakdown.calculatedPrice,
       minimum_applied: priceBreakdown.minimumApplied,
       currency,
@@ -280,11 +326,13 @@ export async function POST(request: Request) {
         error:
           error instanceof ProviderUnavailableError
             ? "This payment option will be available soon."
+            : error instanceof ProviderConfigurationError
+              ? error.message
             : "We could not prepare your order. Please try again or contact support.",
-        code: error instanceof ProviderUnavailableError ? "provider_not_available" : "checkout_unexpected",
+        code: error instanceof ProviderUnavailableError ? "provider_not_available" : error instanceof ProviderConfigurationError ? "provider_not_configured" : "checkout_unexpected",
         trace_id: trace,
       },
-      { status: error instanceof ProviderUnavailableError ? 503 : 500 }
+      { status: error instanceof ProviderUnavailableError || error instanceof ProviderConfigurationError ? 503 : 500 }
     );
   }
 }

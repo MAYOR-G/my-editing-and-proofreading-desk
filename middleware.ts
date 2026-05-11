@@ -2,11 +2,27 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
   let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   });
+
+  const isDashboardRoute = pathname.startsWith('/dashboard');
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isAdminLogin = pathname.startsWith('/admin/login');
+  const isAdminAccessDenied = pathname.startsWith('/admin/access-denied');
+
+  // Public pages do not need a Supabase network round-trip. Keeping them out
+  // of auth middleware prevents local dev reloads when Supabase is unreachable.
+  if (!isDashboardRoute && !isAdminRoute) {
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    return response;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -54,50 +70,61 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  let user = null;
+
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (error) {
+    console.error("Auth middleware failed to fetch user:", error);
+  }
 
   const getAdminRole = async (userId: string) => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (supabaseUrl && serviceRoleKey) {
-      const profileResponse = await fetch(
-        `${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=role`,
-        {
-          headers: {
-            apikey: serviceRoleKey,
-            Authorization: `Bearer ${serviceRoleKey}`,
-          },
-        }
-      );
+      try {
+        const profileResponse = await fetch(
+          `${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=role`,
+          {
+            headers: {
+              apikey: serviceRoleKey,
+              Authorization: `Bearer ${serviceRoleKey}`,
+            },
+          }
+        );
 
-      if (profileResponse.ok) {
-        const profiles = await profileResponse.json() as Array<{ role?: string }>;
-        return profiles[0]?.role;
+        if (profileResponse.ok) {
+          const profiles = await profileResponse.json() as Array<{ role?: string }>;
+          return profiles[0]?.role;
+        }
+      } catch (error) {
+        console.error("Admin role lookup failed:", error);
       }
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
 
-    return profile?.role;
+      return profile?.role;
+    } catch (error) {
+      console.error("Admin role fallback lookup failed:", error);
+      return undefined;
+    }
   };
 
-  const pathname = request.nextUrl.pathname;
-
   // Protect dashboard routes
-  if (pathname.startsWith('/dashboard') && !user) {
+  if (isDashboardRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  const isAdminLogin = pathname.startsWith('/admin/login');
-  const isAdminAccessDenied = pathname.startsWith('/admin/access-denied');
-
   // Protect admin routes while allowing the dedicated login and denied pages.
-  if (pathname.startsWith('/admin') && !isAdminLogin && !isAdminAccessDenied) {
+  if (isAdminRoute && !isAdminLogin && !isAdminAccessDenied) {
     if (!user) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }

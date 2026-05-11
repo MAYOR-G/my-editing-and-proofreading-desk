@@ -3,55 +3,55 @@ export const servicePages = [
     slug: "academic-editing",
     name: "Academic Editing",
     eyebrow: "For students and researchers",
-    description: "Specialist editing for essays, theses, dissertations, journal articles, research proposals, and academic manuscripts.",
-    detail: "We refine argument clarity, scholarly tone, structure, grammar, citation consistency, and reader flow while preserving the author’s voice and disciplinary intent.",
+    description: "For essays, theses, dissertations, journal articles, and research proposals that need scholarly clarity and precision.",
+    detail: "Academic editing helps solve unclear argument flow, uneven structure, grammar issues, and inconsistent scholarly tone while preserving your voice and disciplinary intent.",
     audiences: ["Students", "Researchers", "Doctoral candidates", "Academic departments"],
-    deliverables: ["Language and grammar refinement", "Structure and argument clarity", "Citation and reference consistency", "Submission-ready editorial polish"]
+    deliverables: ["Grammar, clarity, and sentence refinement", "Structure and argument flow improvements", "Citation and reference consistency checks", "Submission-ready academic polish"]
   },
   {
     slug: "non-academic-editing",
-    name: "Non-Academic Editing",
+    name: "Business Editing",
     eyebrow: "For professional documents",
-    description: "Editorial care for business, personal, organizational, and professional writing that needs to sound confident and precise.",
-    detail: "We improve clarity, tone, structure, grammar, and presentation for documents where credibility and reader trust matter.",
+    description: "For proposals, reports, profiles, presentations, and client-facing documents that need to sound clear and credible.",
+    detail: "Business editing solves unclear messaging, weak structure, inconsistent tone, and distracting language issues so your document is easier for stakeholders, clients, and decision-makers to trust.",
     audiences: ["Business professionals", "Founders", "Consultants", "General clients"],
-    deliverables: ["Tone and clarity editing", "Sentence-level polish", "Professional document flow", "Reader-focused refinement"]
+    deliverables: ["Professional tone and clarity editing", "Reader-focused structure improvements", "Sentence-level polish", "Clean, client-ready document flow"]
   },
   {
     slug: "express-service",
-    name: "Express Service",
-    eyebrow: "For urgent deadlines",
-    description: "A focused fast-turnaround route for clients who need high-quality proofreading or editing on a compressed timeline.",
-    detail: "Express work prioritizes clarity, correctness, consistency, and delivery discipline for time-sensitive submissions.",
+    name: "Proofreading",
+    eyebrow: "For final review and corrections",
+    description: "For completed drafts that need grammar, punctuation, spelling, consistency, and readability checked before submission.",
+    detail: "Proofreading solves distracting errors, inconsistent wording, and final-stage language issues so your document feels clean, accurate, and ready to share.",
     audiences: ["Deadline-driven students", "Busy professionals", "Conference presenters", "Applicants"],
-    deliverables: ["Priority editorial review", "Focused corrections", "Clear delivery timeline", "Urgency-aware communication"]
+    deliverables: ["Grammar, spelling, and punctuation corrections", "Consistency and readability review", "Light sentence polish", "Final clean-up before submission"]
   },
   {
     slug: "manuscript-formatting",
-    name: "Manuscript Formatting",
+    name: "Manuscript Editing",
     eyebrow: "For authors and researchers",
-    description: "Clean formatting for manuscripts, reports, theses, references, and long-form documents that need disciplined presentation.",
-    detail: "We bring order to headings, spacing, page structure, references, tables, captions, and submission requirements.",
+    description: "For long-form manuscripts, reports, theses, and book projects that need stronger organization and cleaner presentation.",
+    detail: "Manuscript editing helps solve uneven pacing, unclear sections, inconsistent presentation, and formatting problems that make long documents harder to read.",
     audiences: ["Authors", "Researchers", "Graduate students", "Independent writers"],
-    deliverables: ["Document layout cleanup", "Heading hierarchy", "Reference presentation", "Submission-format review"]
+    deliverables: ["Manuscript structure and readability review", "Heading and section organization", "Reference and formatting presentation", "Submission-format cleanup"]
   },
   {
     slug: "translation",
-    name: "Translation",
+    name: "Translation Review",
     eyebrow: "For meaning across languages",
-    description: "Translation support with editorial attention to meaning, tone, readability, and audience expectations.",
-    detail: "The goal is not only to translate words, but to produce text that reads naturally and communicates the original purpose clearly.",
+    description: "For translated drafts that need natural phrasing, consistent terminology, clear tone, and audience-appropriate readability.",
+    detail: "Translation review solves stiff phrasing, unclear meaning, inconsistent terminology, and tone issues so the final text reads naturally while respecting the original purpose.",
     audiences: ["Researchers", "Organizations", "Professionals", "General clients"],
-    deliverables: ["Meaning-sensitive translation", "Tone and readability review", "Terminology consistency", "Final language polish"]
+    deliverables: ["Meaning-sensitive language review", "Tone and readability refinement", "Terminology consistency", "Final language polish"]
   },
   {
     slug: "writing-support",
     name: "Writing Support",
     eyebrow: "For shaping the draft",
-    description: "Guided editorial support for clients who need help developing, reframing, or strengthening a document before final editing.",
-    detail: "Useful for proposals, statements, reports, applications, and projects that need stronger direction before the final polish.",
+    description: "For proposals, statements, reports, applications, and drafts that need clearer direction before final editing.",
+    detail: "Writing support helps solve weak organization, unclear messaging, and underdeveloped sections by giving your draft a stronger structure and clearer direction.",
     audiences: ["Applicants", "Professionals", "Writers", "Students"],
-    deliverables: ["Document direction review", "Outline and structure support", "Message clarity", "Revision recommendations"]
+    deliverables: ["Document direction review", "Outline and structure support", "Message clarity improvements", "Practical revision recommendations"]
   }
 ];
 
@@ -98,23 +98,23 @@ export const editorStandards = [
 export const processSteps = [
   {
     label: "01",
-    title: "Upload Document",
+    title: "Submit Your Document",
     body: "Submit your document securely. Add your target audience, tone preferences, and any specific editorial notes."
   },
   {
     label: "02",
-    title: "Profiling & Editing",
-    body: "We profile the text using AI pre-flight tools, then our subject-matter experts refine the flow, grammar, and structure."
+    title: "Pricing & Review",
+    body: "The platform reviews your document details and gives you a clear estimate based on service type, word count, and editing needs."
   },
   {
     label: "03",
-    title: "Quality Checks",
-    body: "A rigorous, multi-layered quality assurance pass ensures consistency, academic rigor, and error-free presentation."
+    title: "Human Editing",
+    body: "A careful editor improves clarity, grammar, structure, tone, and flow while preserving your original meaning."
   },
   {
     label: "04",
     title: "Secure Delivery",
-    body: "Your polished, submission-ready file is delivered securely to your dashboard, ahead of your deadline."
+    body: "Your polished, submission-ready file is delivered securely to your dashboard with careful improvements and helpful comments where needed."
   }
 ];
 

@@ -22,43 +22,38 @@ export function DashboardShell({
   children
 }: DashboardShellProps) {
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#fffdf7_0%,#f7f1e7_100%)] text-ink">
-      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-72 border-r border-ink/10 bg-ivory px-6 py-7 shadow-[20px_0_80px_rgba(17,17,15,0.04)] lg:block">
-        <BrandMark />
+    <main className="min-h-screen bg-[linear-gradient(180deg,#ffffff_0%,#f4f7fb_100%)] text-ink">
+      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-80 border-r border-hairline bg-ivory px-7 py-7 shadow-[20px_0_80px_rgba(17,17,15,0.04)] lg:block">
+        <div className="max-w-[15.5rem]">
+          <BrandMark />
+        </div>
         <nav className="mt-12 grid gap-2" aria-label="Dashboard navigation">
           {nav.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`group flex min-h-12 items-center justify-between border px-4 text-sm transition duration-200 ease-premium-out hover:border-gold hover:bg-paper hover:text-ink active:scale-[0.99] ${
-                index === 0 ? "border-gold bg-gold/10 text-ink" : "border-transparent text-charcoal/64"
+              className={`group flex min-h-12 items-center justify-between border px-4 text-sm transition duration-200 ease-premium-out hover:border-primary/35 hover:bg-surface-soft hover:text-ink active:scale-[0.99] ${
+                index === 0 ? "border-primary/45 bg-primary/10 text-ink" : "border-transparent text-charcoal/64"
               }`}
             >
               {item.label}
-              <span className="text-gold-deep opacity-50 transition group-hover:opacity-100" aria-hidden="true">+</span>
+              <span className="text-primary opacity-50 transition group-hover:opacity-100" aria-hidden="true">+</span>
             </Link>
           ))}
         </nav>
-        <div className="absolute bottom-7 left-6 right-6 border-t border-ink/10 pt-6">
-          <p className="mb-4 text-xs uppercase tracking-[0.24em] text-gold-deep">MEP portal</p>
+        <div className="absolute bottom-7 left-7 right-7 border-t border-hairline pt-6">
           <Link href="/" className="text-sm text-charcoal/64 transition hover:text-ink">
             Return to website
           </Link>
         </div>
       </aside>
 
-      <section className="lg:pl-72">
-        <header className="sticky top-0 z-20 border-b border-ink/10 bg-ivory/86 px-5 py-5 backdrop-blur-xl sm:px-8">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-            <div className="lg:hidden">
-              <BrandMark compact />
-            </div>
-            <div className="hidden lg:block">
-              <p className="text-xs uppercase tracking-[0.3em] text-gold-deep">{eyebrow}</p>
-            </div>
-            <div className="flex items-center gap-3">
+      <section className="lg:pl-80">
+        <header className="sticky top-0 z-20 border-b border-hairline bg-ivory/90 px-4 py-4 backdrop-blur-xl sm:px-8">
+          <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-3 sm:gap-4">
+            <div className="flex min-w-0 items-center justify-start gap-2 sm:gap-3">
               <details className="group relative lg:hidden">
-                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center border border-ink/10 bg-ivory/70 px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-gold hover:text-ink active:scale-[0.98]">
+                <summary className="inline-flex min-h-11 cursor-pointer list-none items-center rounded-full border border-hairline bg-ivory/70 px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98]">
                   Sections
                 </summary>
                 <div className="absolute right-0 top-full mt-3 w-[min(19rem,calc(100vw-2.5rem))] border border-ink/10 bg-ivory p-2 shadow-[0_24px_80px_rgba(17,17,15,0.12)]">
@@ -69,20 +64,25 @@ export function DashboardShell({
                   ))}
                 </div>
               </details>
-              <button type="button" className="hidden min-h-11 border border-ink/10 px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-gold hover:text-ink active:scale-[0.98] sm:inline-flex sm:items-center">
+              <button type="button" className="hidden min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] sm:inline-flex">
                 {secondaryActionLabel}
               </button>
-              <button type="button" className="min-h-11 bg-ink px-4 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.98]">
+              <button type="button" className="min-h-11 rounded-full bg-cta px-4 text-sm font-medium text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98] sm:px-5">
                 {primaryActionLabel}
               </button>
             </div>
+            <p className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.3em] text-primary sm:block">MEP portal</p>
+            <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-full border border-hairline bg-ivory px-3 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] sm:px-5">
+              <span className="hidden sm:inline">Return to website</span>
+              <span className="sm:hidden">Website</span>
+            </Link>
           </div>
         </header>
 
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:py-14">
           <div className="grid gap-8 border-b border-ink/10 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-gold-deep lg:hidden">{eyebrow}</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-primary lg:hidden">{eyebrow}</p>
               <h1 className="mt-4 font-display text-[clamp(2.6rem,5vw,5.4rem)] leading-[0.96] text-ink">{title}</h1>
             </div>
             <p className="max-w-xl text-base leading-7 text-charcoal/68 lg:justify-self-end">{description}</p>
@@ -97,8 +97,8 @@ export function DashboardShell({
 
 export function MetricPanel({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
-    <div className="group border border-ink/10 bg-ivory/88 p-6 shadow-[0_18px_70px_rgba(17,17,15,0.045)] backdrop-blur-sm transition duration-300 ease-premium-out hover:-translate-y-1 hover:border-gold/35 hover:shadow-card-hover">
-      <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">{label}</p>
+    <div className="group border border-hairline bg-ivory/92 p-6 shadow-[0_18px_70px_rgba(17,17,15,0.045)] backdrop-blur-sm transition duration-300 ease-premium-out hover:-translate-y-1 hover:border-primary/35 hover:shadow-card-hover">
+      <p className="text-xs uppercase tracking-[0.24em] text-primary">{label}</p>
       <p className="mt-5 font-display text-5xl leading-none text-ink">{value}</p>
       <p className="mt-4 text-sm leading-6 text-charcoal/62">{detail}</p>
     </div>
@@ -152,7 +152,7 @@ export function EmptyState({ title, description, actionLabel, actionHref }: { ti
       <h3 className="font-display text-2xl text-ink">{title}</h3>
       <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-charcoal/55">{description}</p>
       {actionLabel && actionHref && (
-        <Link href={actionHref} className="mt-6 inline-flex min-h-11 items-center bg-ink px-6 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.98]">
+        <Link href={actionHref} className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cta px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98]">
           {actionLabel}
         </Link>
       )}

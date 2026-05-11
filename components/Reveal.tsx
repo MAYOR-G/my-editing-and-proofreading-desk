@@ -9,7 +9,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-type RevealVariant = "fadeUp" | "fadeLeft" | "fadeRight" | "scale";
+type RevealVariant = "fadeUp" | "fadeDown" | "fadeLeft" | "fadeRight" | "scale" | "clipUp" | "softBlur";
 
 type RevealProps = {
   children: ReactNode;
@@ -18,11 +18,20 @@ type RevealProps = {
   variant?: RevealVariant;
 };
 
-const variantConfig: Record<RevealVariant, { from: gsap.TweenVars }> = {
-  fadeUp: { from: { autoAlpha: 0, y: 28 } },
-  fadeLeft: { from: { autoAlpha: 0, x: -28 } },
-  fadeRight: { from: { autoAlpha: 0, x: 28 } },
-  scale: { from: { autoAlpha: 0, scale: 0.96 } }
+const variantConfig: Record<RevealVariant, { from: gsap.TweenVars; to?: gsap.TweenVars }> = {
+  fadeUp: { from: { autoAlpha: 0, y: 54 } },
+  fadeDown: { from: { autoAlpha: 0, y: -38 } },
+  fadeLeft: { from: { autoAlpha: 0, x: -72 } },
+  fadeRight: { from: { autoAlpha: 0, x: 72 } },
+  scale: { from: { autoAlpha: 0, scale: 0.94 } },
+  clipUp: {
+    from: { autoAlpha: 0, y: 34, clipPath: "inset(18% 0% 0% 0%)" },
+    to: { clipPath: "inset(0% 0% 0% 0%)" }
+  },
+  softBlur: {
+    from: { autoAlpha: 0, y: 24, filter: "blur(10px)" },
+    to: { filter: "blur(0px)" }
+  }
 };
 
 export function Reveal({ children, className, delay = 0, variant = "fadeUp" }: RevealProps) {
@@ -46,12 +55,13 @@ export function Reveal({ children, className, delay = 0, variant = "fadeUp" }: R
           y: 0,
           x: 0,
           scale: 1,
-          duration: 1,
+          ...config.to,
+          duration: variant === "clipUp" ? 1.05 : 0.9,
           delay: delay,
-          ease: "power3.out",
+          ease: "expo.out",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 90%",
+            start: "top 86%",
             once: true,
           },
         }

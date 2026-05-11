@@ -1,5 +1,6 @@
 export const MINIMUM_ORDER = 30;
 export const MAX_AUTOMATIC_WORD_COUNT = 50000;
+export const SERVICE_CHARGE_PERCENTAGE = 5;
 
 export const DOCUMENT_TYPES = [
   "Journal Article",
@@ -21,16 +22,36 @@ export const DOCUMENT_TYPES = [
 ] as const;
 
 export const FORMATTING_STYLES = [
-  "None / Standard Consistency",
   "APA",
   "MLA",
   "Chicago",
   "Harvard",
   "IEEE",
   "Vancouver",
-  "OSCOLA",
   "Turabian",
-  "Journal-specific formatting",
+  "OSCOLA",
+  "AMA",
+  "Bluebook",
+  "Business report format",
+  "Thesis/dissertation format",
+  "Journal submission format",
+  "Non-standard consistency",
+  "Custom formatting",
+  "Other",
+] as const;
+
+export const TRANSLATION_OPTIONS = [
+  "Keep original text",
+  "Translate to English",
+  "Translate to French",
+  "Translate to German",
+  "Translate to Spanish",
+  "Translate to Chinese",
+  "Translate to Arabic",
+  "Translate to Portuguese",
+  "Translate to Italian",
+  "Translate to Japanese",
+  "Translate to Korean",
   "Other",
 ] as const;
 
@@ -86,12 +107,17 @@ export const TURNAROUND_OPTIONS = [
 
 export type PriceBreakdown = {
   wordCount: number;
+  serviceTypes: string[];
   serviceType: string;
   turnaroundDays: number;
   turnaroundLabel: string;
   baseRate: number;
   multiplier: number;
   calculatedPrice: number;
+  subtotal: number;
+  serviceChargePercentage: number;
+  serviceChargeAmount: number;
+  finalTotal: number;
   finalPrice: number;
   minimumApplied: boolean;
 };
@@ -104,6 +130,13 @@ export type PricingValidation = {
 
 export function getServiceOption(serviceType: string) {
   return SERVICE_OPTIONS.find((service) => service.label === serviceType) ?? SERVICE_OPTIONS[1];
+}
+
+export function normalizeSelectedServices(serviceTypes: string[] | string | null | undefined) {
+  const rawServices = Array.isArray(serviceTypes) ? serviceTypes : serviceTypes ? [serviceTypes] : [];
+  const validServiceLabels = new Set<string>(SERVICE_OPTIONS.map((service) => service.label));
+  const selected = rawServices.filter((service, index, array) => validServiceLabels.has(service) && array.indexOf(service) === index);
+  return selected.length > 0 ? selected : [SERVICE_OPTIONS[1].label];
 }
 
 export function getTurnaroundOption(turnaround: string | number) {
@@ -178,26 +211,35 @@ export function validateAutomaticPricing(wordCount: number, turnaround: string |
   return { allowed: true };
 }
 
-export function calculatePrice(wordCount: number, serviceType: string, turnaround: string | number): PriceBreakdown {
+export function calculatePrice(wordCount: number, serviceTypes: string[] | string, turnaround: string | number): PriceBreakdown {
   const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 0));
-  const service = getServiceOption(serviceType);
+  const selectedServices = normalizeSelectedServices(serviceTypes);
+  const serviceOptions = selectedServices.map((service) => getServiceOption(service));
   const turnaroundOption = getTurnaroundOption(turnaround);
-  const calculatedPrice = Number((safeWordCount * service.rate * turnaroundOption.multiplier).toFixed(2));
-  const finalPrice = Math.max(MINIMUM_ORDER, calculatedPrice);
+  const baseRate = serviceOptions.reduce((sum, service) => sum + service.rate, 0);
+  const calculatedPrice = Number((safeWordCount * baseRate * turnaroundOption.multiplier).toFixed(2));
+  const subtotal = Number(Math.max(MINIMUM_ORDER, calculatedPrice).toFixed(2));
+  const serviceChargeAmount = Number((subtotal * (SERVICE_CHARGE_PERCENTAGE / 100)).toFixed(2));
+  const finalTotal = Number((subtotal + serviceChargeAmount).toFixed(2));
 
   return {
     wordCount: safeWordCount,
-    serviceType: service.label,
+    serviceTypes: selectedServices,
+    serviceType: selectedServices.join(", "),
     turnaroundDays: turnaroundOption.days,
     turnaroundLabel: turnaroundOption.label,
-    baseRate: service.rate,
+    baseRate,
     multiplier: turnaroundOption.multiplier,
     calculatedPrice,
-    finalPrice: Number(finalPrice.toFixed(2)),
+    subtotal,
+    serviceChargePercentage: SERVICE_CHARGE_PERCENTAGE,
+    serviceChargeAmount,
+    finalTotal,
+    finalPrice: finalTotal,
     minimumApplied: calculatedPrice < MINIMUM_ORDER,
   };
 }
 
-export function calculateServerPrice(wordCount: number, serviceType: string, turnaround: string | number): number {
-  return calculatePrice(wordCount, serviceType, turnaround).finalPrice;
+export function calculateServerPrice(wordCount: number, serviceTypes: string[] | string, turnaround: string | number): number {
+  return calculatePrice(wordCount, serviceTypes, turnaround).finalTotal;
 }

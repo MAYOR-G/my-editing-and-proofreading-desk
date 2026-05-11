@@ -1,76 +1,82 @@
-import { 
-  Telescope, 
-  Dna, 
-  FlaskConical, 
-  Laptop, 
-  Briefcase, 
-  TrendingUp, 
-  Scale, 
-  Leaf, 
-  Landmark, 
-  BookOpen, 
-  CheckCircle, 
-  BrainCircuit, 
-  Church,
-  Settings,
-  Stethoscope,
+"use client";
+
+import {
+  BadgePlus,
+  BookMarked,
+  Briefcase,
   Calculator,
-  Atom,
-  Library,
-  Feather,
-  Users
+  Dna,
+  ExternalLink,
+  FlaskConical,
+  Gavel,
+  Laptop,
+  Megaphone,
+  Microscope,
+  Pill,
+  Search,
+  Sigma,
+  Stethoscope,
+  Telescope,
+  Zap
 } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import { useState } from "react";
+import { WorkPreviewModal } from "@/components/home/WorkPreviewModal";
+import { type WorkExample, type WorkExampleKey, workExamples } from "@/lib/work-example-data";
 
-const fields = [
-  { name: "Astrophysics", icon: Telescope },
-  { name: "Biology", icon: Dna },
-  { name: "Chemistry", icon: FlaskConical },
-  { name: "Computing", icon: Laptop },
-  { name: "Engineering", icon: Settings },
-  { name: "Medicine", icon: Stethoscope },
-  { name: "Mathematics", icon: Calculator },
-  { name: "Physics", icon: Atom },
-  { name: "CV & Resume", icon: Briefcase },
-  { name: "Economics", icon: TrendingUp },
-  { name: "Law", icon: Scale },
-  { name: "Life Science", icon: Leaf },
-  { name: "Political Science", icon: Landmark },
-  { name: "Sociology", icon: Users },
-  { name: "History", icon: Library },
-  { name: "Literature", icon: Feather },
-  { name: "MLA Formatting", icon: BookOpen },
-  { name: "Reference Checks", icon: CheckCircle },
-  { name: "Psychology", icon: BrainCircuit },
-  { name: "Theology", icon: Church },
-];
+const fieldIcons: Record<WorkExampleKey, typeof Search> = {
+  apa: Search,
+  astrophysics: Telescope,
+  biology: Dna,
+  chemistry: FlaskConical,
+  chicago: Search,
+  computing: Laptop,
+  cv: Briefcase,
+  economics: Calculator,
+  electrical: Zap,
+  law: Gavel,
+  "life-sciences": Microscope,
+  marketing: Megaphone,
+  mla: Search,
+  nursing: Stethoscope,
+  oscola: Search,
+  pharmaceuticals: Pill,
+  philosophy: Sigma,
+  "political-science": BookMarked,
+  psychology: BadgePlus,
+  theology: BookMarked
+};
 
 export function FieldsCovered() {
-  return (
-    <section className="bg-paper py-32 px-5 sm:px-10 border-b border-ink/5 relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-gold/5 blur-[100px] rounded-full pointer-events-none -translate-y-1/2" />
-      
-      <div className="max-w-screen-xl mx-auto relative z-10">
-        <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">Specialized Fields</h2>
-            <p className="mt-6 text-ink/70 text-lg leading-relaxed">
-              Our editors hold advanced degrees across dozens of disciplines, ensuring your document is reviewed by a true subject-matter expert.
-            </p>
-          </div>
-        </Reveal>
+  const [selectedExample, setSelectedExample] = useState<WorkExample | null>(null);
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {fields.map((field, idx) => (
-            <Reveal key={field.name} delay={idx * 0.03}>
-              <div className="flex flex-col items-center justify-center p-8 bg-charcoal border border-ink/10 rounded-2xl hover:border-gold/30 hover:bg-ink transition-all duration-300 group h-full shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-                <field.icon className="w-8 h-8 text-gold/80 mb-4 group-hover:scale-110 group-hover:text-gold transition-all duration-300" strokeWidth={1.5} />
-                <span className="text-sm font-medium text-ivory/80 text-center group-hover:text-ivory transition-colors">{field.name}</span>
-              </div>
-            </Reveal>
-          ))}
+  return (
+    <section className="bg-white pb-28 pt-8 px-5 sm:px-10 border-b border-ink/5 relative overflow-hidden">
+      <div className="max-w-screen-xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {workExamples.map((field, idx) => {
+            const Icon = fieldIcons[field.key];
+
+            return (
+              <Reveal key={field.key} delay={idx * 0.025} variant={idx % 4 === 0 ? "fadeRight" : idx % 4 === 1 ? "clipUp" : idx % 4 === 2 ? "fadeLeft" : "scale"}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedExample(field)}
+                  className="group flex min-h-[4.625rem] w-full items-center justify-between gap-4 rounded-lg bg-[#202b35] px-5 py-4 text-left text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#17212b] hover:shadow-md"
+                  aria-label={`Open ${field.title} sample edited document preview`}
+                >
+                  <div className="flex min-w-0 items-center gap-4">
+                    <Icon className="h-8 w-8 shrink-0 text-[#2393ff]" strokeWidth={2.25} />
+                    <span className="text-sm font-semibold leading-5 tracking-tight">{field.title}</span>
+                  </div>
+                  <ExternalLink className="h-5 w-5 shrink-0 text-white/60 transition-colors group-hover:text-white" aria-hidden="true" />
+                </button>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
+      <WorkPreviewModal example={selectedExample} onClose={() => setSelectedExample(null)} />
     </section>
   );
 }

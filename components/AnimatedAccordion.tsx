@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 type AccordionItem = {
   question: string;
@@ -10,12 +11,53 @@ type AccordionItem = {
 
 type AnimatedAccordionProps = {
   items: AccordionItem[];
-  tone?: "light" | "dark";
+  tone?: "light" | "dark" | "card";
 };
 
-function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; isOpen: boolean; onToggle: () => void; tone: "light" | "dark" }) {
+function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; isOpen: boolean; onToggle: () => void; tone: "light" | "dark" | "card" }) {
   const isDark = tone === "dark";
+  const isCard = tone === "card";
   
+  if (isCard) {
+    return (
+      <div className="bg-white border border-ink/5 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="group flex w-full cursor-pointer items-center justify-between gap-6 p-5 sm:p-6 text-left text-base sm:text-lg font-semibold text-ink hover:text-primary transition-colors"
+          aria-expanded={isOpen}
+        >
+          <span className="pr-4">{item.question}</span>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f0f7ff] text-primary transition-transform duration-300">
+            <motion.div
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <ChevronDown className="w-4 h-4" strokeWidth={3} />
+            </motion.div>
+          </span>
+        </button>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
+                <p className="text-sm sm:text-base leading-relaxed text-charcoal/70">
+                  {item.answer}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
   return (
     <div className={`border-b ${isDark ? "border-ivory/10" : "border-ink/10"} last:border-b-0`}>
       <button
@@ -61,6 +103,22 @@ function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; i
 
 export function AnimatedAccordion({ items, tone = "light" }: AnimatedAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  if (tone === "card") {
+    return (
+      <div className="flex flex-col gap-4">
+        {items.map((item, index) => (
+          <AccordionRow
+            key={item.question}
+            item={item}
+            isOpen={openIndex === index}
+            onToggle={() => setOpenIndex(openIndex === index ? null : index)}
+            tone={tone}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={`border-t ${tone === "dark" ? "border-ivory/10" : "border-ink/10"}`}>

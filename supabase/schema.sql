@@ -48,8 +48,12 @@ CREATE TABLE public.projects (
   friendly_id TEXT UNIQUE NOT NULL, -- e.g., MEP-1024
   title TEXT NOT NULL,
   service_type TEXT NOT NULL,
+  selected_services JSONB DEFAULT '[]'::jsonb NOT NULL,
   document_type TEXT DEFAULT 'Other' NOT NULL,
   formatting_style TEXT DEFAULT 'None / Standard Consistency' NOT NULL,
+  formatting_instructions TEXT,
+  translation_preference TEXT,
+  translation_target_language TEXT,
   english_type TEXT DEFAULT 'No preference' NOT NULL,
   turnaround TEXT NOT NULL,
   turnaround_days INTEGER,
@@ -57,11 +61,15 @@ CREATE TABLE public.projects (
   word_count INTEGER NOT NULL,
   price NUMERIC(10, 2) NOT NULL,
   calculated_price NUMERIC(10, 2),
+  subtotal NUMERIC(10, 2),
+  service_charge_percentage NUMERIC(5, 2) DEFAULT 5 NOT NULL,
+  service_charge_amount NUMERIC(10, 2),
   final_price NUMERIC(10, 2),
   minimum_applied BOOLEAN DEFAULT false NOT NULL,
   status project_status DEFAULT 'In Progress'::project_status NOT NULL,
   payment_status payment_status DEFAULT 'pending'::payment_status NOT NULL,
   payment_provider TEXT,           -- 'paystack' | 'flutterwave' | 'stripe' | 'paypal'
+  selected_payment_method TEXT,
   payment_reference TEXT UNIQUE,
   transaction_reference TEXT UNIQUE, -- Provider transaction reference
   transaction_id TEXT,             -- Provider unique transaction ID
@@ -125,6 +133,44 @@ CREATE POLICY "Clients can view own payment records" ON public.payment_records F
 CREATE POLICY "Admins can view all payment records" ON public.payment_records FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
+
+-- 5. Payment Settings Table
+CREATE TABLE public.payment_settings (
+  id TEXT PRIMARY KEY DEFAULT 'default',
+  paystack_enabled BOOLEAN DEFAULT true NOT NULL,
+  flutterwave_enabled BOOLEAN DEFAULT false NOT NULL,
+  paypal_enabled BOOLEAN DEFAULT false NOT NULL,
+  stripe_enabled BOOLEAN DEFAULT false NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+INSERT INTO public.payment_settings (
+  id,
+  paystack_enabled,
+  flutterwave_enabled,
+  paypal_enabled,
+  stripe_enabled
+)
+VALUES ('default', true, false, false, false)
+ON CONFLICT (id) DO NOTHING;
+
+ALTER TABLE public.payment_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can view payment settings" ON public.payment_settings
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admins can update payment settings" ON public.payment_settings
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  )
+  WITH CHECK (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+CREATE POLICY "Admins can insert payment settings" ON public.payment_settings
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- 5. Messages/Support Notes Table
 CREATE TABLE public.messages (

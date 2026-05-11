@@ -8,6 +8,12 @@ function formatProvider(provider?: string | null) {
   return provider.charAt(0).toUpperCase() + provider.slice(1);
 }
 
+function formatServices(project: { selected_services?: unknown; service_type?: string | null }) {
+  return Array.isArray(project.selected_services) && project.selected_services.length > 0
+    ? project.selected_services.join(", ")
+    : project.service_type || "Editorial Service";
+}
+
 export default async function DashboardActivePage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -48,10 +54,11 @@ export default async function DashboardActivePage() {
                   <StatusBadge>{project.status}</StatusBadge>
                   <span className="text-xs uppercase tracking-[0.2em] text-charcoal/48">{project.friendly_id}</span>
                 </div>
-                <h3 className="mt-4 font-display text-3xl leading-tight text-ink">{project.service_type || "Editorial Service"}</h3>
+                <h3 className="mt-4 font-display text-3xl leading-tight text-ink">{formatServices(project)}</h3>
                 <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-light text-charcoal/62">
                   <span>{project.document_type || "Document"}</span>
-                  <span>{project.formatting_style || "Standard formatting"}</span>
+                  {project.formatting_style ? <span>{project.formatting_style}</span> : null}
+                  {project.translation_preference ? <span>{project.translation_preference}</span> : null}
                   <span>{project.english_type || "No preference"}</span>
                   <span>{project.word_count} words</span>
                   <span>{project.turnaround}</span>

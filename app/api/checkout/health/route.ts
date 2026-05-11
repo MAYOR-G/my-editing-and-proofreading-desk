@@ -9,8 +9,12 @@ const PROJECT_COLUMNS = [
   "client_id",
   "title",
   "service_type",
+  "selected_services",
   "document_type",
   "formatting_style",
+  "formatting_instructions",
+  "translation_preference",
+  "translation_target_language",
   "english_type",
   "turnaround",
   "turnaround_days",
@@ -18,12 +22,16 @@ const PROJECT_COLUMNS = [
   "word_count",
   "price",
   "calculated_price",
+  "subtotal",
+  "service_charge_percentage",
+  "service_charge_amount",
   "final_price",
   "minimum_applied",
   "upload_file_path",
   "uploaded_file_path",
   "payment_status",
   "payment_provider",
+  "selected_payment_method",
   "payment_reference",
   "transaction_reference",
   "payment_currency",
@@ -72,9 +80,10 @@ export async function GET() {
 
   try {
     const supabase = createSupabaseAdminClient();
-    const [projects, paymentRecords, buckets] = await Promise.all([
+    const [projects, paymentRecords, paymentSettings, buckets] = await Promise.all([
       supabase.from("projects").select(PROJECT_COLUMNS).limit(1),
       supabase.from("payment_records").select("id,order_id,user_id,provider,transaction_reference,amount,currency,status").limit(1),
+      supabase.from("payment_settings").select("id,paystack_enabled,flutterwave_enabled,paypal_enabled,stripe_enabled,updated_at").limit(1),
       supabase.storage.listBuckets(),
     ]);
 
@@ -88,6 +97,11 @@ export async function GET() {
         ok: !paymentRecords.error,
         code: paymentRecords.error?.code || null,
         message: paymentRecords.error?.message || null,
+      },
+      payment_settings_schema: {
+        ok: !paymentSettings.error,
+        code: paymentSettings.error?.code || null,
+        message: paymentSettings.error?.message || null,
       },
       buckets: {
         ok: !buckets.error,

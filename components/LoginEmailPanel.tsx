@@ -19,9 +19,9 @@ export function LoginEmailPanel() {
   };
 
   return (
-    <form action={submit} className="border border-ink/10 bg-paper p-6 shadow-[0_24px_80px_rgba(17,17,15,0.055)] sm:p-8">
-      <p className="text-xs uppercase tracking-[0.28em] text-gold-deep">Client access</p>
-      <h2 className="mt-4 font-display text-4xl leading-tight text-ink">Enter your credentials to open your desk.</h2>
+    <form action={submit} className="border border-hairline bg-surface-soft p-6 shadow-[0_24px_80px_rgba(17,17,15,0.055)] sm:p-8">
+      <p className="text-xs uppercase tracking-[0.28em] text-primary">Client access</p>
+      <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] leading-tight text-ink">Enter your credentials to open your desk.</h2>
       
       {error && (
         <div className="mt-4 flex items-start gap-3 border border-red-900/20 bg-red-50 p-3 text-sm text-red-800">
@@ -41,7 +41,7 @@ export function LoginEmailPanel() {
             type="email"
             autoComplete="email"
             placeholder="client@example.com"
-            className="min-h-[3.25rem] border border-ink/12 bg-ivory px-4 text-base text-ink placeholder:text-charcoal/35 transition duration-200 ease-premium-out focus:border-gold focus:shadow-[0_0_0_3px_rgba(176,138,60,0.08)]"
+            className="min-h-[3.25rem] border border-hairline bg-ivory px-4 text-base text-ink placeholder:text-charcoal/35 transition duration-200 ease-premium-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(23,74,124,0.08)]"
           />
         </label>
         <label className="grid gap-2 text-sm text-charcoal/70">
@@ -52,7 +52,7 @@ export function LoginEmailPanel() {
             type="password"
             autoComplete="current-password"
             placeholder="••••••••"
-            className="min-h-[3.25rem] border border-ink/12 bg-ivory px-4 text-base text-ink placeholder:text-charcoal/35 transition duration-200 ease-premium-out focus:border-gold focus:shadow-[0_0_0_3px_rgba(176,138,60,0.08)]"
+            className="min-h-[3.25rem] border border-hairline bg-ivory px-4 text-base text-ink placeholder:text-charcoal/35 transition duration-200 ease-premium-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(23,74,124,0.08)]"
           />
         </label>
       </div>
@@ -60,7 +60,7 @@ export function LoginEmailPanel() {
       <div className="mt-4 flex items-center justify-between">
         <Link
           href="/forgot-password"
-          className="text-sm text-charcoal/55 transition duration-200 hover:text-gold-deep"
+          className="text-sm text-charcoal/55 transition duration-200 hover:text-primary"
         >
           Forgot password?
         </Link>
@@ -68,7 +68,7 @@ export function LoginEmailPanel() {
       
       <button 
         disabled={isPending}
-        className="mt-6 min-h-12 w-full bg-ink px-6 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.99] disabled:opacity-50"
+        className="mt-6 min-h-12 w-full rounded-full bg-primary px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.99] disabled:opacity-50"
       >
         {isPending ? (
           <span className="flex items-center justify-center gap-2">
@@ -81,7 +81,7 @@ export function LoginEmailPanel() {
       </button>
 
       <p className="mt-6 text-center text-sm text-charcoal/50">
-        New here? <Link href="/signup" className="text-gold-deep transition hover:text-ink">Create an account</Link>
+        New here? <Link href="/signup" className="text-cta transition hover:text-cta-active">Create an account</Link>
       </p>
     </form>
   );

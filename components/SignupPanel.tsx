@@ -128,7 +128,7 @@ export function SignupPanel() {
 
           <button 
             disabled={isPending}
-            className="mt-2 inline-flex min-h-12 w-full items-center justify-center bg-ink px-7 text-sm text-ivory transition duration-200 ease-premium-out hover:bg-gold-deep active:scale-[0.98] disabled:opacity-50"
+            className="mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-cta px-7 text-sm font-medium text-white shadow-[0_14px_32px_rgba(31,143,90,0.18)] transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98] disabled:opacity-50"
           >
             {isPending ? (
               <span className="flex items-center gap-2">

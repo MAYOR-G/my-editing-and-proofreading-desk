@@ -1,60 +1,57 @@
-import { CareVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
-import { BackgroundCarousel } from "@/components/BackgroundCarousel";
 
 const values = [
-  "Premium editorial judgment without noisy process",
-  "Confidential handling for every uploaded document",
-  "Clear communication from submission to delivery",
-  "A polished client experience around serious work"
-];
-
-const aboutImages = [
-  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80"
+  {
+    title: "Human editorial care",
+    body: "We review writing with judgment, context, and respect for the author’s voice."
+  },
+  {
+    title: "Private document handling",
+    body: "Sensitive academic, business, and personal materials are treated with discretion."
+  },
+  {
+    title: "Clear project flow",
+    body: "Clients can move from service fit to pricing, upload, review, and delivery without noise."
+  },
+  {
+    title: "Submission-ready polish",
+    body: "The goal is cleaner structure, stronger sentences, and a final document that feels prepared."
+  }
 ];
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-screen">
-      <BackgroundCarousel 
-        images={aboutImages} 
-        className="fixed inset-0" 
-        overlayClassName="bg-ivory/88 backdrop-blur-[2px]"
-      />
-      
-      <div className="relative z-10">
-        <PublicPageShell
-          eyebrow="About"
-          title="A calm desk for important documents."
-          description="My Editing and Proofreading Desk exists for clients who need their writing handled with care, discretion, and exacting editorial standards."
-          isTransparent={true}
-        >
-          <section className="px-5 py-20 sm:px-8 lg:py-28 backdrop-blur-sm bg-ivory/80">
-            <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1fr] lg:items-center">
-              <div className="max-w-4xl">
-                <p className="font-display text-[clamp(2.4rem,5vw,4.8rem)] leading-[0.98] text-ink">
-                  The work is simple to describe: improve the document, protect the voice, and make the final file feel ready for its audience.
-                </p>
-                <div className="mt-10 grid gap-8 text-lg leading-8 text-charcoal/80">
-                  <p>
-                    The platform is designed around a premium editorial workflow: clients can submit documents, understand pricing, track progress, and receive completed files from one organized workspace.
-                  </p>
-                  <p>
-                    The brand serves students, academic researchers, authors, business professionals, and general clients who want serious writing to be cleaner, sharper, and easier to trust.
-                  </p>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {values.map((value) => (
-                      <div key={value} className="border-t border-ink/20 pt-4 text-base font-medium text-ink bg-ivory/50 p-4 shadow-sm">{value}</div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+    <PublicPageShell
+      eyebrow="About"
+      title="A calm desk for important documents."
+      description="My Editing and Proofreading Desk exists for clients who need their writing handled with care, discretion, and exacting editorial standards."
+    >
+      <section className="bg-canvas px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          <div className="max-w-4xl">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Our philosophy</p>
+            <p className="font-display text-[clamp(2.4rem,5vw,4.8rem)] leading-[0.98] text-ink">
+              The work is simple to describe: improve the document, protect the voice, and make the final file feel ready for its audience.
+            </p>
+            <div className="mt-10 grid gap-8 text-lg leading-8 text-body">
+              <p>
+                The platform is designed around a premium editorial workflow: clients can submit documents, understand pricing, track progress, and receive completed files from one organized workspace.
+              </p>
+              <p>
+                The brand serves students, academic researchers, authors, business professionals, and general clients who want serious writing to be cleaner, sharper, and easier to trust.
+              </p>
             </div>
-          </section>
-        </PublicPageShell>
-      </div>
-    </div>
+          </div>
+          <div className="grid gap-4">
+            {values.map((value) => (
+              <article key={value.title} className="rounded-2xl border border-hairline bg-surface-soft p-6 shadow-sm transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:border-primary/35 hover:bg-canvas">
+                <h2 className="font-display text-2xl leading-tight text-ink">{value.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-body">{value.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PublicPageShell>
   );
 }
