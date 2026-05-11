@@ -10,7 +10,17 @@ import {
   SERVICE_OPTIONS,
   TRANSLATION_OPTIONS,
   TURNAROUND_OPTIONS,
+  CUSTOM_REVIEW_MESSAGE,
+  TURNAROUND_SUPPORT_MESSAGE,
   calculatePrice,
+  getNextValidTurnaroundDays,
+  getStandardTurnaroundDays,
+  getTurnaroundAdjustmentNotice,
+  getTurnaroundLimitMessage,
+  getValidTurnaroundOptions,
+  isCustomReviewRequired,
+  isTurnaroundAllowedForWordCount,
+  isWritingSupportService,
   type PricingValidation,
   validateAutomaticPricing,
 } from "@/lib/pricing";
@@ -65,6 +75,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [file, setFile] = useState<File | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
   const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState("");
   const [selectedServices, setSelectedServices] = useState<string[]>(["Editing"]);
   const [turnaroundDays, setTurnaroundDays] = useState(14);
 
@@ -78,21 +89,37 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [isLoadingPaymentSettings, setIsLoadingPaymentSettings] = useState(true);
   const [paymentSettingsError, setPaymentSettingsError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [pricingNotice, setPricingNotice] = useState("");
 
   const priceBreakdown = wordCount ? calculatePrice(wordCount, selectedServices, turnaroundDays) : null;
-  const price = priceBreakdown?.finalTotal ?? 0;
+  const isWritingSupport = isWritingSupportService(selectedServices);
+  const customReviewRequired = Boolean(wordCount && !isWritingSupport && isCustomReviewRequired(wordCount));
+  const validTurnaroundOptions = useMemo(() => getValidTurnaroundOptions(wordCount ?? 1, selectedServices), [selectedServices, wordCount]);
+  const price = priceBreakdown?.finalPrice ?? 0;
+  const finalPaymentTotal = priceBreakdown?.finalTotal ?? 0;
   const subtotal = priceBreakdown?.subtotal ?? 0;
   const serviceChargeAmount = priceBreakdown?.serviceChargeAmount ?? 0;
   const serviceChargePercentage = priceBreakdown?.serviceChargePercentage ?? 5;
   const turnaround = priceBreakdown?.turnaroundLabel ?? "14 days";
-  const validation: PricingValidation = wordCount ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
+  const validation: PricingValidation = wordCount && !isWritingSupport ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
   const checkoutBlocked = !validation.allowed;
+  const standardDays = getStandardTurnaroundDays(wordCount ?? 1);
   const selectedProviderLabel = PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack";
   const activePaymentProviders = useMemo(() => {
     if (!paymentSettings) return [];
     return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`]);
   }, [paymentSettings]);
   const hasAvailablePaymentMethods = activePaymentProviders.length > 0;
+
+  useEffect(() => {
+    if (!wordCount || isWritingSupport || customReviewRequired) return;
+    if (isTurnaroundAllowedForWordCount(wordCount, turnaroundDays, selectedServices)) return;
+
+    const nextDays = getNextValidTurnaroundDays(wordCount, turnaroundDays, selectedServices);
+    const nextNotice = getTurnaroundAdjustmentNotice(wordCount, turnaroundDays);
+    setTurnaroundDays(nextDays);
+    if (nextNotice) setPricingNotice(nextNotice);
+  }, [customReviewRequired, isWritingSupport, selectedServices, turnaroundDays, wordCount]);
 
   useEffect(() => {
     let cancelled = false;
@@ -164,9 +191,14 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const toggleService = (service: string) => {
     setFieldErrors({});
     setSelectedServices((current) => {
+      if (service === "Writing Support") {
+        setPricingNotice("Writing Support is offered as a fixed service package.");
+        return current.includes("Writing Support") ? ["Editing"] : ["Writing Support"];
+      }
+
       const nextServices = current.includes(service)
         ? current.filter((item) => item !== service)
-        : [...current, service];
+        : [...current.filter((item) => item !== "Writing Support"), service];
 
       if (!includesFormattingService(nextServices)) {
         setFormattingStyle("");
@@ -182,20 +214,46 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     });
   };
 
+  const handleTurnaroundSelect = (days: number) => {
+    if (!wordCount) {
+      setTurnaroundDays(days);
+      return;
+    }
+
+    if (!isTurnaroundAllowedForWordCount(wordCount, days, selectedServices)) {
+      const nextDays = getNextValidTurnaroundDays(wordCount, days, selectedServices);
+      setTurnaroundDays(nextDays);
+      setPricingNotice(getTurnaroundAdjustmentNotice(wordCount, days) || TURNAROUND_SUPPORT_MESSAGE);
+      return;
+    }
+
+    setTurnaroundDays(days);
+  };
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
     setFile(selectedFile);
     setIsParsing(true);
     setWordCount(null);
+    setParseError("");
+    setPricingNotice("");
     const formData = new FormData();
     formData.append("file", selectedFile);
     try {
       const res = await fetch("/api/parse-document", { method: "POST", body: formData });
       const data = await res.json();
-      if (data.wordCount) setWordCount(data.wordCount);
-      else alert(data.error || "Failed to parse document");
-    } catch { alert("Error uploading file."); }
+      if (!res.ok || !data.wordCount) {
+        setParseError(data.error || "We could not calculate a reliable word count. Please re-upload the file or contact support.");
+        return;
+      }
+
+      const detectedWordCount = Math.max(1, Math.round(Number(data.wordCount)));
+      setWordCount(detectedWordCount);
+      if (detectedWordCount > 50000) setPricingNotice(CUSTOM_REVIEW_MESSAGE);
+    } catch {
+      setParseError("We could not read this file. Please re-upload a .docx or .txt file, or contact support if the issue continues.");
+    }
     finally { setIsParsing(false); }
   };
 
@@ -363,8 +421,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         {step === 2 && (
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Upload document</h2>
-            <p className="mb-4 text-sm text-charcoal/68">We will extract the word count to calculate your exact rate.</p>
-            <div className="relative border-2 border-dashed border-primary/25 bg-primary/5 p-10 text-center transition hover:bg-primary/10">
+            <p className="mb-4 text-sm text-charcoal/68">We will calculate the word count from your uploaded file and use it for pricing.</p>
+            <div className="relative rounded-2xl border border-dashed border-primary/25 bg-primary/5 p-10 text-center shadow-[0_18px_55px_rgba(23,74,124,0.045)] transition duration-300 ease-premium-out hover:border-primary/45 hover:bg-primary/10 hover:shadow-[0_24px_70px_rgba(23,74,124,0.07)]">
               <input type="file" accept=".docx,.txt" onChange={handleFileSelect} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               <div className="grid gap-3 justify-items-center pointer-events-none">
                 <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
@@ -372,11 +430,36 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                 <p className="text-sm text-charcoal/55">Supports .docx and .txt files</p>
               </div>
             </div>
-            {isParsing && <div className="border border-primary/20 bg-primary/10 p-4 text-center text-primary animate-pulse">Extracting text and calculating word count...</div>}
+            {isParsing && <div className="rounded-xl border border-primary/20 bg-primary/10 p-4 text-center text-primary animate-pulse">Extracting text and calculating word count...</div>}
+            {parseError ? (
+              <div className="rounded-xl border border-primary/20 bg-surface-soft p-5 text-sm leading-6 text-charcoal/72">
+                <p className="font-semibold text-ink">Word count could not be detected</p>
+                <p className="mt-1">{parseError}</p>
+                <a href="/contact" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary transition hover:bg-primary hover:text-white">
+                  Contact Support
+                </a>
+              </div>
+            ) : null}
             {wordCount !== null && (
-              <div className="flex items-center justify-between border border-cta/20 bg-cta-soft p-6">
-                <div><p className="mb-1 text-xs uppercase tracking-widest text-cta">Confirmed length</p><p className="font-display text-3xl text-ink">{wordCount.toLocaleString()} words</p></div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cta text-white">✓</div>
+              <div className="grid gap-4 rounded-2xl border border-cta/20 bg-cta-soft p-6 shadow-[0_18px_55px_rgba(31,143,90,0.055)]">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="mb-1 text-xs uppercase tracking-widest text-cta">Detected word count</p>
+                    <p className="font-display text-3xl text-ink">{wordCount.toLocaleString()} words</p>
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-charcoal/62">
+                      Pricing is based on the word count detected from your uploaded file.
+                    </p>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cta text-white">✓</div>
+                </div>
+                {customReviewRequired ? (
+                  <div className="rounded-lg border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
+                    <p>{CUSTOM_REVIEW_MESSAGE}</p>
+                    <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/40 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                      Request Custom Quote
+                    </a>
+                  </div>
+                ) : null}
               </div>
             )}
           </div>
@@ -511,10 +594,10 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     ) : null}
                   </div>
                 )}
-                <div className="grid gap-3 text-sm text-charcoal/72">
+                <div className={`grid gap-3 text-sm text-charcoal/72 ${isWritingSupport || customReviewRequired ? "opacity-60" : ""}`}>
                   <div className="flex items-center justify-between gap-4">
                     <span>Turnaround Time</span>
-                    <span className="text-primary">{turnaround}</span>
+                    <span className="text-primary">{isWritingSupport ? "Fixed package" : turnaround}</span>
                   </div>
                   <input
                     aria-label="Turnaround time"
@@ -523,51 +606,59 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     max={28}
                     step={1}
                     value={turnaroundDays}
-                    onChange={(event) => setTurnaroundDays(Number(event.target.value))}
+                    disabled={isWritingSupport || customReviewRequired}
+                    onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
                     className="w-full accent-[#174a7c]"
                   />
                   <div className="grid grid-cols-4 gap-2">
                     {[1, 2, 3, 7, 14, 21, 28].map((days) => {
                       const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+                      const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === days);
                       return (
                         <button
                           key={days}
                           type="button"
-                          onClick={() => setTurnaroundDays(days)}
-                          className={`min-h-10 border px-2 text-xs transition ${turnaroundDays === days ? "border-primary bg-primary/10 text-primary" : "border-hairline bg-surface-soft text-charcoal/65 hover:border-primary/50"}`}
+                          onClick={() => handleTurnaroundSelect(days)}
+                          disabled={disabled}
+                          title={disabled ? getTurnaroundLimitMessage(days) || "Contact support for a custom review." : undefined}
+                          className={`min-h-10 border px-2 text-xs transition ${
+                            turnaroundDays === days && !disabled
+                              ? "border-primary bg-primary/10 text-primary"
+                              : disabled
+                                ? "cursor-not-allowed border-hairline bg-surface-soft text-charcoal/30"
+                                : "border-hairline bg-surface-soft text-charcoal/65 hover:border-primary/50"
+                          }`}
                         >
                           {option.label.replace(" / 28 days", "")}
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-xs text-charcoal/50">Maximum automatic turnaround is 4 weeks / 28 days. Please contact our editors for a custom timeline if you need longer.</p>
+                  <p className="text-xs text-charcoal/50">{isWritingSupport ? "Writing Support uses a fixed package price." : TURNAROUND_SUPPORT_MESSAGE}</p>
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center border border-primary/20 bg-primary/5 p-6 text-center">
-                <p className="mb-2 text-sm text-charcoal/62">Estimated total</p>
-                <p className="font-display text-5xl text-primary">${price.toFixed(2)}</p>
+                <p className="mb-2 text-sm text-charcoal/62">{customReviewRequired ? "Custom review required" : "Estimated service total"}</p>
+                <p className="font-display text-5xl text-primary">{customReviewRequired ? "Custom" : `$${price.toFixed(2)}`}</p>
                 <div className="mt-5 grid w-full gap-2 border-t border-primary/15 pt-4 text-sm">
                   <div className="flex justify-between gap-4 text-charcoal/62">
-                    <span>Subtotal</span>
+                    <span>Service total</span>
                     <span className="text-ink">${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between gap-4 text-charcoal/62">
-                    <span>Service charge ({serviceChargePercentage}%)</span>
-                    <span className="text-ink">${serviceChargeAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between gap-4 border-t border-primary/15 pt-2 font-semibold text-ink">
-                    <span>Total</span>
-                    <span>${price.toFixed(2)}</span>
+                    <span>Processing fee</span>
+                    <span className="text-ink">Shown at payment step</span>
                   </div>
                 </div>
-                <p className="mt-4 text-xs text-charcoal/50">Based on {wordCount?.toLocaleString()} words, selected services, and timeline.</p>
-                {!validation.allowed ? (
-                  <div className="mt-4 border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
-                    {validation.message}
+                <p className="mt-4 text-xs text-charcoal/50">
+                  {isWritingSupport ? "Writing Support is a fixed package." : `Based on the detected ${wordCount?.toLocaleString()}-word count, selected services, and timeline.`}
+                </p>
+                {pricingNotice || !validation.allowed ? (
+                  <div className="mt-4 rounded-lg border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
+                    <p>{customReviewRequired ? CUSTOM_REVIEW_MESSAGE : pricingNotice || validation.message}</p>
                     {validation.contactRequired ? (
-                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-primary/40 px-4 text-xs uppercase tracking-[0.16em] text-primary">
-                        Contact our editors
+                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/40 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                        Request Custom Quote
                       </a>
                     ) : null}
                   </div>
@@ -671,7 +762,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   ["Translation", summarizeTranslation(translationPreference, translationTargetLanguage)],
                   ["Style of English", englishType],
                   ["Services & Turnaround", `${selectedServices.join(", ")} — ${turnaround}`],
-                  ["Word Count", wordCount?.toLocaleString()],
+                  ["Detected Word Count", wordCount?.toLocaleString()],
                   ["Payment Provider", selectedProviderLabel],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between gap-4 border-b border-hairline pb-3">
@@ -681,16 +772,16 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                 ))}
                 <div className="grid gap-2 pt-2">
                   <div className="flex justify-between gap-4">
-                    <span className="text-charcoal/60">Subtotal</span>
+                    <span className="text-charcoal/60">Service total</span>
                     <span className="font-medium text-ink">${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between gap-4">
-                    <span className="text-charcoal/60">Service charge ({serviceChargePercentage}%)</span>
+                    <span className="text-charcoal/60">Processing fee ({serviceChargePercentage}%)</span>
                     <span className="font-medium text-ink">${serviceChargeAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between border-t border-hairline pt-3">
-                    <span className="text-lg text-charcoal/80">Total due</span>
-                    <span className="font-display text-xl text-primary">${price.toFixed(2)}</span>
+                    <span className="text-lg text-charcoal/80">Total payable</span>
+                    <span className="font-display text-xl text-primary">${finalPaymentTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -730,7 +821,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   Initializing secure payment...
                 </span>
               ) : (
-                checkoutBlocked ? "Contact our editors" : `Pay $${price.toFixed(2)} with ${selectedProviderLabel}`
+                checkoutBlocked ? "Contact our editors" : `Pay $${finalPaymentTotal.toFixed(2)} with ${selectedProviderLabel}`
               )}
             </button>
           </div>

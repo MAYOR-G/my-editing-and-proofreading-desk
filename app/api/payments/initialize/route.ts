@@ -10,6 +10,7 @@ import {
   getProviderReadiness,
   getSafeAppUrl,
   isPaymentProviderName,
+  isWritingSupportService,
   normalizeSelectedServices,
   parseTurnaroundDays,
   ProviderConfigurationError,
@@ -148,7 +149,7 @@ export async function POST(request: Request) {
     }
 
     const safeWordCount = Math.max(1, Math.round(Number(word_count) || 0));
-    const timelineValidation = validateAutomaticPricing(safeWordCount, turnaround);
+    const timelineValidation = isWritingSupportService(selectedServices) ? { allowed: true } : validateAutomaticPricing(safeWordCount, turnaround);
     if (!timelineValidation.allowed) {
       return NextResponse.json(
         {
@@ -207,7 +208,7 @@ export async function POST(request: Request) {
         subtotal: priceBreakdown.subtotal,
         service_charge_percentage: priceBreakdown.serviceChargePercentage,
         service_charge_amount: priceBreakdown.serviceChargeAmount,
-        final_price: priceBreakdown.finalPrice,
+        final_price: priceBreakdown.finalTotal,
         minimum_applied: priceBreakdown.minimumApplied,
         client_notes: client_notes || "",
         upload_file_path: file_path,

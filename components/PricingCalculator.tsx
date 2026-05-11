@@ -2,8 +2,23 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { SERVICE_OPTIONS, TURNAROUND_OPTIONS, calculatePrice, validateAutomaticPricing } from "@/lib/pricing";
+import { useEffect, useMemo, useState } from "react";
+import {
+  CUSTOM_REVIEW_MESSAGE,
+  SERVICE_OPTIONS,
+  TURNAROUND_OPTIONS,
+  TURNAROUND_SUPPORT_MESSAGE,
+  calculatePrice,
+  getNextValidTurnaroundDays,
+  getStandardTurnaroundDays,
+  getTurnaroundAdjustmentNotice,
+  getTurnaroundLimitMessage,
+  getValidTurnaroundOptions,
+  isCustomReviewRequired,
+  isTurnaroundAllowedForWordCount,
+  isWritingSupportService,
+  validateAutomaticPricing
+} from "@/lib/pricing";
 
 const quickCounts = [1000, 2500, 5000, 10000];
 
@@ -19,14 +34,45 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
   const [serviceLabel, setServiceLabel] = useState("Editing");
   const [turnaroundDays, setTurnaroundDays] = useState(14);
   const [wordCount, setWordCount] = useState(3500);
+  const [notice, setNotice] = useState("");
 
-  const safeWordCount = Math.max(1, Math.min(60000, wordCount || 1));
+  const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 1));
   const selectedService = SERVICE_OPTIONS.find((service) => service.label === serviceLabel) ?? SERVICE_OPTIONS[1];
+  const isWritingSupport = isWritingSupportService(selectedService.label);
+  const customReviewRequired = !isWritingSupport && isCustomReviewRequired(safeWordCount);
+  const validTurnaroundOptions = useMemo(() => getValidTurnaroundOptions(safeWordCount, selectedService.label), [safeWordCount, selectedService.label]);
   const selectedTurnaround = TURNAROUND_OPTIONS.find((turnaround) => turnaround.days === turnaroundDays) ?? TURNAROUND_OPTIONS[13];
 
   const priceBreakdown = useMemo(() => calculatePrice(safeWordCount, selectedService.label, selectedTurnaround.days), [safeWordCount, selectedService.label, selectedTurnaround.days]);
-  const validation = validateAutomaticPricing(safeWordCount, selectedTurnaround.days);
+  const validation = isWritingSupport ? { allowed: true } : validateAutomaticPricing(safeWordCount, selectedTurnaround.days);
   const price = priceBreakdown.finalPrice;
+  const standardDays = getStandardTurnaroundDays(safeWordCount);
+
+  useEffect(() => {
+    if (isWritingSupport || customReviewRequired) return;
+    if (isTurnaroundAllowedForWordCount(safeWordCount, turnaroundDays, selectedService.label)) return;
+
+    const nextDays = getNextValidTurnaroundDays(safeWordCount, turnaroundDays, selectedService.label);
+    const nextNotice = getTurnaroundAdjustmentNotice(safeWordCount, turnaroundDays);
+    setTurnaroundDays(nextDays);
+    if (nextNotice) setNotice(nextNotice);
+  }, [customReviewRequired, isWritingSupport, safeWordCount, selectedService.label, turnaroundDays]);
+
+  const handleWordCountChange = (value: number) => {
+    const nextCount = Math.max(1, Math.round(Number(value) || 1));
+    setWordCount(nextCount);
+    if (nextCount > 50000 && wordCount <= 50000) setNotice(CUSTOM_REVIEW_MESSAGE);
+  };
+
+  const handleTurnaroundSelect = (days: number) => {
+    if (!isTurnaroundAllowedForWordCount(safeWordCount, days, selectedService.label)) {
+      const nextDays = getNextValidTurnaroundDays(safeWordCount, days, selectedService.label);
+      setTurnaroundDays(nextDays);
+      setNotice(getTurnaroundAdjustmentNotice(safeWordCount, days) || TURNAROUND_SUPPORT_MESSAGE);
+      return;
+    }
+    setTurnaroundDays(days);
+  };
 
   return (
     <div className="relative overflow-hidden border border-hairline bg-canvas shadow-[0_24px_80px_rgba(17,17,15,0.06)] rounded-2xl">
@@ -64,7 +110,10 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                   <button
                     key={service.label}
                     type="button"
-                    onClick={() => setServiceLabel(service.label)}
+                    onClick={() => {
+                      setServiceLabel(service.label);
+                      if (service.label === "Writing Support") setNotice("Writing Support is offered as a fixed service package.");
+                    }}
                     className={`group min-h-20 border px-4 py-4 text-left transition duration-200 ease-premium-out active:scale-[0.99] rounded-xl ${
                       active ? "border-primary bg-surface-soft text-ink shadow-[0_16px_50px_rgba(0,82,255,0.10)]" : "border-hairline bg-surface-soft/60 text-body hover:border-primary/55 hover:bg-surface-soft hover:text-ink"
                     }`}
@@ -85,28 +134,34 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                 <label htmlFor="word-count" className="text-xs uppercase tracking-[0.28em] text-primary">
                   Word count
                 </label>
-                <div className="mt-4 flex min-h-16 items-center border border-hairline bg-canvas px-4 shadow-[0_14px_50px_rgba(17,17,15,0.035)] rounded-xl">
+                <div className={`mt-4 flex min-h-16 items-center border border-hairline bg-canvas px-4 shadow-[0_14px_50px_rgba(17,17,15,0.035)] rounded-xl ${isWritingSupport ? "opacity-55" : ""}`}>
                   <input
                     id="word-count"
                     type="number"
                     inputMode="numeric"
-                  min={250}
-                    max={60000}
+                    min={1}
                     step={50}
                     value={wordCount}
-                    onChange={(event) => setWordCount(Math.min(60000, Math.max(1, Number(event.target.value) || 1)))}
+                    disabled={isWritingSupport}
+                    onChange={(event) => handleWordCountChange(Number(event.target.value))}
                     className="w-full bg-transparent font-display text-3xl leading-none text-ink outline-none [appearance:textfield] sm:text-4xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                   <span className="text-sm text-body">words</span>
                 </div>
+                {isWritingSupport ? (
+                  <p className="mt-3 rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm leading-6 text-primary">
+                    Writing Support is offered as a fixed service package. Word count and turnaround do not change this estimate.
+                  </p>
+                ) : null}
                 <input
                   aria-label="Adjust word count"
                   type="range"
-                  min={250}
+                  min={1}
                   max={50000}
                   step={250}
                   value={Math.min(safeWordCount, 50000)}
-                  onChange={(event) => setWordCount(Number(event.target.value))}
+                  disabled={isWritingSupport}
+                  onChange={(event) => handleWordCountChange(Number(event.target.value))}
                   className="mt-4 w-full accent-[#0052ff]"
                 />
                 <div className="mt-3 grid grid-cols-4 gap-2">
@@ -114,7 +169,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     <button
                       key={count}
                       type="button"
-                      onClick={() => setWordCount(count)}
+                      onClick={() => handleWordCountChange(count)}
                       className={`min-h-10 border px-2 text-xs transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] rounded-lg ${
                         safeWordCount === count ? "border-primary bg-primary/10 text-ink" : "border-hairline bg-canvas text-body"
                       }`}
@@ -127,10 +182,12 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
 
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-primary">Turnaround</p>
-                <div className="mt-4 border border-hairline bg-canvas p-4 rounded-xl">
+                <div className={`mt-4 border border-hairline bg-canvas p-4 rounded-xl ${isWritingSupport ? "opacity-55" : ""}`}>
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-ink">{selectedTurnaround.label}</span>
-                    <span className="text-xs uppercase tracking-[0.18em] text-body">{selectedTurnaround.multiplier > 1 ? "Timeline premium" : selectedTurnaround.multiplier < 1 ? "Flexible timeline" : "Standard"}</span>
+                    <span className="font-medium text-ink">{isWritingSupport ? "Fixed package" : selectedTurnaround.label}</span>
+                    <span className="text-xs uppercase tracking-[0.18em] text-body">
+                      {isWritingSupport ? "No timeline modifier" : selectedTurnaround.days < standardDays ? "Rush estimate" : selectedTurnaround.days === standardDays ? "Standard" : "Standard price"}
+                    </span>
                   </div>
                   <input
                     aria-label="Adjust turnaround"
@@ -139,19 +196,23 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     max={28}
                     step={1}
                     value={turnaroundDays}
-                    onChange={(event) => setTurnaroundDays(Number(event.target.value))}
+                    disabled={isWritingSupport || customReviewRequired}
+                    onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
                     className="mt-5 w-full accent-[#0052ff]"
                   />
                   <div className="mt-3 grid grid-cols-4 gap-2">
                     {[1, 2, 3, 7, 14, 28].map((days) => {
                       const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+                      const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === days);
                       return (
                         <button
                           key={days}
                           type="button"
-                          onClick={() => setTurnaroundDays(days)}
+                          onClick={() => handleTurnaroundSelect(days)}
+                          disabled={disabled}
+                          title={disabled ? getTurnaroundLimitMessage(days) || "Contact support for a custom review." : undefined}
                           className={`min-h-10 border px-2 text-xs transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] rounded-lg ${
-                            turnaroundDays === days ? "border-primary bg-primary/10 text-ink" : "border-hairline bg-canvas text-body"
+                            turnaroundDays === days && !disabled ? "border-primary bg-primary/10 text-ink" : disabled ? "cursor-not-allowed border-hairline bg-surface-soft text-charcoal/32" : "border-hairline bg-canvas text-body"
                           }`}
                         >
                           {option.label.replace(" / 28 days", "")}
@@ -159,7 +220,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                       );
                     })}
                   </div>
-                  <p className="mt-3 text-xs leading-5 text-body">{selectedTurnaround.note} Maximum automatic timeline is 4 weeks / 28 days.</p>
+                  <p className="mt-3 text-xs leading-5 text-body">{isWritingSupport ? "Writing Support uses a fixed package price." : `${selectedTurnaround.note} ${TURNAROUND_SUPPORT_MESSAGE}`}</p>
                 </div>
               </div>
             </div>
@@ -180,23 +241,34 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                   transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
                   className="font-display text-[clamp(2.2rem,7vw,5.1rem)] leading-none text-ink tabular-nums"
                 >
-                  {currency(price)}
+                  {customReviewRequired ? "Custom review" : currency(price)}
                 </motion.p>
               </AnimatePresence>
             </div>
             <p className="mt-4 text-sm leading-6 text-body">
-              Estimated from {safeWordCount.toLocaleString()} words for {selectedService.label.toLowerCase()} with {selectedTurnaround.label.toLowerCase()} delivery.
+              {isWritingSupport
+                ? "Writing Support is offered as a fixed service package."
+                : customReviewRequired
+                  ? "Your document is above 50,000 words. Please contact support so we can confirm the best timeline and final quote."
+                  : `Estimated from ${safeWordCount.toLocaleString()} words for ${selectedService.label.toLowerCase()} with ${selectedTurnaround.label.toLowerCase()} delivery.`}
             </p>
-            {!validation.allowed ? (
-              <p className="mt-4 border border-primary/25 bg-primary/10 p-3 text-sm leading-6 text-primary rounded-lg">{validation.message}</p>
+            {notice || customReviewRequired || !validation.allowed ? (
+              <div className="mt-4 rounded-lg border border-primary/25 bg-primary/10 p-3 text-sm leading-6 text-primary">
+                <p>{customReviewRequired ? CUSTOM_REVIEW_MESSAGE : notice || validation.message}</p>
+                {customReviewRequired ? (
+                  <Link href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/35 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:bg-primary hover:text-white">
+                    Request Custom Quote
+                  </Link>
+                ) : null}
+              </div>
             ) : null}
           </div>
 
           <div className="mt-7 grid gap-4 text-sm text-body">
             {[
               ["Service", selectedService.label],
-              ["Word count", safeWordCount.toLocaleString()],
-              ["Turnaround", selectedTurnaround.label],
+              ["Word count", isWritingSupport ? "Not required for fixed package" : safeWordCount.toLocaleString()],
+              ["Turnaround", isWritingSupport ? "Custom service package" : selectedTurnaround.label],
               ["Payment step", "Secure checkout after upload"]
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between gap-6 border-b border-hairline pb-3">
@@ -209,14 +281,22 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
           <div className="mt-7 border border-hairline bg-canvas p-4 rounded-xl">
             <p className="text-xs uppercase tracking-[0.24em] text-primary">Next step</p>
             <p className="mt-3 text-sm leading-6 text-body">
-              Upload your supported file to confirm the word count. Payment is recorded only after server-side verification.
+              {customReviewRequired
+                ? "For documents above 50,000 words, our team will confirm timeline and pricing before checkout."
+                : "Upload your supported file so we can detect the word count. Payment is recorded only after server-side verification."}
             </p>
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-            <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-primary rounded-full px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
-              Start priced upload
-            </Link>
+            {customReviewRequired ? (
+              <Link href="/contact" className="inline-flex min-h-12 items-center justify-center bg-primary rounded-full px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
+                Contact Support
+              </Link>
+            ) : (
+              <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-primary rounded-full px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
+                Start priced upload
+              </Link>
+            )}
             {!compact ? (
               <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center border border-hairline rounded-full px-6 text-sm font-medium text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98]">
                 Pricing details

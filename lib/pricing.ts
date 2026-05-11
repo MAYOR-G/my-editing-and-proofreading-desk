@@ -1,6 +1,9 @@
 export const MINIMUM_ORDER = 30;
-export const MAX_AUTOMATIC_WORD_COUNT = 50000;
+export const CUSTOM_REVIEW_WORD_COUNT = 50000;
+export const MAX_AUTOMATIC_WORD_COUNT = CUSTOM_REVIEW_WORD_COUNT;
 export const SERVICE_CHARGE_PERCENTAGE = 5;
+export const WRITING_SUPPORT_FIXED_PRICE = 450;
+export const RUSH_SURCHARGE_RATE = 0.003;
 
 export const DOCUMENT_TYPES = [
   "Journal Article",
@@ -64,23 +67,23 @@ export const ENGLISH_TYPES = [
 ] as const;
 
 export const SERVICE_OPTIONS = [
-  { label: "Proofreading", rate: 0.018, note: "Grammar, spelling, punctuation, and consistency." },
+  { label: "Proofreading", rate: 0.03, note: "Grammar, spelling, punctuation, and consistency." },
   { label: "Editing", rate: 0.03, note: "Clarity, flow, tone, and sentence-level polish." },
-  { label: "Academic Editing", rate: 0.032, note: "Scholarly tone, structure, argument flow, and references." },
+  { label: "Academic Editing", rate: 0.03, note: "Scholarly tone, structure, argument flow, and references." },
   { label: "Business Editing", rate: 0.03, note: "Clear, credible, client-ready business writing." },
-  { label: "Formatting", rate: 0.014, note: "Style compliance, headings, spacing, references, and layout." },
-  { label: "Translation", rate: 0.048, note: "Meaning-sensitive translation with editorial polish." },
+  { label: "Formatting", rate: 0.04, note: "Style compliance, headings, spacing, references, and layout." },
+  { label: "Translation", rate: 0.055, note: "Meaning-sensitive translation with editorial polish." },
   { label: "Transcribing", rate: 0.026, note: "Clean transcript preparation from supplied material." },
-  { label: "Writing Support", rate: 0.055, note: "Developmental support, reframing, and draft shaping." },
+  { label: "Writing Support", rate: 0, fixedPrice: WRITING_SUPPORT_FIXED_PRICE, note: "Fixed service package for developmental support, reframing, and draft shaping." },
 ] as const;
 
 export const TURNAROUND_OPTIONS = [
-  { days: 1, label: "24 hours", multiplier: 1.35, note: "Fastest automatic timeline." },
-  { days: 2, label: "48 hours", multiplier: 1.22, note: "Express editorial handling." },
-  { days: 3, label: "3 days", multiplier: 1.15, note: "Priority handling for short deadlines." },
-  { days: 4, label: "4 days", multiplier: 1.1, note: "Expedited review." },
-  { days: 5, label: "5 days", multiplier: 1.06, note: "Faster than standard." },
-  { days: 6, label: "6 days", multiplier: 1.03, note: "Near-standard priority." },
+  { days: 1, label: "24 hours", multiplier: 1, note: "Express handling for short documents." },
+  { days: 2, label: "48 hours", multiplier: 1, note: "Express editorial handling for eligible documents." },
+  { days: 3, label: "3 days", multiplier: 1, note: "Priority handling for eligible documents." },
+  { days: 4, label: "4 days", multiplier: 1, note: "Expedited review for shorter documents." },
+  { days: 5, label: "5 days", multiplier: 1, note: "Faster than standard for shorter documents." },
+  { days: 6, label: "6 days", multiplier: 1, note: "Near-standard priority for shorter documents." },
   { days: 7, label: "7 days", multiplier: 1, note: "Standard editorial pace." },
   { days: 8, label: "8 days", multiplier: 1, note: "Standard editorial pace." },
   { days: 9, label: "9 days", multiplier: 1, note: "Standard editorial pace." },
@@ -89,20 +92,20 @@ export const TURNAROUND_OPTIONS = [
   { days: 12, label: "12 days", multiplier: 1, note: "Standard editorial pace." },
   { days: 13, label: "13 days", multiplier: 1, note: "Standard editorial pace." },
   { days: 14, label: "14 days", multiplier: 1, note: "Balanced pace for careful editorial work." },
-  { days: 15, label: "15 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 16, label: "16 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 17, label: "17 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 18, label: "18 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 19, label: "19 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 20, label: "20 days", multiplier: 0.96, note: "Flexible timeline." },
-  { days: 21, label: "21 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 22, label: "22 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 23, label: "23 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 24, label: "24 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 25, label: "25 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 26, label: "26 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 27, label: "27 days", multiplier: 0.94, note: "Flexible timeline." },
-  { days: 28, label: "4 weeks / 28 days", multiplier: 0.92, note: "Best value for flexible timelines." },
+  { days: 15, label: "15 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 16, label: "16 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 17, label: "17 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 18, label: "18 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 19, label: "19 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 20, label: "20 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 21, label: "21 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 22, label: "22 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 23, label: "23 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 24, label: "24 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 25, label: "25 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 26, label: "26 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 27, label: "27 days", multiplier: 1, note: "Flexible timeline for careful review." },
+  { days: 28, label: "4 weeks / 28 days", multiplier: 1, note: "Extended automatic calculator timeline." },
 ] as const;
 
 export type PriceBreakdown = {
@@ -113,6 +116,7 @@ export type PriceBreakdown = {
   turnaroundLabel: string;
   baseRate: number;
   multiplier: number;
+  rushSurcharge: number;
   calculatedPrice: number;
   subtotal: number;
   serviceChargePercentage: number;
@@ -126,7 +130,15 @@ export type PricingValidation = {
   allowed: boolean;
   message?: string;
   contactRequired?: boolean;
+  customReviewRequired?: boolean;
 };
+
+export const CUSTOM_REVIEW_MESSAGE = "Documents above 50,000 words require a custom review. Please contact our support team so we can confirm the best timeline and pricing for your project.";
+export const TURNAROUND_SUPPORT_MESSAGE = "Choose a turnaround that fits your document. Larger or complex documents may require a custom review.";
+
+export function isWritingSupportService(serviceTypes: string[] | string | null | undefined) {
+  return normalizeSelectedServices(serviceTypes).includes("Writing Support");
+}
 
 export function getServiceOption(serviceType: string) {
   return SERVICE_OPTIONS.find((service) => service.label === serviceType) ?? SERVICE_OPTIONS[1];
@@ -153,6 +165,87 @@ export function parseTurnaroundDays(turnaround: string) {
   return match ? Math.min(28, Math.max(1, Number(match[0]))) : 14;
 }
 
+export function isCustomReviewRequired(wordCount: number) {
+  return Number(wordCount) > CUSTOM_REVIEW_WORD_COUNT;
+}
+
+export function getStandardTurnaroundDays(wordCount: number) {
+  const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 0));
+  if (safeWordCount <= 10000) return 7;
+  if (safeWordCount <= 30000) return 14;
+  return 28;
+}
+
+export function getTurnaroundLimitMessage(days: number) {
+  if (days === 1) return "24-hour turnaround is available for documents up to 5,000 words.";
+  if (days === 2 || days === 3) return "This turnaround is available for documents up to 10,000 words.";
+  if (days > 3 && days < 7) return "This expedited turnaround is available for documents up to 10,000 words.";
+  return null;
+}
+
+export function getValidTurnaroundOptions(wordCount: number, serviceTypes?: string[] | string | null | undefined) {
+  if (isWritingSupportService(serviceTypes)) return [];
+  const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 0));
+  if (isCustomReviewRequired(safeWordCount)) return [];
+
+  return TURNAROUND_OPTIONS.filter((option) => {
+    if (option.days === 1) return safeWordCount <= 5000;
+    if (option.days >= 2 && option.days <= 6) return safeWordCount <= 10000;
+    return option.days >= 7 && option.days <= 28;
+  });
+}
+
+export function isTurnaroundAllowedForWordCount(wordCount: number, turnaround: string | number, serviceTypes?: string[] | string | null | undefined) {
+  if (isWritingSupportService(serviceTypes)) return true;
+  const days = typeof turnaround === "number" ? turnaround : parseTurnaroundDays(turnaround);
+  return getValidTurnaroundOptions(wordCount, serviceTypes).some((option) => option.days === days);
+}
+
+export function getNextValidTurnaroundDays(wordCount: number, requestedTurnaround: string | number, serviceTypes?: string[] | string | null | undefined) {
+  const validOptions = getValidTurnaroundOptions(wordCount, serviceTypes);
+  if (validOptions.length === 0) return getStandardTurnaroundDays(wordCount);
+
+  const requestedDays = typeof requestedTurnaround === "number" ? requestedTurnaround : parseTurnaroundDays(requestedTurnaround);
+  return validOptions.find((option) => option.days >= requestedDays)?.days ?? validOptions[validOptions.length - 1].days;
+}
+
+export function getTurnaroundAdjustmentNotice(wordCount: number, requestedTurnaround: string | number) {
+  const days = typeof requestedTurnaround === "number" ? requestedTurnaround : parseTurnaroundDays(requestedTurnaround);
+  if (days === 1 && wordCount > 5000) {
+    return "24-hour turnaround is available for documents up to 5,000 words. We have selected the next available timeline for this word count.";
+  }
+  if (days >= 2 && days <= 6 && wordCount > 10000) {
+    return "This turnaround is available for documents up to 10,000 words. We have selected a more suitable timeline for this word count.";
+  }
+  return null;
+}
+
+export function getServiceBasePrice(serviceTypes: string[] | string, wordCount: number) {
+  const selectedServices = normalizeSelectedServices(serviceTypes);
+  if (selectedServices.includes("Writing Support")) return WRITING_SUPPORT_FIXED_PRICE;
+  const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 0));
+  const baseRate = selectedServices.map((service) => getServiceOption(service)).reduce((sum, service) => sum + service.rate, 0);
+  return Number((safeWordCount * baseRate).toFixed(2));
+}
+
+export function calculateRushSurcharge(serviceTypes: string[] | string, wordCount: number, selectedTurnaround: string | number) {
+  if (isWritingSupportService(serviceTypes) || isCustomReviewRequired(wordCount)) return 0;
+  const safeWordCount = Math.max(1, Math.round(Number(wordCount) || 0));
+  const days = typeof selectedTurnaround === "number" ? selectedTurnaround : parseTurnaroundDays(selectedTurnaround);
+  const standardDays = getStandardTurnaroundDays(safeWordCount);
+  if (days >= standardDays) return 0;
+  const rushDays = standardDays - days;
+  return Number((safeWordCount * RUSH_SURCHARGE_RATE * rushDays).toFixed(2));
+}
+
+export function calculateProcessingFee(basePrice: number) {
+  return Number((Math.max(0, basePrice) * (SERVICE_CHARGE_PERCENTAGE / 100)).toFixed(2));
+}
+
+export function calculateFinalPaymentTotal(basePrice: number) {
+  return Number((Math.max(0, basePrice) + calculateProcessingFee(basePrice)).toFixed(2));
+}
+
 export function validateAutomaticPricing(wordCount: number, turnaround: string | number): PricingValidation {
   const days = typeof turnaround === "number" ? turnaround : parseTurnaroundDays(turnaround);
 
@@ -164,7 +257,8 @@ export function validateAutomaticPricing(wordCount: number, turnaround: string |
     return {
       allowed: false,
       contactRequired: true,
-      message: "Documents above 50,000 words require a custom quote. Please contact our editors.",
+      customReviewRequired: true,
+      message: CUSTOM_REVIEW_MESSAGE,
     };
   }
 
@@ -176,35 +270,17 @@ export function validateAutomaticPricing(wordCount: number, turnaround: string |
     };
   }
 
-  if (days === 1 && wordCount > 6000) {
+  if (days === 1 && wordCount > 5000) {
     return {
       allowed: false,
-      contactRequired: true,
-      message: "24-hour turnaround is available for documents up to 6,000 words. Please choose a longer turnaround or contact our editors.",
+      message: "24-hour turnaround is available for documents up to 5,000 words. Please choose a longer turnaround.",
     };
   }
 
-  if (days === 2 && wordCount > 10000) {
+  if (days >= 2 && days <= 6 && wordCount > 10000) {
     return {
       allowed: false,
-      contactRequired: true,
-      message: "48-hour turnaround is available for documents up to 10,000 words. Please choose a longer turnaround or contact our editors.",
-    };
-  }
-
-  const maxByDay: Record<number, number> = {
-    3: 18000,
-    4: 24000,
-    5: 30000,
-    6: 40000,
-  };
-
-  const limit = maxByDay[days];
-  if (limit && wordCount > limit) {
-    return {
-      allowed: false,
-      contactRequired: true,
-      message: "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.",
+      message: "This turnaround is available for documents up to 10,000 words. Please choose a longer turnaround.",
     };
   }
 
@@ -216,11 +292,14 @@ export function calculatePrice(wordCount: number, serviceTypes: string[] | strin
   const selectedServices = normalizeSelectedServices(serviceTypes);
   const serviceOptions = selectedServices.map((service) => getServiceOption(service));
   const turnaroundOption = getTurnaroundOption(turnaround);
-  const baseRate = serviceOptions.reduce((sum, service) => sum + service.rate, 0);
-  const calculatedPrice = Number((safeWordCount * baseRate * turnaroundOption.multiplier).toFixed(2));
+  const fixedPackage = selectedServices.includes("Writing Support");
+  const baseRate = fixedPackage ? 0 : serviceOptions.reduce((sum, service) => sum + service.rate, 0);
+  const basePrice = fixedPackage ? WRITING_SUPPORT_FIXED_PRICE : Number((safeWordCount * baseRate).toFixed(2));
+  const rushSurcharge = calculateRushSurcharge(selectedServices, safeWordCount, turnaroundOption.days);
+  const calculatedPrice = Number((basePrice + rushSurcharge).toFixed(2));
   const subtotal = Number(Math.max(MINIMUM_ORDER, calculatedPrice).toFixed(2));
-  const serviceChargeAmount = Number((subtotal * (SERVICE_CHARGE_PERCENTAGE / 100)).toFixed(2));
-  const finalTotal = Number((subtotal + serviceChargeAmount).toFixed(2));
+  const serviceChargeAmount = calculateProcessingFee(subtotal);
+  const finalTotal = calculateFinalPaymentTotal(subtotal);
 
   return {
     wordCount: safeWordCount,
@@ -230,12 +309,13 @@ export function calculatePrice(wordCount: number, serviceTypes: string[] | strin
     turnaroundLabel: turnaroundOption.label,
     baseRate,
     multiplier: turnaroundOption.multiplier,
+    rushSurcharge,
     calculatedPrice,
     subtotal,
     serviceChargePercentage: SERVICE_CHARGE_PERCENTAGE,
     serviceChargeAmount,
     finalTotal,
-    finalPrice: finalTotal,
+    finalPrice: subtotal,
     minimumApplied: calculatedPrice < MINIMUM_ORDER,
   };
 }
