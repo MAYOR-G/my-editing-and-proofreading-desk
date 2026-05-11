@@ -118,7 +118,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="work-preview-title"
-        className="flex h-[min(94vh,980px)] w-full max-w-[1320px] flex-col overflow-hidden rounded-[0.55rem] border border-white/35 bg-[#11161d] shadow-[0_34px_120px_rgba(10,11,13,0.42)]"
+        className="flex h-[min(94vh,980px)] w-full max-w-[1320px] flex-col overflow-hidden rounded-[0.9rem] border border-white/35 bg-[#11161d] shadow-[0_34px_120px_rgba(10,11,13,0.42)]"
       >
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-[#151a21] px-3 py-3 text-white sm:px-5">
           <div className="flex min-w-0 items-center gap-3">
@@ -184,7 +184,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
               </div>
             </div>
 
-            <div ref={scrollRef} onScroll={handleScroll} className="h-[calc(100%-2.75rem)] overflow-y-auto px-3 pb-0 pt-5 sm:px-6 lg:px-8">
+            <div ref={scrollRef} onScroll={handleScroll} className="h-[calc(100%-2.75rem)] overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_34%),linear-gradient(180deg,#34363d,#24262c)] px-3 pb-0 pt-5 sm:px-6 lg:px-8">
               <div className="mx-auto flex max-w-[1120px] flex-col gap-7">
                 {example.pages.map((page, index) => (
                   <div
@@ -267,16 +267,22 @@ function DocumentPage({
   page: WorkExamplePage;
   pageNumber: number;
 }) {
+  const pageTone = page.variant === "resume"
+    ? "font-sans"
+    : page.variant === "legal" || page.variant === "humanities" || page.variant === "references"
+      ? "font-serif"
+      : "font-sans";
+
   return (
-    <article className="mx-auto grid max-w-[1080px] gap-0 bg-[#f1f1f1] shadow-[0_18px_70px_rgba(0,0,0,0.28)] lg:grid-cols-[minmax(0,780px)_260px] lg:items-stretch">
-      <div className="min-h-[980px] bg-white px-7 py-8 ring-1 ring-black/8 sm:px-12 sm:py-11">
+    <article className="mx-auto grid max-w-[1080px] gap-0 bg-[#ece7dd] shadow-[0_18px_70px_rgba(0,0,0,0.28)] lg:grid-cols-[minmax(0,780px)_260px] lg:items-stretch">
+      <div className="min-h-[980px] bg-[#fffdf7] px-6 py-7 ring-1 ring-black/8 sm:px-11 sm:py-10">
         {pageNumber === 1 ? (
-          <div className="mb-10 flex items-center justify-between border-2 px-6 py-5" style={{ borderColor: example.accent }}>
+          <div className="mb-9 flex items-center justify-between border px-5 py-4" style={{ borderColor: `${example.accent}55` }}>
             <div>
-              <p className="font-display text-3xl font-bold leading-tight sm:text-4xl" style={{ color: example.accent }}>
+              <p className="font-display text-2xl font-bold leading-tight sm:text-3xl" style={{ color: example.accent }}>
                 My Editing and Proofreading Desk
               </p>
-              <p className="mt-1 text-sm font-semibold text-charcoal/70">Used by permission of the author - edited sample preview</p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/60">Edited sample preview - tracked changes visible</p>
             </div>
             <span className="relative hidden h-20 w-28 shrink-0 overflow-hidden rounded bg-white sm:block">
               <Image src="/assets/logo.png" alt="" fill sizes="112px" className="object-contain" />
@@ -284,7 +290,7 @@ function DocumentPage({
           </div>
         ) : null}
 
-        <div className="mb-8 flex items-start justify-between gap-6 border-b border-ink/10 pb-5">
+        <div className="mb-7 flex items-start justify-between gap-6 border-b border-ink/10 pb-5">
           <div>
             <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-charcoal/55">
               {page.eyebrow}
@@ -302,11 +308,15 @@ function DocumentPage({
           </span>
         </div>
 
-        <div className={`font-serif text-[1rem] leading-8 text-[#111827] sm:text-[1.06rem] ${page.variant === "references" ? "space-y-5" : "space-y-5"}`}>
+        {page.variant === "engineering" ? <EngineeringRule accent={example.accent} /> : null}
+        {page.variant === "legal" ? <LegalMemoBar /> : null}
+        {page.variant === "science" ? <ScienceMetaBar accent={example.accent} /> : null}
+
+        <div className={`${pageTone} text-[0.95rem] leading-7 text-[#111827] sm:text-[1.01rem] ${page.variant === "references" ? "space-y-4" : "space-y-5"}`}>
           {page.body.map((paragraph, index) => (
             <p
               key={paragraph}
-              className={`relative ${page.variant === "references" && index > 0 ? "pl-8 -indent-8" : ""} ${
+              className={`relative ${lineClassFor(page, paragraph, index)} ${
                 index > 0 && index <= page.comments.length ? "border-r-2 pr-3" : ""
               }`}
               style={index > 0 && index <= page.comments.length ? { borderColor: `${example.accent}66` } : undefined}
@@ -332,11 +342,11 @@ function DocumentPage({
         </footer>
       </div>
 
-      <aside className="space-y-3 bg-[#ededed] p-4 lg:pt-36">
+      <aside className="space-y-3 bg-[#eee9df] p-4 lg:pt-36">
         {page.comments.map((comment, index) => (
           <div
             key={`${comment.label}-${index}`}
-            className="relative rounded-lg border bg-white/88 p-4 shadow-[0_10px_22px_rgba(10,11,13,0.08)] before:absolute before:right-full before:top-7 before:hidden before:h-px before:w-8 before:bg-current lg:before:block"
+            className="relative rounded-lg border bg-[#fffdf8]/92 p-4 shadow-[0_10px_22px_rgba(10,11,13,0.08)] before:absolute before:right-full before:top-7 before:hidden before:h-px before:w-8 before:bg-current lg:before:block"
             style={{ borderColor: `${example.accent}66`, color: example.accent }}
           >
             <div className="mb-2 flex items-center gap-2">
@@ -350,6 +360,53 @@ function DocumentPage({
         ))}
       </aside>
     </article>
+  );
+}
+
+function lineClassFor(page: WorkExamplePage, paragraph: string, index: number) {
+  if (page.variant === "references" && index > 0) return "pl-8 -indent-8 text-[0.92rem] leading-7";
+  if (page.variant === "resume") {
+    if (paragraph === paragraph.toUpperCase() && paragraph.length < 32) return "mt-6 border-b border-ink/20 pb-1 text-[0.72rem] font-bold uppercase tracking-[0.2em]";
+    if (index === 0) return "text-center text-2xl font-bold uppercase tracking-[0.18em]";
+    if (index === 1) return "text-center text-xs text-charcoal/70";
+    return "pl-4 before:absolute before:left-0 before:top-3 before:h-1.5 before:w-1.5 before:rounded-full before:bg-ink/50";
+  }
+  if (page.variant === "engineering") return "font-mono text-[0.9rem] leading-7";
+  if (page.variant === "legal") return "text-[0.98rem] leading-8";
+  if (page.variant === "humanities") return "text-[1.03rem] leading-8";
+  return "";
+}
+
+function EngineeringRule({ accent }: { accent: string }) {
+  return (
+    <div className="mb-6 grid gap-2 border-y border-ink/10 py-3 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-charcoal/60 sm:grid-cols-3">
+      {["Design Review", "LTspice / Breadboard", "Units Checked"].map((item) => (
+        <span key={item} className="border-l-2 pl-3" style={{ borderColor: accent }}>{item}</span>
+      ))}
+    </div>
+  );
+}
+
+function ScienceMetaBar({ accent }: { accent: string }) {
+  return (
+    <div className="mb-6 grid gap-3 rounded border border-ink/10 bg-white/70 p-3 text-xs text-charcoal/70 sm:grid-cols-3">
+      {["Method verified", "Figure callouts checked", "Terminology standardized"].map((item) => (
+        <span key={item} className="inline-flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: accent }} />
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function LegalMemoBar() {
+  return (
+    <div className="mb-6 grid gap-2 border-y-2 border-ink/80 py-3 text-xs font-bold uppercase tracking-[0.16em] text-ink sm:grid-cols-3">
+      <span>To: Supervising Solicitor</span>
+      <span>Re: Administrative Review</span>
+      <span>Status: Edited Draft</span>
+    </div>
   );
 }
 
@@ -437,6 +494,49 @@ function getFigure(type: NonNullable<WorkExamplePage["figure"]>, accent: string)
     );
   }
 
+  if (type === "gel") {
+    return (
+      <div className="grid gap-5 sm:grid-cols-[0.78fr_1.22fr]">
+        <div className="rounded bg-slate-950 p-4">
+          <div className="grid h-44 grid-cols-4 gap-3">
+            {[68, 42, 82, 56].map((height, index) => (
+              <div key={height} className="relative rounded bg-slate-900">
+                <span className="absolute left-2 right-2 top-8 h-2 rounded bg-emerald-200/80" />
+                <span className="absolute left-2 right-2 rounded bg-emerald-300/60" style={{ top: `${height}%`, height: "8px" }} />
+                <span className="absolute bottom-2 left-0 right-0 text-center text-[0.62rem] text-white/70">L{index + 1}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-3 text-sm text-charcoal">
+          <p><span className="font-bold text-ink">Figure 2.</span> Representative fluorescence and expression readout.</p>
+          <p>Labels were revised to define treatment lanes, reference gene, and replicate number.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "reaction") {
+    return (
+      <div className="rounded bg-white p-5">
+        <div className="flex flex-wrap items-center justify-center gap-4 text-center font-serif text-lg text-ink">
+          <span className="rounded border border-ink/10 px-4 py-3">CH3COOCH2CH3</span>
+          <span>+</span>
+          <span className="rounded border border-ink/10 px-4 py-3">OH-</span>
+          <span className="text-2xl" style={{ color: accent }}>{"->"}</span>
+          <span className="rounded border border-ink/10 px-4 py-3">CH3COO-</span>
+          <span>+</span>
+          <span className="rounded border border-ink/10 px-4 py-3">CH3CH2OH</span>
+        </div>
+        <div className="mt-5 grid gap-2 text-xs text-charcoal/70 sm:grid-cols-3">
+          <span>25-45 C</span>
+          <span>Pseudo-first-order conditions</span>
+          <span>Phenolphthalein endpoint</span>
+        </div>
+      </div>
+    );
+  }
+
   if (type === "molecule") {
     return (
       <div className="flex min-h-44 items-center justify-center">
@@ -471,6 +571,16 @@ function getFigure(type: NonNullable<WorkExamplePage["figure"]>, accent: string)
           <text x="344" y="43" fontSize="18" fill="#334155">Op-amp</text>
           <text x="430" y="78" fontSize="16" fill="#334155">Vout</text>
         </svg>
+      </div>
+    );
+  }
+
+  if (type === "legal") {
+    return (
+      <div className="rounded border border-ink/10 bg-white p-5 font-serif text-sm leading-7 text-ink">
+        <p><span className="font-bold">Issue</span>: Whether the decision-maker's interference was proportionate to the statutory aim.</p>
+        <p className="mt-3"><span className="font-bold">Rule</span>: The court asks whether the measure is suitable, necessary, and balanced in context.</p>
+        <p className="mt-3"><span className="font-bold">Authority</span>: <em>R (Daly) v Secretary of State for the Home Department</em> [2001] UKHL 26.</p>
       </div>
     );
   }

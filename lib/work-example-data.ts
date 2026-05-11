@@ -39,9 +39,9 @@ export type WorkExamplePage = {
   eyebrow: string;
   heading: string;
   body: string[];
-  variant?: "document" | "references";
+  variant?: "document" | "references" | "resume" | "engineering" | "science" | "legal" | "humanities";
   table?: { headers: string[]; rows: string[][] };
-  figure?: "cell" | "molecule" | "circuit" | "code" | "resume" | "reference" | "chart" | "clinical";
+  figure?: "cell" | "molecule" | "circuit" | "code" | "resume" | "reference" | "chart" | "clinical" | "gel" | "reaction" | "legal";
   comments: WorkExampleComment[];
 };
 
@@ -364,6 +364,11 @@ function createPages(seed: ExampleSeed): WorkExamplePage[] {
   if (seed.key === "apa") return createApaReferencePages();
   if (seed.kind === "resume") return createResumePages(seed);
   if (seed.kind === "reference") return createReferencePages(seed);
+  if (seed.key === "electrical") return createElectricalPages(seed);
+  if (seed.key === "biology") return createBiologyPages(seed);
+  if (seed.key === "chemistry") return createChemistryPages(seed);
+  if (seed.key === "law") return createLawPages(seed);
+  if (seed.key === "philosophy") return createPhilosophyPages(seed);
 
   const figure = figureFor(seed.key);
 
@@ -435,6 +440,276 @@ function createPages(seed: ExampleSeed): WorkExamplePage[] {
       comments: [
         { label: "Conclusion", note: "Made the final claim specific and proportionate to the evidence." },
         { label: "Proofread", note: "Checked punctuation, tense, heading style, and cross-references." }
+      ]
+    }
+  ];
+}
+
+function createElectricalPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Design brief and specifications",
+      heading: "Low-Noise Amplifier Design for Sensor Interfaces",
+      variant: "engineering",
+      body: [
+        `1. Design objective. The circuit conditions a 12 mVpp capacitive-sensor signal before digitisation by a 12-bit ADC. The draft stated that the amplifier <del>will remove all noise from the system</del> <ins>is designed to improve the signal-to-noise ratio within the 0.5-10 kHz measurement band</ins>.`,
+        `Target specification: closed-loop gain A_v = 21 V/V, input-referred noise below 18 nV/sqrt(Hz), and output swing within 0.2-3.1 V from a 3.3 V supply. The report now defines V_in, V_out, f_c, and SNR before using them in the analysis.`
+      ],
+      table: {
+        headers: ["Parameter", "Original label", "Edited specification"],
+        rows: [
+          ["Supply voltage", "3.3", "3.3 V"],
+          ["Bandwidth", "10", "0.5-10 kHz passband"],
+          ["Feedback resistor", "R feedback", "R_f = 20 kOhm"],
+          ["Noise density", "low", "< 18 nV/sqrt(Hz) input referred"]
+        ]
+      },
+      comments: [
+        { label: "EE1", note: "Qualified the claim: an amplifier improves SNR but does not remove all noise." },
+        { label: "EE2", note: "Added units and symbols so the design targets are technically checkable." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Circuit analysis",
+      heading: "2. Feedback Network and Transfer Function",
+      variant: "engineering",
+      body: [
+        `The non-inverting topology was retained, but the explanation was tightened: <del>the resistors make the output bigger because they feedback the signal</del> <ins>R_f and R_g set the closed-loop gain according to A_v = 1 + R_f/R_g</ins>. With R_f = 20 kOhm and R_g = 1 kOhm, the expected gain is 21 V/V.`,
+        `The corrected derivation now separates DC biasing from AC coupling. C_in and R_bias form a high-pass pole, while C_f limits high-frequency gain to reduce wideband noise. Figure 1 shows the edited schematic labels.`
+      ],
+      figure: "circuit",
+      comments: [
+        { label: "EE3", note: "Replaced informal causal wording with the correct closed-loop gain relationship." },
+        { label: "EE4", note: "Separated coupling, biasing, and feedback functions to avoid conflating component roles." }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 5 - Results and captions",
+      heading: "3. Simulation Results",
+      variant: "engineering",
+      body: [
+        `The AC sweep indicates a mid-band gain of 26.4 dB and a -3 dB corner at 10.8 kHz. The original caption read <del>Graph of frequency shows that it works</del> <ins>Figure 2. Simulated frequency response of the non-inverting amplifier, showing 26.4 dB mid-band gain and a 10.8 kHz upper cutoff</ins>.`,
+        `The results paragraph now reports measured values before interpretation. This avoids implying validation before the breadboard measurements are introduced.`
+      ],
+      table: {
+        headers: ["Test", "Simulated", "Measured", "Editorial note"],
+        rows: [
+          ["Mid-band gain", "26.4 dB", "26.1 dB", "Consistent within tolerance"],
+          ["Upper cutoff", "10.8 kHz", "10.2 kHz", "Use kHz, not KHz"],
+          ["Output noise", "1.7 mVrms", "1.9 mVrms", "Define bandwidth"],
+          ["Phase margin", "61 deg", "Not measured", "Do not overclaim"]
+        ]
+      },
+      comments: [
+        { label: "EE5", note: "Turned a vague caption into a self-contained engineering figure caption." },
+        { label: "EE6", note: "Corrected capitalization and unit style: kHz, mVrms, dB." }
+      ]
+    }
+  ];
+}
+
+function createBiologyPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Abstract and hypothesis",
+      heading: "Mitochondrial Stress Responses in Arabidopsis Seedlings",
+      variant: "science",
+      body: [
+        `Abstract. This study tested whether transient oxidative stress alters mitochondrial membrane potential in Arabidopsis root tips. The original sentence <del>proved that stress damages the mitochondria</del> was revised to <ins>indicates that oxidative treatment is associated with reduced mitochondrial membrane potential under the tested conditions</ins>.`,
+        `Seedlings were exposed to 100 microM H2O2 for 20 min and stained with JC-1 dye. The edited abstract now names the organism, treatment, assay, and endpoint before summarising the result.`
+      ],
+      figure: "cell",
+      comments: [
+        { label: "B1", note: "Replaced causal overstatement with wording supported by the experimental design." },
+        { label: "B2", note: "Added organism, treatment concentration, assay, and endpoint for scientific completeness." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Methods and figure references",
+      heading: "Materials and Methods",
+      variant: "science",
+      body: [
+        `Root tips were imaged using confocal microscopy at excitation/emission settings appropriate for JC-1 monomers and aggregates. The draft said <del>pictures were taken under the microscope</del>; the edited version reads <ins>fluorescence images were acquired under identical laser power, gain, and exposure settings</ins>.`,
+        `qPCR analysis used ACT2 as the reference gene. The methods now specify n = 4 biological replicates and distinguishes biological from technical replicates.`
+      ],
+      table: {
+        headers: ["Assay", "Measured variable", "Correction made"],
+        rows: [
+          ["JC-1 staining", "Membrane potential", "Defined colour interpretation"],
+          ["DCFH-DA", "Reactive oxygen species", "Expanded abbreviation"],
+          ["qPCR", "AOX1a expression", "Added reference gene"],
+          ["Root length", "Growth response", "Specified units in mm"]
+        ]
+      },
+      comments: [
+        { label: "B3", note: "Made image-acquisition conditions reproducible." },
+        { label: "B4", note: "Clarified replicate terminology, a common issue in biology reports." }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 5 - Results paragraph",
+      heading: "Results: Fluorescence and Gene Expression",
+      variant: "science",
+      body: [
+        `Figure 2A shows decreased red/green fluorescence ratio after H2O2 treatment. The result was edited from <del>the cells became unhealthy and therefore the treatment was successful</del> to <ins>the reduced red/green ratio is consistent with partial mitochondrial depolarisation</ins>.`,
+        `The discussion now separates observation, statistical result, and biological interpretation: F(2, 9) = 8.41, p = .009, followed by a cautious explanation of stress-response signalling.`
+      ],
+      figure: "gel",
+      comments: [
+        { label: "B5", note: "Replaced subjective wording with observable biology." },
+        { label: "B6", note: "Moved statistics before interpretation so the evidence chain is clear." }
+      ]
+    }
+  ];
+}
+
+function createChemistryPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Reaction and aim",
+      heading: "Kinetic Analysis of Ester Hydrolysis",
+      variant: "science",
+      body: [
+        `Aim. The experiment estimates the pseudo-first-order rate constant for alkaline hydrolysis of ethyl acetate. The draft described the reaction as <del>the ester breaks apart in water very fast</del> <ins>ethyl acetate reacts with hydroxide ions to form acetate and ethanol under alkaline conditions</ins>.`,
+        `Balanced reaction: CH3COOCH2CH3 + OH- -> CH3COO- + CH3CH2OH. The edited version now distinguishes the chemical equation from the kinetic model.`
+      ],
+      figure: "reaction",
+      comments: [
+        { label: "C1", note: "Replaced informal reaction wording with precise chemical terminology." },
+        { label: "C2", note: "Separated stoichiometry from kinetics so the lab report reads more professionally." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Procedure and data table",
+      heading: "Method: Quench-and-Titrate Procedure",
+      variant: "science",
+      body: [
+        `Aliquots of 10.00 mL were withdrawn at 120 s intervals, quenched in chilled deionised water, and titrated against standardized 0.0500 M HCl. The sentence <del>we put acid until it changed color</del> became <ins>the endpoint was identified using phenolphthalein, and titre volumes were recorded to +/-0.05 mL</ins>.`,
+        `The table title was corrected to include temperature and concentration because those variables determine the reported rate constant.`
+      ],
+      table: {
+        headers: ["Temperature", "k_obs before edit", "Corrected k_obs", "Note"],
+        rows: [
+          ["298 K", "0.0031", "3.1 x 10^-3 s^-1", "Unit added"],
+          ["308 K", "0.0058/sec", "5.8 x 10^-3 s^-1", "Style normalized"],
+          ["318 K", "0.0104 s", "1.04 x 10^-2 s^-1", "Dimension corrected"],
+          ["Ea", "35", "35.2 kJ mol^-1", "Precision stated"]
+        ]
+      },
+      comments: [
+        { label: "C3", note: "Corrected the endpoint description and uncertainty notation." },
+        { label: "C4", note: "Rate constants require reciprocal-time units; one entry had the wrong dimension." }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 5 - Discussion and captions",
+      heading: "Discussion: Arrhenius Plot",
+      variant: "science",
+      body: [
+        `The Arrhenius plot gave a linear fit (R2 = 0.992), supporting the temperature dependence expected for ester hydrolysis. The original claim <del>temperature made the reaction better</del> was revised to <ins>increasing temperature increased the observed rate constant, consistent with Arrhenius behaviour</ins>.`,
+        `Caption edit: <del>Figure showing the slope</del> <ins>Figure 2. Arrhenius plot for alkaline ethyl acetate hydrolysis; the slope was used to estimate activation energy</ins>.`
+      ],
+      comments: [
+        { label: "C5", note: "Made the interpretation chemical rather than conversational." },
+        { label: "C6", note: "Caption now identifies the plot and explains how the slope is used." }
+      ]
+    }
+  ];
+}
+
+function createLawPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Legal memo structure",
+      heading: "Memorandum: Proportionality Review in Administrative Decision-Making",
+      variant: "legal",
+      body: [
+        `Issue. Whether proportionality review can constrain statutory discretion without permitting courts to substitute their own policy preferences. The opening was changed from <del>judges should stop bad decisions when they seem unfair</del> to <ins>courts may scrutinise whether an administrative measure is suitable, necessary, and balanced without deciding the merits afresh</ins>.`,
+        `Short answer. The strongest position is that proportionality requires structured justification while preserving institutional restraint, particularly after R (Daly) v Secretary of State for the Home Department [2001] UKHL 26.`
+      ],
+      figure: "legal",
+      comments: [
+        { label: "L1", note: "Reframed informal opinion as a legally testable issue." },
+        { label: "L2", note: "Added a short-answer paragraph, which helps legal readers find the answer quickly." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Authority and citations",
+      heading: "Analysis of Authorities",
+      variant: "legal",
+      body: [
+        `The draft cited the case as <del>Daly case, 2001</del> <ins>R v Secretary of State for the Home Department, ex p Daly [2001] UKHL 26</ins>. The corrected citation supports the proposition that intensity of review may vary with the right affected.`,
+        `A transition was added before the counterargument: although proportionality improves transparency, it may also invite a more intrusive merits review if the court fails to identify the statutory purpose with care.`
+      ],
+      table: {
+        headers: ["Authority", "Point used", "Editorial correction"],
+        rows: [
+          ["Daly", "Intensity of review", "Full neutral citation added"],
+          ["Bank Mellat", "Four-stage test", "Pinpoint requested"],
+          ["Huang", "Structured balancing", "Italicization corrected"],
+          ["Wednesbury", "Reasonableness contrast", "Defined before comparison"]
+        ]
+      },
+      comments: [
+        { label: "L3", note: "Corrected case naming and citation format." },
+        { label: "L4", note: "Added a bridge into the counterargument so the analysis does not read as a list." }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 5 - Precision and conclusion",
+      heading: "Conclusion",
+      variant: "legal",
+      body: [
+        `The conclusion was revised from <del>this shows proportionality is always the best test</del> to <ins>proportionality is most defensible where the decision-maker must justify an interference with a protected interest by reference to evidence and statutory purpose</ins>.`,
+        `The final memo keeps the client's argument strong while avoiding absolute claims that would be vulnerable under opposing authority.`
+      ],
+      comments: [
+        { label: "L5", note: "Avoided an overbroad doctrinal claim." },
+        { label: "L6", note: "Preserved the argument while making it more defensible." }
+      ]
+    }
+  ];
+}
+
+function createPhilosophyPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Thesis and roadmap",
+      heading: "Moral Responsibility and the Problem of Manipulation",
+      variant: "humanities",
+      body: [
+        `This essay argues that manipulation cases challenge reasons-responsive accounts because the agent's deliberative capacities may operate normally while the history of those capacities has been compromised. The draft began, <del>Free will is confusing and philosophers have many views</del>; the revised opening reads, <ins>Manipulation cases are troubling because they preserve agency at the surface while calling its source into question</ins>.`,
+        `Roadmap. Section I reconstructs the compatibilist position; Section II develops the manipulation objection; Section III argues that historical conditions must supplement responsiveness to reasons.`
+      ],
+      comments: [
+        { label: "P1", note: "Replaced a broad opening with a precise philosophical problem." },
+        { label: "P2", note: "Added a roadmap so the reader can track the argument." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Argument flow",
+      heading: "Compatibilism and the Manipulation Objection",
+      variant: "humanities",
+      body: [
+        `The paragraph now distinguishes claim, support, and implication. <del>This means Frankfurt is wrong because the person is not really responsible</del> became <ins>The case does not by itself refute Frankfurt-style compatibilism; rather, it pressures the account to explain why the agent's history is normatively irrelevant</ins>.`,
+        `A signposting sentence was added before the objection: the issue is not whether the agent recognises reasons, but whether that recognitional capacity is appropriately her own.`
+      ],
+      comments: [
+        { label: "P3", note: "Made the objection fairer and more philosophically precise." },
+        { label: "P4", note: "Added signposting to improve paragraph-to-paragraph movement." }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 5 - Conclusion polish",
+      heading: "Conclusion",
+      variant: "humanities",
+      body: [
+        `The final paragraph now returns to the thesis rather than introducing a new premise. The sentence <del>therefore moral responsibility is impossible to understand</del> was revised to <ins>the manipulation objection shows that responsibility requires both reasons-responsiveness and a plausible account of how the agent came to possess that responsiveness</ins>.`,
+        `This preserves the writer's voice while making the conclusion proportionate, controlled, and academically credible.`
+      ],
+      comments: [
+        { label: "P5", note: "Conclusion now restates the argument instead of widening it." },
+        { label: "P6", note: "Reduced abstraction where it obscured the central claim." }
       ]
     }
   ];
@@ -529,6 +804,10 @@ function createApaReferencePages(): WorkExamplePage[] {
 }
 
 function createReferencePages(seed: ExampleSeed): WorkExamplePage[] {
+  if (seed.key === "mla") return createMlaReferencePages(seed);
+  if (seed.key === "chicago") return createChicagoReferencePages(seed);
+  if (seed.key === "oscola") return createOscolaReferencePages(seed);
+
   return [
     {
       eyebrow: "Page 1 of 5 - Citation audit",
@@ -600,14 +879,122 @@ function createReferencePages(seed: ExampleSeed): WorkExamplePage[] {
   ];
 }
 
+function createMlaReferencePages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - MLA Works Cited",
+      heading: "Works Cited",
+      variant: "references",
+      body: [
+        `<ins>Works Cited</ins>`,
+        `Morrison, Toni. <ins>Beloved</ins>. <del>Vintage books, New York, 2004</del> <ins>Vintage International, 2004.</ins>`,
+        `Butler, Judith. <del>Gender Trouble: Feminism and the Subversion of Identity, Routledge, 1990</del> <ins>Gender Trouble: Feminism and the Subversion of Identity.</ins> Routledge, 1990.`,
+        `Smith, Zadie. "Their Eyes Were Watching God: What Does Soulful Mean?" <del>New Yorker</del> <ins>The New Yorker</ins>, 17 Jan. 2011, www.newyorker.com/books/page-turner/their-eyes-were-watching-god-what-does-soulful-mean.`
+      ],
+      comments: [
+        { label: "M1", note: "MLA uses Works Cited, alphabetized by author surname, with hanging indents." },
+        { label: "M2", note: "Book titles are italicized, and publisher location is no longer required in MLA 9." },
+        { label: "M3", note: "Container titles need correct article use and capitalization." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Parenthetical citation check",
+      heading: "In-text Citation Match",
+      variant: "references",
+      body: [
+        `The parenthetical citation was revised from <del>(Morrison, page 37)</del> to <ins>(Morrison 37)</ins>.`,
+        `A signal phrase was tightened from <del>as it says in Beloved by Morrison</del> to <ins>Morrison presents memory as both personal and communal</ins> (37).`
+      ],
+      comments: [
+        { label: "M4", note: "MLA parenthetical citations usually include author and page, without a comma." },
+        { label: "M5", note: "Improved the signal phrase so the citation supports the sentence rather than interrupting it." }
+      ]
+    }
+  ];
+}
+
+function createChicagoReferencePages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - Chicago bibliography",
+      heading: "Bibliography",
+      variant: "references",
+      body: [
+        `<ins>Bibliography</ins>`,
+        `Armitage, David. <ins>Foundations of Modern International Thought</ins>. Cambridge: Cambridge University Press, 2013.`,
+        `Hunt, Lynn. <del>Inventing Human Rights, Norton 2007</del> <ins>Inventing Human Rights: A History.</ins> New York: W. W. Norton, 2007.`,
+        `Skinner, Quentin. "Meaning and Understanding in the History of Ideas." <ins>History and Theory</ins> 8, no. 1 (1969): 3-53. https://doi.org/10.2307/2504188.`
+      ],
+      comments: [
+        { label: "CH1", note: "Chicago bibliography entries invert the first author's name and use headline-style capitalization for titles." },
+        { label: "CH2", note: "Added publisher location and corrected punctuation for notes-bibliography style." },
+        { label: "CH3", note: "Journal article entry now includes volume, issue, year, page range, and DOI." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Footnote consistency",
+      heading: "Footnotes",
+      variant: "references",
+      body: [
+        `1. <del>David Armitage, Foundations of Modern International Thought, 57.</del> <ins>David Armitage, Foundations of Modern International Thought</ins> (Cambridge: Cambridge University Press, 2013), 57.`,
+        `6. <del>Armitage 84</del> <ins>Armitage, Foundations of Modern International Thought, 84.</ins>`,
+        `9. <del>Ibid, p. 92</del> <ins>Ibid., 92.</ins>`
+      ],
+      comments: [
+        { label: "CH4", note: "First notes require full publication details; later notes may be shortened." },
+        { label: "CH5", note: "Corrected shortened-note punctuation and removed unnecessary p." }
+      ]
+    }
+  ];
+}
+
+function createOscolaReferencePages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 5 - OSCOLA footnotes",
+      heading: "Legal Footnotes",
+      variant: "references",
+      body: [
+        `1. <del>Donoghue v Stevenson, 1932 AC 562</del> <ins>Donoghue v Stevenson</ins> [1932] AC 562 (HL).`,
+        `2. <del>R v Secretary of State for the Home Department, ex parte Daly, 2001</del> <ins>R v Secretary of State for the Home Department, ex p Daly</ins> [2001] UKHL 26, [2001] 2 AC 532.`,
+        `3. Aileen Kavanagh, <ins>Constitutional Review under the UK Human Rights Act</ins> (Cambridge University Press 2009) 143.`
+      ],
+      comments: [
+        { label: "O1", note: "OSCOLA case names are italicized, with neutral citation first where available." },
+        { label: "O2", note: "Added law report details and corrected ex parte abbreviation." },
+        { label: "O3", note: "Book citations omit publisher location and use page pinpoints without p." }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 5 - Table of authorities",
+      heading: "Table of Cases and Statutes",
+      variant: "references",
+      body: [
+        `<ins>Table of Cases</ins>`,
+        `<ins>Bank Mellat v HM Treasury (No 2)</ins> [2013] UKSC 39, [2014] AC 700`,
+        `<ins>Council of Civil Service Unions v Minister for the Civil Service</ins> [1985] AC 374 (HL)`,
+        `<ins>Human Rights Act 1998</ins>, ss 3, 6`
+      ],
+      comments: [
+        { label: "O4", note: "Separated cases and statutes so the legal apparatus is easier to verify." },
+        { label: "O5", note: "Checked pinpoint and section references for OSCOLA punctuation." }
+      ]
+    }
+  ];
+}
+
 function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
       eyebrow: "Page 1 of 5 - Executive profile",
       heading: seed.documentTitle,
+      variant: "resume",
       body: [
-        `The profile was revised from <del>hardworking professional with many responsibilities</del> to <ins>Research analyst with eight years of experience translating complex data into board-level recommendations</ins>.`,
-        seed.method
+        `<ins>AMARA LEWIS</ins>`,
+        `Senior Research Analyst | London, UK | amara.lewis@email.com | linkedin.com/in/amaralewis`,
+        `SUMMARY`,
+        `Research analyst with eight years of experience translating complex data into board-level recommendations. The original line, <del>hardworking professional with many responsibilities</del>, was rewritten to foreground field, seniority, audience, and value.`,
+        `CORE SKILLS: Excel, Power BI, SQL, stakeholder communication, dashboard automation, research synthesis.`
       ],
       figure: "resume",
       comments: [
@@ -618,9 +1005,13 @@ function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
     {
       eyebrow: "Page 2 of 5 - Experience bullets",
       heading: "Selected professional experience",
+      variant: "resume",
       body: [
+        `SENIOR RESEARCH ANALYST, Northbridge Advisory | 2021-present`,
         `<ins>${seed.reference}</ins>`,
-        `The original bullet, <del>was responsible for reports and helping team members</del>, became a stronger achievement with scope, action, and result.`
+        `Converted <del>was responsible for reports and helping team members</del> to <ins>Led weekly insight reviews for six analysts, reducing senior stakeholder follow-up requests by 24%</ins>.`,
+        `RESEARCH ANALYST, Meridian Policy Group | 2017-2021`,
+        `Revised <del>worked on data for clients</del> to <ins>Built policy dashboards used by three client teams to compare regional performance indicators</ins>.`
       ],
       comments: [
         { label: "Impact", note: "Added measurable outcome and leadership scope." },
@@ -630,6 +1021,7 @@ function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
     {
       eyebrow: "Page 3 of 5 - Skills and formatting",
       heading: "Skills, tools, and layout consistency",
+      variant: "resume",
       body: [
         `The skills section now uses consistent grouping: analytics, stakeholder communication, project leadership, and technical tools.`,
         `<del>Microsoft excel, Power bi, SQL database, communication skills</del> <ins>Excel, Power BI, SQL, stakeholder communication, dashboard automation</ins>`
@@ -649,6 +1041,7 @@ function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
     {
       eyebrow: "Page 4 of 5 - Academic and project details",
       heading: "Education and selected projects",
+      variant: "resume",
       body: [
         `Project descriptions were shortened to preserve white space and highlight relevance. <del>Completed a project about customer reports that was useful for leaders</del> <ins>Built customer-retention dashboards used in quarterly leadership reviews</ins>.`,
         `The edited CV keeps detail where it proves value and removes filler where it slows the reader.`
@@ -661,6 +1054,7 @@ function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
     {
       eyebrow: "Page 5 of 5 - Final CV proofread",
       heading: "Final résumé presentation",
+      variant: "resume",
       body: [
         `${seed.result} The final pass checked punctuation, alignment, tense, role titles, and consistent date formatting.`,
         `The result is a clean, premium document that lets achievement and credibility carry the page.`
