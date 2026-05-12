@@ -58,7 +58,7 @@ export function HeroSplit() {
   }, []);
 
   return (
-    <section className="relative z-20 flex min-h-[70vh] w-full max-w-full flex-col overflow-x-clip bg-paper pt-16 pb-20 text-ink lg:min-h-[85vh] lg:overflow-visible lg:pt-24 lg:pb-28">
+    <section className="relative z-20 flex min-h-[70vh] w-full max-w-full flex-col overflow-x-clip bg-paper pt-16 pb-20 text-ink lg:min-h-[84vh] lg:overflow-visible lg:pt-24 lg:pb-28">
       <svg width="0" height="0" className="absolute pointer-events-none">
         <defs>
           <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
@@ -84,7 +84,7 @@ export function HeroSplit() {
       <div className="pointer-events-none absolute top-1/4 left-1/2 z-0 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-primary/5 blur-[100px] sm:h-[600px] sm:w-[600px] sm:blur-[120px] lg:left-1/4 lg:translate-x-0" />
 
       {/* Desktop Full Bleed Media */}
-      <div className="hidden lg:block absolute top-16 bottom-16 right-0 w-[60vw] z-10 overflow-hidden rounded-l-[3rem] shadow-[0_24px_70px_rgba(15,59,127,0.08)]" style={{ clipPath: 'url(#wave-clip)', WebkitClipPath: 'url(#wave-clip)' }}>
+      <div className="hidden lg:block absolute top-16 bottom-0 right-0 w-[60vw] z-10 overflow-hidden rounded-l-[3rem] shadow-[0_24px_70px_rgba(15,59,127,0.08)]" style={{ clipPath: 'url(#wave-clip)', WebkitClipPath: 'url(#wave-clip)' }}>
         <motion.div 
           initial={{ opacity: 0, x: 80 }}
           whileInView={{ opacity: 1, x: 0 }}
