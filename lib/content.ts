@@ -161,7 +161,7 @@ export const faqs = [
   },
   {
     question: "How do I contact support?",
-    answer: "Use the Contact page or email hello@business.editandproofread.com. Include your document type, expected word count, and deadline if you have one."
+    answer: "Use the Contact page or email support@business.editandproofread.com. Include your document type, expected word count, and deadline if you have one."
   }
 ];
 

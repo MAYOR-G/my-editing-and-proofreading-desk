@@ -107,8 +107,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const selectedProviderLabel = PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack";
   const activePaymentProviders = useMemo(() => {
     if (!paymentSettings) return [];
-    return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`]);
-  }, [paymentSettings]);
+    return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`] && paymentReadiness?.[item.id]?.configured !== false);
+  }, [paymentReadiness, paymentSettings]);
   const hasAvailablePaymentMethods = activePaymentProviders.length > 0;
 
   useEffect(() => {
@@ -139,9 +139,9 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         if (cancelled) return;
         setPaymentSettings(data.settings);
         setPaymentReadiness(data.readiness || null);
-        const enabledProviders = PAYMENT_PROVIDERS.filter((item) => data.settings[`${item.id}_enabled`]);
-        if (enabledProviders.length > 0) {
-          setProvider((current) => enabledProviders.some((item) => item.id === current) ? current : enabledProviders[0].id);
+        const availableProviders = PAYMENT_PROVIDERS.filter((item) => data.settings[`${item.id}_enabled`] && data.readiness?.[item.id]?.configured !== false);
+        if (availableProviders.length > 0) {
+          setProvider((current) => availableProviders.some((item) => item.id === current) ? current : availableProviders[0].id);
         }
       } catch (error: any) {
         if (!cancelled) setPaymentSettingsError(error.message || "Payment settings could not be loaded.");
@@ -690,8 +690,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             <div className="grid gap-4 sm:grid-cols-2">
               {activePaymentProviders.map((info) => {
                 const isSelected = provider === info.id;
-                const readiness = paymentReadiness?.[info.id];
-                const setupPending = readiness ? !readiness.configured : false;
 
                 return (
                 <button
@@ -699,7 +697,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   type="button"
                   onClick={() => {
                     setProvider(info.id);
-                    setProviderNotice(setupPending ? `${info.label} is enabled, but API keys are missing.` : null);
+                    setProviderNotice(null);
                   }}
                   className={`group relative border p-6 text-left transition-all duration-300 ${
                     isSelected
@@ -711,11 +709,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-primary">
                       <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     </div>
-                  )}
-                  {setupPending && (
-                    <span className="absolute right-4 top-4 border border-hairline bg-ivory px-2.5 py-1 text-[0.65rem] uppercase tracking-[0.18em] text-charcoal/60">
-                      Setup Pending
-                    </span>
                   )}
                   <div className="flex items-center gap-3 mb-3">
                     <div className={`flex h-10 w-10 items-center justify-center border text-sm font-bold ${isSelected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-charcoal/60"}`}>
@@ -731,7 +724,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                       <span key={m} className={`border px-2 py-1 text-xs ${isSelected ? "border-primary/30 text-primary" : "border-hairline text-charcoal/50"}`}>{m}</span>
                     ))}
                   </div>
-                  {setupPending ? <p className="mt-4 text-xs leading-5 text-red-700">{readiness?.message}</p> : null}
                 </button>
               )})}
             </div>

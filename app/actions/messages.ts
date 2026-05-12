@@ -2,7 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { Resend } from "resend";
+import { BRAND_NAME, INTERNAL_NOTIFICATION_EMAIL, SUPPORT_EMAIL, sendEmail } from "@/lib/email";
 
 export async function sendMessage(projectId: string, content: string) {
   if (!content.trim()) return { error: "Message content is required" };
@@ -37,8 +37,6 @@ export async function sendMessage(projectId: string, content: string) {
 
   // Optionally send an email notification using Resend
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
-    
     if (isFromAdmin) {
       // Notify the client that the admin replied
       const { data: project } = await supabase
@@ -49,8 +47,9 @@ export async function sendMessage(projectId: string, content: string) {
         
       const clientProfile = Array.isArray(project?.profiles) ? project.profiles[0] : project?.profiles;
       if (clientProfile?.email) {
-        await resend.emails.send({
-          from: "My Editing Desk <hello@business.editandproofread.com>",
+        await sendEmail({
+          from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+          replyTo: SUPPORT_EMAIL,
           to: clientProfile.email,
           subject: `New message regarding project ${project?.friendly_id}`,
           html: `<p>Hi ${clientProfile.full_name || 'there'},</p><p>You have a new message from the editorial team regarding your project.</p><p><strong>Message:</strong><br/>${content.replace(/\n/g, '<br/>')}</p><p>Log in to your dashboard to reply.</p>`,
@@ -58,9 +57,10 @@ export async function sendMessage(projectId: string, content: string) {
       }
     } else {
       // Notify the admin that a client replied
-      const adminEmail = process.env.ADMIN_EMAIL || "admin@business.editandproofread.com";
-      await resend.emails.send({
-        from: "My Editing Desk Notifications <notifications@business.editandproofread.com>",
+      const adminEmail = process.env.INTERNAL_NOTIFICATION_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NOTIFICATION_GMAIL || INTERNAL_NOTIFICATION_EMAIL;
+      await sendEmail({
+        from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+        replyTo: profile?.email || SUPPORT_EMAIL,
         to: adminEmail,
         subject: `New client message from ${profile?.full_name || profile?.email}`,
         html: `<p>A client has sent a new message regarding a project.</p><p><strong>Client:</strong> ${profile?.full_name || profile?.email}</p><p><strong>Message:</strong><br/>${content.replace(/\n/g, '<br/>')}</p><p>Log in to the Admin Desk to reply.</p>`,

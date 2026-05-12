@@ -6,7 +6,7 @@ import {
   ProviderUnavailableError,
   type PaymentProviderName,
 } from "@/lib/payment";
-import { sendPaymentSuccessEmail, sendEditorNotificationEmail } from "@/lib/email";
+import { sendDocumentReceivedEmail, sendEditorNotificationEmail, sendPaymentSuccessEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
@@ -63,21 +63,21 @@ export async function GET(request: Request) {
     // ─── Find the project by reference ─────────────────────────────
     const { data: project, error: fetchError } = await supabase
       .from("projects")
-      .select("id, friendly_id, client_id, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, word_count, turnaround")
+      .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, word_count, turnaround, uploaded_file_path, upload_file_path")
       .eq("transaction_reference", reference)
       .single();
 
     if (fetchError || !project) {
       console.error(`[${trace}] Payment verify project lookup failed`, { reference, message: fetchError?.message });
       return NextResponse.json(
-        { error: "Project not found for this reference", code: "project_not_found", trace_id: trace },
+        { error: "We could not find this order. Please contact support if payment was completed.", code: "project_not_found", trace_id: trace },
         { status: 404 }
       );
     }
 
     if (project.payment_provider !== provider) {
       return NextResponse.json(
-        { error: "Payment provider mismatch", verified: false, code: "provider_mismatch", trace_id: trace },
+        { error: "We could not verify this payment. Please contact support if payment was completed.", verified: false, code: "provider_mismatch", trace_id: trace },
         { status: 400 }
       );
     }
@@ -131,7 +131,7 @@ export async function GET(request: Request) {
         `[${trace}] Amount mismatch: expected ${expectedAmountCents}, got ${verifyResult.amount} for ref ${reference}`
       );
       return NextResponse.json(
-        { error: "Payment amount mismatch", verified: false, code: "amount_mismatch", trace_id: trace },
+        { error: "We could not verify the payment amount. Please contact support if payment was completed.", verified: false, code: "amount_mismatch", trace_id: trace },
         { status: 400 }
       );
     }
@@ -170,21 +170,46 @@ export async function GET(request: Request) {
     // ─── Send emails ───────────────────────────────────────────────
     const { data: profile } = await supabase
       .from("profiles")
-      .select("email")
+      .select("email, full_name")
       .eq("id", project.client_id)
       .single();
 
     if (profile?.email) {
       // Fire-and-forget — don't block response
-      sendPaymentSuccessEmail(profile.email, project.friendly_id, project.price).catch(
+      const paidAt = verifyResult.paidAt || new Date().toISOString();
+      sendPaymentSuccessEmail(profile.email, {
+        clientName: profile.full_name,
+        friendlyId: project.friendly_id,
+        service: project.service_type,
+        wordCount: project.word_count,
+        turnaround: project.turnaround,
+        amount: project.price,
+        currency: project.payment_currency,
+        paymentDate: new Date(paidAt).toLocaleString(),
+        paymentMethod: verifyResult.channel || project.payment_provider,
+      }).catch(
         (err) => console.error("Email send error:", err)
       );
-      sendEditorNotificationEmail(
-        project.friendly_id,
-        project.word_count,
-        project.service_type,
-        project.turnaround
-      ).catch((err) => console.error("Editor notification error:", err));
+      sendDocumentReceivedEmail(profile.email, {
+        clientName: profile.full_name,
+        friendlyId: project.friendly_id,
+        documentName: project.title,
+        service: project.service_type,
+        turnaround: project.turnaround,
+      }).catch((err) => console.error("Document received email error:", err));
+      sendEditorNotificationEmail({
+        friendlyId: project.friendly_id,
+        clientName: profile.full_name,
+        clientEmail: profile.email,
+        amount: project.price,
+        currency: project.payment_currency,
+        wordCount: project.word_count,
+        service: project.service_type,
+        turnaround: project.turnaround,
+        paymentStatus: "paid",
+        documentPath: project.uploaded_file_path || project.upload_file_path,
+        projectUrl: `${new URL(request.url).origin}/admin/projects`,
+      }).catch((err) => console.error("Editor notification error:", err));
     }
 
     return NextResponse.json({
@@ -202,7 +227,7 @@ export async function GET(request: Request) {
         error:
           error instanceof ProviderUnavailableError
             ? "This payment option will be available soon."
-            : error.message || "Verification failed",
+            : "We could not verify this payment right now. Please try again or contact support.",
         code: error instanceof ProviderUnavailableError ? "provider_not_available" : "verify_unexpected",
         trace_id: trace,
       },

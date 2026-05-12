@@ -8,7 +8,8 @@ import { getPaymentProviderReadiness } from "@/lib/payment";
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
-  { href: "/admin/requests", label: "Messages" }
+  { href: "/admin/requests", label: "Messages" },
+  { href: "/admin/projects", label: "Projects" }
 ];
 
 function formatProvider(provider?: string | null) {

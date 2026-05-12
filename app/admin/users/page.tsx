@@ -5,7 +5,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/users", label: "Users" },
-  { href: "/admin/requests", label: "Messages" }
+  { href: "/admin/requests", label: "Messages" },
+  { href: "/admin/projects", label: "Projects" }
 ];
 
 export default async function AdminUsersPage() {

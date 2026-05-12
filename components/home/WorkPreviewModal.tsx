@@ -152,8 +152,8 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
           </div>
         </header>
 
-        <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr] lg:grid-cols-[170px_1fr] lg:grid-rows-1">
-          <PageRail example={example} pageIndex={pageIndex} onSelectPage={goToPage} />
+        <div className="grid min-h-0 flex-1 grid-rows-1">
+          {/* <PageRail example={example} pageIndex={pageIndex} onSelectPage={goToPage} /> */}
 
           <main className="relative min-h-0 overflow-hidden bg-[#2e3036]">
             <div className="flex h-11 items-center justify-between border-b border-white/10 bg-[#3b3b40] px-3 text-white/82">
@@ -217,6 +217,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
   );
 }
 
+/*
 function PageRail({
   example,
   pageIndex,
@@ -257,6 +258,7 @@ function PageRail({
     </aside>
   );
 }
+*/
 
 function DocumentPage({
   example,
@@ -269,14 +271,15 @@ function DocumentPage({
 }) {
   const pageTone = page.variant === "resume"
     ? "font-sans"
-    : page.variant === "legal" || page.variant === "humanities" || page.variant === "references"
+    : page.variant === "legal" || page.variant === "humanities" || page.variant === "references" || page.variant === "science"
       ? "font-serif"
       : "font-sans";
+  const isFirstPage = pageNumber === 1;
 
   return (
     <article className="mx-auto grid max-w-[1080px] gap-0 bg-[#ece7dd] shadow-[0_18px_70px_rgba(0,0,0,0.28)] lg:grid-cols-[minmax(0,780px)_260px] lg:items-stretch">
-      <div className="min-h-[980px] bg-[#fffdf7] px-6 py-7 ring-1 ring-black/8 sm:px-11 sm:py-10">
-        {pageNumber === 1 ? (
+      <div className={`flex min-h-[980px] flex-col bg-[#fffdf7] px-6 ring-1 ring-black/8 sm:px-11 ${isFirstPage ? "py-7 sm:py-10" : "py-6 sm:py-8"}`}>
+        {isFirstPage ? (
           <div className="mb-9 flex items-center justify-between border px-5 py-4" style={{ borderColor: `${example.accent}55` }}>
             <div>
               <p className="font-display text-2xl font-bold leading-tight sm:text-3xl" style={{ color: example.accent }}>
@@ -290,41 +293,43 @@ function DocumentPage({
           </div>
         ) : null}
 
-        <div className="mb-7 flex items-start justify-between gap-6 border-b border-ink/10 pb-5">
-          <div>
-            <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-charcoal/55">
-              {page.eyebrow}
-            </p>
-            <h3 className="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
-              {page.heading}
-            </h3>
-            <p className="mt-2 text-sm font-medium text-charcoal/70">{example.authorLine}</p>
+        {isFirstPage ? (
+          <div className="mb-7 flex items-start justify-between gap-6 border-b border-ink/10 pb-5">
+            <div>
+              <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-charcoal/55">
+                {page.eyebrow}
+              </p>
+              <h3 className="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
+                {page.heading}
+              </h3>
+              <p className="mt-2 text-sm font-medium text-charcoal/70">{example.authorLine}</p>
+            </div>
+            <span
+              className="hidden rounded-full px-3 py-1 text-xs font-bold text-white sm:inline-flex"
+              style={{ backgroundColor: example.accent }}
+            >
+              {example.shortTitle}
+            </span>
           </div>
-          <span
-            className="hidden rounded-full px-3 py-1 text-xs font-bold text-white sm:inline-flex"
-            style={{ backgroundColor: example.accent }}
-          >
-            {example.shortTitle}
-          </span>
-        </div>
+        ) : null}
 
-        {page.variant === "engineering" ? <EngineeringRule accent={example.accent} /> : null}
-        {page.variant === "legal" ? <LegalMemoBar /> : null}
-        {page.variant === "science" ? <ScienceMetaBar accent={example.accent} /> : null}
+        {isFirstPage && page.variant === "engineering" ? <EngineeringRule accent={example.accent} /> : null}
+        {isFirstPage && page.variant === "legal" ? <LegalMemoBar /> : null}
+        {isFirstPage && page.variant === "science" ? <ScienceMetaBar accent={example.accent} /> : null}
 
-        <div className={`${pageTone} text-[0.95rem] leading-7 text-[#111827] sm:text-[1.01rem] ${page.variant === "references" ? "space-y-4" : "space-y-5"}`}>
+        <div className={`grow space-y-5 ${pageTone} text-[0.95rem] leading-7 text-[#111827] sm:text-[1.01rem]`}>
           {page.body.map((paragraph, index) => (
             <p
               key={paragraph}
               className={`relative ${lineClassFor(page, paragraph, index)} ${
                 index > 0 && index <= page.comments.length ? "border-r-2 pr-3" : ""
               }`}
-              style={index > 0 && index <= page.comments.length ? { borderColor: `${example.accent}66` } : undefined}
+              style={index > 0 && index <= page.comments.length ? { borderColor: page.variant === "science" ? "#f08f8f" : `${example.accent}66` } : undefined}
             >
               {index > 0 && index <= page.comments.length ? (
                 <span
                   className="absolute -right-7 top-2 hidden h-px w-7 lg:block"
-                  style={{ backgroundColor: `${example.accent}99` }}
+                  style={{ backgroundColor: page.variant === "science" ? "#f08f8f" : `${example.accent}99` }}
                   aria-hidden="true"
                 />
               ) : null}
@@ -336,26 +341,36 @@ function DocumentPage({
         {page.figure ? <DocumentFigure type={page.figure} accent={example.accent} /> : null}
         {page.table ? <DocumentTable table={page.table} /> : null}
 
-        <footer className="mt-10 flex items-center justify-between border-t border-ink/10 pt-4 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-charcoal/50">
-          <span>Confidential sample preview</span>
-          <span>{pageNumber}</span>
-        </footer>
+        {isFirstPage ? (
+          <footer className="mt-10 flex items-center justify-between border-t border-ink/10 pt-4 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-charcoal/50">
+            <span>Confidential sample preview</span>
+            <span>{pageNumber}</span>
+          </footer>
+        ) : null}
       </div>
 
-      <aside className="space-y-3 bg-[#eee9df] p-4 lg:pt-36">
+      <aside className={`space-y-3 bg-[#eee9df] p-4 ${isFirstPage ? "lg:pt-36" : "lg:pt-8"}`}>
         {page.comments.map((comment, index) => (
           <div
             key={`${comment.label}-${index}`}
-            className="relative rounded-lg border bg-[#fffdf8]/92 p-4 shadow-[0_10px_22px_rgba(10,11,13,0.08)] before:absolute before:right-full before:top-7 before:hidden before:h-px before:w-8 before:bg-current lg:before:block"
-            style={{ borderColor: `${example.accent}66`, color: example.accent }}
+            className={`relative rounded-lg border p-3 shadow-[0_10px_22px_rgba(10,11,13,0.08)] before:absolute before:right-full before:top-7 before:hidden before:h-px before:w-8 before:bg-current lg:before:block ${
+              page.variant === "science" ? "bg-[#fff0f0] text-[#9b1c1c]" : "bg-[#fffdf8]/92"
+            }`}
+            style={{ borderColor: page.variant === "science" ? "#ef8d8d" : `${example.accent}66`, color: page.variant === "science" ? "#9b1c1c" : example.accent }}
           >
-            <div className="mb-2 flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-current">
-                <MessageSquareText className="h-4 w-4" />
-              </span>
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-current">Commented [{comment.label}]</p>
-            </div>
-            <p className="text-sm leading-6 text-ink">{comment.note}</p>
+            {page.variant === "science" ? (
+              <p className="font-serif text-sm font-bold leading-5 text-[#5b1111]">Commented [{comment.label}]: <span className="font-normal text-ink">{comment.note}</span></p>
+            ) : (
+              <>
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-current">
+                    <MessageSquareText className="h-4 w-4" />
+                  </span>
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-current">Commented [{comment.label}]</p>
+                </div>
+                <p className="text-sm leading-6 text-ink">{comment.note}</p>
+              </>
+            )}
           </div>
         ))}
       </aside>
@@ -374,6 +389,7 @@ function lineClassFor(page: WorkExamplePage, paragraph: string, index: number) {
   if (page.variant === "engineering") return "font-mono text-[0.9rem] leading-7";
   if (page.variant === "legal") return "text-[0.98rem] leading-8";
   if (page.variant === "humanities") return "text-[1.03rem] leading-8";
+  if (page.variant === "science") return "text-[0.98rem] leading-6";
   return "";
 }
 

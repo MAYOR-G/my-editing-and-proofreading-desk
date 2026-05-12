@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { PaystackProvider } from "@/lib/payment";
-import { sendPaymentSuccessEmail, sendEditorNotificationEmail } from "@/lib/email";
+import { sendDocumentReceivedEmail, sendEditorNotificationEmail, sendPaymentSuccessEmail } from "@/lib/email";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 /**
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     // ─── Find project ──────────────────────────────────────────────
     const { data: project, error: fetchError } = await supabase
       .from("projects")
-      .select("id, friendly_id, client_id, price, payment_status, payment_provider, payment_verified_at, service_type, word_count, turnaround")
+      .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, word_count, turnaround, uploaded_file_path, upload_file_path")
       .eq("transaction_reference", reference)
       .single();
 
@@ -104,20 +104,44 @@ export async function POST(request: Request) {
     // ─── Send notification emails ──────────────────────────────────
     const { data: profile } = await supabase
       .from("profiles")
-      .select("email")
+      .select("email, full_name")
       .eq("id", project.client_id)
       .single();
 
     if (profile?.email) {
-      sendPaymentSuccessEmail(profile.email, project.friendly_id, project.price).catch(
+      const paidAt = verified.paidAt || new Date().toISOString();
+      sendPaymentSuccessEmail(profile.email, {
+        clientName: profile.full_name,
+        friendlyId: project.friendly_id,
+        service: project.service_type,
+        wordCount: project.word_count,
+        turnaround: project.turnaround,
+        amount: project.price,
+        currency: project.payment_currency,
+        paymentDate: new Date(paidAt).toLocaleString(),
+        paymentMethod: verified.channel || project.payment_provider,
+      }).catch(
         (err) => console.error("Paystack webhook email error:", err)
       );
-      sendEditorNotificationEmail(
-        project.friendly_id,
-        project.word_count,
-        project.service_type,
-        project.turnaround
-      ).catch((err) => console.error("Editor notification error:", err));
+      sendDocumentReceivedEmail(profile.email, {
+        clientName: profile.full_name,
+        friendlyId: project.friendly_id,
+        documentName: project.title,
+        service: project.service_type,
+        turnaround: project.turnaround,
+      }).catch((err) => console.error("Document received email error:", err));
+      sendEditorNotificationEmail({
+        friendlyId: project.friendly_id,
+        clientName: profile.full_name,
+        clientEmail: profile.email,
+        amount: project.price,
+        currency: project.payment_currency,
+        wordCount: project.word_count,
+        service: project.service_type,
+        turnaround: project.turnaround,
+        paymentStatus: "paid",
+        documentPath: project.uploaded_file_path || project.upload_file_path,
+      }).catch((err) => console.error("Editor notification error:", err));
     }
 
     return NextResponse.json({ received: true });

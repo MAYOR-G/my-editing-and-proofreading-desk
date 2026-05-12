@@ -20,6 +20,7 @@ type InputOption = [InputMode, string, string, typeof ClipboardPenLine];
 type AiResult = {
   editedText: string;
   highlights: string[];
+  suggestions?: string[];
   meta?: {
     remainingToday?: number;
     wordCount?: number;
@@ -365,13 +366,23 @@ export function AiEditingTool() {
       {result ? (
         <section ref={resultRef} className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-2xl border border-hairline bg-paper p-7">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary">What changed</p>
-            <h2 className="mt-4 font-display text-5xl leading-none text-ink">First-pass result.</h2>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary">Key changes made</p>
+            <h2 className="mt-4 font-display text-5xl leading-none text-ink">Editorial notes.</h2>
             <div className="mt-8 grid gap-3">
               {result.highlights.map((highlight) => (
                 <p key={highlight} className="border-t border-ink/10 pt-3 text-sm leading-6 text-charcoal/66">{highlight}</p>
               ))}
             </div>
+            {result.suggestions?.length ? (
+              <div className="mt-8 rounded-xl border border-primary/15 bg-primary/[0.04] p-4">
+                <p className="text-xs uppercase tracking-[0.22em] text-primary">Suggestions</p>
+                <div className="mt-3 grid gap-2">
+                  {result.suggestions.map((suggestion) => (
+                    <p key={suggestion} className="text-sm leading-6 text-charcoal/66">{suggestion}</p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/42">
               Suggested refinement · Professional AI review
             </p>
@@ -384,7 +395,7 @@ export function AiEditingTool() {
                   <button type="button" onClick={() => setViewMode("original")} className={`mr-4 transition ${viewMode === "original" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Original Text</button>
                   <button type="button" onClick={() => setViewMode("edited")} className={`transition ${viewMode === "edited" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Edited Text</button>
                 </p>
-                <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{viewMode === "edited" ? selectedMode.label : "Original Version"}</h3>
+                <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{viewMode === "edited" ? "Improved version" : "Original Version"}</h3>
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={copyResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">

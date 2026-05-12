@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { faqs } from "@/lib/content";
+import { SUPPORT_EMAIL } from "@/lib/contact-info";
 import { Reveal } from "@/components/Reveal";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
@@ -100,7 +101,7 @@ export default function Home() {
                 </p>
                 <p className="text-charcoal/70 text-base leading-relaxed">
                   Feel free to contact us <br className="hidden sm:block" />
-                  at <a href="mailto:hello@business.editandproofread.com" className="text-primary hover:underline font-medium transition-all">hello@business.editandproofread.com</a>
+                  at <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline font-medium transition-all">{SUPPORT_EMAIL}</a>
                 </p>
               </Reveal>
             </div>

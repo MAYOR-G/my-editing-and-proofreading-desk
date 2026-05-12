@@ -11,7 +11,7 @@ const nav = [
   { href: "/dashboard/uploads", label: "Submit document" },
   { href: "/dashboard/downloads", label: "Completed files" },
   { href: "/dashboard/profile", label: "Profile details" },
-  { href: "mailto:admin@myeditingdesk.com?subject=Editorial%20Support%20Inquiry", label: "Contact Support" }
+  { href: "/dashboard/support", label: "Contact Support" }
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
@@ -25,12 +25,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
         <nav className="mt-12 grid gap-2" aria-label="Dashboard navigation">
           {nav.map((item) => {
-            const isExternal = item.href.startsWith("mailto:");
-            const isActive = !isExternal && (pathname === item.href || pathname.startsWith(item.href + "/"));
-            const Tag = isExternal ? "a" : Link;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
             return (
-              <Tag
+              <Link
                 key={item.href}
                 href={item.href}
                 className={`group flex min-h-12 items-center justify-between border px-4 text-sm transition duration-200 ease-premium-out hover:border-primary/35 hover:bg-surface-soft hover:text-ink active:scale-[0.99] ${
@@ -42,9 +40,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               >
                 {item.label}
                 <span className={`text-primary transition ${isActive ? "opacity-70" : "opacity-0 group-hover:opacity-100"}`} aria-hidden="true">
-                  {isActive ? "●" : (isExternal ? "↗" : "+")}
+                  {isActive ? "●" : "+"}
                 </span>
-              </Tag>
+              </Link>
             );
           })}
         </nav>

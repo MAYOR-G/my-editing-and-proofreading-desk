@@ -12,7 +12,7 @@ const COOLDOWN_MS = 12 * 1000;
 const ANONYMOUS_DAILY_CAP = 3;
 const SIGNED_IN_DAILY_CAP = 12;
 const MAX_INPUT_CHARS = 9000;
-const MAX_OUTPUT_TOKENS = 650;
+const MAX_OUTPUT_TOKENS = 1200;
 
 type RateEntry = {
   count: number;
@@ -131,25 +131,41 @@ function buildFallbackEdit(text: string, modeLabel: string) {
     .map((sentence) => sentence.trim())
     .filter(Boolean);
 
+  const commonFixes: Array<[RegExp, string]> = [
+    [/\bi am\b/g, "I am"],
+    [/\bi\b/g, "I"],
+    [/\bdont\b/gi, "do not"],
+    [/\bdoesnt\b/gi, "does not"],
+    [/\bcant\b/gi, "cannot"],
+    [/\bwont\b/gi, "will not"],
+    [/\brecieve\b/gi, "receive"],
+    [/\bseperate\b/gi, "separate"],
+    [/\bdefinately\b/gi, "definitely"],
+    [/\bvery very\b/gi, "highly"],
+    [/\ba lot of\b/gi, "many"],
+    [/\bin order to\b/gi, "to"],
+    [/\bdue to the fact that\b/gi, "because"],
+    [/\bkind of\b/gi, "somewhat"],
+  ];
+
   const polished = sentences
     .map((sentence) => {
-      const fixedStart = sentence.charAt(0).toUpperCase() + sentence.slice(1);
-      return fixedStart
-        .replace(/\bvery very\b/gi, "highly")
-        .replace(/\ba lot of\b/gi, "many")
-        .replace(/\bin order to\b/gi, "to")
-        .replace(/\bdue to the fact that\b/gi, "because")
-        .replace(/\bkind of\b/gi, "somewhat");
+      const withEnding = /[.!?]$/.test(sentence) ? sentence : `${sentence}.`;
+      const fixedStart = withEnding.charAt(0).toUpperCase() + withEnding.slice(1);
+      return commonFixes.reduce((current, [pattern, replacement]) => current.replace(pattern, replacement), fixedStart);
     })
     .join(" ");
 
   return {
     editedText: polished || normalized,
     highlights: [
-      `Applied a ${modeLabel.toLowerCase()} pass with conservative edits.`,
-      "Tightened repeated spacing and obvious phrasing friction.",
-      "Preserved the original meaning for human review continuity."
-    ]
+      "Corrected grammar, capitalization, punctuation, and repeated spacing.",
+      `Applied a ${modeLabel.toLowerCase()} pass while preserving the original meaning.`,
+      "Improved obvious phrasing friction and readability."
+    ],
+    suggestions: [
+      "For high-stakes academic, business, legal, or publication documents, use this as a first pass before human editing."
+    ],
   };
 }
 
@@ -179,13 +195,13 @@ async function callOpenRouter(text: string, modeId: string) {
         {
           role: "system",
           content:
-            "You are an editorial assistant for a premium proofreading brand. Preserve meaning and voice. Return concise JSON only."
+            "You are a professional proofreading and editing assistant for My Editing and Proofreading Desk. Improve the user's text for grammar, spelling, punctuation, clarity, sentence structure, flow, and readability while preserving the original meaning and voice. Do not simply repeat poor wording. Do not add facts. Return concise JSON only."
         },
         {
           role: "user",
           content:
             `Task: ${mode.instruction}\n` +
-            "Return JSON with editedText and highlights, where highlights is 3 short strings. Do not add facts.\n\n" +
+            "Return JSON with editedText, highlights, and suggestions. editedText must be the corrected polished version. highlights must be 3-5 short bullet-style strings naming the key changes made. suggestions must be 1-2 honest short suggestions and must not claim AI replaces human editors.\n\n" +
             `Text:\n${text}`
         }
       ],
@@ -203,14 +219,17 @@ async function callOpenRouter(text: string, modeId: string) {
     throw new Error("OpenRouter returned an unexpected response.");
   }
 
-  const parsed = JSON.parse(content) as { editedText?: unknown; highlights?: unknown };
+  const parsed = JSON.parse(content) as { editedText?: unknown; highlights?: unknown; suggestions?: unknown };
   if (typeof parsed.editedText !== "string" || !Array.isArray(parsed.highlights)) {
     throw new Error("OpenRouter response did not match the expected schema.");
   }
 
   return {
     editedText: parsed.editedText,
-    highlights: parsed.highlights.filter((item): item is string => typeof item === "string").slice(0, 4)
+    highlights: parsed.highlights.filter((item): item is string => typeof item === "string").slice(0, 5),
+    suggestions: Array.isArray(parsed.suggestions)
+      ? parsed.suggestions.filter((item): item is string => typeof item === "string").slice(0, 2)
+      : ["Consider human editing for high-stakes documents where context, tone, and formatting matter."]
   };
 }
 
@@ -235,6 +254,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Choose a valid editing mode." }, { status: 400 });
     }
 
+    if (!process.env.OPENROUTER_API_KEY) {
+      return NextResponse.json(
+        { error: "The AI editor is temporarily unavailable. Please try again later or contact support." },
+        { status: 503 }
+      );
+    }
+
     const wordCount = countWords(text);
     if (wordCount > AI_WORD_LIMIT) {
       return NextResponse.json({ error: `This AI trial supports up to ${AI_WORD_LIMIT.toLocaleString()} words. Your text has ${wordCount.toLocaleString()} words.` }, { status: 422 });
@@ -250,7 +276,10 @@ export async function POST(request: Request) {
     }
 
     const selectedMode = editingModes.find((item) => item.id === mode) ?? editingModes[0];
-    const openRouterResult = await callOpenRouter(text, mode).catch(() => null);
+    const openRouterResult = await callOpenRouter(text, mode).catch((error) => {
+      console.error("AI provider request failed:", error);
+      return null;
+    });
     const result = openRouterResult ?? buildFallbackEdit(text, selectedMode.label);
 
     return NextResponse.json({

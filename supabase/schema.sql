@@ -4,7 +4,7 @@
 -- ==============================================================================
 
 -- 1. Create custom types
-CREATE TYPE project_status AS ENUM ('In Progress', 'Ready', 'Completed');
+CREATE TYPE project_status AS ENUM ('Pending', 'In Progress', 'Ready', 'Completed');
 CREATE TYPE payment_status AS ENUM ('pending', 'processing', 'paid', 'failed', 'cancelled');
 CREATE TYPE user_role AS ENUM ('client', 'admin');
 
@@ -189,6 +189,47 @@ CREATE POLICY "Users can view messages for their projects" ON public.messages FO
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
 CREATE POLICY "Users can send messages" ON public.messages FOR INSERT WITH CHECK (auth.uid() = sender_id);
+
+-- 6. Contact/support inbox used by public contact form and dashboard support.
+CREATE TABLE public.contact_messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  source TEXT DEFAULT 'Contact Form' NOT NULL,
+  status TEXT DEFAULT 'New' NOT NULL CHECK (status IN ('New', 'Open', 'Replied', 'Closed')),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL,
+  admin_reply TEXT,
+  replied_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+CREATE TABLE public.contact_message_replies (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  message_id UUID REFERENCES public.contact_messages(id) ON DELETE CASCADE NOT NULL,
+  reply TEXT NOT NULL,
+  sent_to TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL
+);
+
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_message_replies ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins can view contact messages" ON public.contact_messages FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admins can update contact messages" ON public.contact_messages FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admins can view contact message replies" ON public.contact_message_replies FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admins can insert contact message replies" ON public.contact_message_replies FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
 
 -- 5. Storage Buckets Setup
 -- You need to create these manually in the Supabase Dashboard -> Storage:

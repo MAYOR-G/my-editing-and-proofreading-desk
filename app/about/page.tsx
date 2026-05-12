@@ -30,7 +30,7 @@ export default function AboutPage() {
     <PublicPageShell
       eyebrow="About"
       title="Editing built around clarity, care, and precision."
-      description="We help students, researchers, professionals, and businesses turn important documents into polished, confident writing without losing the writer's voice."
+      description="We help students, researchers, professionals, and businesses turn important documents into clear, polished writing while preserving the writer's voice."
     >
       <section className="relative overflow-hidden bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="absolute inset-0 opacity-[0.045] [background-image:linear-gradient(rgba(23,74,124,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(23,74,124,0.12)_1px,transparent_1px)] [background-size:38px_38px]" aria-hidden="true" />
@@ -47,7 +47,7 @@ export default function AboutPage() {
                     My Editing and Proofreading Desk supports writing that carries real weight: dissertations, research papers, reports, applications, proposals, manuscripts, and client-facing documents.
                   </p>
                   <p>
-                    Every edit focuses on clarity, structure, tone, grammar, and meaning. The goal is a cleaner document that still sounds like the person or organization behind it.
+                    Every edit focuses on structure, tone, grammar, and meaning. The goal is a clearer document that still sounds like the person or organization behind it.
                   </p>
                 </div>
               </div>
@@ -55,32 +55,55 @@ export default function AboutPage() {
 
             <Reveal variant="clipUp" delay={0.08}>
               <div className="relative overflow-hidden rounded-2xl border border-hairline bg-surface-soft p-5 shadow-[0_28px_90px_rgba(17,17,15,0.06)] sm:p-7">
-                <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(10,11,13,0.18)_1px,transparent_1px)] [background-size:100%_2.1rem]" aria-hidden="true" />
-                <div className="relative rounded-xl border border-hairline bg-canvas p-5 shadow-[0_18px_60px_rgba(17,17,15,0.05)] sm:p-6">
+                <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
+                <div className="absolute -bottom-24 left-8 h-56 w-56 rounded-full bg-gold/18 blur-3xl" aria-hidden="true" />
+                <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(rgba(23,74,124,0.28)_1px,transparent_1px)] [background-size:18px_18px]" aria-hidden="true" />
+
+                <div className="relative rotate-[-1.5deg] rounded-[1.1rem] border border-hairline bg-canvas p-5 shadow-[0_22px_70px_rgba(17,17,15,0.07)] sm:p-6">
                   <div className="flex items-start justify-between gap-5 border-b border-hairline pb-5">
                     <div>
                       <p className="text-xs uppercase tracking-[0.22em] text-primary">Editorial review</p>
-                      <h3 className="mt-2 font-display text-3xl leading-tight text-ink">Draft to final</h3>
+                      <h3 className="mt-2 font-display text-3xl leading-tight text-ink">Tracked clarity pass</h3>
                     </div>
-                    <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                      Private
+                    <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary shadow-sm">
+                      Human
                     </span>
                   </div>
-                  <div className="mt-6 grid gap-3">
-                    {[
-                      ["Structure", "Argument and flow"],
-                      ["Language", "Grammar, tone, and clarity"],
-                      ["Finish", "Consistency and presentation"]
-                    ].map(([label, body], index) => (
-                      <div key={label} className="grid grid-cols-[2.2rem_1fr] gap-4 rounded-xl border border-hairline bg-surface-soft/70 p-4">
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-canvas font-display text-lg text-primary">{index + 1}</span>
-                        <div>
-                          <p className="font-medium text-ink">{label}</p>
-                          <p className="mt-1 text-sm leading-6 text-body">{body}</p>
-                        </div>
+
+                  <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_9.5rem]">
+                    <div className="rounded-xl border border-hairline bg-paper/70 p-5 text-sm leading-7 text-charcoal/76 shadow-inner">
+                      <p>
+                        The proposal <span className="text-red-700 line-through decoration-red-500/70 decoration-2">need more clearer goals</span>{" "}
+                        <span className="rounded-sm bg-primary/10 px-1 font-medium text-primary">needs clearer goals</span> before it can be shared with the review committee.
+                      </p>
+                      <p className="mt-4">
+                        We recommend <span className="text-red-700 line-through decoration-red-500/70 decoration-2">fixing all grammar and make tone professional</span>{" "}
+                        <span className="rounded-sm bg-primary/10 px-1 font-medium text-primary">strengthening the grammar, tone, and structure</span> while keeping the author's original argument intact.
+                      </p>
+                      <p className="mt-4">
+                        The final version should read as confident, precise, and ready for submission.
+                      </p>
+                    </div>
+
+                    <div className="grid content-start gap-3">
+                      <div className="rounded-xl border border-primary/15 bg-canvas p-3 shadow-sm">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">Margin note</p>
+                        <p className="mt-2 text-xs leading-5 text-body">Clarify the outcome before the evidence section.</p>
                       </div>
-                    ))}
+                      <div className="rounded-xl border border-gold/30 bg-gold/10 p-3 shadow-sm">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-gold-deep">Editor check</p>
+                        <p className="mt-2 text-xs leading-5 text-body">Preserve voice, tighten flow, verify consistency.</p>
+                      </div>
+                    </div>
                   </div>
+                </div>
+
+                <div className="relative mt-5 grid grid-cols-3 gap-3 text-xs text-charcoal/58">
+                  {["Grammar", "Structure", "Tone"].map((item) => (
+                    <div key={item} className="rounded-xl border border-hairline bg-canvas/78 px-3 py-3 text-center font-semibold uppercase tracking-[0.14em] text-primary shadow-sm">
+                      {item}
+                    </div>
+                  ))}
                 </div>
               </div>
             </Reveal>
