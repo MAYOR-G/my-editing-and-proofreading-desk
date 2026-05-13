@@ -65,6 +65,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
   // Form State
   const [documentType, setDocumentType] = useState("Academic Paper");
+  const [targetJournal, setTargetJournal] = useState("");
   const [formattingStyle, setFormattingStyle] = useState("");
   const [formattingInstructions, setFormattingInstructions] = useState("");
   const [translationPreference, setTranslationPreference] = useState("");
@@ -78,6 +79,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [parseError, setParseError] = useState("");
   const [selectedServices, setSelectedServices] = useState<string[]>(["Editing"]);
   const [turnaroundDays, setTurnaroundDays] = useState(14);
+  const [activeServiceModal, setActiveServiceModal] = useState<"formatting" | "translation" | null>(null);
 
   // Payment state
   const [provider, setProvider] = useState<PaymentProviderName>("paystack");
@@ -214,6 +216,13 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     });
   };
 
+  const handleServiceToggle = (service: string) => {
+    const wasSelected = selectedServices.includes(service);
+    toggleService(service);
+    if (!wasSelected && includesFormattingService([service])) setActiveServiceModal("formatting");
+    if (!wasSelected && includesTranslationService([service])) setActiveServiceModal("translation");
+  };
+
   const handleTurnaroundSelect = (days: number) => {
     if (!wordCount) {
       setTurnaroundDays(days);
@@ -329,6 +338,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           title: file.name,
           client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
           document_type: documentType,
+          target_journal: targetJournal.trim() || null,
           formatting_style: formattingStyle,
           formatting_instructions: formattingInstructions.trim() || null,
           translation_preference: translationPreference || null,
@@ -347,7 +357,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         });
 
         if (data.code === "checkout_setup_required") {
-          throw new Error("Checkout setup needs a quick database update before payment can continue. Please contact support.");
+          throw new Error("Checkout is temporarily unavailable while we finish a database update. Please contact support if this continues.");
         }
 
         if (data.code === "payment_provider_failed") {
@@ -388,8 +398,137 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     </div>
   );
 
+  const renderServiceModal = () => {
+    if (!activeServiceModal) return null;
+
+    const isFormattingModal = activeServiceModal === "formatting";
+
+    return (
+      <div className="fixed inset-0 z-50 grid place-items-center bg-ink/45 px-4 py-6 backdrop-blur-sm">
+        <div className="max-h-[88vh] w-full max-w-xl overflow-y-auto border border-hairline bg-ivory p-5 text-ink shadow-[0_28px_90px_rgba(17,17,15,0.25)] sm:p-6">
+          <div className="flex items-start justify-between gap-5 border-b border-hairline pb-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-primary">{isFormattingModal ? "Formatting details" : "Translation details"}</p>
+              <h3 className="mt-2 font-display text-3xl leading-tight text-ink">
+                {isFormattingModal ? "Choose formatting style" : "Choose translation preference"}
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveServiceModal(null)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center border border-hairline text-charcoal/60 transition hover:border-primary hover:text-primary"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+
+          {isFormattingModal ? (
+            <div className="mt-5 grid gap-4">
+              <p className="text-sm leading-6 text-charcoal/62">Select the style guide or formatting direction for this document.</p>
+              <div className="flex flex-wrap gap-2">
+                {FORMATTING_STYLES.map((style) => (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => {
+                      setFormattingStyle(style);
+                      if (!FORMAT_INSTRUCTION_OPTIONS.has(style)) setFormattingInstructions("");
+                      setFieldErrors((current) => ({ ...current, formattingStyle: "", formattingInstructions: "" }));
+                    }}
+                    className={`min-h-10 border px-3 text-xs font-medium transition ${
+                      formattingStyle === style
+                        ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
+                        : "border-hairline bg-surface-soft text-charcoal/68 hover:border-primary/40 hover:bg-ivory hover:text-primary"
+                    }`}
+                  >
+                    {style}
+                  </button>
+                ))}
+              </div>
+              {fieldErrors.formattingStyle ? <p className="text-xs text-red-600">{fieldErrors.formattingStyle}</p> : null}
+              {FORMAT_INSTRUCTION_OPTIONS.has(formattingStyle) ? (
+                <label className="grid gap-2 text-sm text-charcoal/72">
+                  Describe the formatting style or instructions
+                  <textarea
+                    value={formattingInstructions}
+                    onChange={(event) => {
+                      setFormattingInstructions(event.target.value);
+                      setFieldErrors((current) => ({ ...current, formattingInstructions: "" }));
+                    }}
+                    className="min-h-28 border border-hairline bg-surface-soft p-3 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory"
+                    placeholder="Share the required guide, template, journal instructions, or consistency rules."
+                  />
+                  {fieldErrors.formattingInstructions ? <span className="text-xs text-red-600">{fieldErrors.formattingInstructions}</span> : null}
+                </label>
+              ) : null}
+            </div>
+          ) : (
+            <div className="mt-5 grid gap-4">
+              <p className="text-sm leading-6 text-charcoal/62">Select the target language or preference for this translation request.</p>
+              <div className="flex flex-wrap gap-2">
+                {TRANSLATION_OPTIONS.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => {
+                      setTranslationPreference(option);
+                      if (option !== "Other") setTranslationTargetLanguage("");
+                      setFieldErrors((current) => ({ ...current, translationPreference: "", translationTargetLanguage: "" }));
+                    }}
+                    className={`min-h-10 border px-3 text-xs font-medium transition ${
+                      translationPreference === option
+                        ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
+                        : "border-hairline bg-surface-soft text-charcoal/68 hover:border-primary/40 hover:bg-ivory hover:text-primary"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              {fieldErrors.translationPreference ? <p className="text-xs text-red-600">{fieldErrors.translationPreference}</p> : null}
+              {translationPreference === "Other" ? (
+                <label className="grid gap-2 text-sm text-charcoal/72">
+                  Enter target language
+                  <input
+                    value={translationTargetLanguage}
+                    onChange={(event) => {
+                      setTranslationTargetLanguage(event.target.value);
+                      setFieldErrors((current) => ({ ...current, translationTargetLanguage: "" }));
+                    }}
+                    className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory"
+                    placeholder="e.g. Dutch, Hindi, Swahili"
+                  />
+                  {fieldErrors.translationTargetLanguage ? <span className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</span> : null}
+                </label>
+              ) : null}
+            </div>
+          )}
+
+          <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-hairline pt-4">
+            <button
+              type="button"
+              onClick={() => setActiveServiceModal(null)}
+              className="min-h-11 rounded-full border border-hairline px-5 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveServiceModal(null)}
+              className="min-h-11 rounded-full bg-cta px-6 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition hover:bg-cta-active"
+            >
+              Confirm selection
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mx-auto max-w-4xl border border-hairline bg-ivory p-6 text-ink shadow-[0_24px_80px_rgba(17,17,15,0.07)] sm:p-10">
+      {renderServiceModal()}
       <p className="mb-4 text-xs uppercase tracking-[0.24em] text-primary">New project submission</p>
       {renderStepIndicator()}
 
@@ -399,11 +538,26 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Project details</h2>
             <p className="mb-4 text-sm text-charcoal/68">Tell us about the document to ensure the right editorial fit.</p>
-            <label className="grid gap-2 text-sm text-charcoal/72">Document Type
-              <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
-                {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
-              </select>
-            </label>
+            <div className="grid gap-5 md:grid-cols-2 md:items-start">
+              <label className="grid content-start gap-2 text-sm text-charcoal/72">
+                <span className="min-h-5">Document Type</span>
+                <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 w-full border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
+                  {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+                </select>
+                <span aria-hidden="true" className="min-h-10 text-xs leading-5 text-transparent">Document category</span>
+              </label>
+              <label className="grid content-start gap-2 text-sm text-charcoal/72">
+                <span className="min-h-5">Target Journal</span>
+                <input
+                  value={targetJournal}
+                  onChange={(e) => setTargetJournal(e.target.value)}
+                  type="text"
+                  placeholder="e.g. Journal of Applied Research"
+                  className="min-h-12 w-full border border-hairline bg-surface-soft px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory"
+                />
+                <span className="min-h-10 text-xs leading-5 text-charcoal/48">Optional. Add the journal name if your document is being prepared for submission.</span>
+              </label>
+            </div>
             <label className="grid gap-2 text-sm text-charcoal/72">Style of English
               <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
                 {ENGLISH_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
@@ -471,22 +625,31 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Service & turnaround</h2>
             <p className="mb-4 text-sm text-charcoal/68">Select your required timeline and service level.</p>
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)] lg:items-start">
               <div className="grid gap-4">
                 <div className="grid gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-ink">Service Level</p>
-                    <p className="mt-1 text-xs leading-5 text-charcoal/58">Select one or more services for this document.</p>
+                  <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-ink">Service Level</p>
+                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Select one or more services for this document.</p>
+                    </div>
+                    <div className="flex max-w-full flex-wrap gap-1.5">
+                      {selectedServices.map((service) => (
+                        <span key={service} className="border border-primary/20 bg-primary/[0.06] px-2.5 py-1 text-[0.68rem] font-medium text-primary">
+                          {service}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                     {SERVICE_OPTIONS.map((option) => {
                       const selected = selectedServices.includes(option.label);
                       return (
                         <button
                           key={option.label}
                           type="button"
-                          onClick={() => toggleService(option.label)}
-                          className={`min-h-[5.75rem] border p-3 text-left transition ${
+                          onClick={() => handleServiceToggle(option.label)}
+                          className={`min-h-[4.1rem] border p-3 text-left transition ${
                             selected
                               ? "border-primary bg-primary/10 text-ink shadow-[0_14px_32px_rgba(23,74,124,0.10)]"
                               : "border-hairline bg-surface-soft text-charcoal/70 hover:border-primary/40 hover:bg-ivory"
@@ -498,7 +661,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                             </span>
                             <span>
                               <span className="block text-sm font-semibold text-ink">{option.label}</span>
-                              <span className="mt-1 block text-xs leading-5 text-charcoal/58">{option.note}</span>
+                              <span className="mt-1 block text-xs leading-4 text-charcoal/54">{option.note}</span>
                             </span>
                           </span>
                         </button>
@@ -508,94 +671,40 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   {fieldErrors.selectedServices ? <p className="text-xs text-red-600">{fieldErrors.selectedServices}</p> : null}
                 </div>
                 {includesFormattingService(selectedServices) && (
-                  <div className="grid gap-3 border border-primary/15 bg-primary/[0.04] p-4">
-                    <div>
-                      <p className="text-sm font-medium text-ink">Formatting style</p>
-                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Choose the style guide or formatting direction for this service.</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 border border-primary/15 bg-primary/[0.04] p-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-ink">Formatting details</p>
+                      <p className="mt-1 truncate text-xs text-charcoal/58">{summarizeFormatting(formattingStyle, formattingInstructions)}</p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {FORMATTING_STYLES.map((style) => (
-                        <button
-                          key={style}
-                          type="button"
-                          onClick={() => {
-                            setFormattingStyle(style);
-                            if (!FORMAT_INSTRUCTION_OPTIONS.has(style)) setFormattingInstructions("");
-                            setFieldErrors((current) => ({ ...current, formattingStyle: "", formattingInstructions: "" }));
-                          }}
-                          className={`min-h-10 border px-3 text-xs font-medium transition ${
-                            formattingStyle === style
-                              ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
-                              : "border-hairline bg-ivory text-charcoal/68 hover:border-primary/40 hover:text-primary"
-                          }`}
-                        >
-                          {style}
-                        </button>
-                      ))}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveServiceModal("formatting")}
+                      className="min-h-9 shrink-0 rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:bg-primary hover:text-white"
+                    >
+                      Edit
+                    </button>
                     {fieldErrors.formattingStyle ? <p className="text-xs text-red-600">{fieldErrors.formattingStyle}</p> : null}
-                    {FORMAT_INSTRUCTION_OPTIONS.has(formattingStyle) ? (
-                      <label className="grid gap-2 text-sm text-charcoal/72">
-                        Describe the formatting style or instructions
-                        <textarea
-                          value={formattingInstructions}
-                          onChange={(event) => {
-                            setFormattingInstructions(event.target.value);
-                            setFieldErrors((current) => ({ ...current, formattingInstructions: "" }));
-                          }}
-                          className="min-h-24 border border-hairline bg-ivory p-3 text-ink placeholder:text-charcoal/38 transition focus:border-primary"
-                          placeholder="Share the required guide, template, journal instructions, or consistency rules."
-                        />
-                        {fieldErrors.formattingInstructions ? <span className="text-xs text-red-600">{fieldErrors.formattingInstructions}</span> : null}
-                      </label>
-                    ) : null}
+                    {fieldErrors.formattingInstructions ? <p className="text-xs text-red-600">{fieldErrors.formattingInstructions}</p> : null}
                   </div>
                 )}
                 {includesTranslationService(selectedServices) && (
-                  <div className="grid gap-3 border border-primary/15 bg-primary/[0.04] p-4">
-                    <div>
-                      <p className="text-sm font-medium text-ink">Translation preference</p>
-                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Select the target language or preference for this translation request.</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 border border-primary/15 bg-primary/[0.04] p-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-ink">Translation details</p>
+                      <p className="mt-1 truncate text-xs text-charcoal/58">{summarizeTranslation(translationPreference, translationTargetLanguage)}</p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {TRANSLATION_OPTIONS.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => {
-                            setTranslationPreference(option);
-                            if (option !== "Other") setTranslationTargetLanguage("");
-                            setFieldErrors((current) => ({ ...current, translationPreference: "", translationTargetLanguage: "" }));
-                          }}
-                          className={`min-h-10 border px-3 text-xs font-medium transition ${
-                            translationPreference === option
-                              ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.16)]"
-                              : "border-hairline bg-ivory text-charcoal/68 hover:border-primary/40 hover:text-primary"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveServiceModal("translation")}
+                      className="min-h-9 shrink-0 rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:bg-primary hover:text-white"
+                    >
+                      Edit
+                    </button>
                     {fieldErrors.translationPreference ? <p className="text-xs text-red-600">{fieldErrors.translationPreference}</p> : null}
-                    {translationPreference === "Other" ? (
-                      <label className="grid gap-2 text-sm text-charcoal/72">
-                        Enter target language
-                        <input
-                          value={translationTargetLanguage}
-                          onChange={(event) => {
-                            setTranslationTargetLanguage(event.target.value);
-                            setFieldErrors((current) => ({ ...current, translationTargetLanguage: "" }));
-                          }}
-                          className="min-h-12 border border-hairline bg-ivory px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary"
-                          placeholder="e.g. Dutch, Hindi, Swahili"
-                        />
-                        {fieldErrors.translationTargetLanguage ? <span className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</span> : null}
-                      </label>
-                    ) : null}
+                    {fieldErrors.translationTargetLanguage ? <p className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</p> : null}
                   </div>
                 )}
-                <div className={`grid gap-3 text-sm text-charcoal/72 ${isWritingSupport || customReviewRequired ? "opacity-60" : ""}`}>
+                <div className={`grid gap-3 border border-hairline bg-surface-soft p-4 text-sm text-charcoal/72 ${isWritingSupport || customReviewRequired ? "opacity-60" : ""}`}>
                   <div className="flex items-center justify-between gap-4">
                     <span>Turnaround Time</span>
                     <span className="text-primary">{isWritingSupport ? "Fixed package" : turnaround}</span>
@@ -638,10 +747,10 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                   <p className="text-xs text-charcoal/50">{isWritingSupport ? "Writing Support uses a fixed package price." : TURNAROUND_SUPPORT_MESSAGE}</p>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center border border-primary/20 bg-primary/5 p-6 text-center">
+              <div className="flex flex-col border border-primary/20 bg-primary/5 p-5 text-center lg:sticky lg:top-6">
                 <p className="mb-2 text-sm text-charcoal/62">{customReviewRequired ? "Custom review required" : "Estimated service total"}</p>
-                <p className="font-display text-5xl text-primary">{customReviewRequired ? "Custom" : `$${price.toFixed(2)}`}</p>
-                <div className="mt-5 grid w-full gap-2 border-t border-primary/15 pt-4 text-sm">
+                <p className="font-display text-4xl text-primary">{customReviewRequired ? "Custom" : `$${price.toFixed(2)}`}</p>
+                <div className="mt-4 grid w-full gap-2 border-t border-primary/15 pt-4 text-sm">
                   <div className="flex justify-between gap-4 text-charcoal/62">
                     <span>Service total</span>
                     <span className="text-ink">${subtotal.toFixed(2)}</span>
@@ -651,7 +760,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     <span className="text-ink">Shown at payment step</span>
                   </div>
                 </div>
-                <p className="mt-4 text-xs text-charcoal/50">
+                <p className="mt-3 text-xs leading-5 text-charcoal/50">
                   {isWritingSupport ? "Writing Support is a fixed package." : `Based on the detected ${wordCount?.toLocaleString()}-word count, selected services, and timeline.`}
                 </p>
                 {pricingNotice || !validation.allowed ? (
@@ -719,11 +828,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                       <p className="text-xs text-charcoal/55">{info.description}</p>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {info.methods.map((m) => (
-                      <span key={m} className={`border px-2 py-1 text-xs ${isSelected ? "border-primary/30 text-primary" : "border-hairline text-charcoal/50"}`}>{m}</span>
-                    ))}
-                  </div>
                 </button>
               )})}
             </div>
@@ -751,6 +855,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                 {[
                   ["Document", file?.name],
                   ["Document Type", documentType],
+                  ["Target Journal", targetJournal.trim() || "Not provided"],
                   ["Formatting Style", summarizeFormatting(formattingStyle, formattingInstructions)],
                   ["Translation", summarizeTranslation(translationPreference, translationTargetLanguage)],
                   ["Style of English", englishType],

@@ -97,7 +97,7 @@ export default async function DashboardOverviewPage() {
                   <div>
                     <p className="text-sm text-ink">{project.title || project.friendly_id}</p>
                     <p className="mt-0.5 text-xs text-charcoal/50">
-                      {project.service_type} · {project.document_type || "Document"} · {project.word_count?.toLocaleString() || 0} words
+                      {project.service_type} · {project.document_type || "Document"}{project.target_journal ? ` · ${project.target_journal}` : ""} · {project.word_count?.toLocaleString() || 0} words
                     </p>
                   </div>
                 </div>

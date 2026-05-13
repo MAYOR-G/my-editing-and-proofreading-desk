@@ -127,6 +127,7 @@ export default async function AdminDashboardPage() {
                     ["Client", selected.profiles?.email],
                     ["Words", selected.word_count.toString()],
                     ["Document type", selected.document_type || "N/A"],
+                    ["Target journal", selected.target_journal || "Not provided"],
                     ["Formatting", selected.formatting_style || "N/A"],
                     ["Formatting instructions", selected.formatting_instructions || "N/A"],
                     ["Translation", selected.translation_preference || "N/A"],
@@ -205,7 +206,7 @@ export default async function AdminDashboardPage() {
             ["Transaction ID", selected.transaction_id || "N/A", "Provider transaction identifier"],
             ["Amount Paid", selected.payment_status === "paid" ? `$${Number(selected.price).toFixed(2)}` : "$0.00", `Subtotal: $${Number(selected.subtotal ?? selected.calculated_price ?? 0).toFixed(2)} · Service charge: $${Number(selected.service_charge_amount ?? 0).toFixed(2)}`],
             ["Payment Status", selected.payment_status, selected.payment_verified_at ? `Verified ${new Date(selected.payment_verified_at).toLocaleDateString()}` : "Awaiting verification"],
-            ["Order Details", `${selected.document_type || "Document"} · ${Array.isArray(selected.selected_services) ? selected.selected_services.join(", ") : selected.service_type} · ${selected.formatting_style || "No formatting"} · ${selected.translation_preference || "No translation"}`, `${selected.word_count?.toLocaleString()} words · ${selected.turnaround}`]
+            ["Order Details", `${selected.document_type || "Document"} · ${selected.target_journal || "No target journal"} · ${Array.isArray(selected.selected_services) ? selected.selected_services.join(", ") : selected.service_type} · ${selected.formatting_style || "No formatting"} · ${selected.translation_preference || "No translation"}`, `${selected.word_count?.toLocaleString()} words · ${selected.turnaround}`]
           ].map(([label, value, detail]) => (
             <div key={label} className="border border-ink/10 bg-paper p-6">
               <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">{label}</p>

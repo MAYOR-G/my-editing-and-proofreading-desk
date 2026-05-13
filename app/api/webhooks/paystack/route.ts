@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     // ─── Find project ──────────────────────────────────────────────
     const { data: project, error: fetchError } = await supabase
       .from("projects")
-      .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, word_count, turnaround, uploaded_file_path, upload_file_path")
+      .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, target_journal, word_count, turnaround, uploaded_file_path, upload_file_path")
       .eq("transaction_reference", reference)
       .single();
 
@@ -114,6 +114,7 @@ export async function POST(request: Request) {
         clientName: profile.full_name,
         friendlyId: project.friendly_id,
         service: project.service_type,
+        targetJournal: project.target_journal,
         wordCount: project.word_count,
         turnaround: project.turnaround,
         amount: project.price,
@@ -128,6 +129,7 @@ export async function POST(request: Request) {
         friendlyId: project.friendly_id,
         documentName: project.title,
         service: project.service_type,
+        targetJournal: project.target_journal,
         turnaround: project.turnaround,
       }).catch((err) => console.error("Document received email error:", err));
       sendEditorNotificationEmail({
@@ -138,6 +140,7 @@ export async function POST(request: Request) {
         currency: project.payment_currency,
         wordCount: project.word_count,
         service: project.service_type,
+        targetJournal: project.target_journal,
         turnaround: project.turnaround,
         paymentStatus: "paid",
         documentPath: project.uploaded_file_path || project.upload_file_path,

@@ -10,6 +10,7 @@ type ProjectInput = {
   turnaround: string;
   word_count: number;
   document_type?: string;
+  target_journal?: string | null;
   formatting_style?: string;
   formatting_instructions?: string | null;
   translation_preference?: string | null;
@@ -33,43 +34,58 @@ export async function createProject(data: ProjectInput) {
   const selectedServices = normalizeSelectedServices(data.selected_services || data.service_type);
   const priceBreakdown = calculatePrice(data.word_count, selectedServices, data.turnaround);
 
-  const { data: project, error } = await supabase
+  const projectInsert = {
+    client_id: user.id,
+    title: data.title,
+    service_type: priceBreakdown.serviceType,
+    selected_services: priceBreakdown.serviceTypes,
+    document_type: data.document_type || "Other",
+    target_journal: data.target_journal?.trim() || null,
+    formatting_style: data.formatting_style || "None / Standard Consistency",
+    formatting_instructions: data.formatting_instructions || null,
+    translation_preference: data.translation_preference || null,
+    translation_target_language: data.translation_target_language || null,
+    english_type: data.english_type || "No preference",
+    turnaround: priceBreakdown.turnaroundLabel,
+    turnaround_days: priceBreakdown.turnaroundDays,
+    turnaround_hours: priceBreakdown.turnaroundDays * 24,
+    word_count: data.word_count,
+    price: priceBreakdown.finalTotal,
+    calculated_price: priceBreakdown.calculatedPrice,
+    subtotal: priceBreakdown.subtotal,
+    service_charge_percentage: priceBreakdown.serviceChargePercentage,
+    service_charge_amount: priceBreakdown.serviceChargeAmount,
+    final_price: priceBreakdown.finalTotal,
+    minimum_applied: priceBreakdown.minimumApplied,
+    client_notes: data.client_notes,
+    upload_file_path: data.upload_file_path,
+    uploaded_file_path: data.upload_file_path,
+    status: "In Progress",
+    payment_status: "pending",
+    payment_provider: data.payment_provider || null,
+    selected_payment_method: data.payment_provider || null,
+    payment_reference: data.transaction_reference || null,
+    transaction_reference: data.transaction_reference || null,
+    payment_currency: "USD",
+  };
+
+  let { data: project, error } = await supabase
     .from("projects")
-    .insert({
-      client_id: user.id,
-      title: data.title,
-      service_type: priceBreakdown.serviceType,
-      selected_services: priceBreakdown.serviceTypes,
-      document_type: data.document_type || "Other",
-      formatting_style: data.formatting_style || "None / Standard Consistency",
-      formatting_instructions: data.formatting_instructions || null,
-      translation_preference: data.translation_preference || null,
-      translation_target_language: data.translation_target_language || null,
-      english_type: data.english_type || "No preference",
-      turnaround: priceBreakdown.turnaroundLabel,
-      turnaround_days: priceBreakdown.turnaroundDays,
-      turnaround_hours: priceBreakdown.turnaroundDays * 24,
-      word_count: data.word_count,
-      price: priceBreakdown.finalTotal,
-      calculated_price: priceBreakdown.calculatedPrice,
-      subtotal: priceBreakdown.subtotal,
-      service_charge_percentage: priceBreakdown.serviceChargePercentage,
-      service_charge_amount: priceBreakdown.serviceChargeAmount,
-      final_price: priceBreakdown.finalTotal,
-      minimum_applied: priceBreakdown.minimumApplied,
-      client_notes: data.client_notes,
-      upload_file_path: data.upload_file_path,
-      uploaded_file_path: data.upload_file_path,
-      status: "In Progress",
-      payment_status: "pending",
-      payment_provider: data.payment_provider || null,
-      selected_payment_method: data.payment_provider || null,
-      payment_reference: data.transaction_reference || null,
-      transaction_reference: data.transaction_reference || null,
-      payment_currency: "USD",
-    })
+    .insert(projectInsert)
     .select()
     .single();
+
+  if (error && `${error.message || ""} ${error.details || ""}`.toLowerCase().includes("target_journal")) {
+    const projectInsertWithoutTargetJournal: Partial<typeof projectInsert> = { ...projectInsert };
+    delete projectInsertWithoutTargetJournal.target_journal;
+    const retry = await supabase
+      .from("projects")
+      .insert(projectInsertWithoutTargetJournal)
+      .select()
+      .single();
+    project = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     console.error("Error creating project:", error);

@@ -64,7 +64,7 @@ PAYPAL_CLIENT_SECRET=""
 
 # Email
 RESEND_API_KEY="re_your_resend_api_key"
-ADMIN_EMAIL="md.amurumep@gmail.com"
+ADMIN_EMAIL="mudyblast@gmail.com"
 
 # AI editing tool
 OPENROUTER_API_KEY="your-openrouter-api-key"
@@ -171,7 +171,7 @@ adminnpm run dev
 7. Run:
 
 ```sql
-SELECT * FROM make_user_admin('md.amurumep@gmail.com');
+SELECT * FROM make_user_admin('mudyblast@gmail.com');
 ```
 
 Use your actual admin email. The function is case-insensitive and trims surrounding spaces.
@@ -184,7 +184,7 @@ Run:
 ```sql
 SELECT id, email, role
 FROM public.profiles
-WHERE lower(email) = lower('md.amurumep@gmail.com');
+WHERE lower(email) = lower('mudyblast@gmail.com');
 ```
 
 Expected:
@@ -211,7 +211,7 @@ Admin routing now works like this:
 The common failure is an email mismatch. For example, these are different emails:
 
 ```text
-md.amurumep@gmail.com
+mudyblast@gmail.com
 md.mondimep@gmail.com
 md.mudimep@gmail.com
 ```
@@ -316,7 +316,7 @@ Set:
 
 ```env
 RESEND_API_KEY="re_your_resend_api_key"
-ADMIN_EMAIL="md.amurumep@gmail.com"
+ADMIN_EMAIL="mudyblast@gmail.com"
 ```
 
 Routes and files:
@@ -417,7 +417,7 @@ The email does not exist in Supabase Auth. Sign up first with that exact email, 
 Run the full `supabase/admin_setup.sql` file, then run:
 
 ```sql
-SELECT * FROM make_user_admin('md.amurumep@gmail.com');
+SELECT * FROM make_user_admin('mudyblast@gmail.com');
 ```
 
 Then verify:
@@ -425,7 +425,7 @@ Then verify:
 ```sql
 SELECT id, email, role
 FROM public.profiles
-WHERE lower(email) = lower('md.amurumep@gmail.com');
+WHERE lower(email) = lower('mudyblast@gmail.com');
 ```
 
 Expected result: `role = admin`.

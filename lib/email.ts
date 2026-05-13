@@ -118,6 +118,7 @@ export async function sendPaymentSuccessEmail(to: string, project: {
   clientName?: string | null;
   friendlyId: string;
   service: string;
+  targetJournal?: string | null;
   wordCount: number;
   turnaround: string;
   amount: number;
@@ -137,6 +138,7 @@ export async function sendPaymentSuccessEmail(to: string, project: {
         <ul>
           <li><strong>Order ID:</strong> ${escapeHtml(project.friendlyId)}</li>
           <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
+          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
           <li><strong>Word count:</strong> ${Number(project.wordCount || 0).toLocaleString()}</li>
           <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
           <li><strong>Amount paid:</strong> ${formatMoney(project.amount, project.currency || "USD")}</li>
@@ -155,6 +157,7 @@ export async function sendDocumentReceivedEmail(to: string, project: {
   friendlyId: string;
   documentName?: string | null;
   service: string;
+  targetJournal?: string | null;
   turnaround: string;
 }) {
   return sendEmail({
@@ -170,6 +173,7 @@ export async function sendDocumentReceivedEmail(to: string, project: {
           <li><strong>Project ID:</strong> ${escapeHtml(project.friendlyId)}</li>
           ${project.documentName ? `<li><strong>Document:</strong> ${escapeHtml(project.documentName)}</li>` : ""}
           <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
+          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
           <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
         </ul>
         <p>If you have questions, reply to this email or contact ${SUPPORT_EMAIL}.</p>
@@ -187,6 +191,7 @@ export async function sendEditorNotificationEmail(project: {
   currency?: string | null;
   wordCount: number;
   service: string;
+  targetJournal?: string | null;
   turnaround: string;
   paymentStatus?: string | null;
   documentPath?: string | null;
@@ -206,6 +211,7 @@ export async function sendEditorNotificationEmail(project: {
           <li><strong>Email:</strong> ${escapeHtml(project.clientEmail || "Not available")}</li>
           <li><strong>Project ID:</strong> ${escapeHtml(project.friendlyId)}</li>
           <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
+          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
           <li><strong>Word count:</strong> ${Number(project.wordCount || 0).toLocaleString()}</li>
           <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
           <li><strong>Amount paid:</strong> ${formatMoney(project.amount, project.currency || "USD")}</li>

@@ -147,6 +147,11 @@ export default async function AdminProjectsPage({
                         <Link href={projectHref} className="max-w-44 truncate text-charcoal/70 hover:text-primary">
                           {project.title || project.uploaded_file_path.split("/").pop() || "Uploaded document"}
                         </Link>
+                        {project.target_journal ? (
+                          <Link href={projectHref} className="max-w-44 truncate text-xs text-charcoal/45 hover:text-primary">
+                            Journal: {project.target_journal}
+                          </Link>
+                        ) : null}
                         <Link href={`/api/admin/projects/${project.id}/download`} className="text-primary hover:underline">
                           Download
                         </Link>
@@ -175,6 +180,7 @@ export default async function AdminProjectsPage({
                 ["Service", services(selected)],
                 ["Document", selected.title || selected.document_type || "Document"],
                 ["Document type", selected.document_type || "N/A"],
+                ["Target journal", selected.target_journal || "Not provided"],
                 ["Words", Number(selected.word_count || 0).toLocaleString()],
                 ["Turnaround", selected.turnaround],
                 ["Submitted", new Date(selected.created_at).toLocaleString()],

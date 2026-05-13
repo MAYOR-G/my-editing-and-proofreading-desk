@@ -334,8 +334,8 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-hairline bg-surface-soft p-5 shadow-[0_18px_60px_rgba(17,17,15,0.035)]">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/35 to-transparent" aria-hidden="true" />
+            <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-surface-soft p-5 shadow-[0_18px_60px_rgba(17,17,15,0.045)]">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" aria-hidden="true" />
               <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-start">
                 <span className="grid h-10 w-10 place-items-center rounded-full border border-primary/20 bg-canvas text-primary">
                   <Info className="h-4 w-4" aria-hidden="true" />
@@ -343,22 +343,22 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Pricing guidance</p>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-canvas px-2.5 py-1 text-[0.68rem] font-medium text-body">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-primary/15 bg-primary/[0.04] px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
                       <Sparkles className="h-3 w-3 text-primary" aria-hidden="true" />
                       Helpful while you estimate
                     </span>
                   </div>
-                  <div className="mt-3 min-h-[3rem] overflow-hidden">
+                  <div className="mt-3 min-h-[2.75rem] overflow-hidden">
                     <AnimatePresence mode="wait">
                       <motion.p
                         key={guidanceIndex}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.32, ease: [0.23, 1, 0.32, 1] }}
-                        className="max-w-3xl text-sm leading-6 text-body"
+                        initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
+                        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, y: -10, filter: "blur(2px)" }}
+                        transition={{ duration: 0.38, ease: [0.23, 1, 0.32, 1] }}
+                        className="max-w-3xl text-[0.86rem] font-bold uppercase leading-6 tracking-[0.12em] text-ink"
                       >
-                        {guidanceMessages[guidanceIndex]}
+                        {guidanceMessages[guidanceIndex].toUpperCase()}
                       </motion.p>
                     </AnimatePresence>
                   </div>

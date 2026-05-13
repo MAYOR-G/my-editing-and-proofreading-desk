@@ -56,4 +56,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- 3. Set your admin email (REPLACE THIS WITH YOUR ACTUAL ADMIN EMAIL!)
 -- First, ensure you have signed up normally via the /signup page.
 -- Then run this line:
--- SELECT * FROM make_user_admin('md.amurumep@gmail.com');
+-- SELECT * FROM make_user_admin('mudyblast@gmail.com');

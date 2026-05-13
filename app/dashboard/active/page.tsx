@@ -57,6 +57,7 @@ export default async function DashboardActivePage() {
                 <h3 className="mt-4 font-display text-3xl leading-tight text-ink">{formatServices(project)}</h3>
                 <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-light text-charcoal/62">
                   <span>{project.document_type || "Document"}</span>
+                  {project.target_journal ? <span>Journal: {project.target_journal}</span> : null}
                   {project.formatting_style ? <span>{project.formatting_style}</span> : null}
                   {project.translation_preference ? <span>{project.translation_preference}</span> : null}
                   <span>{project.english_type || "No preference"}</span>

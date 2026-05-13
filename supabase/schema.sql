@@ -50,6 +50,7 @@ CREATE TABLE public.projects (
   service_type TEXT NOT NULL,
   selected_services JSONB DEFAULT '[]'::jsonb NOT NULL,
   document_type TEXT DEFAULT 'Other' NOT NULL,
+  target_journal TEXT,
   formatting_style TEXT DEFAULT 'None / Standard Consistency' NOT NULL,
   formatting_instructions TEXT,
   translation_preference TEXT,

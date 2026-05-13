@@ -34,6 +34,12 @@ function isSchemaMismatchError(error: { code?: string; message?: string; details
   );
 }
 
+function isMissingColumnError(error: { code?: string; message?: string; details?: string | null } | null, column: string) {
+  if (!isSchemaMismatchError(error)) return false;
+  const text = `${error?.message || ""} ${error?.details || ""}`.toLowerCase();
+  return text.includes(column.toLowerCase());
+}
+
 function traceId() {
   return `chk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -44,7 +50,7 @@ function traceId() {
  * Creates a project (pending) and initializes a payment transaction.
  * Price is ALWAYS calculated server-side — frontend price is ignored.
  * 
- * Body: { provider, selected_services, service_type, turnaround, word_count, file_path, title, client_notes, document_type, formatting_style, formatting_instructions, translation_preference, translation_target_language, english_type }
+ * Body: { provider, selected_services, service_type, turnaround, word_count, file_path, title, client_notes, document_type, target_journal, formatting_style, formatting_instructions, translation_preference, translation_target_language, english_type }
  */
 export async function POST(request: Request) {
   const trace = traceId();
@@ -81,6 +87,7 @@ export async function POST(request: Request) {
       title,
       client_notes,
       document_type,
+      target_journal,
       formatting_style,
       formatting_instructions,
       translation_preference,
@@ -186,49 +193,66 @@ export async function POST(request: Request) {
     }
 
     // ─── Create project in DB (pending status) ─────────────────────
-    const { data: project, error: insertError } = await supabaseAdmin
+    const targetJournalValue = typeof target_journal === "string" && target_journal.trim() ? target_journal.trim() : null;
+    const projectInsert = {
+      client_id: user.id,
+      title: title || "Untitled Project",
+      service_type: priceBreakdown.serviceType,
+      selected_services: priceBreakdown.serviceTypes,
+      document_type: document_type || "Other",
+      target_journal: targetJournalValue,
+      formatting_style: formatting_style || "None / Standard Consistency",
+      formatting_instructions: formatting_instructions || null,
+      translation_preference: translation_preference || null,
+      translation_target_language: translation_target_language || null,
+      english_type: english_type || "No preference",
+      turnaround: priceBreakdown.turnaroundLabel,
+      turnaround_days: priceBreakdown.turnaroundDays,
+      turnaround_hours: priceBreakdown.turnaroundDays * 24,
+      word_count: safeWordCount,
+      price,
+      calculated_price: priceBreakdown.calculatedPrice,
+      subtotal: priceBreakdown.subtotal,
+      service_charge_percentage: priceBreakdown.serviceChargePercentage,
+      service_charge_amount: priceBreakdown.serviceChargeAmount,
+      final_price: priceBreakdown.finalTotal,
+      minimum_applied: priceBreakdown.minimumApplied,
+      client_notes: client_notes || "",
+      upload_file_path: file_path,
+      uploaded_file_path: file_path,
+      status: "In Progress",
+      payment_status: "pending",
+      payment_provider: paymentProviderName,
+      selected_payment_method: paymentProviderName,
+      payment_reference: reference,
+      transaction_reference: reference,
+      payment_currency: currency,
+    };
+
+    let { data: project, error: insertError } = await supabaseAdmin
       .from("projects")
-      .insert({
-        client_id: user.id,
-        title: title || "Untitled Project",
-        service_type: priceBreakdown.serviceType,
-        selected_services: priceBreakdown.serviceTypes,
-        document_type: document_type || "Other",
-        formatting_style: formatting_style || "None / Standard Consistency",
-        formatting_instructions: formatting_instructions || null,
-        translation_preference: translation_preference || null,
-        translation_target_language: translation_target_language || null,
-        english_type: english_type || "No preference",
-        turnaround: priceBreakdown.turnaroundLabel,
-        turnaround_days: priceBreakdown.turnaroundDays,
-        turnaround_hours: priceBreakdown.turnaroundDays * 24,
-        word_count: safeWordCount,
-        price,
-        calculated_price: priceBreakdown.calculatedPrice,
-        subtotal: priceBreakdown.subtotal,
-        service_charge_percentage: priceBreakdown.serviceChargePercentage,
-        service_charge_amount: priceBreakdown.serviceChargeAmount,
-        final_price: priceBreakdown.finalTotal,
-        minimum_applied: priceBreakdown.minimumApplied,
-        client_notes: client_notes || "",
-        upload_file_path: file_path,
-        uploaded_file_path: file_path,
-        status: "In Progress",
-        payment_status: "pending",
-        payment_provider: paymentProviderName,
-        selected_payment_method: paymentProviderName,
-        payment_reference: reference,
-        transaction_reference: reference,
-        payment_currency: currency,
-      })
+      .insert(projectInsert)
       .select()
       .single();
+
+    if (isMissingColumnError(insertError, "target_journal")) {
+      console.warn(`[${trace}] target_journal column is missing; retrying checkout without that optional field.`);
+      const projectInsertWithoutTargetJournal: Partial<typeof projectInsert> = { ...projectInsert };
+      delete projectInsertWithoutTargetJournal.target_journal;
+      const retry = await supabaseAdmin
+        .from("projects")
+        .insert(projectInsertWithoutTargetJournal)
+        .select()
+        .single();
+      project = retry.data;
+      insertError = retry.error;
+    }
 
     if (insertError) {
       console.error(`[${trace}] Project creation error:`, insertError);
       if (isSchemaMismatchError(insertError)) {
         return NextResponse.json(
-          { error: "Checkout needs a database update before payment can continue. Please contact support.", code: "checkout_setup_required", trace_id: trace },
+          { error: "Checkout is temporarily unavailable while we finish a database update. Please contact support if this continues.", code: "checkout_setup_required", trace_id: trace },
           { status: 500 }
         );
       }
@@ -273,6 +297,7 @@ export async function POST(request: Request) {
           friendly_id: project.friendly_id,
           service_type: priceBreakdown.serviceType,
           selected_services: priceBreakdown.serviceTypes,
+          target_journal: targetJournalValue,
           word_count: safeWordCount,
           subtotal: priceBreakdown.subtotal,
           service_charge_percentage: priceBreakdown.serviceChargePercentage,

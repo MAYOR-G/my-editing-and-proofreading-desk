@@ -11,6 +11,7 @@ const PROJECT_COLUMNS = [
   "service_type",
   "selected_services",
   "document_type",
+  "target_journal",
   "formatting_style",
   "formatting_instructions",
   "translation_preference",

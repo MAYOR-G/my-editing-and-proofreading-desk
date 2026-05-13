@@ -87,8 +87,8 @@ export const PAYMENT_PROVIDERS: PaymentProviderConfig[] = [
   {
     id: "paystack",
     label: "Paystack",
-    description: "Secure checkout for card, bank transfer, USSD, and mobile money.",
-    methods: ["Card", "Bank Transfer", "USSD", "Mobile Money"],
+    description: "Secure checkout powered by Paystack.",
+    methods: [],
     status: "available",
   },
   {

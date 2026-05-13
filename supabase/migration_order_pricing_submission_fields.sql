@@ -2,6 +2,7 @@
 -- Run this in the Supabase SQL Editor for existing projects.
 
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS document_type TEXT DEFAULT 'Other' NOT NULL;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS target_journal TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS formatting_style TEXT DEFAULT 'None / Standard Consistency' NOT NULL;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS english_type TEXT DEFAULT 'No preference' NOT NULL;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS turnaround_days INTEGER;
