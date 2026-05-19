@@ -12,12 +12,11 @@ import {
   Laptop,
   Megaphone,
   Microscope,
-  Pill,
+  Mountain,
   Search,
   Sigma,
   Stethoscope,
-  Telescope,
-  Zap
+  Telescope
 } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { useState } from "react";
@@ -25,22 +24,22 @@ import { WorkPreviewModal } from "@/components/home/WorkPreviewModal";
 import { type WorkExample, type WorkExampleKey, workExamples } from "@/lib/work-example-data";
 
 const fieldIcons: Record<WorkExampleKey, typeof Search> = {
-  apa: Search,
+  education: BookMarked,
   astrophysics: Telescope,
   biology: Dna,
   chemistry: FlaskConical,
-  chicago: Search,
+  formatting: BookMarked,
   computing: Laptop,
   cv: Briefcase,
   economics: Calculator,
-  electrical: Zap,
+  geological: Mountain,
   law: Gavel,
   "life-sciences": Microscope,
   marketing: Megaphone,
   mla: Search,
   nursing: Stethoscope,
   oscola: Search,
-  pharmaceuticals: Pill,
+  geochemistry: FlaskConical,
   philosophy: Sigma,
   "political-science": BookMarked,
   psychology: BadgePlus,

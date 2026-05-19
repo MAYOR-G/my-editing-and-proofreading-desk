@@ -1,20 +1,22 @@
+import { formattingExampleBody, formattingExampleFootnotes } from "@/lib/formatting-example-generated";
+
 export type WorkExampleKey =
-  | "apa"
+  | "education"
   | "astrophysics"
   | "biology"
   | "chemistry"
-  | "chicago"
+  | "formatting"
   | "computing"
   | "cv"
   | "economics"
-  | "electrical"
+  | "geological"
   | "law"
   | "life-sciences"
   | "marketing"
   | "mla"
   | "nursing"
   | "oscola"
-  | "pharmaceuticals"
+  | "geochemistry"
   | "philosophy"
   | "political-science"
   | "psychology"
@@ -39,15 +41,29 @@ export type WorkExamplePage = {
   eyebrow: string;
   heading: string;
   body: string[];
+  blocks?: WorkExampleBlock[];
   variant?: "document" | "references" | "resume" | "engineering" | "science" | "legal" | "humanities";
   table?: { headers: string[]; rows: string[][] };
   figure?: "cell" | "molecule" | "circuit" | "code" | "resume" | "reference" | "chart" | "clinical" | "gel" | "reaction" | "legal";
   comments: WorkExampleComment[];
 };
 
+export type WorkExampleBlock =
+  | {
+      type: "paragraph";
+      text: string;
+      role?: "title" | "heading" | "caption" | "equation" | "list" | "sublist" | "footnote" | "reference" | "body";
+    }
+  | {
+      type: "table";
+      headers: string[];
+      rows: string[][];
+    };
+
 export type WorkExampleComment = {
   label: string;
   note: string;
+  anchor?: number;
 };
 
 type ExampleSeed = Omit<WorkExample, "pages"> & {
@@ -59,19 +75,19 @@ type ExampleSeed = Omit<WorkExample, "pages"> & {
 
 const examples: ExampleSeed[] = [
   {
-    key: "apa",
-    title: "APA reference check",
-    shortTitle: "APA",
-    kind: "reference",
-    field: "Reference editing",
+    key: "education",
+    title: "Education",
+    shortTitle: "Education",
+    kind: "academic",
+    field: "Adult basic education",
     accent: "#174a7c",
-    documentTitle: "References and In-Text Citations: APA 7",
-    authorLine: "Edited bibliography sample",
-    terms: ["DOI", "sentence case", "hanging indent", "journal title"],
-    thesis: "The manuscript used useful sources, but several entries lacked APA 7 punctuation, title casing, and DOI formatting.",
-    method: "We checked every in-text citation against the reference list, normalized author initials, and corrected italicization.",
-    result: "The final reference section is consistent, searchable, and ready for journal submission.",
-    reference: "Miller, A. R., & Chen, P. (2023). Cognitive load and revision quality. Journal of Writing Research, 15(2), 114-132. https://doi.org/10.0000/jwr.2023.15.2.114"
+    documentTitle: "Encompassing Transformation: A Holistic Approach to Assessing Learning in Adult Basic Education",
+    authorLine: "Education manuscript sample",
+    terms: ["adult basic education", "transformative learning", "critical pedagogy", "social justice"],
+    thesis: "The paper presents an integrated model for assessing and validating learning in adult basic education.",
+    method: "The sample shows tracked revisions to clarify the role of transformative, formative, and summative dimensions.",
+    result: "The edit refines argument flow, improves terminology, and preserves the author's social-justice focus.",
+    reference: "Community-based participatory research is used as the visible project context."
   },
   {
     key: "astrophysics",
@@ -95,13 +111,13 @@ const examples: ExampleSeed[] = [
     kind: "academic",
     field: "Life sciences",
     accent: "#1f8f5a",
-    documentTitle: "Unravelling the Mysteries of Microbial Dark Matter",
+    documentTitle: "Linking Wood Anatomy with Growth Vigour and Susceptibility to Alternate Bearing in Composite Apple and Pear Trees",
     authorLine: "Biology manuscript sample",
-    terms: ["microbial dark matter", "single-cell genomics", "metagenomics", "culture-independent methods"],
-    thesis: "The manuscript reviews microbial dark matter, the difficulty of studying uncultivated microorganisms, and future research prospects.",
-    method: "The edit standardizes scientific terminology, CSE author-year citations, headings, paragraph spacing, and reference formatting.",
-    result: "The revised sample clarifies meaning, removes duplication, and flags statements and references requiring author confirmation.",
-    reference: "The reference list was edited toward Taylor & Francis CSE author-year style."
+    terms: ["xylem", "rootstock", "scion", "alternate bearing"],
+    thesis: "The visible excerpt links wood anatomy, hydraulic transport, growth vigour, and alternate bearing in apple and pear trees.",
+    method: "The sample preserves tracked edits to the abstract and introduction, including species names, citations, and botanical terminology.",
+    result: "The edit clarifies biological mechanisms while preserving terms such as xylem, parenchyma, rootstock, scion, and vessel lumen.",
+    reference: "The visible sample stops after the study aim paragraph on anatomical differences and alternate bearing."
   },
   {
     key: "chemistry",
@@ -110,28 +126,28 @@ const examples: ExampleSeed[] = [
     kind: "academic",
     field: "Chemistry manuscript",
     accent: "#0f766e",
-    documentTitle: "Earth-Abundant Metal Catalysts",
-    authorLine: "Chemistry lab report sample",
-    terms: ["iron catalysts", "cobalt catalysts", "nickel catalysts", "IEEE references"],
-    thesis: "The manuscript reviews earth-abundant metal catalysts for sustainable chemical reactions and energy applications.",
-    method: "We standardized terminology, corrected catalyst names, improved section headings, and flagged IEEE citation requirements.",
-    result: "The revised sample reads like a chemistry review article with field-specific terminology and source-aware comments.",
-    reference: "IEEE references should be numbered in order of appearance."
+    documentTitle: "A Heteroleptic Bimetallic Pt-doped Cu-rich Hydrides Nanocluster",
+    authorLine: "Chemistry manuscript sample",
+    terms: ["PtH2Cu14-dtc", "nanocluster", "hydrides", "ESI-MS"],
+    thesis: "The visible excerpt reports a heteroleptic Pt-doped Cu-rich hydride nanocluster and its structural characterisation.",
+    method: "The sample preserves tracked edits to chemical formulas, ligand names, synthesis conditions, and spectroscopy discussion.",
+    result: "The edit clarifies nanocluster terminology, formula formatting, synthetic procedure, and analytical assignments.",
+    reference: "The visible sample stops during the Result and Discussion section after elemental analysis begins."
   },
   {
-    key: "chicago",
-    title: "Chicago reference check",
-    shortTitle: "Chicago",
+    key: "formatting",
+    title: "Formatting Example",
+    shortTitle: "Formatting",
     kind: "reference",
-    field: "Notes and bibliography",
+    field: "Academic formatting",
     accent: "#5d4b2f",
-    documentTitle: "Chicago Notes, Bibliography, and Citation Consistency",
-    authorLine: "History references sample",
-    terms: ["footnotes", "bibliography", "shortened notes", "publisher location"],
-    thesis: "The draft mixed shortened notes with full notes and used inconsistent capitalization in book titles.",
-    method: "We aligned footnote order, corrected bibliography punctuation, and checked repeated citations for shortened-note format.",
-    result: "The final citations follow Chicago style and read as a single, professionally prepared apparatus.",
-    reference: "Armitage, David. Foundations of Modern International Thought. Cambridge: Cambridge University Press, 2013."
+    documentTitle: "From Fetish to Totality: The Work of Art in the Age of Total Abstraction",
+    authorLine: "Formatted academic paper sample",
+    terms: ["academic formatting", "footnotes", "citations", "art history"],
+    thesis: "The paper examines Claire Fontaine, real abstraction, totality, and the work of art under capital.",
+    method: "The uploaded formatted document was converted into a page-style preview while preserving its paragraph order, footnote references, and edited footnotes.",
+    result: "The preview represents the full formatted academic document with clean page flow and visible citation formatting.",
+    reference: "Footnotes are preserved in the document order and retain tracked insertions and deletions where stored in the DOCX."
   },
   {
     key: "computing",
@@ -170,28 +186,28 @@ const examples: ExampleSeed[] = [
     kind: "academic",
     field: "Social sciences",
     accent: "#7c5c18",
-    documentTitle: "Exchange Rate Volatility and Export Performance",
-    authorLine: "Economics dissertation sample",
-    terms: ["panel regression", "fixed effects", "heteroskedasticity", "export elasticity"],
-    thesis: "The chapter tests whether exchange-rate volatility suppresses manufacturing exports across emerging markets.",
-    method: "A fixed-effects panel model was estimated with country-year controls and clustered standard errors.",
-    result: "The revised section clarifies model specification and avoids overstating causality from observational data.",
-    reference: "Table 3 now distinguishes coefficient estimates from marginal effects."
+    documentTitle: "Bitcoin’s Crossroads: Challenges and Opportunities in Future Societal Adoption",
+    authorLine: "Economics manuscript sample",
+    terms: ["Bitcoin adoption", "price volatility", "security", "regulatory framework"],
+    thesis: "The paper examines challenges and opportunities shaping Bitcoin's role as a potential mainstream currency.",
+    method: "The visible sample uses tracked editorial revisions to refine claims about adoption, regulation, volatility, and societal uptake.",
+    result: "The edit improves academic flow, clarifies terminology, and separates Bitcoin's future adoption from current market uncertainty.",
+    reference: "The visible introduction frames Bitcoin adoption through technology, regulation, security, volatility, and deflationary concerns."
   },
   {
-    key: "electrical",
-    title: "Electrical engineering",
+    key: "geological",
+    title: "Geological Engineering",
     shortTitle: "Engineering",
     kind: "technical",
-    field: "Engineering",
+    field: "Geotechnical engineering",
     accent: "#1d4ed8",
-    documentTitle: "Low-Noise Amplifier Design for Sensor Interfaces",
-    authorLine: "Electrical engineering report sample",
-    terms: ["op-amp", "signal-to-noise ratio", "bandwidth", "feedback network"],
-    thesis: "The report evaluates a low-noise amplifier for a capacitive sensor interface operating below 10 kHz.",
-    method: "The circuit was simulated in LTspice and validated on a breadboard using a calibrated function generator.",
-    result: "We clarified component roles, corrected ambiguous units, and made the figure captions technically precise.",
-    reference: "R1 and R2 set the closed-loop gain, while C2 limits high-frequency noise."
+    documentTitle: "Application of Particle Image Velocimetry for the Visualization of Soil Deformation Processes Due to Cyclic Lateral Loading of Rigid Piles",
+    authorLine: "Geotechnical engineering manuscript sample",
+    terms: ["particle image velocimetry", "cyclic lateral loading", "rigid piles", "monopiles"],
+    thesis: "The manuscript investigates accumulated deformation of laterally loaded rigid piles under cyclic loading using Particle Image Velocimetry.",
+    method: "Physical 1g small-scale model tests were planned, executed, and evaluated to visualize soil deformation fields and rearrangement processes.",
+    result: "We refined geotechnical terminology, tightened long technical sentences, standardized figure references, and clarified the relationship between cyclic load ratio and deformation accumulation.",
+    reference: "Frick and Achmus (2022) report model tests on cyclic lateral response of monopile foundations in non-cohesive soils."
   },
   {
     key: "law",
@@ -200,13 +216,13 @@ const examples: ExampleSeed[] = [
     kind: "academic",
     field: "Legal writing",
     accent: "#4338ca",
-    documentTitle: "False Claims Act Enforcement",
-    authorLine: "Law essay sample",
-    terms: ["False Claims Act", "qui tam", "APA legal style", "block quotations"],
-    thesis: "The essay examines False Claims Act enforcement and implied false certification theory.",
-    method: "We corrected legal terminology, introduced acronyms, adjusted quotations, and flagged citation details requiring author review.",
-    result: "The final draft reads as a formal legal essay with clearer statutory and policy analysis.",
-    reference: "False Claims Act citations were checked for APA and Bluebook-style legal formatting."
+    documentTitle: "Information and Communication Technology Law in the European Union",
+    authorLine: "Law manuscript sample",
+    terms: ["IT law", "digital single market", "legal informatics", "data regulation"],
+    thesis: "The visible excerpt defines IT law and frames the theoretical prerequisites for evaluating information technology law.",
+    method: "The sample preserves tracked legal edits, footnotes, nested bullet points, and highlighted theoretical discussion.",
+    result: "The edit clarifies scope, terminology, and theoretical foundations while preserving the legal-academic structure.",
+    reference: "The visible footnotes cite the Monti Report, Regulation (EU) 2021/694, and Kilian on legal informatics."
   },
   {
     key: "life-sciences",
@@ -225,18 +241,18 @@ const examples: ExampleSeed[] = [
   },
   {
     key: "marketing",
-    title: "Marketing (two-editor service)",
-    shortTitle: "Marketing",
+    title: "Business and Marketing",
+    shortTitle: "Business",
     kind: "business",
     field: "Business writing",
     accent: "#b45309",
-    documentTitle: "Market Entry Strategy for a Subscription Wellness Brand",
-    authorLine: "Marketing strategy sample",
-    terms: ["positioning", "customer segment", "conversion", "brand voice"],
-    thesis: "The proposal outlines a launch plan for a premium wellness subscription entering a crowded urban market.",
-    method: "We refined the executive summary, sharpened value propositions, and made the tone more commercially confident.",
-    result: "The revised copy is concise, persuasive, and better aligned with investor-facing expectations.",
-    reference: "The customer promise now foregrounds measurable convenience rather than vague lifestyle language."
+    documentTitle: "What makes the best better?",
+    authorLine: "Business and marketing manuscript sample",
+    terms: ["customer experience", "customer satisfaction", "loyalty", "retention"],
+    thesis: "The visible excerpt introduces the central question of why some companies deliver better customer experiences than others.",
+    method: "The sample preserves tracked editorial revisions to improve flow, reduce repetition, and clarify the business argument.",
+    result: "The edit sharpens the customer-experience narrative while keeping the original case example and economic framing.",
+    reference: "The visible sample stops in the economic-effects section after explaining recommendations and customer loyalty."
   },
   {
     key: "mla",
@@ -284,19 +300,19 @@ const examples: ExampleSeed[] = [
     reference: "Donoghue v Stevenson [1932] AC 562 (HL)."
   },
   {
-    key: "pharmaceuticals",
-    title: "Pharmaceuticals",
-    shortTitle: "Pharma",
-    kind: "clinical",
-    field: "Pharmaceutical science",
-    accent: "#be123c",
-    documentTitle: "Stability Testing of an Oral Suspension Formulation",
-    authorLine: "Pharmaceutical report sample",
-    terms: ["bioavailability", "excipient", "dissolution profile", "ICH guidelines"],
-    thesis: "The report assesses the physical and chemical stability of an oral suspension under accelerated storage conditions.",
-    method: "Samples were evaluated for pH, assay value, viscosity, and microbial limits at scheduled intervals.",
-    result: "The revised version uses more precise regulatory language and presents stability findings in a cleaner sequence.",
-    reference: "The edited method now specifies storage at 40 C/75% RH in accordance with ICH guidance."
+    key: "geochemistry",
+    title: "Geochemistry",
+    shortTitle: "Geochemistry",
+    kind: "academic",
+    field: "Geochemistry manuscript",
+    accent: "#2f7d32",
+    documentTitle: "Soil CO2 Diffuse Degassing and Geothermal Reservoir Prospecting",
+    authorLine: "Geochemistry manuscript sample",
+    terms: ["CO2 flux", "diffuse degassing", "geothermal reservoir", "Latera caldera"],
+    thesis: "The visible excerpt evaluates soil CO2 diffuse degassing as a geochemical indicator for geothermal reservoirs.",
+    method: "The sample preserves tracked edits to the abstract and introduction, including scientific notation and gas-ratio terminology.",
+    result: "The edit clarifies the relationship between CO2 flux, geothermal liquid flux, reservoir origin, and deep gas composition.",
+    reference: "The visible sample stops after describing the Latera caldera case-study objective and survey approach."
   },
   {
     key: "philosophy",
@@ -335,13 +351,13 @@ const examples: ExampleSeed[] = [
     kind: "academic",
     field: "Behavioral sciences",
     accent: "#7e22ce",
-    documentTitle: "Working Memory Load and Online Learning Outcomes",
+    documentTitle: "Experiences with teachers in childhood and their association with wellbeing in adulthood",
     authorLine: "Psychology manuscript sample",
-    terms: ["working memory", "cognitive load", "ANOVA", "participant recruitment"],
-    thesis: "The study tests whether interface complexity increases cognitive load and reduces retention in online learning.",
-    method: "Participants completed two learning modules followed by a recall task and a subjective workload questionnaire.",
-    result: "The revised results section presents statistical findings cleanly and avoids implying practical significance without support.",
-    reference: "The edited discussion now separates limitations from recommendations for instructional design."
+    terms: ["teacher-student relationship", "well-being", "self-esteem", "meaningful experiences"],
+    thesis: "The visible excerpt investigates the association between childhood experiences with teachers and adult well-being.",
+    method: "The sample preserves tracked edits to the abstract and literature review while excluding the screenshot overlay.",
+    result: "The edit clarifies the study aim, participant method, emotional contagion theory, and mental-health framing.",
+    reference: "The visible sample stops in the teacher-student relationship and mental health section."
   },
   {
     key: "theology",
@@ -361,11 +377,11 @@ const examples: ExampleSeed[] = [
 ];
 
 function createPages(seed: ExampleSeed): WorkExamplePage[] {
-  if (seed.key === "apa") return createApaReferencePages();
+  if (seed.key === "education") return createEducationPages(seed);
   if (seed.key === "astrophysics") return createAstrophysicsPages();
   if (seed.kind === "resume") return createResumePages(seed);
   if (seed.kind === "reference") return createReferencePages(seed);
-  if (seed.key === "electrical") return createElectricalPages(seed);
+  if (seed.key === "geological") return createGeologicalManuscriptPages(seed);
   if (seed.key === "biology") return createBiologyPages(seed);
   if (seed.key === "chemistry") return createChemistryPages(seed);
   if (seed.key === "law") return createLawPages(seed);
@@ -373,7 +389,7 @@ function createPages(seed: ExampleSeed): WorkExamplePage[] {
   if (seed.key === "economics") return createEconomicsPages(seed);
   if (seed.key === "marketing") return createMarketingPages(seed);
   if (seed.key === "nursing") return createNursingPages(seed);
-  if (seed.key === "pharmaceuticals") return createPharmaceuticalsPages(seed);
+  if (seed.key === "geochemistry") return createGeochemistryPages(seed);
   if (seed.key === "life-sciences") return createLifeSciencesPages(seed);
   if (seed.key === "computing") return createComputingPages(seed);
   if (seed.key === "political-science") return createPoliticalSciencePages(seed);
@@ -571,64 +587,188 @@ function createAstrophysicsPages(): WorkExamplePage[] {
   ];
 }
 
-function createElectricalPages(seed: ExampleSeed): WorkExamplePage[] {
+function createGeologicalManuscriptPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Design brief and specifications",
-      heading: "Low-Noise Amplifier Design for Sensor Interfaces",
+      eyebrow: "Page 1 of 3 - Abstract",
+      heading: seed.documentTitle,
       variant: "engineering",
-      body: [
-        `1. Design objective. The circuit conditions a 12 mVpp capacitive-sensor signal before digitisation by a 12-bit ADC. The draft stated that the amplifier <del>will remove all noise from the system</del> <ins>is designed to improve the signal-to-noise ratio within the 0.5-10 kHz measurement band</ins>.`,
-        `Target specification: closed-loop gain A_v = 21 V/V, input-referred noise below 18 nV/sqrt(Hz), and output swing within 0.2-3.1 V from a 3.3 V supply. The report now defines V_in, V_out, f_c, and SNR before using them in the analysis.`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "Application of particle image velocimetry for the visualization of soil deformation processes due to cyclic lateral loading of rigid piles"
+        },
+        { type: "paragraph", role: "heading", text: "Abstract" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `It is well <del>known</del><ins>established</ins> that piles embedded in sand accumulate lateral deformation (displacement and rotation) when subjected to horizontal cyclic loading. The <del>rate of resulting</del><ins>accumulation rate</ins> depends on a variety of parameters, <del>such as</del><ins>including</ins> loading conditions and properties of the pile-soil system. For nearly rigid piles, such as monopile foundations for offshore wind turbines, <del>an essential aspect is</del> the type of loading <ins>is particularly critical</ins><del>, which is</del>. The load type is determined by the ratio of the cyclic minimum load to the cyclic maximum load. <del>Several</del><ins>Previous</ins> investigations <del>concluded</del><ins>have shown</ins>, that <del>an</del> asymmetric two-way loading generally <del>results in larger</del><ins>produces greater</ins> accumulated pile deformation compared to other types of loading, especially one-way loading with complete unloading in each cycle. <del>This paper at hand presents</del><ins>This study reports on</ins> the planning, execution, and evaluation of physical 1g small-scale model tests to <del>on</del> investigate <ins>the accumulated</ins> deformation <del>accumulation</del> of laterally loaded rigid piles <del>due to</del><ins>under</ins> cyclic loading with a special focus on the soil deformations resulting from various cyclic load ratios. To visualize soil deformation fields and rearrangement processes within the soil profiles, <del>the technique of</del> Particle Image Velocimetry (PIV) was <del>applied</del><ins>employed in the tests</ins>. The evaluation of the model test results provides insights into the <del>reasons for</del><ins>mechanism underlying</ins> different accumulation rates and highlights the capabilities <del>as well as</del><ins>and</ins> limitations of PIV. Furthermore, the experiences gained during the realization and evaluation of the tests are summarized <del>in terms of</del><ins>as</ins> “lessons learned”, which may assist in the planning of future PIV<ins>-based</ins> experiments.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "Keywords: monopiles; cyclic lateral loading; displacement accumulation; particle image velocimetry"
+        },
+        { type: "paragraph", role: "heading", text: "Introduction" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `During their operating life of 25 to 30 years, monopiles are <del>exposed to a variety of</del><ins>subjected to</ins> up to 10<sup>9</sup> stochastically distributed cyclic loads (Cuéllar 2011). The resulting horizontal forces and bending moments <del>lead to the</del><ins>induce</ins> deformations, <del>of the monopile that is</del> <ins>which are typically</ins> <del>usually classified</del><ins>characterized</ins> as rigid body rotations with <del>one</del><ins>a single</ins> rotation point (Randolph and Gourvenec 2011). These deformations accumulate <del>over time</del><ins>progressively</ins> <del>(respectively over the number of load cycles)</del>, with an incrementally decreasing rate.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `Since the acceptable inclination of an Offshore Wind Turbine (OWT) is limited, <del>an</del> accurate prediction of the accumulated deformations <del>becomes relevant</del><ins>is essential</ins> for Serviceability Limit State (SLS) design. <del>Moreover</del><ins>Furthermore</ins>, the deformation is accompanied by <del>a</del> change<ins>s</ins> in the foundation stiffness, <ins>which</ins> <del>that is</del> particularly <del>important</del><ins>critical</ins>, as the target`
+        }
       ],
-      table: {
-        headers: ["Parameter", "Original label", "Edited specification"],
-        rows: [
-          ["Supply voltage", "3.3", "3.3 V"],
-          ["Bandwidth", "10", "0.5-10 kHz passband"],
-          ["Feedback resistor", "R feedback", "R_f = 20 kOhm"],
-          ["Noise density", "low", "< 18 nV/sqrt(Hz) input referred"]
-        ]
-      },
       comments: [
-        { label: "EE1", note: "Qualified the claim: an amplifier improves SNR but does not remove all noise." },
-        { label: "EE2", note: "Added units and symbols so the design targets are technically checkable." }
+        { label: "GE1", note: "Revised the opening claim for stronger academic precision and a more confident abstract tone.", anchor: 2 },
+        { label: "GE2", note: "Standardised the description of loading type and corrected the sentence flow around previous investigations.", anchor: 2 },
+        { label: "GE3", note: "Condensed the study aim while preserving the PIV method and geotechnical focus.", anchor: 2 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Circuit analysis",
-      heading: "2. Feedback Network and Transfer Function",
+      eyebrow: "Page 2 of 3 - Introduction",
+      heading: "Introduction",
       variant: "engineering",
-      body: [
-        `The non-inverting topology was retained, but the explanation was tightened: <del>the resistors make the output bigger because they feedback the signal</del> <ins>R_f and R_g set the closed-loop gain according to A_v = 1 + R_f/R_g</ins>. With R_f = 20 kOhm and R_g = 1 kOhm, the expected gain is 21 V/V.`,
-        `The corrected derivation now separates DC biasing from AC coupling. C_in and R_bias form a high-pass pole, while C_f limits high-frequency gain to reduce wideband noise. Figure 1 shows the edited schematic labels.`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `frequency band of current soft-stiff <del>monopile</del> designs has become so narrow, that a change <ins>in</ins> <del> of the</del> stiffness <del>can lead to</del><ins>could cause </ins> <del>a</del> problematic shift<ins>s</ins> in the natural frequencies (Bhattacharya et al. 2017).`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `The trend of displacement (or rotation) accumulation at ground level is often <del>classified</del><ins>represented</ins> by a power function of the type`
+        },
+        { type: "paragraph", role: "equation", text: "y<sub>N</sub> = y<sub>1</sub> · N<sup>α</sup>        (1)" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `or sometimes <del>with</del><ins>by</ins> a logarithmic <del>approach</del><ins>formulation</ins> (Little and Briaud 1988; LeBlanc et al. 2010; Lin and Liao 1999). Here <del>the deformation y<sub>N</sub>, which denotes</del> the lateral pile head displacement after N load cycles, <del>is calculated based on the pile head displacement</del><ins>while</ins> y<sub>1</sub> <ins>represents the pile head displacement after</ins> <del>one</del><ins>the first cycle</ins>. <del>(as</del><ins>The latter serves as</ins> a valid indicator for the cyclically induced deformation <del>dueto</del><ins>associated with</ins> a given <ins>certain</ins> load type and <del>size</del><ins>magnitude</ins>. <del>and an accumulation</del><ins>The parameter α is the accumulation factor.</ins> The load characteristic <del>of the load</del> ζ<sub>c</sub> is defined by the ratio of the <del>smallest</del><ins>minimum</ins> load H<sub>min</sub> to the <del>largest</del><ins>maximum</ins> load H<sub>max</sub> in the cycle (therefore: ζ<sub>c</sub>∈[-1;1]) (Equation 2). The relative load magnitude ζ<sub>b</sub> is the ratio of the <del>largest</del><ins>maximum</ins> load in the cycle to a <del>defined</del><ins>reference</ins> capacity H<sub>ref</sub> (Equation 3) (LeBlanc et al. 2010).`
+        },
+        { type: "paragraph", role: "equation", text: "ζ<sub>c</sub> = H<sub>min</sub> / H<sub>max</sub>        ζ<sub>b</sub> = H<sub>max</sub> / H<sub>ref</sub>" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `Although it is well <del>known</del><ins>established</ins> that the total accumulated deformation can vary <ins>by</ins> up to a factor of 4 depending on ζ<sub>c</sub>, <del>there is still</del> no specific mechanical explanation has yet been identified for why a certain load types accumulates <del>more</del><ins>greater</ins> or less<ins>er</ins> deformation than <del>an</del><ins>other</ins>. <del>The largest deformations, f</del><ins>For</ins> a constant relative load magnitude ζ<sub>b</sub>, <ins>the largest deformations are</ins> typically <del>expected</del><ins>observed</ins> for slightly negative ζ<sub>c</sub> <del>(0>ζ<sub>c</sub>>-0.6) corresponds</del><ins>(0>ζ<sub>c</sub>>-0.6), which corresponds</ins> to asymmetric two-way loads (LeBlanc et al. 2010; Klinkvort and Hededal 2013; Truong et al., 2019; Li et al. 2020; Frick and Achmus, 2020, 2022). <del>As an</del><ins>For example, F</ins>igure 1 illustrates the results of a series of 1g small-scale model tests on the influence of the cyclic load ratio ζ<sub>c</sub> reported by Frick and Achmus (2022).`
+        },
+        {
+          type: "paragraph",
+          role: "caption",
+          text: "Figure 1: Influence of the cyclic load ratio ζ<sub>c</sub> on the pile head displacement accumulation determined by 1g small-scale model tests reported by Frick and Achmus (2022)."
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `During cyclic load application with <del>equal</del><ins>constant</ins> ζ<sub>b</sub> indicating similar positive maximum loads – different <ins>values of cyclic load ratio ζ<sub>c</sub></ins> <del>entail</del><ins>produced distinct deformation</ins> <del>the following</del><ins>characteristics</ins>: For a pure swell load (i.e., ζ<sub>c</sub>>0) is no significant resetting force acts against the <del>main</del><ins>primary</ins> load direction. <ins>Consequently, the accumulated displacements within a given cycle are not effectively reduced, as the resetting displacement amplitude is smaller than that observed under alternating loads when</ins> [Equation] <ins>is held constant across tests.</ins> <del>which might reduce the already accumulated displacements for a certain cycle (the resetting displacement amplitude is smaller than for an alternating load if</del> [Equation] <del>is equal amongst all tests).</del> Hence, it <del>could be presumed</del><ins>can be inferred</ins> that <ins>pure swell</ins> <del>this</del> load type accumulates the largest deformations. <del>Nonetheless</del><ins>However, experimental evidence shows</ins> <del>the accumulation for a</del><ins>that</ins> load type with a partial of resetting force (i.e., ζ<sub>c</sub><0) <del>producegoes beyond greater deformation accumulation than that of</del><ins>produces greater deformation accumulation than</ins> pure one-way loads.`
+        }
       ],
-      figure: "circuit",
       comments: [
-        { label: "EE3", note: "Replaced informal causal wording with the correct closed-loop gain relationship." },
-        { label: "EE4", note: "Separated coupling, biasing, and feedback functions to avoid conflating component roles." }
+        { label: "GE4", note: "Improved transition from foundation stiffness to the displacement-accumulation model.", anchor: 0 },
+        { label: "GE5", note: "Clarified variable definitions and kept the equations visible for technical readers.", anchor: 3 },
+        { label: "GE6", note: "Refined the explanation of cyclic load ratio so the comparison with Figure 1 is easier to follow.", anchor: 5 }
       ]
     },
     {
-      eyebrow: "Page 3 of 5 - Results and captions",
-      heading: "3. Simulation Results",
+      eyebrow: "Page 3 of 3 - Introduction continued",
+      heading: "Introduction continued",
       variant: "engineering",
-      body: [
-        `The AC sweep indicates a mid-band gain of 26.4 dB and a -3 dB corner at 10.8 kHz. The original caption read <del>Graph of frequency shows that it works</del> <ins>Figure 2. Simulated frequency response of the non-inverting amplifier, showing 26.4 dB mid-band gain and a 10.8 kHz upper cutoff</ins>.`,
-        `The results paragraph now reports measured values before interpretation. This avoids implying validation before the breadboard measurements are introduced.`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>Therefore, the conducted</del><ins>Particle Image Velocimetry (PIV) was employed to investigate phenomenon in small-scale physical model tests</ins>, <del>are an attempt to improve</del><ins>These experiments aim</ins> to enhance the understanding of the physical correlation between the load characteristics and the <ins>resulting</ins> accumulated deformation, <ins>thereby providing mechanistic insights into soil-pile interaction under varying cyclic load ratios.</ins>`
+        }
       ],
-      table: {
-        headers: ["Test", "Simulated", "Measured", "Editorial note"],
-        rows: [
-          ["Mid-band gain", "26.4 dB", "26.1 dB", "Consistent within tolerance"],
-          ["Upper cutoff", "10.8 kHz", "10.2 kHz", "Use kHz, not KHz"],
-          ["Output noise", "1.7 mVrms", "1.9 mVrms", "Define bandwidth"],
-          ["Phase margin", "61 deg", "Not measured", "Do not overclaim"]
-        ]
-      },
       comments: [
-        { label: "EE5", note: "Turned a vague caption into a self-contained engineering figure caption." },
-        { label: "EE6", note: "Corrected capitalization and unit style: kHz, mVrms, dB." }
+        { label: "GE7", note: "Kept the final visible sentence from the reference image and tightened the purpose statement for clarity.", anchor: 0 }
+      ]
+    }
+  ];
+}
+
+function createEducationPages(seed: ExampleSeed): WorkExamplePage[] {
+  return [
+    {
+      eyebrow: "Page 1 of 2 - Abstract and introduction",
+      heading: seed.documentTitle,
+      variant: "humanities",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "Encompassing Transformation: A Holistic Approach to Assessing Learning in Adult Basic Education"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<strong>Abstract:</strong> This paper presents an integrated model for assessing and validating learning in adult basic education (ABE), emphasizing transformative, formative, and summative dimensions. <del>Grounded</del><ins>Rooted</ins> in critical pedagogy and a commitment to social justice, the model <del>advocates for</del><ins>promotes</ins> pedagogical approaches that assess and validate learning experiences <del>that</del> leading to profound personal and social changes <ins>among</ins><del>in</del> disadvantaged and vulnerable adult learners. <del>The d</del>Development of this model stems from a deep commitment to ABE as a practice that empowers and emancipates individuals, <ins>the model addressing</ins> <del>the</del> limitations of current assessment methods by holistically incorporating the transformative, formative, and summative dimensions of learning. Serving as the foundation for a community-based participatory research (CBPR) project, the model engages ABE practitioners and learners in collaboratively developing a comprehensive framework and exploring transformative learning experiences. An exploratory inquiry with ABE practitioners into a typology of transformative learning processes and outcomes elucidates the <ins>model's</ins> practical implications <del>of the model and guides</del><ins>informs</ins> the CBPR project. The <ins>Discussions</ins> highlights <ins>the relevance of the model</ins><del>implications</del> for policy<del>ies</del><ins>development</ins>, program designs, and the validation of non-formal and informal learning, which aim to promote long-term effectiveness and societal impact in adult education.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "<strong>Key Words:</strong> Adult basic education; Critical pedagogy; Critical reflection; Emancipatory learning; Community-based participatory research"
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "Introduction: Adult Basic Education and Social Justice"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `In this paper, I present an integrated model for assessing and validating various learning dimensions in ABE. The<del>is</del> model <del>was developed based on the interconnection of</del><ins>emerges from the intersection of</ins> my theoretical stance and practical experience. I <del>value</del><ins>regard</ins> adult education as an empowering, emancipatory, and ultimately transformative, practice grounded in critical pedagogy <del>that seeks</del><ins>and committed to advancing</ins> social justice and a vibrant democratic participation (Brookfield, 2016; Darder et al., 2016; Gouthro & Holloway, 2023). This <del>value perspective leads to</del><ins>fosters</ins> solidarity and university-practice collaboration with providers <del>working for the benefit of</del><ins>who serve</ins> the disadvantaged and vulnerable adult learners in ABE and work-based training initiatives. <del>This</del><ins>Such</ins> collaboration has <del>helped me</del><ins>deepened my</ins> understanding of pedagogical efforts and <ins>underscored</ins> the need to critically reflect on summative <del>dimensions</del><ins>assessment practices</ins> that <del>do not</del><ins>fail to</ins> adequately capture learning`
+        }
+      ],
+      comments: [
+        { label: "ED1", note: "Recast the opening framework language so the abstract states the model's pedagogical position more precisely.", anchor: 1 },
+        { label: "ED2", note: "Kept the author's social-justice focus while tightening the transition into the CBPR project.", anchor: 1 },
+        { label: "ED3", note: "Clarified how the model emerges from the author's theoretical stance and practical experience.", anchor: 4 }
+      ]
+    },
+    {
+      eyebrow: "Page 2 of 2 - Introduction continued",
+      heading: "Introduction continued",
+      variant: "humanities",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `efforts. This <del>value also propels me to</del><ins>commitment also motivates my resistance</ins> <del>resist</del> to neoliberal tendencies in ABE (Yasukawa & Black, 2016; Reder, 2020a; Cennamo et al., 2020) by <ins>cultivating and</ins> sharing <del>and nurturing</del> “resources of hope” (Tett & Hamilton, 2019). <ins>These resources challenge the</ins><del>against</del> standardization<ins>ing</ins> and homogenization<ins>ing</ins> <del>conceptions</del> of human learning and counter the (increasingly) dominant “autonomous model of literacy” (Street, 2003).`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This paper <del>draws on</del><ins>weaves together</ins> these interconnected strands and is organized as follows: Section 1 <del>presents</del><ins>examines</ins> the need to <del>include</del><ins>incorporate</ins> transformative dimensions to justify the liberating, relational, and dialogical conception of ABE that engenders profound personal and social changes in adult learners. Section 2 presents an argument for alternative pedagogical approaches <del>for</del><ins>to</ins> assessing and validating learning, <ins>particularly</ins> for the benefit of disadvantaged and vulnerable adults. Section 3 proposes a holistic <del>model of</del> assessment <ins>model</ins> that integrates <del>various</del><ins>multiple</ins> learning dimensions and <del>that</del> serves as the foundation for a CBPR project. Section 4 presents the results <del>of</del><ins>from</ins> an exploratory inquiry <ins>into transformative dimensions</ins> with ABE practitioners<ins>, into transformative dimensions,</ins> <del>based</del><ins>drawing</ins> on critical reflection and discusses their professional appraisals. Section 5 <del>presents my</del><ins>offers</ins> conclusions regarding the CBPR project and <del>avenues</del><ins>outlines directions</ins> for future research.`
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "The (Overlooked) Power of Transformative Learning in ABE"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<ins>Participation</ins><del>Participating</del> in learner-centered, empowering and emancipatory ABE programs, <del>based</del><ins>grounded on</ins> in Freire's (1970) liberating, relational and dialogical conception of alphabetization, where reading the word also means reading the world (Freire & Macedo, 1987), can <del>lead to</del><ins>foster</ins> “deep” learning and generate profound personal and social <del>changes</del><ins>transformation</ins> (King & Heuer, 2009, p. 172; Kastner & Motschilnig, 2022, pp. 227–229). These deeply personal and social dimensions of human learning are often inaccessible for ABE learners and may <del>not be clearly identified</del><ins>or remain unnamed or unrecognized</ins>. <del>They are often</del><ins>Frequently, they are expressed through</ins> <del>hidden behind expressions</del><ins>simple yet powerful statements like such as</ins> ‘I feel better now’ or ‘I am not stupid’, and <del>which</del> are not adequately reflected in categories such as ‘increasing self-confidence’ in <del>program evaluations</del><ins>programs</ins>.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "These personal and social dimensions are frequently overlooked by observers, especially those who are privileged. However, these transformative dimensions of human learning, both the processes and outcomes, are crucial for disadvantaged and vulnerable adults."
+        }
+      ],
+      comments: [
+        { label: "ED4", note: "Revised the resistance/resources sentence so the author's position reads as commitment rather than personal impulse.", anchor: 0 },
+        { label: "ED5", note: "Improved section roadmap verbs while preserving the visible order of the paper.", anchor: 1 },
+        { label: "ED6", note: "Changed the opening of the transformative learning section from a gerund phrase to a clearer noun phrase.", anchor: 3 }
       ]
     }
   ];
@@ -637,149 +777,60 @@ function createElectricalPages(seed: ExampleSeed): WorkExamplePage[] {
 function createBiologyPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 8 - Abstract and introduction",
-      heading: "Unravelling the Mysteries of Microbial Dark Matter: Challenges and Prospects for Future Research",
+      eyebrow: "Page 1 of 4 - Abstract",
+      heading: "Linking Wood Anatomy with Growth Vigour and Susceptibility to Alternate Bearing in Composite Apple and Pear Trees",
       variant: "science",
       body: [
-        `<ins>Abstract</ins> Microbial dark matter represents<del>, the vast majority of microorganisms that remainare still today uncultivated and uncharacterizeduncharacterised.</del><ins> the multitude of microorganisms that remain uncultivated and uncharacterised.</ins>`,
-        `It represents a <del>very significant</del><ins>significant</ins> portion of the Earth's biodiversity, and its <ins>members</ins> play crucial roles in biogeochemical processes, nutrient cycling, and ecosystem functioning.`,
-        `Despite <del>their importanceit's being really important</del><ins>their importance</ins>, studying <del>the dark microbial dark matter members facesgives</del><ins>members of microbial dark matter faces</ins> numerous challenges, including <del>difficultieshardships</del><ins>difficulties</ins> in cultivation and the limitations of traditional culture-dependent methods.`,
-        `This <del>articlepaper providesshows</del><ins>article provides</ins> an overview of the current <del>state- of- knowledge</del><ins>state of knowledge</ins> on microbial dark matter and highlights the challenges and <del>prospectives for the future research</del><ins>prospects for future research</ins>.`,
-        `It emphasises the potential applications of new <del>approachestechniques, such aslike single- cell genomics, meta genomics, and other culture-independent methodsapproaches</del><ins>techniques, such as single-cell genomics, metagenomics, and other culture-independent approaches</ins>, in unravelling the mysteries of microbial dark matter and <del>itsthere</del><ins>their</ins> implications for biotechnology, medicine, and environmental <del>remeditation</del><ins>remediation</ins>.`,
-        `<ins>Introduction</ins> Microorganisms <del>compriseform</del><ins>comprise</ins> a significant proportion of the Earth's biodiversity and are involved in <del>various and diverse</del><ins>diverse</ins> biological processes, including nutrient <del>cyclings</del><ins>cycling</ins>, biogeochemical transformations, and symbiotic interactions with <del>manya lot of</del><ins>many</ins> other organisms (Falkowski et al. 2008).`,
-        `Despite their <del>importancevalue</del><ins>importance</ins>, most microorganisms have not been cultivated or <del>characterized characterised</del><ins>characterised</ins> in the laboratory. This <del>un-cultivated and un-characterized characterised potion</del><ins>uncultivated and uncharacterised portion</ins> of microbial life, often <del>termednamed</del><ins>termed</ins> microbial dark matter, poses significant challenges for researchers seeking to understand the full extent of microbial diversity and <del>itsthere</del><ins>their</ins> ecological roles (Rappe and Giovannoni 2003).`
+        `<del>Head title:</del>`,
+        `<ins>Linking Wood Anatomy with</ins> Growth Vigour <ins>and</ins> Susceptibility <ins>to</ins> Alternate Bearing <ins>in</ins> Composite Apple <ins>and</ins> Pear Trees`,
+        `<b>Abstract:</b>`,
+        `Excessive vegetative growth and irregular fruit bearing are often undesirable in horticultural practice. However, <ins>the</ins> biological mechanisms underlying these traits in fruit trees are not fully understood. In this study, we <del>tested</del> <ins>investigated</ins> <del>if</del> <ins>whether</ins> differences in growth vigor and susceptibility to alternate <ins>fruit</ins> bearing are associated with differences in vascular anatomy across fifteen different rootstock and scion cultivars of apple and pear trees. Anatomical traits related to water transport and nutrient storage were examined in young woody shoots and roots. We found a positive correlation between mean vessel diameter of roots and annual shoot length, suggesting greater hydraulic efficiency in vigorously growing trees compared to dwarfing ones. <del>The v</del><ins>Vigorous growing</ins> trees also maintained less negative midday leaf water potentials and were less susceptible to drought-associated growth decline. Furthermore, we observed a <del>close</del> <ins>strong</ins> negative correlation between proportions of total parenchyma in shoots and the alternate bearing index, suggesting that lower carbohydrate storage capacity might be associated with increased susceptibility to alternate bearing. <del>We also found that roots of</del> <ins>Notably,</ins> pear <del>trees</del> <ins>tree roots</ins> <del>had</del> <ins>exhibited</ins> greater hydraulic conductivity compared to apple <del>trees</del><ins>tree roots</ins>, with the difference driven by greater proportions of xylem and <del>greater</del> vessel lumen fractions. <ins>The </ins><del>G</del>greater transport capacity in pear roots seemed to be at the expense of carbohydrate storage, <del>because pear roots</del> <ins>as they</ins> contained lower proportions of total parenchyma and less starch <del>than</del> <ins>compared to</ins> apple tree roots. Overall, our findings shed more light on the controls of growth vigour and alternate bearing in commercially important fruit trees and can be useful for <ins>the</ins> breeding of new cultivars.`,
+        `<b>Keywords:</b> alternate bearing index, carbohydrates, composite fruit tree, dwarf tree, parenchyma, rootstock, scion, shoot, starch, vessel, xylem, xylem transport.`
       ],
       comments: [
-        { label: "CP1", note: "I have made the title boldface and 16 pt Times New Roman font to distinguish it from the text below. Please ensure its formatting aligns with your target journal's guidelines before submission." },
-        { label: "CP2", note: "I have standardised the headings to boldface and 14 pt Times New Roman font with a 6 pt space above to distinguish them from the main text." },
-        { label: "CP3", note: "I have standardised the main text to 12 pt Times New Roman font, single line spaced, left-aligned, with 6 pt spacing between paragraphs." },
-        { label: "CP4", note: "I do not believe that this statement reflects your intended meaning. Please check whether microbial dark matter represents the multitude of microorganisms that remain uncultivated and uncharacterised." },
-        { label: "CP5", note: "Since microbial dark matter refers to a large collection of microorganisms rather than a single entity, I changed references to its functions and roles to refer to those of its members." },
-        { label: "CP7", note: "As requested in the order notes, the in-text citations have been edited to align with the CSE author-year format used by Taylor & Francis." }
+        { label: "Precision", note: "Replaced conversational phrasing such as 'tested if' with 'investigated whether' to meet academic standards." },
+        { label: "Flow", note: "Tightened the comparison between apple and pear roots to make the sentence more direct and readable." }
       ]
     },
     {
-      eyebrow: "Page 2 of 8 - Study challenges",
-      heading: "The challenges of studying microbial dark matter",
+      eyebrow: "Page 2 of 4 - Introduction",
+      heading: "Introduction",
       variant: "science",
       body: [
-        `The study of microbial dark matter is hindered by several challenges, <del>primarily due to chiefly stemming from the difficultiesy</del><ins>primarily stemming from the difficulty</ins> in cultivating these microorganisms under laboratory conditions.`,
-        `Traditional culture-dependent methods <del>relys</del><ins>rely</ins> on the isolation and growth of microorganisms in pure culture, <del>whichthat</del><ins>which</ins> often fails to replicate the complex environmental conditions and interspecies interactions found in their natural habitats (Staley and Konopka 1985).`,
-        `As a <del>cConsequentlyce</del><ins>consequence</ins>, many microorganisms <del>can not</del><ins>cannot</ins> grow under these conditions, <del>leading to a significant underestimation of microbial diversity and their ecological roles</del><ins>making it challenging to explore their diversity and ecological roles</ins>.`,
-        `Additionally, <del>thean uncultured</del><ins>the uncultured</ins> nature of microbial dark matter complicates <del>studiying its members'their</del><ins>studying its members'</ins> physiology, metabolism, and genetic potential.`,
-        `Traditional approaches <del>such as- e.g. genome sequencing and gene expression analysis, oftentimes rely</del><ins>, such as genome sequencing and gene expression analysis, often rely</ins> on the availability of cultured organisms or their DNA.`,
-        `The lack of cultured representatives of microbial dark matter <del>isgives</del><ins>is</ins> a significant barrier to understanding their functional capabilities and potential contributions to biogeochemical processes and nutrient cycling (Rinke et al. 2013).`
+        `<b>Introduction</b>`,
+        `Apple (<em>Malus domestica</em> Borkh.) and pear trees (<em>Pyrus communis</em> L.) are two <del>highly</del> <ins>of the most</ins> important temperate fruit trees, producing 85<del>,</del> <ins>and</ins> 25 million tons of fruit worldwide and 15<del>,</del> <ins>and</ins> 3 million tons of fruit in Europe, respectively (data for fruit production in 2017; FAO 2019). <del>The A</del><ins>Both species belong to the</ins><del>pple and pear trees are both members of</del> Rosaceae family and have similar growth demands (Jackson 2003). In commercial orchards, apple and pear trees are typically <del>grown</del> <ins>cultivated</ins> as composite trees <del>in which</del><ins>created by grafting</ins> two different genotypes <del>are combined</del> into <del>an</del> <ins>a single</ins> individual <del>tree by means of grafting</del>. In composite trees, the aboveground scion is usually selected for its <ins>desirable</ins> production <del>properties</del> <ins>traits, while</ins> <del>and is grafted onto a</del><ins>the</ins> rootstock <del>that is chosen to influence</del><ins>regulates</ins> growth vigour and resistance to <ins>both</ins> biotic and abiotic stresses (Jackson 2003). <del>Due to the grafting process</del><ins>Through grafting, growers can combine</ins> desired properties of various scions and rootstocks <del>can be combined</del> to optimize fruit tree performance <del>according to</del> <ins>for</ins> grower’s <ins>specific production</ins> demands (Webster 1997; Mészáros et al. 2019).`,
+        `<ins>In pomiculture,</ins> <del>T</del>trees with suppressed vegetative growth are often favoured <del>in pomiculture</del> to reduce costs associated with pruning and <del>allow higher planting densities, thereby</del><ins>to maximizing</ins> <del>maximize</del> fruit production per <del>orchard</del> <ins>unit</ins> area <del>unit through an increased density of trees per hectare</del>. Furthermore, <del>trees with suppressed vegetative growth</del><ins>Such trees</ins> also <ins>exhibit precocity,</ins> <del>frequently produce</del> <ins>producing</ins> fruits earlier during their lifespan (i.e., precocity) (Reighard and Loreti 2008; Muleo et al. 2011; Fazio et al. 2014; Mészáros et al. 2015). Together with tree training and pruning, the use of dwarfing rootstocks is a primary <del>means to</del><ins>strategy for</ins> <ins>controlling</ins> <del>control</del> vegetative growth of commercial fruit trees<del>,</del><ins>.</ins> <del>although</del> <ins>However,</ins> the final vigour of the trees is a combined effect of the scion’s and rootstock’s vigour. <del>While</del> <ins>Although</ins> there <del>is currently</del> a wide <del>selection</del> <ins>range</ins> of rootstocks with a known potential to control scion’s vigour <ins>is available</ins>, the <ins>underlying</ins> mechanisms of how this is achieved are not fully understood.`
       ],
       comments: [
-        { label: "CP6", note: "I don't believe these are separate issues. Do you mean difficulties in cultivation due to the limitations of traditional culture-dependent methods?" },
-        { label: "CP8", note: "It would be helpful to clarify why they have not been cultivated or characterised in the laboratory." },
-        { label: "CP9", note: "This statement may not reflect your intended meaning. Please check whether you mean that unculturability makes diversity and ecological roles difficult to explore." }
+        { label: "Clarity", note: "Restructured the opening paragraph to eliminate repetitive phrasing while preserving botanical names and citations." },
+        { label: "Terminology", note: "Refined horticultural terms (e.g., 'grown' to 'cultivated', 'precocity') for a more specialized audience." }
       ]
     },
     {
-      eyebrow: "Page 3 of 8 - Emerging techniques",
-      heading: "Emerging techniques for studying microbial dark matter",
+      eyebrow: "Page 3 of 4 - Vegetative growth and hydraulic performance",
+      heading: "Vegetative growth and hydraulic performance",
       variant: "science",
       body: [
-        `<del>Emerging Ttechniques for Sstudying Mmicrobial Ddark Mmatter</del><ins>Emerging techniques for studying microbial dark matter</ins>`,
-        `<del>In recent years, sSeveral novel approachestechniques haves been developed in recent years</del><ins>Several novel techniques have been developed in recent years</ins> to <del>overcomecircumvent the challenges inassociated with cultivating, and characterising,</del><ins>circumvent the challenges associated with cultivating and characterising</ins> microbial dark matter members.`,
-        `These culture-independent approaches have provided valuable insights into <del>uncultivated microorganisms'ˈs</del><ins>uncultivated microorganisms'</ins> genetic and functional diversity and their roles in various ecosystems.`,
-        `One such approach is <del>Ssingle-Ccell</del><ins>single-cell</ins> genomics, which involves isolating, amplifying, and sequencing the DNA <del>offrom the individual cells</del><ins>from individual cells</ins>.`,
-        `This <del>approachtechnique</del><ins>technique</ins> has allowed researchers to obtain genomic information from uncultivated microorganisms, providing insights into their metabolic capabilities and evolutionary relationships (Lasken and McLean 2014).`,
-        `For example, single-cell genomics has been used to <del>characterize characterise previously un-known lineages of archaea and bacteria lineages, reveailing</del><ins>characterise previously unknown lineages of archaea and bacteria, revealing</ins> novel metabolic pathways and <del>increasingexpanding</del><ins>expanding</ins> our understanding of microbial diversity (Rinke et al. 2013).`,
-        `<del>For example, single-cell genomics has been used to characterize previously un-known lineages of archaea and bacteria, reviling novel metabolic pathway and expanding our understanding of microbial diversity (Rinke, Schwientek, Sczyrba, Ivanova, Anderson, Cheng,... & Woyke T., 2013).</del>`
+        `Differences in hydraulic performance have been <del>suggested as one of the prominent</del><ins>proposed as a key</ins> mechanism <del>mechanisms of how</del><ins>by which</ins> rootstocks <del>may control</del><ins>influence</ins> tree growth vigour (Atkinson et al. 2003; Basile et al. 2003). <ins>The maintenance</ins> <del>Maintenance</del> of high water potential in aboveground organs is one of the key physiological factors sustaining vegetative growth (Berman and DeJong 1997; Basile et al. 2003; Weibel et al. 2003; Solari et al. 2006a). High water potential is essential <del>to</del> <ins>for</ins> sustaining meristematic activity (Sacks et al. 1997), cell expansion (Guerriero et al. 2014), and <del>unimpeded</del> <ins>efficient</ins> carbon <del>uptake</del> <ins>assimilation</ins> <del>via</del><ins>through</ins> open stomata (Comstock and Mencuccini 1998). High hydraulic conductivity of rootstocks is necessary for <del>water</del> <ins>delivering water</ins> <del>delivery</del> to aboveground organs and <del>for</del> maintenance of high water potential during <ins>periods of</ins> high transpiration demands (Goncalves et al. 2005; Solari et al. 2006a). Low hydraulic conductivity <del>of</del> <ins>in</ins> rootstocks has been <del>associated with</del><ins>linked to</ins> <del>slower</del> <ins>reduced</ins> shoot growth and limited secondary thickening (Tyree and Sperry, 1988; Tyree et al., 1998; Comas et al., 2002). Dwarf trees often exhibit poorer hydraulic performance and are also less resistant to abiotic stress, pests, and diseases compared to vigorously growing trees (Atkinson et al. 1999; Trifilo et al. 2007; Bauerle et al. 2011; Hajagos and Végvári 2013; Albacete et al. 2015). Therefore, vigorous tree growth <del>can be a</del><ins>may</ins> result <del>of</del> <ins>from</ins> <ins>both</ins> faster growth rate<ins>s</ins> and<del>/or</del> prolonged growth period during the growing season, including <del>the</del> periods of drought.`,
+        `Regular fruit-bearing in successive <del>growing</del> <ins>fruiting</ins> seasons is another desirable trait of fruit trees. However, many fruit trees, including <ins>the</ins> apple and pear trees, are prone to an irregular bearing. In an extreme case, fruit trees <del>can</del> give very high fruit yields in one year (i.e., “on” year) and very low fruit yields (or no fruits at all) in the next year (i.e., “off” year). Such alternate bearing often results in considerable economic loss to <ins>the</ins> growers. Irregular <ins>fruit</ins> bearing is triggered and controlled by a combination of exogenous (e.g., late frost, dry summer) and endogenous (hormones, nutrients) factors (Goldschmidt 2005). It is well-known that some fruit tree species and some cultivars are more prone to irregular bearing than others due to their different susceptibility to environmental factors (Monselise and Goldschmidt 1982) or <ins>the</ins> different branching and bearing patterns associated with their growth habits (Lauri et al. 1995, 2014). Although the physiological basis of these differences remains insufficiently understood, cycling of stored non-structural carbohydrates (e.g., starch, glucose, fructose, sucrose) and other reserve nutrients appears to be one of the factors which can drive susceptibility of fruit trees to alternate bearing (Goldschmidt 2013). Specifically, <ins>the</ins> depletion of carbohydrate reserves due to high production of fruits and/or long-lasting exposure to stress conditions during one year can lead to low production of fruits in the following season during which the carbohydrate levels are replenished (Baninasab and Rahemi, 2006). Because developing fruits <del>represent</del> <ins>indicate</ins> strong carbohydrate sink (Monselise and Goldschmidt 1982; Martínez-Alcántara et al. 2015; Capelli et al. 2016), the alternation of cropping presumably allows trees to maintain a balance between vegetative growth and reproduction under limited nutrients (Goldschmidt 2013).`
       ],
       comments: [
-        { label: "CP10", note: "I have made this heading sentence case to align with the other headings. Please check your target journal's heading style." },
-        { label: "CP11", note: "This text duplicated the previous sentence, so I have removed it." }
+        { label: "Clarity", note: "Restructured the opening paragraph to eliminate repetitive phrasing while preserving botanical names and citations." },
+        { label: "Terminology", note: "Refined horticultural terms (e.g., 'grown' to 'cultivated', 'precocity') for a more specialized audience." }
       ]
     },
     {
-      eyebrow: "Page 4 of 8 - Metagenomics",
-      heading: "Culture-independent methods",
+      eyebrow: "Page 4 of 4 - Alternate bearing and xylem properties",
+      heading: "Alternate bearing and xylem properties",
       variant: "science",
       body: [
-        `Another promising approach is <del>Mmetagenomics</del><ins>metagenomics</ins>, which involves the <del>directly extractingon and sequencing of</del><ins>direct extraction and sequencing of</ins> DNA from environmental samples.`,
-        `Metagenomics allows researchers to study the collective genomes of microbial communities, providing insights into the functional capabilities and interactions of uncultivated microorganisms within <del>theiry're</del><ins>their</ins> native habitats (Handelsman 2004).`,
-        `Through metagenomic studies, researchers have discovered new enzymes, antibiotic-resistance genes, and biogeochemical processes <del>performedcarried out</del><ins>carried out</ins> by previously unknown members of microbial communities (Tyson et al. 2004; Tringe et al. 2005).`,
-        `<del>Meta-transcriptomics and meta-proteomics are othermore culture-independent approaches</del><ins>Metatranscriptomics and metaproteomics are additional culture-independent approaches</ins> that can provide insights into uncultivated microorganisms' functional activities and gene expression profiles <del>ian</del><ins>in</ins> their natural environments (Wilmes and Bond 2004; Urich et al. 2008).`,
-        `These <del>approachestechniques</del><ins>techniques</ins> enable researchers to study microbial communities' transcriptional and translational responses to various environmental stimuli, providing valuable information on <del>their ecological roles and adaptive strategies of microbial d</del><ins>their ecological roles and adaptive strategies</ins>.`
+        `<ins>Also, the</ins> <del>P</del>properties of secondary xylem (i.e., wood) affect long-distance water transport as well as storage of carbohydrates. Therefore, differences in <ins>the</ins> xylem structure and related functional properties may significantly affect both <ins>the</ins> vegetative growth of fruit trees and their susceptibility to alternate bearing. The xylem of apple and pear trees consists of three morphologically and functionally distinct cell types: i) vessel elements, ii) parenchyma cells (axial and ray parenchyma), and iii) libriform fibres. Vessel elements are longitudinally-elongated<del>,</del> dead cells conducting water and dissolved compounds <del>on</del> <ins>to</ins> long-distances in the direction <del>from</del> <ins>of</ins> roots to leaves. <ins>The</ins> <del>D</del>dimensions and density of <ins>the</ins> vessels drive the maximum transport capacity of <ins>the</ins> xylem. According to the Hagen-Poiseuille law describing laminar flow in a capillary, hydraulic conductivity of a vessel increases with the fourth power of its diameter (Tyree and Zimmermann 2002). Positive correlations between vessel dimensions, hydraulic efficiency, and tree growth were reported in natural stands (Gleason et al. 2012) and managed plantation trees (Fichot et al. 2011). Wider and more numerous vessels were also observed in <del>invigorating</del> <ins>vigorous growing</ins> <ins>trees</ins> compared to dwarfing rootstocks in a wide range of fruit tree species (Olmstead et al. 2006; Goncalves et al. 2007; Tombesi et al. 2010a, b; Tombesi et al. 2011; Martínez-Alcántara et al. 2013; Bruckner and DeJong 2014; Chen et al. 2015).`,
+        `Compared to vessel characteristics, the anatomy of ray and axial parenchyma is less frequently studied, in spite of their importance <del>for</del> <ins>in</ins> nutrient storage and transport (Sauter and van Cleve 1992, Pfautsch et al. 2015, Plavcová et al. 2016). Living parenchyma cells mediate short-distance<del>,</del> symplastic transport (Pfautsch et al. 2015) and serve as storage sites for water (Tyree and Zimmermann 2002; Jupa et al. 2016), carbohydrates (Plavcová et al. 2016), and other nutrients (Sauter and van Cleve 1992). Ray parenchyma provides a direct<del>,</del> radial connection between the <ins>tree</ins> bark, wood, and pith (Sokolowska et al. 2012), while <ins>the</ins> axial parenchyma facilitates greater contact fraction with <ins>the</ins> vessels (Morris et al. 2018, Słupianek et al. 2019). Compared to vessels, the links between tree growth and <ins>the</ins> parenchyma anatomy are less <del>well</del> understood, although several studies <ins>had</ins> reported greater proportions of rays and bark in dwarfing rootstocks of fruit trees (Beakbane and Thompson 1940, Chen et al. 2015). Given the important roles of <ins>the</ins> parenchyma cells in storage and translocation of carbohydrates and other reserve<ins>d</ins> compounds, differences in <ins>the</ins> parenchyma proportions may be related to <ins>its</ins> susceptibility to alternate bearing.`,
+        `In this study, we analyse<ins>d</ins> <ins>the</ins> anatomical differences in fifteen scion/rootstock combinations of apple and pear trees and test<ins>ed</ins> <del>if</del> <ins>whether</ins> <ins>the</ins> structural properties of xylem in <ins>the</ins> shoots and roots are linked to <ins>the</ins> growth vigour and susceptibility to alternate bearing. We expect that trees with high grow<ins>th</ins> vigour will have greater xylem cross-sectional area and wider vessels (translating into higher hydraulic capacity) and lower proportions of bark and ray parenchyma. We also hypothesized that low parenchyma fractions might be associated with high susceptibility of trees to <del>the</del> irregular bearing. To <del>get insights into</del><ins>better understand the</ins> actual tree growth performanc<ins>e</ins>, the anatomical differences between <ins>the</ins> dwarfing and vigorously growing trees are complemented with measurements of leaf water potential and trunk radial increments during summer drought.`
       ],
       comments: [
-        { label: "CP7", note: "In-text citations have been edited to CSE author-year style." },
-        { label: "CP5", note: "References to microbial dark matter have been revised to refer to its members where needed." }
-      ]
-    },
-    {
-      eyebrow: "Page 5 of 8 - Future research",
-      heading: "Prospects for future research",
-      variant: "science",
-      body: [
-        `Future research on <del>dark microbial dark matter mustneeds</del><ins>microbial dark matter needs</ins> to address the challenges posed by the cultivation and <del>characterization characterisation</del><ins>characterisation</ins> of these elusive microorganisms.`,
-        `Advances in single-cell genomics, <del>meta-genomics</del><ins>metagenomics</ins>, and other culture-independent approaches will continue to <del>provideshow</del><ins>provide</ins> valuable insights into <del>microbial dark matter members' the genetic and functional diversity, of microbial dark matter</del><ins>the genetic and functional diversity of microbial dark matter members</ins> and their ecological roles and interactions with other organisms.`,
-        `<del>HoweverBut,</del><ins>However,</ins> it is important to <del>recognizerecognise,</del><ins>recognise</ins> that these approaches only provide a snapshot of the microbial world and do not fully capture the <del>full spectrum</del><ins>spectrum</ins> of microbial diversity and functionality.`,
-        `Efforts should be made to develop innovative cultivation <del>approachestechniques</del><ins>techniques</ins> that more closely mimic the environmental conditions and interspecies interactions found in natural habitats, enabling the growth and <del>characterization characterisation</del><ins>characterisation</ins> of previously <del>uncultivatableed</del><ins>uncultivatable</ins> microorganisms (Kaeberlein et al. 2002; Zengler et al. 2002).`,
-        `Such <del>approachestechniques mightmay</del><ins>techniques may</ins> include using microfluidic devices, diffusion chambers, and high-throughput cultivation platforms that facilitate the isolation and growth of novel and possibly unique microorganisms under controlled conditions.`
-      ],
-      comments: [
-        { label: "CP12", note: "This publication year was incomplete. I believe it should be 2002 based on the reference list. Please check that this change is correct." },
-        { label: "CP13", note: "This publication year did not match the reference list. I changed it to 2002 to match the provided reference." }
-      ]
-    },
-    {
-      eyebrow: "Page 6 of 8 - Applications and conclusion",
-      heading: "Conclusions",
-      variant: "science",
-      body: [
-        `Furthermore, interdisciplinary <del>researches involving</del><ins>research involving</ins> microbial ecology, physiology, genomics, and bioinformatics will be crucial in unravelling the mysteries of microbial dark matter and <del>itstheir</del><ins>their</ins> implications for biotechnology, medicine, and environmental remediation.`,
-        `For example, the discovery of novel metabolic pathways, enzymes, and bioactive compounds from uncultivated microorganisms <del>mightmay</del><ins>may</ins> lead to new biotechnological applications, such as biofuel production, pollutant <del>bioremediatation of pollutants</del><ins>bioremediation</ins>, and <del>the discovery of novel antibiotic discoverys</del><ins>novel antibiotic discovery</ins> (Daniel 2004; Fenical and Jensen 2006).`,
-        `<del>In conclusions</del><ins>In conclusion</ins>, microbial dark matter represents a significant portion of the <del>Earths' Earth’s</del><ins>Earth's</ins> biodiversity, and its members <del>plays</del><ins>play</ins> crucial roles in biogeochemical processes, nutrient cycling, and ecosystem functioning.`,
-        `Despite the challenges <del>inassociated with</del><ins>associated with</ins> cultivating and <del>characterizing characterising</del><ins>characterising</ins> these microorganisms, recent advances in single-cell genomics, metagenomics, and other culture-independent approaches have provided valuable insights into <del>microbial dark matter's matter members' genetical</del><ins>microbial dark matter members' genetic</ins> and functional diversity.`,
-        `Future research should address these challenges <del>in posed by these studying of</del><ins>posed by studying</ins> microbial dark matter <del>andplus itstheir</del><ins>and their</ins> potential implications for biotechnology, medicine, and environmental remediation.`
-      ],
-      comments: [
-        { label: "CP14", note: "This author name did not match the reference list. I changed it to match the reference below. Please check that the author's name is correct." }
-      ]
-    },
-    {
-      eyebrow: "Page 7 of 8 - References",
-      heading: "References",
-      variant: "science",
-      body: [
-        `<ins>References</ins> Daniel R. 2004. The metagenomics of soil. <del>Nature Reviews Microbiol.ogy, 2(6):, (2004), 470-478.</del><ins>Nature Reviews Microbiology. 2(6):470-478.</ins>`,
-        `Falkowski PG, Fenchel T, Delong EF. 2008. The microbial engines that drive <del>Earth's Earth’s</del><ins>Earth's</ins> biogeochemical cycles. <del>Science,. 320(5879):, 1034-1039.</del><ins>Science. 320(5879):1034-1039.</ins>`,
-        `Fenical W, Jensen PR. 2006. Developing a new resource for drug discovery: marine actinomycete bacteria. <del>, Nature Chemical Biology,. 2(12):, 666-673.</del><ins>Nature Chemical Biology. 2(12):666-673.</ins>`,
-        `Handelsman J. 2004. Metagenomics: application of genomics to uncultured microorganisms. <del>Microbiology and Molecular Biology Rev.iews, 68(4):, 669-685.</del><ins>Microbiology and Molecular Biology Reviews. 68(4):669-685.</ins>`,
-        `Kaeberlein T, Lewis K, Epstein SS. 2002. Isolating <del>"uncultivable"</del><ins>"uncultivable"</ins> microorganisms in pure culture in a simulated natural environment. <ins>Science. 296(5570):1127-1129.</ins>`,
-        `Lasken RS, McLean JS. 2014. Recent advances in genomic DNA sequencing of microbial species from single cells. <ins>Nat Rev Genet. 15(9):577-584.</ins>`,
-        `Rappe MS, Giovannoni SJ. 2003. The uncultured microbial majority. <del>Annual Review of Microbiology,. 57:, 369-394.</del><ins>Annual Review of Microbiology. 57:369-394.</ins>`,
-        `Rinke C, Schwientek P, Sczyrba A, Ivanova NN, Anderson IJ, Cheng JF, <del>... & Woyke T.</del><ins>et al.</ins> 2013. <del>Insights Iinto Tthe Pphylogeny Aand Ccoding Ppotential Oof Mmicrobial Ddark Mmatter.</del><ins>Insights into the phylogeny and coding potential of microbial dark matter.</ins> Nature. 499(7459):431-437.`
-      ],
-      comments: [
-        { label: "CP15", note: "As requested in the order notes, the reference list has been edited to align with the CSE author-year format used by Taylor & Francis." },
-        { label: "CP16", note: "This reference is missing a parenthetical issue number. Should it have one?" },
-        { label: "CP17", note: "This author list is incomplete. CSE style provides the first ten authors followed by et al.; please make this change before submission." }
-      ]
-    },
-    {
-      eyebrow: "Page 8 of 8 - References continued",
-      heading: "References continued",
-      variant: "science",
-      body: [
-        `Staley JT, Konopka A. 1985. Measurement of in situ activities of nonphotosynthetic microorganisms in aquatic and terrestrial habitats. <del>Ann Rev Microbiol.ANNUAL REVIEW OF MICROBIOLOGY, 39:, 321-346.</del><ins>Annual Review of Microbiology. 39:321-346.</ins>`,
-        `Tringe SG, Von Mering C, Kobayashi A, Salamov AA, Chen K, Chang HW, <del>... & Rubin, E. M.</del><ins>et al.</ins> 2005. Comparative metagenomics of microbial communities. <ins>Science. 308(5721):554-557.</ins>`,
-        `Turkheimer E. 2000. Three laws of behavior genetics and what they mean. <del>Current Dir Psychol Sci.directions in psychological science, 9 (5):, 160-164.</del><ins>Current Directions in Psychological Science. 9(5):160-164.</ins>`,
-        `Tyson GW, Chapman J, Hugenholtz P, Allen EE, Ram RJ, Richardson PM, <del>... & Banfield, J. F.</del><ins>et al.</ins> 2004. Community structure and metabolism through reconstruction of microbial genomes from the environment. <ins>Nature. 428(6978):37-43.</ins>`,
-        `Urich T, Lanzen A, Qi J, Huson DH, Schleper C, Schuster SC. 2008. <del>Simultaneous Aassessment of Ssoil microbial Ccommunity structure and Ffunction through analysis of the meta-transcriptome.</del><ins>Simultaneous assessment of soil microbial community structure and function through analysis of the metatranscriptome.</ins> PLoS One. 3(6):e2527.`,
-        `Wilmes P, Bond PL. 2004. The application of two-dimensional polyacrylamide gel electrophoresis and downstream analyses to a mixed community of prokaryotic microorganisms. <ins>Environmental Microbiology. 6(9):911-920.</ins>`,
-        `Zengler K, Toledo G, Rappe M, Elkins J, Mathur EJ, Short JM, Keller M. 2002. Cultivating the uncultured. <del>Proceedings of the Natlional Academy of Sci U S A.ences, 99(24):, 15681-15686.</del><ins>Proceedings of the National Academy of Sciences USA. 99(24):15681-15686.</ins>`
-      ],
-      comments: [
-        { label: "CP18", note: "This reference is missing a parenthetical issue number. Should it have one?" },
-        { label: "CP19", note: "This author list is incomplete. Please provide the first ten authors followed by et al. before submission." },
-        { label: "CP20", note: "This reference was not cited in the text. Should it have been? If not, please remove it from the reference list." },
-        { label: "CP21", note: "This author list is incomplete. Please provide the first ten authors followed by et al. before submission." },
-        { label: "CP22", note: "The listed authors are missing their initials. Please include them before submission." }
+        { label: "Transition", note: "Added transitional phrasing to better connect the discussion of alternate bearing to xylem properties." },
+        { label: "Grammar", note: "Corrected verb tenses and article usage (e.g., 'analyse' to 'analysed') to consistently report past methodology." }
       ]
     }
   ];
@@ -788,87 +839,111 @@ function createBiologyPages(seed: ExampleSeed): WorkExamplePage[] {
 function createChemistryPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Abstract and introduction",
-      heading: "Earth-Abundant Metal Catalysts",
+      eyebrow: "Page 1 of 4 - Abstract and introduction",
+      heading: seed.documentTitle,
       variant: "science",
-      body: [
-        `<del>Title: Earth-Abundant Metal Catalysts: Exploring the PotentialsPotential of Iron, Cobalt, and NickilNickel for Sustainable Chemical Reactions and Energy Applications</del> <ins>Earth-Abundant Metal Catalysts: Exploring the Potential of Iron, Cobalt, and Nickel for Sustainable Chemical Reactions and Energy Applications</ins>`,
-        `<ins>Abstract</ins> <del>The development of affectiveDeveloping effective and affordable catalysts based on earth-abundant metals abundant in the Earth</del><ins>Developing effective and affordable catalysts based on earth-abundant metals</ins>, such as iron, cobalt, and <del>nickilnickel</del><ins>nickel</ins>, is essential for realizing sustainable chemical production and energy conversion processes.`,
-        `These metals <del>showare a much more attractive alternative to the rare and expensive metals</del><ins>are attractive alternatives to rare and expensive metals</ins>, which are currently used in many catalysts.`,
-        `This paper reviews recent advances in the <del>developingdevelopment</del><ins>development</ins> of earth-abundant metal catalysts, focusing on their <del>applicationapplications</del><ins>applications</ins> in chemical reactions relevant to energy conversion and storage.`,
-        `<ins>Introduction</ins> Catalysts play a <del>serious role in drivingdrive</del><ins>serious role in driving</ins> various chemical reactions by improving efficiency and selectivity and reducing energy requirements (Crabtree, 2010).`,
-        `<del>A lot of). Many</del><ins>Many</ins> currently used catalysts are based on rare and expensive metals, such as platinum, <del>Pdpalladium</del><ins>palladium</ins>, and rhodium, which have limited availability and can be economically and environmentally <del>insustainableunsustainable</del><ins>unsustainable</ins> (Chirik, 2011).`
+      body: [],
+      blocks: [
+        { type: "paragraph", role: "title", text: "A Heteroleptic Bimetallic Pt-doped Cu-rich Hydrides Nanocluster" },
+        { type: "paragraph", role: "heading", text: "Abstract" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `An atomically precise heteroleptic Pt-doped Cu-rich <ins>hydride</ins> <del>hydrides</del> nanocluster [PtH<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>] (<strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong>) has been <ins>successfully</ins> synthesized. <ins>This was achieved by</ins> <del>the addition of</del><ins>introducing</ins> a discrete Pt(II) precursor <del>into</del><ins>to</ins> the copper hydrides nanocluster [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>) in the presence of terminal alkynes. <del>The X-ray diffraction studies determine the</del> structure of PtH<sub>2</sub>Cu<sub>14</sub> <ins>determined by X-ray diffraction reveals</ins><del> as</del> a bicapped icosahedral copper(I) cage encapsulating a linear platinum dihydride [PtH<sub>2</sub>]<sup>2-</sup> unit. The interstitial hydrides <del>exhibit a five-coordinated hydride</del><ins>are arranged in</ins> a trigonal bipyramidal (<em>tbp</em>) <del>cavity</del><ins>geometry with a five-coordinated hydride</ins> <del>and have been</del><ins>as</ins> confirmed by <sup>2</sup>H NMR and ESI-MS measurements.`
+        },
+        { type: "paragraph", role: "heading", text: "Introduction" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `Atomically precise alloy nanoclusters (NCs) are gaining <del>more</del><ins>increasing</ins> interest and experiencing explosive growth.<sup>1-3</sup> <ins>This is</ins> due to their <del>correlation of structure-property correlation,</del><ins>optical and electronic properties,</ins><sup>7-12</sup> as well as their structure-property <ins>correlation</ins><sup>4-6</sup> and promising applications in catalysis.<sup>13-17</sup> Among these alloy <ins>NCs</ins>, copper-rich alloy <ins>NCs</ins> are <ins>particularly noteworthy. They</ins> <del>composed</del><ins>consist</ins> of low-cost and earth-abundant elements and show fascinating potential applications, including chirality<sup>18-21</sup>, catalysis<sup>22-28</sup>, and luminescent materials<sup>29-36</sup>. <del>Nevertheless</del><ins>However</ins>, in contrast to the <del>swift</del><ins>rapid</ins> advancement of gold and silver alloy clusters, <del>the susceptibility of copper to oxidation presents difficulty</del><ins>NCs face significant challenges</ins> in achieving <del>stable stability copper NCs</del> during synthesis due to their <ins>susceptibility to oxidation</ins>, <del>low stability toward air</del>, which hinders their application.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `To address these <del>issues</del><ins>challenges</ins>, one of the effective synthetic approaches <del>by</del><ins>involves</ins> doping the <del>homometallic</del> copper hydride <ins>NCs</ins> with <del>heterometallic</del><ins>heterometal</ins> salts such as gold (Au)<sup>32,33,38,39</sup>, silver (Ag)<sup>32,33,35,38</sup>, palladium (Pd)<sup>26,40,41</sup>, and platinum (Pt)<sup>27</sup> to explore their structure-property <ins>correlation</ins><del>correlation</del>. For instance, doping <del>of</del> Au and Ag atoms into the polyhydrido copper hydride <del>nanoclusters</del> [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>)<sup>42</sup>, [Cu<sub>20</sub>H<sub>11</sub>{dtp}<sub>9</sub>]<sup>43-44</sup>, and [Cu<sub>30</sub>H<sub>18</sub>{dtp}<sub>12</sub>]<sup>40</sup> in the presence of <ins>phenylacetylene</ins><del>phenylacetylene</del> generated yields [M@Cu<sub>12</sub>{dtc/dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>4</sub>]<sup>+</sup>. Where <ins>dtc</ins> = {S<sub>2</sub>CN<sup>n</sup>Bu<sub>2</sub>} and <ins>dtp</ins> = {S<sub>2</sub>P(R)<sub>2</sub>} (R = O<sup>i</sup>Pr, O<sup>n</sup>Pr, and CH<sub>2</sub>CH<sub>2</sub>Ph) cluster<sup>32-33</sup>. The core structure of these clusters <del>presents</del><ins>features the</ins> an Au- or Ag-centered`
+        }
       ],
       comments: [
-        { label: "CP1", note: "Standardized the manuscript to 12 pt Times New Roman at 1.5 line spacing, with headings and subheadings italicized and bold." },
-        { label: "CP2", note: "Please add Index terms as required by the IEEE style guide." },
-        { label: "CP3", note: "IEEE uses a numbered reference system; I provided a correctly formatted example in the references section." }
+        { label: "CH1", note: "Preserved chemical formula formatting and clarified the abstract's synthesis route.", anchor: 2 },
+        { label: "CH2", note: "Updated the introduction to retain nanocluster terminology and visible citation markers.", anchor: 4 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Iron-based catalysts",
-      heading: "Iron-Based Catalysts",
+      eyebrow: "Page 2 of 4 - Introduction continued",
+      heading: "Introduction",
       variant: "science",
-      body: [
-        `Iron is the most abundant transition metal in the <del>Earth'sEarth’s</del><ins>Earth's</ins> crust and has been extensively studied as a catalyst for <del>various and diverse</del><ins>diverse</ins> chemical reactions (Bauer, 2015).`,
-        `One notable example is the Haber-Bosch process, <del>which uses of iron-based catalyst, which involves the synthesis of ammonium from nitrogen and hydrogen using an iron-based catalyst</del><ins>which synthesizes ammonia from nitrogen and hydrogen using an iron-based catalyst</ins> (Schrock, 2006).`,
-        `Iron-based catalysts have also been investigated for their application in the Fischer-Tropsch <del>processes, which translatesconverts synthesis gas</del><ins>process, which converts syngas</ins> into hydrocarbons and <del>oxygenatesoxygenated hydrocarbons</del><ins>oxygenated hydrocarbons</ins> (Davis, 2011).`,
-        `<del>New, up-to-date Recent research has focussedfocused on the development ofdeveloping</del><ins>Recent research has focused on developing</ins> iron-based molecular catalysts that mimic the active sites of natural enzymes, such as hydrogenases and nitrogenases, involved in the activation and conversion of small molecules (Rauchfuss, 2009).`,
-        `These biomimetic catalysts <del>have been shown to be especialyare especially promising</del><ins>are especially promising</ins> for proton reduction, nitrogen fixation, and carbon dioxide activation (Artero & Fontecave, 2013).`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>or (Ag)-centered</del> Cu<sub>12</sub> cuboctahedron. The <ins>resulting Au- and Ag-doped species</ins><del>doped species Au-doped and Ag-doped Cu-based</del> exhibit disparities in their optical and electrical characteristics and stability compared to their template precursor.<sup>32-33</sup> <del>By a similar synthetic procedure</del><ins>Similarly</ins>, Cu-rich hydride alloy <del>nanoclusters</del> [PdCu<sub>14</sub>H<sub>2</sub>{dtc/dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>40</sup> were <del>generated</del><ins>synthesized</ins> from the reaction of copper hydride clusters [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>) or [Cu<sub>20</sub>H<sub>11</sub>{dtp}<sub>9</sub>] in the presence of <ins>a</ins> Pd precursor and phenylacetylene. The copper cage displays a <del>D3d</del><ins>D<sub>3d</sub></ins> bicapped icosahedron, with Pd <ins>occupying</ins> the center <del>occupied by Pd position</del>. Two hydrides were <del>within</del><ins>embedded in the PdCu<sub>14</sub> core</ins><del> were embedded, which and strongly</del> linearly bonded to Pd.<sup>40</sup> Furthermore, the stable copper dihydride [Cu<sub>11</sub>H<sub>2</sub>{dtp}<sub>6</sub>C<sub>2</sub>Ph)<sub>3</sub>]<sup>45</sup> <del>was used</del><ins>serves</ins> as a template precursor <del>and that</del> reacts with a foreign metal ion (Au<sup>+</sup>, Ag<sup>+</sup>, and Pd<sup>2+</sup>) to <del>generate</del><ins>yield</ins> new compounds, namely: [AgH<sub>2</sub>Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>+</sup> with Ag centered Cu<sub>12</sub> icosahedron <ins>capped</ins><del>capping</del> by two supplementary Cu atoms in the opposite faces along with two interstitial hydrides, [AuCu<sub>11</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>3</sub>Cl] and [PdCu<sub>11</sub>H{dtp}<sub>6</sub>C<sub>2</sub>Ph)<sub>3</sub>] with the vacancy defect Au@Cu<sub>11</sub> and PdH@Cu<sub>11</sub> cuboctahedral core.<sup>38,46</sup> In recent studies, a hydride-containing Pt-doped Cu-rich <ins>nanocluster</ins> [PtH<sub>2</sub>Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>] (<strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtp</strong>) <del>has been generated</del><ins>was synthesized</ins> from the reaction of by [Cu<sub>20</sub>H<sub>11</sub>{dtp}<sub>9</sub>] <del>with</del><ins>and</ins> [Pt{dtp}<sub>2</sub>] in the presence of <del>the an alkynyl ligand</del>. This cluster <del>which established</del><ins>demonstrates</ins> <del>the an</del> exceptional <del>catalysts</del><ins>catalytic</ins> activity toward <ins>the</ins> hydrogen evolution reaction (HER).<sup>27</sup>`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `The arrangement of 14 metal atoms in a bicapped icosahedral form <del>could be considered</del><ins>can be regarded as</ins> a prototype of copper (I) surrounded by heteroleptic ligands such as <ins>alkynyl</ins> and dtp/dtc. <del>For example</del><ins>Examples include</ins>; [CuH<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>+</sup>,<sup>39</sup> [AgH<sub>2</sub>@Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>+</sup>,<sup>38</sup> [PdH<sub>2</sub>@Cu<sub>14</sub>{dtp/dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>],<sup>41</sup> and [PtH<sub>2</sub>@Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>],<sup>27</sup> <del>which</del><ins>Each of these clusters</ins> <del>all house</del><ins>contains</ins> an encapsulated H-M-H unit at the center of the icosahedron. The heteroleptic ligands are required for <del>directly directly capping on</del> the cluster surface <del>in order to stabilize</del><ins>ensure the stability of the NCs</ins> and prevent aggregation. The utilization of <ins>dtp</ins> and <ins>dtc</ins> ligands <ins>plays</ins><del> has important</del><ins>a crucial</ins> role <del>to</del><ins>in</ins> determining the coordination mode of the interstitial hydride <del>inside</del><ins>within</ins> the 14 metal atoms of the bicapped icosahedral structure, <del>where as confirmed by</del> neutron diffraction analyses <del>have proven the coordination mode</del>. For <del>instance</del><ins>example</ins>, the coordination mode of <ins>the</ins> interstitial hydride, <ins>stabilized</ins><del>which stabilizes</del> by <ins>the</ins> dtc ligand in [CuH<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>+</sup> and [PdH<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>], presents <del>the trigonal-bipyramidal</del> cavities in MCu<sub>14</sub>, while <del>utilizing</del> in the dtp ligand in [AgH<sub>2</sub>@Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>]<sup>+</sup>, [PdH<sub>2</sub>@Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>], and [PtH<sub>2</sub>@Cu<sub>14</sub>{dtp}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>], the hydride <del>bonded into MCu<sub>14</sub></del><ins>forms trigonal pyramidal cavities that are bonded into MCu<sub>13</sub>.</ins>`
+        }
       ],
       comments: [
-        { label: "CP4", note: "Please use consistent formatting for section and subsection headings in line with your target IEEE journal." },
-        { label: "CP5", note: "Names in compounds such as Haber-Bosch and Fischer-Tropsch are conventionally joined with an en dash." },
-        { label: "CP6", note: "Synthesis gas is more commonly referred to as syngas; this may be more familiar to your audience." }
+        { label: "CH3", note: "Preserved the visible ligand and cluster formulas while clarifying the comparative copper-rich cluster discussion.", anchor: 0 },
+        { label: "CH4", note: "Retained the heteroleptic ligand discussion and handled the green correction as inserted text.", anchor: 1 }
       ]
     },
     {
-      eyebrow: "Page 3 of 5 - Cobalt catalysts",
-      heading: "Cobalt-Based Catalysts",
+      eyebrow: "Page 3 of 4 - Synthesis and results",
+      heading: "Synthesis PtH2Cu14-dtc",
       variant: "science",
-      body: [
-        `Cobalt is <del>also a another earth-abundant-earth metal</del><ins>another earth-abundant metal</ins> that has been studied for use <del>foras a catalyst agent</del><ins>as a catalyst</ins> in various chemical reactions (Anjana & Sreekanth, 2015).`,
-        `Cobalt-based catalysts have been widely used in the Fischer-Tropsch <del>processes, whereprocess; they exhibit large activity and high selectivity for production of longchainproducing long-chain hydrocarbons</del><ins>process, where they exhibit high activity and selectivity for producing long-chain hydrocarbons</ins> (Khodakov et al., 2007).`,
-        `<del>In recent yearsRecently</del><ins>Recently</ins>, cobalt-based molecular catalysts <del>hashave</del><ins>have</ins> been investigated for <del>theretheir</del><ins>their</ins> application in the electrochemical and photochemical reduction of protons to <del>Hydrogenhydrogen</del><ins>hydrogen</ins> (Sun et al., 2015).`,
-        `Cobalt-based catalysts have also been explored for their <del>potentpotential</del><ins>potential</ins> use in the electrocatalytic reduction of carbon dioxide to <del>fomateformate</del><ins>formate</ins>, a valuable chemical feedstock (Kumar et al., 2016).`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>Herein</del><ins>In this study</ins>, we report the synthesis of a <ins>dtc</ins> ligand and <ins>alkynyl</ins> protected Pt-doped Cu-rich <ins>nanocluster</ins> [PtH<sub>2</sub>Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>] (dtc={S<sub>2</sub>CN<sup>n</sup>Bu<sub>2</sub>}) (<strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong>), by treating <del>the phenylacetylene</del> with <del>dithio carbamate-stabilized</del> copper hydrides [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>) cluster in the presence of [Pt{dtp}<sub>2</sub>] salts. The crystal structure of the <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> NC was <del>resolved</del><ins>determined</ins> using X-ray crystallography. The results showed that <del>the</del> <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> NC has a <del>bicapped</del> icosahedral Cu<sub>14</sub> cage surrounded by six <del>dithiocarbamates</del> (dtc) and six phenylacetylenes. Moreover, the two hydrides of <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> are in a μ<sub>5</sub>-H trigonal bipyramidal geometry within the PtCu<sub>14</sub> cavity. In addition, only a few examples of atomically precise metal <ins>NCs</ins> stabilized by <ins>heteroleptic</ins> mixed ligand <ins>dtc</ins> and <ins>alkynyl</ins>/phosphine have been reported.<sup>32-33,39,41,47-50</sup> Based on <del>this</del><ins>these</ins> findings, <ins>understanding</ins> the structural details of <del>the alloy</del> Pt-doped Cu-based hydride <ins>NCs</ins> protected by heteroleptic of <ins>dtc</ins> and <ins>alkynyl</ins> ligands can <del>improve</del><ins>enhance</ins> our fundamental comprehension of their structure-dependent characteristics.`
+        },
+        { type: "paragraph", role: "heading", text: "Synthesis PtH<sub>2</sub>Cu<sub>14</sub>-dtc" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `In a flame-dried <del>Schlenk</del> tube, [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>), (0.1 g, 0.022 mmol) was suspended in THF (5 mL) along with <ins>phenylacetylene</ins> (25 μL, 0.22 <ins>mmol</ins>) and [Pt{dtp}<sub>2</sub>] (0.015 g, 0.022 <ins>mmol</ins>); The resulting mixture was stirred at ambient temperature for 48 hours. The solvent was <ins>then</ins> evaporated under a vacuum. The <del>obtained</del><ins>resulting</ins> powder was washed with water, extracted <ins>with</ins> diethyl dichloromethane and <del>then again</del> evaporated under <del>a</del> vacuum. The precipitates was washed with methanol (3x5 mL) to remove the impurities <del>of</del><ins>from</ins> the ligand. The residue was extracted <del>within</del> dichloromethane and filtered <del>through the</del><ins>using</ins> aluminium oxide. Finally, the solvent was evaporated to dryness under vacuum, <del>to get</del><ins>resulting in</ins> a dark purple precipitate of [PtH<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub>].`
+        },
+        { type: "paragraph", role: "heading", text: "Result and Discussion" },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<ins>The</ins> <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> cluster was isolated from the reaction of [Cu<sub>28</sub>H<sub>15</sub>{dtc}<sub>12</sub>](PF<sub>6</sub>), [Pt{dtp}<sub>2</sub>] and phenylacetylene; in a <del>1:1:12</del> mole ratio <ins>of 1:1:12</ins> <del>respectively</del>, as shown in Scheme 1. The reaction was carried out in THF at ambient conditions and a yield of 23.43 % was <ins>obtained</ins> after 48 hrs. The byproducts of the reaction have been identified as [Cu<sub>8</sub>H{dtc}<sub>6</sub>] and styrene.<sup>33</sup> No additional reducing agents <del>are</del><ins>were</ins> added and the reduction of Pt(II) in the complex to Pt(0) in the bimetallic cluster is attributed to the hydrides in the parent cluster. <del>The</del> Gas evolution <del>of gas was noted and is ascribed</del><ins>was observed, which is a</ins> <del>to the reaction</del><ins>result</ins> of the terminal alkyne's relatively acidic proton of the terminal alkyne reacting with the hydrides of the copper precursor. The hydrides were assumed to be the partial <del>reductant</del><ins>responsible</ins> for`
+        }
       ],
       comments: [
-        { label: "CP7", note: "Please consider adding a second example so this paragraph parallels the iron-based catalysts section." },
-        { label: "CP8", note: "Edits to this sentence may have changed your intended meaning; please review before accepting changes." }
+        { label: "CH5", note: "Kept the synthesis heading and procedure while preserving formula and reagent notation.", anchor: 1 },
+        { label: "CH6", note: "Retained the visible result discussion and stopped the sentence where the screenshot continues.", anchor: 4 }
       ]
     },
     {
-      eyebrow: "Page 4 of 5 - Nickel catalysts and prospects",
-      heading: "Nickel-Based Catalysts",
+      eyebrow: "Page 4 of 4 - Spectroscopy discussion",
+      heading: "Result and Discussion continued",
       variant: "science",
-      body: [
-        `<del>Nickil-Biased Nickel-Based Catalysts</del><ins>Nickel-Based Catalysts</ins>`,
-        `<del>NickilNickel is anotherthe third earth-abundant metal that has attracted considerable attention for it's potential use as a catalyzt of various chemical reactionscatalyst</del><ins>Nickel is a third earth-abundant metal that has attracted considerable attention for its potential use as a catalyst</ins> (Kumar and Jain, 2012).`,
-        `<del>Nickil basesNickel-based catalysts</del><ins>Nickel-based catalysts</ins> have been widely used in <del>the hydrogenaton ofhydrogenating</del><ins>hydrogenating</ins> unsaturated hydrocarbons and <del>the production ofproducing</del><ins>producing</ins> chemicals from biomass-derived feedstocks (Chen et al., 2014).`,
-        `Nickel-based catalysts have also been investigated for carbon dioxide reduction to carbon <del>monooxidemonoxide</del><ins>monoxide</ins>, a key <del>indermetiateintermediate</del><ins>intermediate</ins> in producing liquid fuels and chemicals (Jouny et al., 2018).`,
-        `<del>Challenges and Future ProspectivesProspects</del><ins>Challenges and Future Prospects</ins> The development of earth-abundant metal catalysts <del>facefaces</del><ins>faces</ins> several challenges, including the need <del>offor</del><ins>for</ins> a better understanding of catalysis mechanisms and catalyst scale-up (Chirik, 2011).`
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `converting Pt(II) to Pt(0) and alkynes into alkenes. The deuteride analogue PtD<sub>2</sub>@Cu<sub>14</sub>{dtc}<sub>6</sub>(C<sub>2</sub>Ph)<sub>6</sub> (<strong>PtD<sub>2</sub>Cu<sub>14</sub>-dtc</strong>, yield: 20.93%) was achieved using similar protocols, with the substitution of hydride for <ins>deuterides</ins> in the initial copper cluster.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `The <del>electrospray</del> ionization mass spectrum (ESI-MS) of the cluster <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> is shown in Figure 1, <del>suggesting the</del><ins>It displays a</ins> characteristic peak <del>corresponding to PtH<sub>2</sub>Cu<sub>14</sub>-dtc+H<sup>+</sup>} at</del> m/z 2918.2 Da (calc. m/z 2918.76 Da), <ins>which corresponds to [PtH<sub>2</sub>Cu<sub>14</sub>-dtc+H]<sup>+</sup>.</ins> <del>and</del>The isotopic pattern <del>is in excellent agreement with</del><ins>closely matches the simulation as shown in the inset of</ins> Figure 1. <del>Moreover</del><ins>Furthermore</ins>, the ESI-MS analysis of the deuteride analogue <strong>PtD<sub>2</sub>Cu<sub>14</sub>-dtc</strong> confirmed the presence of two deuterides, <del>by showing a</del><ins>This is indicated by</ins> a peak at m/z 2920.68 Da (calc. m/z 2920.77 Da) (Figure S1), which can be <del>assign represented</del><ins>assigned</ins> to [PtD<sub>2</sub>Cu<sub>14</sub>-dtc+H]<sup>+</sup>. The simulation and experiment isotopic <del>patterns show a good</del> exhibit a strong <del>resemblance</del> in Figure S1: (Inset).`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `The <sup>1</sup>H NMR spectrum of the <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> cluster shows one set of alkynyls and two sets of alkyl groups corresponding to the <ins>dtc</ins> ligand (Figure 2a). The NMR spectrum indicates <del>that there is no</del> presence of two-fold axis in the <ins>dtp</ins> ligand environment surrounding the cluster core. The <del>two hydrides</del> of the PtH<sub>2</sub> unit inside the Cu<sub>14</sub> cage are associated with a resonance peak at 2.73 ppm in CDCl<sub>3</sub> with <ins>the</ins> a coupling constant of platinum <del>dihydride</del> (J<sub>Pt-H</sub>) at 463.44 Hz. Meanwhile, the presence of the two hydrides is supported by <sup>1</sup>H{<sup>195</sup>Pt} HMQC without decoupling, echoed at 2.95 ppm and the <sup>1</sup>H{<sup>195</sup>Pt} HMQC decoupling shows a doublet peak with a J<sub>Pt-H</sub> coupling constant of 686.2 Hz (Figure Sx-Sx). <del>In</del> Additionally, the <sup>195</sup>Pt NMR spectrum depicts a peak at -4931.3 ppm, which is slightly higher compared to the <sup>195</sup>Pt NMR of Pt(0) that was reported in the <ins>dtp</ins> derivatives <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtp</strong> (δ<sub>Pt</sub> = -4875.3 ppm), [Pt(PMe<sub>2</sub>Ph)<sub>4</sub>] (δ<sub>Pt</sub> = -4728 ppm), and [Pt(1.5-cyclooctadiene)2] (δ<sub>Pt</sub> = -4636 ppm) (Figure Sx).<sup>57</sup> The presence of two hydrides in <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> is <del>additionally</del><ins>further</ins> verified by the <sup>2</sup>H NMR spectrum of its deuteride analogue (<strong>PtD<sub>2</sub>Cu<sub>14</sub>-dtc</strong>), <del>which It shows</del><ins>displays</ins> a signal at 2.91 ppm in CHCl<sub>3</sub> with a coupling constant of platinum deuteride (J<sub>Pt-D</sub>) is 106.19 Hz (Figure 2b). The <sup>13</sup>C NMR of <strong>PtD<sub>2</sub>Cu<sub>14</sub>-dtc</strong> is shown in Figure 2a. The <sup>13</sup>C NMR spectrum revealed that the peaks at 201.75, 56.52, 29.18, 20.16, and 13.74 ppm agree with the <em>n</em>-butyl group <ins>dtc</ins> ligand. Meanwhile, the peaks at 132.69, 127.29, 126.29, 125.54, <del>and</del> 89.31 and 77.29 ppm equate to <sup>13</sup>C NMR of the phenyl ring and triple bond in phenylacetylene ligands (Figure S3). The FT-IR investigation <del>confirmed</del><ins>revealed</ins> that the C<sub>2</sub>Ph ligands were coordinated, as <del>evidenced</del><ins>confirmed</ins> by the stretching frequency (ν<sub>C≡C</sub>) for the coordinated C<sub>2</sub>Ph ligands of <strong>PtH<sub>2</sub>Cu<sub>14</sub>-dtc</strong> at 1955.9 cm<sup>-1</sup>, which is significantly <del>shift</del><ins>different</ins> from free phenylacetylene (ν = 2110 cm<sup>-1</sup>) (Figures S4). Elemental analysis further confirms the chemical purity of`
+        }
       ],
       comments: [
-        { label: "CP9", note: "Please consider adding a second example so this section parallels the iron-based catalysts section." },
-        { label: "CP10", note: "Please complete the phrase: do you mean sustainable energy or sustainable products?" },
-        { label: "CP11", note: "Edits to this sentence may have changed your intended meaning; please review before accepting changes." }
-      ]
-    },
-    {
-      eyebrow: "Page 5 of 5 - Conclusion and references",
-      heading: "Conclusion and References",
-      variant: "science",
-      body: [
-        `<del>The development ofDeveloping</del><ins>Developing</ins> effective and affordable catalysts based on earth-abundant metals, such as iron, cobalt, and <del>nickilnickel</del><ins>nickel</ins>, is <del>principal for realisingcritical to realizing</del><ins>critical to realizing</ins> sustainable chemical production and energy conversion processes.`,
-        `Further research is needed to address the challenges associated with catalyst design, optimization, and scale-up. Interdisciplinary collaboration will be crucial for advancing sustainable catalysis and unlocking the <del>fullestfull</del><ins>full</ins> potential of earth-abundant metal catalysts.`,
-        `<ins>References</ins> [1] G. W. Crabtree, "The environment and the need for new catalysts," <ins>Catal. Today</ins>, vol. 154, no. 3-4, pp. 207-212, 2010.`,
-        `[2] P. J. Chirik, "Earth-abundant metal catalysts for alkene hydrosilylation," <ins>Nature Chem.</ins>, vol. 3, no. 10, pp. 773-774, 2011.`,
-        `<del>Anjana, S. R., & Sreekanth, A. R.. Cobalt catalysts: a review. Catalysis Reviews, 57(4), 306-344.</del> <ins>Please convert remaining references to IEEE numbered style in order of appearance.</ins>`
-      ],
-      comments: [
-        { label: "CP14", note: "This citation is over a decade old; please consider citing more recent work in this area." },
-        { label: "CP15", note: "IEEE uses numbered citations; references should be numbered in the order in which they appear." },
-        { label: "CP16", note: "Please include the month of publication if applicable." }
+        { label: "CH7", note: "Preserved ESI-MS, isotope, NMR, and FT-IR notation while excluding the screenshot popup overlay.", anchor: 1 },
+        { label: "CH8", note: "Kept the sample endpoint at the visible unfinished elemental-analysis sentence.", anchor: 2 }
       ]
     }
   ];
@@ -877,68 +952,122 @@ function createChemistryPages(seed: ExampleSeed): WorkExamplePage[] {
 function createLawPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 4 - FCA enforcement",
-      heading: "False Claims Act Enforcement: A Self-Fulfilling Prophecy?",
-      variant: "legal",
-      body: [
-        `<ins>A. False Claims Act Enforcement: A Self-Fulfilling Prophecy?</ins> Since the amendments to the Fraud Enforcement and Recovery Act (FERA), the <del>government Department of Justice (DOJ)</del><ins>Department of Justice (DOJ)</ins> has ramped up enforcement through an increased number of qui tam suits and <del>great money gainssignificant monetary gains</del><ins>significant monetary gains</ins> (DOJ, 2011).`,
-        `In 2011, <del>realtors relators</del><ins>relators</ins> filed 638 qui tam suits, <del>which representedrepresenting</del><ins>representing</ins> a 10% increase over the <del>73</del><ins>580</ins> qui tam suits filed in 2010 and roughly a 50% increase over the 433 qui tam suits filed in 2009.`,
-        `The DOJ has recovered more than $8.7 billion in settlements and judgments since <del>FERA arrivedthe FERA amendments</del><ins>the FERA amendments</ins>, including $3 billion in fiscal year 2011 alone (DOJ, 2011).`,
-        `In the <del>past fewrecent</del><ins>recent</ins> years, the legislative and executive branches <del>haves</del><ins>have</ins> passed legislation and introduced task force objectives that make it easier for governments to pursue False Claims Act (FCA) cases at state and federal levels.`
+      eyebrow: "Page 1 of 3 - IT law and footnotes",
+      heading: seed.documentTitle,
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<em>Information and communication technology law</em> (<ins>hereinafter,</ins> IT law <del>for short</del>) of the European Union <del>is a special field that includes</del><ins>constitutes a distinct and evolving field</ins> <del>the</del> of legal regulations. <ins>It encompasses the framework of</ins><del>n</del> the "digital single market"<sup>2</sup> in "digital Europe",<sup>3</sup> including global`
+        },
+        {
+          type: "paragraph",
+          role: "footnote",
+          text: `<sup>2</sup> The term "digital single market" was first used in the "Monti Report" (Commission Communication COM (2010) 608, 27.10.2010, p. 11).`
+        },
+        {
+          type: "paragraph",
+          role: "footnote",
+          text: `<sup>3</sup> Regulation (EU) 2021/694 of 29.4.2021 establishing the Digital Europe Programme, OJ L 166, 11.5.2021, p. 1.`
+        }
       ],
-      figure: "legal",
       comments: [
-        { label: "CP1", note: "Second-level headings in APA 7 are flush left, bold, and in title case." },
-        { label: "CP2", note: "Please check the value here. If 638 is a 10% increase, the original value should be 580, not 73." },
-        { label: "CP4", note: "Acronyms should be introduced with the expanded form at their first use." }
+        { label: "LAW1", note: "Clarified the definition of IT law while retaining the visible references to the digital single market and Digital Europe.", anchor: 0 },
+        { label: "LAW2", note: "Preserved the visible legal footnotes and their source details.", anchor: 1 }
       ]
     },
     {
-      eyebrow: "Page 2 of 4 - Statutory background",
-      heading: "False Claims Act context",
-      variant: "legal",
-      body: [
-        `In 2007, Congress added section 1909 to the Social Security Act <del>'to create[] a financial incentive for States to enact legislation...'</del><ins>"to create[] a financial incentive for States to enact legislation..."</ins> (Publication of OIG's Guidelines for Evaluating State False Claims Acts, 2006).`,
-        `For states with a qualifying FCA, section 1909 provides that the state's share in any recovery <del>would will grow by 10ten percentage points</del><ins>will grow by ten percentage points</ins>.`,
-        `In 2009, Attorney General Eric Holder and Health and Human Services Secretary Kathleen Sebelius announced the creation of the <del>Health Care Fraud Prevention Enforcement Action Team (HEAT) HEAT</del><ins>Health Care Fraud Prevention Enforcement Action Team (HEAT)</ins> to prevent fraud in federal health care programmes and strengthen local, state, and federal partnering.`,
-        `In 2011, the Senate passed the <del>Ssmall Bbusiness Ccontracting Ffraud Pprevention Aact</del><ins>Small Business Contracting Fraud Prevention Act</ins>, which increased penalties for misrepresenting small business status.`
+      eyebrow: "Page 2 of 3 - Scope and theoretical prerequisites",
+      heading: "Information technology law",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `references. In terms of content, <ins>IT law</ins> <del>it is about the recording of</del> addresses <ins>new</ins> the emergence <ins>and regulations of</ins>`
+        },
+        {
+          type: "paragraph",
+          role: "list",
+          text: `<mark>Market structures, <del>new services, and new market behaviours</del> due to digital transformation;</mark>`
+        },
+        {
+          type: "paragraph",
+          role: "list",
+          text: `<mark><del>In order to enable f</del>Fair competition, protection, through framework regulations <ins>that guide the data economy, including:</ins></mark>`
+        },
+        { type: "paragraph", role: "sublist", text: "Rights of disposal over data," },
+        { type: "paragraph", role: "sublist", text: "Rights of access to data," },
+        { type: "paragraph", role: "sublist", text: "Control of dangerous algorithms," },
+        { type: "paragraph", role: "sublist", text: "Protection of personal data that aligns with the Union law;" },
+        {
+          type: "paragraph",
+          role: "list",
+          text: "Technical prerequisites of digital communication, such as:"
+        },
+        { type: "paragraph", role: "sublist", text: "Standardisation," },
+        { type: "paragraph", role: "sublist", text: "Frequency regulation," },
+        { type: "paragraph", role: "sublist", text: "Data security," },
+        { type: "paragraph", role: "sublist", text: "Electronic identification systems;" },
+        {
+          type: "paragraph",
+          role: "list",
+          text: "Means of communication, including devices, networks, and platforms;"
+        },
+        {
+          type: "paragraph",
+          role: "list",
+          text: "Forms of communications, such as electronic contracts, electronic auctions, and social networks;"
+        },
+        {
+          type: "paragraph",
+          role: "list",
+          text: "<mark>Regulation of communication contents, particularly fake news and hate speech.</mark>"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>are required on the data economy (power of disposal over data; power of access to data; control of dangerous algorithms; data protection (protection of personal data); the technical prerequisites of digital communication (standardisation; frequency regulation; data security; electronic identifications; the means of communication (devices; networks; platforms); the forms of communication (electronic contracts; electronic auctions; social networks) as well as on how to deal with certain communication contents ("fake news", hate speech).</del>`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<mark>The norms <del>for</del><ins>that govern</ins> IT law in the EU <del>would have to be provided by</del><ins>must be based on</ins> a theory that <del>not goes beyond only transferring</del> economic market theories <del>concepts into IT law</del><ins>in the digital sphere</ins>, <del>but also includes the</del><ins>Such a theory should also integrate</ins> immaterial values <del>for to</del> establish a just information order. Presently, no <del>s</del>Such a theory is not yet in sight<ins>exists</ins>, but However, <del>it can best be expected to emerge from a comprehensive broadly understood discipline of legal informatics, insofar as one defines the latter</del><ins>which could be described as a science of the prerequisites, applications, and consequences of information technology for law.</ins><sup>4</sup></mark>`
+        }
       ],
       comments: [
-        { label: "CP5", note: "APA uses double quotation marks; single quotation marks are reserved for quotes within quotes." },
-        { label: "CP6", note: "Acronyms and abbreviations should be defined in full at first use." },
-        { label: "CP7", note: "In line with UK English conventions, I removed the serial comma where needed." }
+        { label: "LAW3", note: "Converted the dense scope sentence into a clearer list while preserving the visible nested legal categories.", anchor: 1 },
+        { label: "LAW4", note: "Kept the highlighted theoretical discussion and clarified the relationship between EU IT law and legal informatics.", anchor: 15 }
       ]
     },
     {
-      eyebrow: "Page 3 of 4 - Industry concerns",
-      heading: "Policy concerns",
-      variant: "legal",
-      body: [
-        `As things <del>presently standAt present</del><ins>currently stand</ins>, contractors, businesses, and individuals reimbursed by third parties with government money are all <del>on the hook</del><ins>liable</ins> for costs, regardless of whether they intended the government to rely on the statement in making payment.`,
-        `The American Hospital Association (AHA) <del>appropriate described</del><ins>appropriately described</ins> the tense situation when it expressed concerns "that aggressive FCA investigations are being initiated upon the discovery of evidence of a mistake or overutilization..." (AHA, 2011).`,
-        `The health care industry is not the only target, as federal prosecutors have expanded FCA investigations and prosecutions to include <del>defence</del><ins>defense</ins>, financial services, and other industries (DOJ, 2013).`,
-        `Congress should further revise the FCA to define "false" and "fraudulent" and thereby clarify the boundaries of implied false certification theory.`
+      eyebrow: "Page 3 of 3 - Theoretical discussion continued",
+      heading: "Information technology law",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<mark>With regard to the theoretical prerequisites for the evaluation of information technology for law, it is necessary to clarify which values are to be <del>realised</del>, which properties, objects, and functions information <del>has</del><ins>possesses</ins>, and which elementary legal categories can be <del>considered</del><ins>serve</ins> as connecting factors for legal provisions. From a sociological perspective, information can be described as the power to choose alternatives ("selection power"). This <del>power to choose alternatives is</del> based on the fact that information as models for <del>segmenting</del> of the world (institutions; <del>organisations</del>; persons; areas of life; procedures; subsystems) can be <del>utilized</del><ins>utilised</ins> for certain purposes. Lack of access to information prevents participation; imperfect information <del>leads to</del><ins>creates</ins> uncertainties and risks; and asymmetric information distribution <del>causes</del><ins>results in</ins> unequal bargaining power. A just information order <del>would have to</del><ins>must therefore</ins> contribute to structuring and evaluating the knowledge about the interrelationships between electronic communication networks, services, products, processes and the rights of disposal to and use of information.</mark>`
+        },
+        {
+          type: "paragraph",
+          role: "footnote",
+          text: `<sup>4</sup> Kilian, Why legal informatics? CR 2001, P. 132.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<mark>The digital recording of language, music, images, <del>behaviour</del>, conditions or production processes creates hierarchies of data that can basically be used for many purposes under the conditions of electronic data processing. If these data are stored, selected, combined, processed and evaluated for specific purposes by programmes, economically usable information and new business models can arise from them. Since the potential uses for data are not predictable, but can be used <del>innovatively</del> by artificial intelligence <del>programmes</del>, the question arises as to whether data should in principle be freely accessible or what property-like ("proprietary") rights should be <del>recognised</del>.</mark>`
+        }
       ],
       comments: [
-        { label: "CP8", note: "In APA, quotes of 40 words or more are formatted as block quotations." },
-        { label: "CP9", note: "Search for defined terms to ensure acronyms are consistently applied throughout the paper." },
-        { label: "CP10", note: "Cases in APA style use Bluebook format: case name, year, and page number." }
-      ]
-    },
-    {
-      eyebrow: "Page 4 of 4 - Implied certification",
-      heading: "Scaling Back Implied False Certification Theory",
-      variant: "legal",
-      body: [
-        `<ins>B. Scaling Back Implied False Certification Theory</ins> On <del>2 May 2012, six6</del><ins>2 May 2012, six</ins> members of the Senate Finance Committee published an open letter to the health care community asking for fresh perspectives and overlooked solutions.`,
-        `The AHA responded with several recommendations but cautioned that <del>mistakes are made by hospital staff...</del><ins>mistakes by hospital staff, CMS, and program contractors are not fraud</ins> (American Hospital Association, 2011).`,
-        `Rather than face an adverse jury verdict, defendants may be forced to settle FCA claims because of treble damages, civil penalties, attorney fees, and potential debarment or suspension.`,
-        `The First Circuit's construction of the FCA in Hutcheson permits a relator to claim FCA violations for alleged failure to comply with a contract provision even when that provision is not an express condition of payment.`
-      ],
-      comments: [
-        { label: "CP11", note: "In APA, numbers under ten are written as words unless an exception applies." },
-        { label: "CP12", note: "The page number of this quotation is needed." },
-        { label: "CP14", note: "Please include the full case name here; there were not enough details for me to supply it confidently." }
+        { label: "LAW5", note: "Preserved the highlighted theoretical passage and retained the visible edits to terminology and legal-concept wording.", anchor: 0 },
+        { label: "LAW6", note: "Kept the final highlighted paragraph exactly within the visible stopping point of the screenshots.", anchor: 2 }
       ]
     }
   ];
@@ -1105,7 +1234,7 @@ function createApaReferencePages(): WorkExamplePage[] {
 
 function createReferencePages(seed: ExampleSeed): WorkExamplePage[] {
   if (seed.key === "mla") return createMlaReferencePages(seed);
-  if (seed.key === "chicago") return createChicagoReferencePages(seed);
+  if (seed.key === "formatting") return createFormattingExamplePages(seed);
   if (seed.key === "oscola") return createOscolaReferencePages(seed);
 
   return [
@@ -1179,6 +1308,53 @@ function createReferencePages(seed: ExampleSeed): WorkExamplePage[] {
   ];
 }
 
+function createFormattingExamplePages(seed: ExampleSeed): WorkExamplePage[] {
+  const allBlocks: WorkExampleBlock[] = [
+    { type: "paragraph", role: "title", text: seed.documentTitle },
+    ...formattingExampleBody.map((text): WorkExampleBlock => ({ type: "paragraph", role: "body", text })),
+    { type: "paragraph", role: "heading", text: "Footnotes" },
+    ...formattingExampleFootnotes.map((footnote): WorkExampleBlock => ({
+      type: "paragraph",
+      role: "footnote",
+      text: `<sup>${footnote.n}</sup> ${footnote.text}`
+    }))
+  ];
+
+  const pageBlocks: WorkExampleBlock[][] = [];
+  let current: WorkExampleBlock[] = [];
+  let currentSize = 0;
+
+  allBlocks.forEach((block, index) => {
+    const textSize = block.type === "paragraph" ? block.text.replace(/<[^>]+>/g, "").length : 500;
+    const limit = pageBlocks.length === 0 ? 4300 : 5000;
+
+    if (current.length > 0 && currentSize + textSize > limit && index > 1) {
+      pageBlocks.push(current);
+      current = [];
+      currentSize = 0;
+    }
+
+    current.push(block);
+    currentSize += textSize;
+  });
+
+  if (current.length > 0) pageBlocks.push(current);
+
+  return pageBlocks.map((blocks, index) => ({
+    eyebrow: `Page ${index + 1} of ${pageBlocks.length} - Formatting example`,
+    heading: index === 0 ? seed.documentTitle : "From Fetish to Totality",
+    variant: "humanities",
+    body: [],
+    blocks,
+    comments: index === 0
+      ? [
+          { label: "FMT1", note: "Full document preview generated from the uploaded formatted DOCX, preserving paragraph order and footnote references.", anchor: 0 },
+          { label: "FMT2", note: "Edited footnotes retain Word insertions and deletions as visible tracked changes.", anchor: Math.max(1, blocks.length - 1) }
+        ]
+      : []
+  }));
+}
+
 function createMlaReferencePages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
@@ -1213,47 +1389,6 @@ function createMlaReferencePages(seed: ExampleSeed): WorkExamplePage[] {
         { label: "A6", note: "Please clarify whether Calcutta Mechanics Institute and School of Arts is the author or the article title." },
         { label: "A9", note: "When an author appears more than once, MLA replaces the name with three hyphens in subsequent entries." },
         { label: "A14", note: "Provide the access date for this online journal article." }
-      ]
-    }
-  ];
-}
-
-function createChicagoReferencePages(seed: ExampleSeed): WorkExamplePage[] {
-  return [
-    {
-      eyebrow: "Page 1 of 5 - Chicago bibliography",
-      heading: "Bibliography",
-      variant: "references",
-      body: [
-        `<ins>Bibliography</ins>`,
-        `Bonefeld, Werner. <del>(. 2014). Critical Theory and the Critique of Political Economy,. London: Bloomsbury.</del><ins>2014. Critical Theory and the Critique of Political Economy. London: Bloomsbury.</ins>`,
-        `Clarke, Simon. <del>(1991). The State Debate. Basingstoke: Palgrave Macmillan.</del><ins>1991. The State Debate. Basingstoke: Palgrave Macmillan.</ins>`,
-        `Fuchs, Christian. 2010. "Grounding Critical Communication Studies: An Inquiry into the Communication Theory of Karl Marx." <del>Journal Title [volume number] ([issue number]): [page range].</del>`,
-        `Fuchs, Christian. 2011. <ins>Foundations of Critical Media and Information Studies</ins>. New York: Routledge.`,
-        `Fuchs, Christian. 2012. "New Marxian Times. Reflections on the 4th ICTs and Society Conference 'Critique, Democracy and [finish title].'" <del>Journal Title [volume number] ([issue number]): [page range].</del>`
-      ],
-      comments: [
-        { label: "A1", note: "Your references have been alphabetized by last name." },
-        { label: "A2", note: "Author names should be written out in full." },
-        { label: "A3", note: "This reference is incomplete. Wherever information is missing, I provided placeholders; please replace accordingly." },
-        { label: "A4", note: "For journal article references, please add the DOI at the end of the reference if possible." }
-      ]
-    },
-    {
-      eyebrow: "Page 2 of 5 - Footnote consistency",
-      heading: "Chicago reference cleanup",
-      variant: "references",
-      body: [
-        `Marx, Karl. <del>(1996). Capital Volume. Vol. 1. Marx and Engels Collected Works, Vol. 35.. London: Lawrence and</del><ins>1996. Capital. Vol. 35 of Marx and Engels Collected Works. London: [publisher].</ins>`,
-        `Neary, Mike, and Joss Winn. 2016. "<del>Against academic identity.Academic Identity.</del><ins>Against Academic Identity.</ins>" Higher Education Research and [finish journal title] [volume number] ([issue number]): [page range].`,
-        `<del>of Capitalist Work, Ashgate Publishing Company..</del>`,
-        `Sterne, Jonathan. 2006. "Thinking the Internet: Cultural Studies Versus the Millennium." In <ins>Cybercultures: Critical Concepts in Media and Cultural Studies</ins>, vol. 2, edited by David Bell, 80-106. New York: Routledge.`
-      ],
-      comments: [
-        { label: "A6", note: "If you used volume 35 of a multivolume work, the format should follow the edited example." },
-        { label: "A7", note: "This reference is incomplete and the journal title is not complete." },
-        { label: "A8", note: "This is a fragment of a reference. Please complete it as a book reference or delete it." },
-        { label: "A15", note: "Arabic numerals are always used for volume numbers in Chicago-style reference lists." }
       ]
     }
   ];
@@ -1381,28 +1516,90 @@ function createResumePages(seed: ExampleSeed): WorkExamplePage[] {
 function createEconomicsPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Literature review clarity",
-      heading: "Review of the existing literature",
-      body: [
-        `This chapter <del>aims at reviewing the existing previous</del> <ins>reviews the previous</ins> literature that has <del>already focused on uncovering</del> <ins>focused on</ins> the link between a firm’s dividend policy and its share prices.`,
-        `Since this topic <del>is a long-time debate</del> <ins>has long been debated</ins>, a large body of literature has been produced.`
+      eyebrow: "Page 1 of 3 - Abstract and introduction",
+      heading: seed.documentTitle,
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "Bitcoin’s Crossroads: Challenges and Opportunities in Future Societal Adoption"
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "ABSTRACT"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This study explores the dynamic challenges and opportunities shaping <ins>the role of</ins> Bitcoin<del>'s role</del> as a potential mainstream currency in the evolving digital economy. <del>Amidst technological advancements and the increasing prominence of virtual currencies, t</del><ins>T</ins>his research delves <del>into</del><ins>examines how</ins> <ins>Bitcoin's acceptance and future adoption are affected by</ins> price volatility, security protocols, deflationary nature, and <del>unstandardised</del> regulations <del>impact</del><ins>amidst the increasing prominence of virtual currencies and technological advancements</ins>. <del>Bitcoin's acceptance and future adoption.</del> <del>Employing</del><ins>Using</ins> robust regression analysis and the Autoregressive Distributed Lag (ARDL) approach, <del>the</del><ins>this</ins> paper critically analyses data from 2011 to 2023 across three periods: the pre-pandemic, pandemic, and post-pandemic <del>timeframes</del>. The findings reveal a strong and positive <del>association between</del><ins>impact of</ins> Bitcoin's deflationary nature <del>and on</del> its future adoption, while price volatility and security incidents <del>exhibit have a weak</del> and negative and <del>negligible impacts, respectively</del>. The <del>unstandardised</del> regulation <del>establishes</del><ins>exhibits</ins> a mixed impact on <del>the future</del> adoption, contingent on the global events. The study underscores the need for clear, consistent, <del>harmonised</del> regulatory frameworks to support cryptocurrency growth, enhance market stability, and promote acceptance. <del>This Moreover, study it</del> navigates through <del>Bitcoin's</del> the challenges of Bitcoin, <del>toward</del> envisioning a stable and accepted digital currency landscape; <ins>and</ins> offering valuable insights for policymakers, investors, and the cryptocurrency community.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "<strong>Keywords:</strong> Bitcoin Adoption; Price Volatility; Security; Deflation; Regulatory Framework."
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "1. INTRODUCTION"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `In the wake of unprecedented technological advancement, the Internet of Things (IoT) has become instrumental in reshaping connections and transactions (B. Lee & Lee, 2017), serving as the backbone for a new era where virtual currencies are challenging the long-established dominance of traditional fiat money (Fernandes, 2022). This paradigm shift is driven by a global consensus <del>on the need</del> for more efficient, transparent, and unrestricted financial mechanisms. As <ins>noted by</ins> D'Alfonso et al. (2016) <del>noted</del>, virtual currencies <del>promise offer</del> enhanced portability and accessibility, enabling users to <ins>seamlessly</ins> manage daily transactions <del>seamlessly</del> through E-wallets, moving away from conventional <del>perceptions</del><ins>forms</ins> of money such as paper cash and cards.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `The transformation <ins>redefines the concept</ins> <del>extends to the very essence</del> of what is considered valuable currency. Traditional fiat currencies, including like the US dollar, British pound sterling (GBP), and Euro (EUR), now face significant risks of <del>obsolescence</del><ins>becoming obsolete</ins> in the face of the virtual currency revolution (Seetharaman et al., 2017). These currencies are <del>intrinsically tied</del><ins>closely linked</ins> to the economic health and policies of their respective issuing countries' <del>economic health and policies</del>, making them susceptible to financial crises resulting from poor fiscal decisions, inappropriate monetary policies, or unstable economies (Mirzayi et al., 2017). The global financial crisis of 2008, triggered by the collapse of the housing market`
+        }
       ],
-      figure: "chart",
       comments: [
-        { label: "E1", note: "Avoided combining two verbs where one suffices; 'reviews' is easier to parse than 'aims at reviewing'." },
-        { label: "E2", note: "Simplified the phrasing to provide a more formal academic tone." }
+        { label: "EC1", note: "Reframed the abstract opening so Bitcoin's role and future adoption are stated more clearly.", anchor: 2 },
+        { label: "EC2", note: "Moved the technology/adoption context into a clearer sequence and tightened repeated phrasing.", anchor: 2 },
+        { label: "EC3", note: "Clarified the shift from fiat currency to virtual currency without extending beyond the visible source.", anchor: 6 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Sentence restructuring",
-      heading: "Academic precision",
-      body: [
-        `Therefore, the goal of this section is <del>obviously</del> not to carry out an exhaustive inventory of the existing documentation, but rather to select a sample of the most relevant <del>and best publications</del> <ins>publications</ins>.`,
-        `This helps provide the reader an insight <del>on what has been unearthed on the</del> <ins>into the</ins> influence that dividend announcements have on share prices.`
+      eyebrow: "Page 2 of 3 - Introduction continued",
+      heading: "1. INTRODUCTION",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>Despite</del><ins>The rise of Bitcoin's</ins><del>rise</del> to prominence has been <del>as</del> a disruptive force against traditional financial institutions; <ins>However,</ins> its journey has been <del>marred</del><ins>characterised by several</ins> challenges, including security breaches and its use in illicit activities. Literature highlights the security vulnerabilities inherent in Bitcoin's infrastructure, making it a prime target for cybercriminals (Sharma, 2017). Furthermore, the encrypted nature of Bitcoin transactions poses significant challenges in tracking illicit activities, contributing to <del>its</del> the volatility and <ins>the</ins> skepticism surrounding its long-term viability as a currency. <del>Given that the</del><ins>The vulnerability of</ins> Bitcoin's price <del>was vulnerable</del> to excessive boom-and-bust events, <del>that</del> signifying <del>the</del> a repetitive bubble-crash effect, <del>submerging the Bitcoin price, this has given rise</del><ins>raises</ins> to <ins>the</ins> concerns <ins>about its future</ins><del>of Bitcoin's future</del>, as the exorbitant return and risk levels might lead <del>the Bitcoin</del> to participants <del>to be</del> withdrawing from the market. <del>On top of that</del><ins>Additionally</ins>, the fixed supply of <del>several</del> bitcoins capped at 21 million has <del>trigger</del><ins>triggered</ins> concerns <del>on</del><ins>about</ins> whether <del>the</del> Bitcoin can <del>keep</del><ins>maintain</ins> its value in the long term and whether <del>the</del> holders <del>of it</del> will hold onto it or sell it <del>out at some point in time</del>, causing <ins>its</ins> demand to decline (Baur et al., 2018; Douma, 2016; Fry & Cheah, 2016). Issues related to security (Moore & Christin, 2013), legality (Nour & Hamuda, 2023), regulation (Seetharaman, et al., 2017), deflationary potential (Cawrey, 2013; Xie et al., 2019), and volatility (Costantini et al., 2023; Urquhart, 2016) have also been critically assessed. Despite these concerns, <del>scholars'</del> research <ins>has suggested</ins> that`
+        }
       ],
       comments: [
-        { label: "E3", note: "Removed colloquial terms like 'obviously' to maintain objective analysis." },
-        { label: "E4", note: "Corrected preposition usage ('into' instead of 'on') for standard English flow." }
+        { label: "EC4", note: "Separated the contrast between Bitcoin's rise and the security/volatility challenges that follow.", anchor: 0 },
+        { label: "EC5", note: "Refined market-risk wording while preserving the visible citations and argument flow.", anchor: 0 }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 3 - Introduction continued",
+      heading: "1. INTRODUCTION",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>the challenges facing</del> Bitcoin's <ins>challenges</ins> might <del>also be attributed</del><ins>have positive attributes</ins> (Fauzi et al., 2020; Hays, 2016; Sharma, 2017; Ying et al., 2018).`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This study <del>aims to</del> investigates the inefficiencies and challenges of Bitcoin; <del>aiming to understand how these factors may influence its future</del> acceptance and <ins>future</ins> adoption within society. Specifically, it critically evaluates the multifaceted challenges associated with Bitcoin, such as its price volatility, security protocols, deflationary nature, and <del>unstandardised</del> regulation. By exploring these dimensions, the research intends to illuminate the potential impacts of these challenges <del>on Bitcoin's broader societal adoption</del><ins>of adopting Bitcoin</ins> as a cryptocurrency, thereby offering insights into the factors that could determine Bitcoin's future role and acceptance in the financial ecosystem. <del>The motivation behind t</del>This study <ins>emerges from</ins><del>the is motivated by</del> the significant discrepancies observed between the findings of existing empirical research <del>concerning both</del><ins>regarding</ins> the theoretical and practical dimensions of cryptocurrencies. <del>Furthermore Additionally, while various studies have endeavored to identify the key factors influencing Bitcoin's adoption and utility</del><ins>this study is motivated by</ins>, <del>there is a</del> the lack of research specifically addressing the specific challenges associated with Bitcoin that are of critical concern to users and investors alike. <ins>Previous studies have explored the factors influencing Bitcoin's adoption and utility</ins> <del>while</del><ins>with</ins> some <del>scholars deem it primary</del> favouring adoption <del>positively, others classify it as unfavorable, as mentioned above</del><ins>while others do not</ins>.`
+        }
+      ],
+      comments: [
+        { label: "EC6", note: "Kept the visible bridge sentence and converted the correction into an inserted phrase rather than a deletion.", anchor: 0 },
+        { label: "EC7", note: "Tightened the study-purpose paragraph and stopped at the same point shown in the screenshot.", anchor: 1 }
       ]
     }
   ];
@@ -1411,28 +1608,69 @@ function createEconomicsPages(seed: ExampleSeed): WorkExamplePage[] {
 function createMarketingPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Brand positioning",
-      heading: "Music and price-quality positioning",
-      body: [
-        `Oakes (2000) argued that music <del>picks</del> <ins>choices</ins> <del>can be utilised</del> <ins>could be used</ins> to position a service <del>in the mind of consumers as being of a best</del> <ins>as having the highest possible quality</ins>.`,
-        `According to Oakes (2000, p. 545), "Customers' monetary valuation of a service may subsequently be influenced by the style of music played."`
+      eyebrow: "Page 1 of 2 - Customer experience",
+      heading: seed.documentTitle,
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "What makes the best better?"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This book <del>started</del><ins>began</ins> with a wonder and curiosity: <ins>why are some companies consistently able to deliver great customer experiences, while others struggle? about the difference in the ability to create consistently good customer experiences.</ins> Over the years, <del>w</del><ins>W</ins>e have all worked <del>with</del><ins>on</ins> developing new business strategies and <ins>strengthening</ins> customer focus <del>for several years. By the same token</del><ins>With equal interest</ins>, we have <del>with interest followed observed how almost</del> nearly all major companies <del>say that they want to be really</del><ins>declare on their websites, vision statements, and banners</ins> <del>good at dealing with</del><ins>that</ins> customers are their top priority. <del>On websites, in visions, on banners, etc., it can be read how the customers are the most important thing for the companies.</del> These are all meaningful and relevant objectives, <del>as</del><ins>After all, for the vast majority of companies, the retention of existing customers is</ins> the <ins>single</ins> most important source of future revenue <del>for the vast majority of companies is the retention of existing customers.</del>`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>The surprise arose when, a</del>At one point, we <ins>decided to investigated</ins> the state of play in terms of the success rate in achieving these objectives. Across a wide range of industries, <del>we found that typically only a few</del><ins>only a handful of</ins> companies <del>within the sectors</del> actually <ins>succeed in</ins><del>truly managed to</del> getting customers to say that they <del>were really</del><ins>are genuinely</ins> happy to be their customers. For the vast majority of companies, customer satisfaction was average, which <del>and in</del> sharply contrasts with <del>to</del> the visions and <del>objectives</del><ins>promises stated by the companies displayed on websites, in mission statements, and on banners. This gap between aspiration and reality raises the central question in this book</ins><del>So, we asked ourselves the question</del>: What explains this difference? Or, in other words: What makes the best better?`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>An</del><ins>This story</ins> explicitly explains <del>story unfolds</del> the question. A few years ago, Christian <del>was driving</del><ins>drove</ins> a car <del>produced by</del><ins>from</ins> a well-known American brand. When he <del>came by</del><ins>arrived at</ins> the dealership for his <del>yearly</del><ins>annual</ins> service, <ins>he was greeted by</ins> large banners <del>with the text</del><ins>proclaiming</ins> "We want completely`
+        }
       ],
-      figure: "chart",
       comments: [
-        { label: "M1", note: "Changed 'picks' to 'choices' and 'utilised' to 'used' for academic precision." },
-        { label: "M2", note: "Restructured the sentence to improve clarity and remove redundancy." }
+        { label: "BM1", note: "Recast the opening question so the customer-experience problem is clear from the first paragraph.", anchor: 1 },
+        { label: "BM2", note: "Condensed repeated website/banner wording while preserving the business argument.", anchor: 1 },
+        { label: "BM3", note: "Clarified the transition from company aspirations to measured customer satisfaction.", anchor: 2 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Literature integration",
-      heading: "Synthesis of previous findings",
-      body: [
-        `This <del>thought</del> <ins>notion</ins> is strongly supported in the <del>writings</del> <ins>literature</ins>. For example, Areni and Kim (1993) measured the <del>affect</del> <ins>effect</ins> of playing pop music versus classical music in stores selling alcoholic beverages.`,
-        `They <del>see</del> <ins>noted</ins> that <del>moneys</del> <ins>income</ins> increased and customers <del>buy</del> <ins>bought</ins> more expensive wines when classical music was played.`
+      eyebrow: "Page 2 of 2 - Economic effects",
+      heading: "The economic effects of happy customers",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `satisfied customers"; <del>, and</del><ins>The same ambitious message was proclaimed at</ins><del>on</del> the counter <del>this ambitious message was repeated along with a picture of a big smiley face. The interesting part about this message is, that if you look at the annual survey of customer satisfaction in the car industry, you will see that</del><ins>But the reality is that</ins> year after year, this brand <ins>scores only</ins> average on the annual customer satisfaction <ins>survey</ins><del>score</del>. <del>Conversely</del><ins>In contrast, the survey</ins> shows that for more than 20 consecutive years, Toyota has <ins>been</ins> ranked number one (<del>and typically well</del><ins>far</ins> ahead <del>number two</del><ins>of the runner-up</ins>) <ins>in</ins> customer satisfaction <ins>in</ins> <del>at the</del> dealership and repair shops. <del>Again - and now more specifically</del><ins>So, we asked the question</ins>: What does Toyota do differently? What do the best do better in the car industry? The answer to this - and for other industries - is the focus of the book.`
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "The economic effects of happy customers"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This book<del>s</del> primarily highlights why some <del>customers'</del><ins>customer</ins> experiences are so successful, <del>that they speak therefore, positively about a specific</del><ins>portraying a</ins> company <ins>within a particular industry.</ins> <del>The reason. w</del><ins>W</ins>e dedicated <del>an entire</del> this book to <ins>customer experience</ins><del>this is that</del><ins>because</ins> for most business models, a successful customer experience is the most important <del>source of foundation for running a</del> successful businesses.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `Our interest in customer experience is closely linked to the fact that, for most companies, good customer experiences <del>is</del> are the <del>strongest</del><ins>best</ins> indicator of future sales and profitability. <del>If When customers are successful succeed in working together with your business, then you know that they will be</del> remain loyal (re-sales), <del>that they will meet return to future you when</del> new needs <del>with you</del> arise (up-selling/cross-selling), and <del>that they will</del> often recommend you and your business to their network (new sales)<del>.</del><ins>In essence, this book is about how to create better customer experiences that not only drive loyalty but also inspire recommendations of your company and products to others.</ins><del>Hence, the book is about how you succeed in creating better customer and recommendations of the company/products to others.</del>`
+        }
       ],
       comments: [
-        { label: "M3", note: "Replaced informal words ('thought', 'writings', 'see') with academic terminology." },
-        { label: "M4", note: "Corrected the commonly confused words 'affect' and 'effect'." }
+        { label: "BM4", note: "Connected the car-service example to the measurable customer-satisfaction comparison.", anchor: 0 },
+        { label: "BM5", note: "Preserved the section heading and refined the opening economic claim.", anchor: 2 },
+        { label: "BM6", note: "Clarified the link between customer experience, loyalty, repeat sales, and recommendations.", anchor: 3 }
       ]
     }
   ];
@@ -1468,31 +1706,50 @@ function createNursingPages(seed: ExampleSeed): WorkExamplePage[] {
   ];
 }
 
-function createPharmaceuticalsPages(seed: ExampleSeed): WorkExamplePage[] {
+function createGeochemistryPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Mechanism of injury",
-      heading: "Acetaminophen Overdose-induced Liver Injury",
-      body: [
-        `Acetaminophen (APAP) is a widely used analgesic and antipyretic drug. <del>that While is safe at in therapeutic doses. , However, when administered overdose,</del> <ins>While safe in therapeutic doses, however,</ins> overdoses of APAP can cause liver damage in humans and mice.`,
-        `Despite extensive research <del>for over several decades</del>, the underlying molecular mechanisms of hepatocyte injury are still not fully understood.`
+      eyebrow: "Page 1 of 2 - Abstract",
+      heading: seed.documentTitle,
+      variant: "science",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<strong>Abstract:</strong><sup>[1]</sup> <del>In order t</del>To <del>test</del><ins>evaluate</ins> the potentiality of soil <del>CO2</del><ins>CO<sub>2</sub></ins> diffuse degassing measurements <del>for in the studying</del><ins>for the study</ins> of underground mass and heat transfer in geothermal systems, detailed surveys were <del>performed</del><ins>conducted</ins> at Latera caldera. <del>This site which</del><ins>This site provides</ins> an excellent test site, <del>because of</del><ins>due to</ins> the abundant available subsurface data. Over 2500 measurements of soil <ins>CO<sub>2</sub></ins><del>CO2</del> flux revealed that endogenous <ins>CO<sub>2</sub></ins><del>CO2</del> at Latera caldera concentrates on a NE-SW band coinciding with a structural high of fractured Mesozoic limestones hosting a water-dominated, high-enthalpy geothermal reservoir. The total hydrothermal <ins>CO<sub>2</sub></ins><del>CO2</del> degassing from the structural high <del>has been evaluated</del><ins>was estimated</ins> at 350 t d<sup>-1</sup> <del>d1 from</del><ins>across</ins> an area of 3.1 km<sup>2</sup>. <del>It has been estimated that such a CO2</del><ins>This</ins> release <del>would imply</del><ins>corresponds to</ins> a geothermal liquid flux of 263 kg s<sup>-1</sup>, <del>with</del><ins>and</ins> a heat <del>release</del><ins>output</ins> of 239 MW. The chemical and isotopic composition of the gas indicates a <del>provenance from the</del> geothermal reservoir <ins>origin, with</ins> <del>and that CO2</del><ins>CO<sub>2</sub></ins> is partly <del>originated</del><ins>derived from</ins> <del>by</del> thermal metamorphic decarbonation in the <del>hottest</del> deepest, hottest parts of the system and partly <del>has</del><ins>from</ins> a likely mantle origin. The ratios of <ins>CO<sub>2</sub></ins><del>CO2</del>, H<sub>2</sub>, CH<sub>4</sub>, and CO to Ar were used to estimate the reservoir <del>T-P conditions of the reservoir. Results</del> clustering at Temperature of 200-300C and Partial pressure of <ins>CO<sub>2</sub></ins><del>PCO2</del> 100-200 bars, <del>close to</del><ins>consistent with</ins> the actual well measurements. <ins>These findings demonstrate that soil CO<sub>2</sub> degassing surveys are an effective tool for detecting active geothermal reservoirs at depth, and that the H<sub>2</sub>-CO<sub>2</sub>-CH<sub>4</sub>-CO-Ar gas composition serves as a reliable geochemical indicator of temperature and pressure in CO<sub>2</sub>-rich geothermal systems.</ins> <del>Finally, the approach proved to be an excellent tool to investigate the presence of an active geothermal reservoir at depth and that the H2-CO2CH4-CO-Ar gas composition is a useful T-P geochemical indicator for such CO2 rich geothermal systems.</del>`
+        }
       ],
-      figure: "molecule",
       comments: [
-        { label: "P1", note: "Resolved fragmented sentence structure and improved readability." },
-        { label: "P2", note: "Removed redundant phrasing ('for over several decades')." }
+        { label: "GC1", note: "Standardised chemical notation and clarified the purpose of the diffuse-degassing survey.", anchor: 0 },
+        { label: "GC2", note: "Condensed the final abstract sentence into a clearer statement of geochemical significance.", anchor: 0 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Cellular processes",
-      heading: "Mitochondrial permeabilization",
-      body: [
-        `What has become clear is that <del>mMitochondria</del> <ins>mitochondria</ins> play a key role in both the early stages of cell injury and the subsequent propagation phase.`,
-        `Evidence <del>has been shown,shows</del> <ins>suggests</ins> that after exposure of hepatocytes to APAP in vitro or in vivo, <del>facilitates</del> mitochondria easily undergo permeabilization of the outer membrane.`
+      eyebrow: "Page 2 of 2 - Introduction",
+      heading: "Introduction",
+      variant: "science",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "<green>Introduction</green>"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>1. Introduction [2]</del> In the last decades, <del>a great interest</del><ins>significant attention</ins> has been addressed to the CO<sub>2</sub> <del>CO2</del> Earth degassing, <del>mainly for studies related to the</del><ins>not for its role</ins> global carbon <del>global</del> cycle [Allard et al., 1991; Brantley and Koepenick, 1995; Kerrick et al., 1995; Seward and Kerrick, 1996; Marty and Tolstikhin, 1998; Chiodini et al., 2000, 2004a; Kerrick, 2001] and for the monitoring of active volcanoes [Chiodini et al., 1996, 1998, 2001a, 2005; Hernandez et al., 1998; Brombach et al., 2001; Gerlach et al., 2001; Salazar et al., 2001; Frondini et al., 2004; Granieri et al., 2006]. These <del>latter studies highlighted</del><ins>showed</ins> that CO<sub>2</sub> <del>CO2</del> is <del>mostly primarily</del> released from well-defined <del>areas</del><ins>zones</ins>, recently <del>named</del><ins>termed</ins> diffuse degassing structures (DDS [Chiodini et al., 2000]), <ins>which are closely</ins> related to recent tectonic and volcanic structures. <del>Investigations of</del><ins>Research on soil</ins> CO<sub>2</sub> <del>CO2</del> degassing from geothermal areas <del>have</del><ins>has</ins> shown that <del>frequently</del> DDS are <ins>often</ins> related to the underlying geothermal systems [Chiodini et al., 1998; Bergfeld et al., 2001; Gambardella et al., 2004; Werner and Cardellini, 2006]. Chiodini et al. [2000, 2004a] <del>showed</del><ins>revealed</ins> that the Tyrrhenian side of the Italian peninsula <del>is characterized by the presence of</del><ins>hosts</ins> two large anomalies of deeply derived CO<sub>2</sub> <del>CO2</del> degassing: the Tuscan Roman Degassing Structure (<ins>TRDS</ins>) and Campanian Degassing Structure (CDS). These releasing approximately 1.4 x 10<sup>11</sup> mol/year <del>1011 mol a1</del> and 0.7 x 10<sup>11</sup> mol/year <del>1011 mol a1</del> of CO<sub>2</sub>, respectively. <ins>At the surface, this deep flux is expressed through discrete gas emissions, zones of intense soil degassing, and elevated CO<sub>2</sub> partial pressures in groundwater.</ins><del>In these areas, the CO2 flux from depth is revealed at the surface by numerous discrete gas emissions, by zones of high soil diffuse degassing and by high CO2 partial pressure (PCO2) in the groundwaters.</del> In particular, <ins>t</ins>The <ins>TRDS</ins> region is <ins>particularly also</ins> characterized by the occurrence of several occurring, exploited or exploitable, geothermal systems of high (e.g., LarderelloTravale, Monte Amiata, Latera, and Cesano), medium (e.g., Torre Alfina), and low (e.g., Viterbo) enthalpy <del>are present</del>. Chiodini et al. [1995] highlighted <del>the a strict correspondence</del><ins>strong correlation</ins> within <ins>TRDS</ins> between <del>,of</del> surface CO<sub>2</sub> <del>CO2</del> anomalies <del>at the surface with</del><ins>and</ins> buried carbonate horsts that act as gas traps and represent possible geothermal reservoirs. [3] The main objective of this work is to <del>test</del><ins>evaluate the potentiality</ins> of soil CO<sub>2</sub> <del>CO2</del> diffuse degassing measurements <del>for the study of</del><ins>as a tool for investigating</ins> underground mass and heat transfer <del>and, in</del><ins>with</ins> particular <ins>focus on their application,</ins> for geothermal reservoir prospecting`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `To achieve this objective, soil CO2 flux surveys and gas sampling have been performed at Latera caldera, which is an outstanding case study area for investigating the CO2 diffuse degassing process and its relation to the tectonics and the geothermal system at depth.`
+        }
       ],
       comments: [
-        { label: "P3", note: "Corrected capitalization and punctuation errors." },
-        { label: "P4", note: "Clarified the description of cellular mechanisms to ensure precise scientific communication." }
+        { label: "GC3", note: "Preserved the green Introduction heading and corrected the carbon-cycle framing.", anchor: 0 },
+        { label: "GC4", note: "Clarified the objective paragraph while stopping at the visible screenshot endpoint.", anchor: 1 }
       ]
     }
   ];
@@ -1592,27 +1849,99 @@ function createPoliticalSciencePages(seed: ExampleSeed): WorkExamplePage[] {
 function createPsychologyPages(seed: ExampleSeed): WorkExamplePage[] {
   return [
     {
-      eyebrow: "Page 1 of 5 - Psychology",
-      heading: "Genetics and Environment in Human Behavior",
-      body: [
-        `The interplay of genetic and environmental factors in shaping human <del>behaviourbehavior</del> <ins>behavior</ins> and mental health <del>staysremains</del> <ins>remains</ins> a <del>centralpivotal</del> <ins>pivotal</ins> question in psychological research.`,
-        `This paper <del>givesprovides</del> <ins>provides</ins> a comprehensive overview of the <del>existentexisting</del> <ins>existing</ins> literature on <del>the relative contributions of the genes and the environment focusingthis</del> <ins>this</ins> topic, with a particular focus on twin and adoption studies, epigenetics, and gene-environment interactions. The paper <del>emphasisesIt emphasizes</del> <ins>emphasizes</ins> the importance of considering both genetic <del>anand</del> <ins>and</ins> environmental factors when investigating human <del>behaviourbehavioral</del> <ins>behavioral</ins> development.`
+      eyebrow: "Page 1 of 3 - Abstract",
+      heading: seed.documentTitle,
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "Experiences with teachers in childhood and their association with wellbeing in adulthood"
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "Abstract"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `This <del>work examines</del><ins>study investigates</ins> <del>the impact of</del><ins>how</ins> meaningful experiences with teachers during childhood and adolescence <del>on</del><ins>influence the</ins> adult well-being <del>of adults</del>. <del>The d</del>Data <del>was</del><ins>were</ins> collected <del>using</del><ins>through</ins> an online survey<ins>, in which participants’</ins> <del>c</del>urrent well-being <del>of the participants</del> was assessed with measures of life satisfaction, resilience, anxiety, stress, depressiveness, and self-esteem. Participants were asked to <del>briefly write about</del><ins>describe</ins> their most meaningful experiences with teachers and to rate <del>these afterwards with regard to</del><ins>them in terms of</ins> their valence. <ins>Using qualitative methods, the experiences were categorized into several groups</ins><del>Then, these experiences were categorized into several groups using a qualitative method.</del> The results <del>showed</del><ins>revealed</ins> <del>that there was a highly significant</del><ins>a strong</ins> correlation between <del>the</del> participants’ self-esteem and the valence ratings of their <ins>teacher-related</ins> experiences. <del>Furthermore</del><ins>Moreover, the type of</ins> experience <del>category had a substantial</del><ins>significantly</ins> <del>e</del>affected <del>on individual</del> self-esteem. For <del>instance</del><ins>example, participants in</ins> the “individual promotion and support” group <del>exhibited</del><ins>reported</ins> notably higher self-esteem compared to <del>groups those that</del><ins>who recalled experiences of</ins> injustice <del>from</del><ins>with</ins> <del>their</del> teachers. Overall, <del>this study</del><ins>the findings</ins> <del>demonstrated</del><ins>highlight</ins> <del>that a relationship</del><ins>clear association</ins> <del>exists</del> between <del>the</del> adult well-being <del>of adults</del> and their experiences with teachers during childhood and adolescence.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "<strong>Keywords:</strong> Experiences with teachers, well-being, teacher-student relationship, meaningful experiences, well-being in adulthood"
+        }
       ],
       comments: [
-        { label: "CP3", note: "The overarching themes of the study are evident from this sentence." },
-        { label: "CP4", note: "The core message of this paper is clear; however, the abstract could be strengthened by incorporating a few additional details." }
+        { label: "PSY1", note: "Clarified the study aim and corrected agreement in the data-collection sentence.", anchor: 2 },
+        { label: "PSY2", note: "Condensed the results into a cleaner summary while preserving the visible self-esteem findings.", anchor: 2 }
       ]
     },
     {
-      eyebrow: "Page 2 of 5 - Methodology",
-      heading: "Twin and Adoption Studies",
-      body: [
-        `Twin and adoption studies have been instrumental in disentangling <del>geneticthe</del> <ins>the</ins> influences of genetics and environmental <del>influenceenvironment</del> <ins>environment</ins> on human <del>behaviourbehavior</del> <ins>behavior</ins> and mental health.`,
-        `Twin studies compare the concordance rates of a specific <del>traittraits</del> <ins>trait</ins> or <del>disorderdisorders</del> <ins>disorders</ins> in monozygotic (identical) and dizygotic (fraternal) twins<del>, while. In contrast,</del> <ins>. In contrast,</ins> adoption studies <del>compare theexamine</del> <ins>examine</ins> similarities between adopted children and their biological and adoptive parents (Plomin <del>etalet al.</del> <ins>et al.</ins>, 2013).`
+      eyebrow: "Page 2 of 3 - Literature review",
+      heading: seed.documentTitle,
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "title",
+          text: "Experiences with teachers in childhood and their association with wellbeing in adulthood"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `Prior studies on teacher-student <ins>relationships</ins> <del>relationship</del> and the emotions involved <del>were mainly</del><ins>have primarily</ins> focused on the <ins>teachers’ emotional</ins> <del>emotions of the teachers</del><ins>experiences</ins> (Hargreaves, 2000; Newberry & Davis, 2008; Newberry, 2010; Cowie, 2011; Yan, Evans & Harvey, 2011). These studies <del>showed</del><ins>demonstrate</ins> that <ins>students’</ins><del>student’s</del> emotions <del>have an impact on the</del><ins>can significantly influence</ins> teachers’ emotions <del>of the teachers</del> (Becker, Götz, Morger & Ranellucci, 2014). <del>Furthermore, they showed students’ emotions to be</del><ins>and are closely</ins> associated with their learning outcomes (Morcom, 2014). <ins>Building on this body of work, T</ins>he present study <del>builds on prior research and sheds light on the side of</del><ins>focuses on</ins> students’ emotional experiences <del>students’ emotions within</del><ins>in</ins> the context of their interaction with teachers, which has received little <ins>scholarly</ins> attention <del>to date</del>.`
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: `There are <del>various</del><ins>several</ins> theories <del>about</del><ins>that explain how</ins> the emotions are transferred <del>of emotions</del> between teachers and students. Hatfield et al. (1994) <del>called</del><ins>described</ins> this phenomenon as “primitive emotional contagion” (Hatfield et al., 1994), <del>p. 2)</del><ins>proposing that</ins> <del>They assume</del> this mechanism is a <del>basic</del><ins>fundamental human</ins> skill <del>belonging to every human being that helps for</del><ins>to</ins> communication <ins>and mutual</ins> understanding <del>each other</del>. Hatfield et al. (1994) proposed that two <del>persons</del><ins>individuals</ins> can synchronise their voices, <del>their way of talking</del><ins>speech patterns</ins>, <del>their</del> mimic and gestures, <del>and their</del><ins>as well as</ins> body postures. <del>This helps both interacting beings to feel</del><ins>leading to mutual empathy for each other. In this process, one person reflects the</ins> individual <del>will be reflected without actually</del>`
+        }
       ],
       comments: [
-        { label: "CP9", note: "These statements must be supported by proper citations." },
-        { label: "CP10", note: "Consider stating a few main findings, briefly, if possible." }
+        { label: "PSY3", note: "Reframed the literature gap around students' emotional experiences rather than teacher emotions alone.", anchor: 1 },
+        { label: "PSY4", note: "Preserved the emotional-contagion theory paragraph and excluded the screenshot overlay.", anchor: 2 }
+      ]
+    },
+    {
+      eyebrow: "Page 3 of 3 - Mental health",
+      heading: "Teacher-student relationship and mental health",
+      variant: "document",
+      body: [],
+      blocks: [
+        {
+          type: "paragraph",
+          role: "body",
+          text: `<del>feeling them</del><ins>without necessarily directly experiencing them, ultimately transferring emotions between the interacting individuals.</ins> <del>In the last step of this theory, emotions are transferred to the other person.</del> Becker et al. (2014) <del>showed</del><ins>demonstrated</ins> that this mechanism <del>is also at</del> works <ins>within classroom settings</ins>. Their<del>y</del> study investigated <del>how similar</del> the emotional<del>s</del> <ins>alignment</ins> of teachers and <del>their</del> students <del>are after</del><ins>during</ins> one hour of teaching. <del>It turned out that</del><ins>and found a</ins> <del>emotions were</del> significantly association<del>ed with each other</del><ins>between their emotional states. Specifically, emotions of</ins> Anger, anxiety, and happiness <ins>were found to</ins> harmonised <del>within one lesson</del><ins>during classroom interactions.</ins>`
+        },
+        {
+          type: "paragraph",
+          role: "heading",
+          text: "Teacher-student relationship and mental health"
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "Resnick et al. (1997) investigated the connection between teacher-student relationships and mental health of the students. They could show that there was a significant association between a positive and supporting teacher-student relationship and students’ mental health. Those students with a supportive bonding to a teacher committed less suicide, had less suicidal thoughts and had a lower level of stress. Furthermore, these students committed less crime and were less frequently addicted to drugs than students with a negative relationship to teachers."
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "In a Norwegian study conducted by the World Health Organization in 2003, a correlation between the general life satisfaction of students and the teacher-student relationship was shown. A total of 887 students were interviewed in the Norwegian study, which revealed that students who received special support from a teacher were significantly happier. It was also found that the stress level of these students was significantly lower (Natvig, 2003)."
+        },
+        {
+          type: "paragraph",
+          role: "body",
+          text: "The previous studies clearly show that the relationship with the teacher has a measurable influence on life satisfaction, stress perception and emotions in general."
+        }
+      ],
+      comments: [
+        { label: "PSY5", note: "Completed the visible emotional-contagion sentence without including the screenshot popup.", anchor: 0 },
+        { label: "PSY6", note: "Kept the mental-health section plain where the screenshot shows no tracked edits.", anchor: 2 }
       ]
     }
   ];
@@ -1649,8 +1978,8 @@ function createTheologyPages(seed: ExampleSeed): WorkExamplePage[] {
 
 function figureFor(key: WorkExampleKey): WorkExamplePage["figure"] {
   if (key === "biology") return "cell";
-  if (key === "chemistry" || key === "pharmaceuticals") return "molecule";
-  if (key === "electrical") return "circuit";
+  if (key === "chemistry" || key === "geochemistry") return "molecule";
+  if (key === "geological") return "chart";
   if (key === "computing") return "code";
   if (key === "nursing" || key === "life-sciences") return "clinical";
   return "chart";

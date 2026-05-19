@@ -6,10 +6,10 @@ The app uses one shared pricing engine in `lib/pricing.ts`. The frontend calcula
 
 ```text
 calculated_price = word_count * service_base_rate * turnaround_multiplier
-final_price = max(30.00, round_to_2_decimals(calculated_price))
+final_price = max(10.00, round_to_2_decimals(calculated_price))
 ```
 
-The `$30.00` floor is internal. The customer-facing UI shows only the final price.
+The `$10.00` floor is internal. The customer-facing UI shows the minimum order line when it applies.
 
 ## Service Rates
 
@@ -52,7 +52,7 @@ Documents above 50,000 words require a custom quote and cannot proceed through a
 | 3,500 words, Editing, 3 days | 3,500 * 0.030 * 1.15 | $120.75 |
 | 3,500 words, Editing, 7 days | 3,500 * 0.030 * 1.00 | $105.00 |
 | 3,500 words, Editing, 4 weeks / 28 days | 3,500 * 0.030 * 0.92 | $96.60 |
-| 2 words, Editing, 10 days | 2 * 0.030 * 1.00 = $0.06, then internal floor | $30.00 |
+| 2 words, Editing, 10 days | 2 * 0.030 * 1.00 = $0.06, then internal floor | $10.00 |
 
 ## Checkout Validation
 

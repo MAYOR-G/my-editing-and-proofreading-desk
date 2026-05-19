@@ -125,7 +125,9 @@ export default async function AdminDashboardPage() {
                 <div className="mt-8 grid gap-4 text-sm text-ivory/70">
                   {[
                     ["Client", selected.profiles?.email],
-                    ["Words", selected.word_count.toString()],
+                    ["Final word count", Number(selected.final_word_count || selected.word_count || 0).toLocaleString()],
+                    ["Detected word count", Number(selected.detected_word_count || selected.word_count || 0).toLocaleString()],
+                    ...(selected.adjusted_word_count ? [["Adjusted word count", Number(selected.adjusted_word_count).toLocaleString()]] : []),
                     ["Document type", selected.document_type || "N/A"],
                     ["Target journal", selected.target_journal || "Not provided"],
                     ["Formatting", selected.formatting_style || "N/A"],

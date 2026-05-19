@@ -83,6 +83,9 @@ export async function POST(request: Request) {
       service_type,
       turnaround,
       word_count,
+      detected_word_count,
+      adjusted_word_count,
+      final_word_count,
       file_path,
       title,
       client_notes,
@@ -155,8 +158,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeWordCount = Math.max(1, Math.round(Number(word_count) || 0));
-    const timelineValidation = isWritingSupportService(selectedServices) ? { allowed: true } : validateAutomaticPricing(safeWordCount, turnaround);
+    const detectedWordCount = Math.max(1, Math.round(Number(detected_word_count || word_count) || 0));
+    const adjustedWordCount = adjusted_word_count ? Math.max(1, Math.round(Number(adjusted_word_count) || 0)) : null;
+    const finalWordCount = Math.max(1, Math.round(Number(final_word_count || word_count) || 0));
+    const timelineValidation = isWritingSupportService(selectedServices) ? { allowed: true } : validateAutomaticPricing(finalWordCount, turnaround);
     if (!timelineValidation.allowed) {
       return NextResponse.json(
         {
@@ -169,8 +174,8 @@ export async function POST(request: Request) {
     }
 
     // ─── Calculate price SERVER-SIDE (never trust frontend) ────────
-    const priceBreakdown = calculatePrice(safeWordCount, selectedServices, turnaround);
-    const price = calculateServerPrice(safeWordCount, selectedServices, turnaround);
+    const priceBreakdown = calculatePrice(finalWordCount, selectedServices, turnaround);
+    const price = calculateServerPrice(finalWordCount, selectedServices, turnaround);
     const currency = "USD";
     const amountInCents = Math.round(price * 100);
 
@@ -209,7 +214,10 @@ export async function POST(request: Request) {
       turnaround: priceBreakdown.turnaroundLabel,
       turnaround_days: priceBreakdown.turnaroundDays,
       turnaround_hours: priceBreakdown.turnaroundDays * 24,
-      word_count: safeWordCount,
+      detected_word_count: detectedWordCount,
+      adjusted_word_count: adjustedWordCount,
+      final_word_count: finalWordCount,
+      word_count: finalWordCount,
       price,
       calculated_price: priceBreakdown.calculatedPrice,
       subtotal: priceBreakdown.subtotal,
@@ -235,10 +243,14 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (isMissingColumnError(insertError, "target_journal")) {
-      console.warn(`[${trace}] target_journal column is missing; retrying checkout without that optional field.`);
+    const optionalProjectColumns = ["target_journal", "detected_word_count", "adjusted_word_count", "final_word_count"] as const;
+    if (optionalProjectColumns.some((column) => isMissingColumnError(insertError, column))) {
+      console.warn(`[${trace}] An optional checkout metadata column is missing; retrying checkout without optional metadata fields.`);
       const projectInsertWithoutTargetJournal: Partial<typeof projectInsert> = { ...projectInsert };
       delete projectInsertWithoutTargetJournal.target_journal;
+      delete projectInsertWithoutTargetJournal.detected_word_count;
+      delete projectInsertWithoutTargetJournal.adjusted_word_count;
+      delete projectInsertWithoutTargetJournal.final_word_count;
       const retry = await supabaseAdmin
         .from("projects")
         .insert(projectInsertWithoutTargetJournal)
@@ -298,7 +310,10 @@ export async function POST(request: Request) {
           service_type: priceBreakdown.serviceType,
           selected_services: priceBreakdown.serviceTypes,
           target_journal: targetJournalValue,
-          word_count: safeWordCount,
+          detected_word_count: detectedWordCount,
+          adjusted_word_count: adjustedWordCount,
+          final_word_count: finalWordCount,
+          word_count: finalWordCount,
           subtotal: priceBreakdown.subtotal,
           service_charge_percentage: priceBreakdown.serviceChargePercentage,
           service_charge_amount: priceBreakdown.serviceChargeAmount,

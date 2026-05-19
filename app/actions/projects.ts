@@ -9,6 +9,9 @@ type ProjectInput = {
   selected_services?: string[];
   turnaround: string;
   word_count: number;
+  detected_word_count?: number | null;
+  adjusted_word_count?: number | null;
+  final_word_count?: number | null;
   document_type?: string;
   target_journal?: string | null;
   formatting_style?: string;
@@ -49,7 +52,10 @@ export async function createProject(data: ProjectInput) {
     turnaround: priceBreakdown.turnaroundLabel,
     turnaround_days: priceBreakdown.turnaroundDays,
     turnaround_hours: priceBreakdown.turnaroundDays * 24,
-    word_count: data.word_count,
+    detected_word_count: data.detected_word_count || data.word_count,
+    adjusted_word_count: data.adjusted_word_count || null,
+    final_word_count: data.final_word_count || data.word_count,
+    word_count: data.final_word_count || data.word_count,
     price: priceBreakdown.finalTotal,
     calculated_price: priceBreakdown.calculatedPrice,
     subtotal: priceBreakdown.subtotal,
@@ -75,9 +81,12 @@ export async function createProject(data: ProjectInput) {
     .select()
     .single();
 
-  if (error && `${error.message || ""} ${error.details || ""}`.toLowerCase().includes("target_journal")) {
+  if (error && /target_journal|detected_word_count|adjusted_word_count|final_word_count/.test(`${error.message || ""} ${error.details || ""}`.toLowerCase())) {
     const projectInsertWithoutTargetJournal: Partial<typeof projectInsert> = { ...projectInsert };
     delete projectInsertWithoutTargetJournal.target_journal;
+    delete projectInsertWithoutTargetJournal.detected_word_count;
+    delete projectInsertWithoutTargetJournal.adjusted_word_count;
+    delete projectInsertWithoutTargetJournal.final_word_count;
     const retry = await supabase
       .from("projects")
       .insert(projectInsertWithoutTargetJournal)

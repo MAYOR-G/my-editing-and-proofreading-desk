@@ -7,6 +7,9 @@ ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS formatting_style TEXT DEFAU
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS english_type TEXT DEFAULT 'No preference' NOT NULL;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS turnaround_days INTEGER;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS turnaround_hours INTEGER;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS detected_word_count INTEGER;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS adjusted_word_count INTEGER;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS final_word_count INTEGER;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS calculated_price NUMERIC(10, 2);
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS final_price NUMERIC(10, 2);
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS minimum_applied BOOLEAN DEFAULT false NOT NULL;
@@ -19,6 +22,8 @@ SET
   calculated_price = COALESCE(calculated_price, price),
   payment_reference = COALESCE(payment_reference, transaction_reference),
   uploaded_file_path = COALESCE(uploaded_file_path, upload_file_path),
+  detected_word_count = COALESCE(detected_word_count, word_count),
+  final_word_count = COALESCE(final_word_count, word_count),
   turnaround_days = COALESCE(
     turnaround_days,
     CASE

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, FileText, Menu, MessageSquareText, Minus, PanelLeft, PenLine, Plus, Search, X } from "lucide-react";
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import type { WorkExample, WorkExamplePage } from "@/lib/work-example-data";
+import type { WorkExample, WorkExampleBlock, WorkExamplePage } from "@/lib/work-example-data";
 
 type WorkPreviewModalProps = {
   example: WorkExample | null;
@@ -118,7 +118,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="work-preview-title"
-        className="flex h-[min(94vh,980px)] w-full max-w-[1320px] flex-col overflow-hidden rounded-[0.9rem] border border-white/35 bg-[#11161d] shadow-[0_34px_120px_rgba(10,11,13,0.42)]"
+        className="flex h-[min(96vh,1040px)] w-full max-w-[1480px] flex-col overflow-hidden rounded-[0.9rem] border border-white/35 bg-[#11161d] shadow-[0_34px_120px_rgba(10,11,13,0.42)]"
       >
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-[#151a21] px-3 py-3 text-white sm:px-5">
           <div className="flex min-w-0 items-center gap-3">
@@ -184,8 +184,8 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
               </div>
             </div>
 
-            <div ref={scrollRef} onScroll={handleScroll} className="h-[calc(100%-2.75rem)] overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_34%),linear-gradient(180deg,#34363d,#24262c)] px-3 pb-0 pt-5 sm:px-6 lg:px-8">
-              <div className="mx-auto flex max-w-[1120px] flex-col gap-7">
+            <div ref={scrollRef} onScroll={handleScroll} className="h-[calc(100%-2.75rem)] overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_34%),linear-gradient(180deg,#34363d,#24262c)] px-2 pb-8 pt-4 sm:px-4 lg:px-5">
+              <div className="mx-auto flex max-w-[1260px] flex-col gap-5">
                 {example.pages.map((page, index) => (
                   <div
                     key={page.eyebrow}
@@ -197,17 +197,6 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
                     <DocumentPage example={example} page={page} pageNumber={index + 1} />
                   </div>
                 ))}
-              </div>
-              <div className="sticky bottom-0 -mx-3 mt-8 flex h-[7.5rem] items-center bg-[#151a21] px-8 text-white sm:-mx-6 lg:-mx-8">
-                <div className="flex items-center gap-4">
-                  <span className="relative flex h-14 w-20 shrink-0 items-center justify-center overflow-hidden rounded bg-white/95">
-                    <Image src="/assets/darklogo.png" alt="" fill sizes="80px" className="object-contain" />
-                  </span>
-                  <div>
-                    <p className="font-display text-lg font-semibold">My Editing and Proofreading Desk</p>
-                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/62">Editing, proofreading and academic polish</p>
-                  </div>
-                </div>
               </div>
             </div>
           </main>
@@ -271,37 +260,43 @@ function DocumentPage({
 }) {
   const pageTone = page.variant === "resume"
     ? "font-sans"
-    : page.variant === "legal" || page.variant === "humanities" || page.variant === "references" || page.variant === "science"
+    : page.variant === "legal" || page.variant === "humanities" || page.variant === "references" || page.variant === "science" || page.variant === "engineering"
       ? "font-serif"
       : "font-sans";
   const isFirstPage = pageNumber === 1;
+  const hasComments = page.comments.length > 0;
+  const isGeologicalScreenshotSample = example.key === "geological" && Boolean(page.blocks);
+  const contentBlocks: WorkExampleBlock[] = page.blocks ?? page.body.map((text) => ({ type: "paragraph", text, role: "body" }));
+  if (!page.blocks && page.table) contentBlocks.push({ type: "table", headers: page.table.headers, rows: page.table.rows });
+
+  const commentsForBlock = (blockIndex: number) =>
+    page.comments.filter((comment, commentIndex) => comment.anchor === blockIndex || (!comment.anchor && blockIndex > 0 && blockIndex === commentIndex + 1));
 
   return (
-    <article className="mx-auto grid max-w-[1080px] gap-0 bg-[#ece7dd] shadow-[0_18px_70px_rgba(0,0,0,0.28)] lg:grid-cols-[minmax(0,780px)_260px] lg:items-stretch">
-      <div className={`flex min-h-[980px] flex-col bg-[#fffdf7] px-6 ring-1 ring-black/8 sm:px-11 ${isFirstPage ? "py-7 sm:py-10" : "py-6 sm:py-8"}`}>
+    <article className={`mx-auto grid gap-0 shadow-[0_18px_70px_rgba(0,0,0,0.28)] ${hasComments ? "max-w-[1230px] bg-[#ece7dd] lg:grid-cols-[minmax(0,910px)_270px]" : "max-w-[900px] bg-transparent"} lg:items-stretch`}>
+      <div className={`flex min-h-[965px] flex-col bg-[#fffdf7] px-7 text-[#111827] ring-1 ring-black/8 sm:px-10 ${isFirstPage ? "py-6 sm:py-7" : "py-7"}`}>
         {isFirstPage ? (
-          <div className="mb-9 flex items-center justify-between border px-5 py-4" style={{ borderColor: `${example.accent}55` }}>
-            <div>
-              <p className="font-display text-2xl font-bold leading-tight sm:text-3xl" style={{ color: example.accent }}>
-                My Editing and Proofreading Desk
-              </p>
-              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/60">Edited sample preview - tracked changes visible</p>
-            </div>
-            <span className="relative hidden h-20 w-28 shrink-0 overflow-hidden rounded bg-white sm:block">
+          <div className="mb-5 flex items-center justify-between border-b border-ink/10 pb-3">
+            <p className="font-display text-xl font-bold leading-tight text-ink sm:text-2xl">
+              My Editing and Proofreading Desk
+            </p>
+            <span className="relative hidden h-12 w-20 shrink-0 overflow-hidden bg-white sm:block">
               <Image src="/assets/logo.png" alt="" fill sizes="112px" className="object-contain" />
             </span>
           </div>
         ) : null}
 
         {isFirstPage ? (
-          <div className="mb-7 flex items-start justify-between gap-6 border-b border-ink/10 pb-5">
+          <div className="mb-5 flex items-start justify-between gap-6 border-b border-ink/10 pb-4">
             <div>
               <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-charcoal/55">
                 {page.eyebrow}
               </p>
-              <h3 className="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
-                {page.heading}
-              </h3>
+              {!page.blocks ? (
+                <h3 className="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
+                  {page.heading}
+                </h3>
+              ) : null}
               <p className="mt-2 text-sm font-medium text-charcoal/70">{example.authorLine}</p>
             </div>
             <span
@@ -313,43 +308,71 @@ function DocumentPage({
           </div>
         ) : null}
 
-        {isFirstPage && page.variant === "engineering" ? <EngineeringRule accent={example.accent} /> : null}
+        {isFirstPage && page.variant === "engineering" && !isGeologicalScreenshotSample ? <EngineeringRule accent={example.accent} /> : null}
         {isFirstPage && page.variant === "legal" ? <LegalMemoBar /> : null}
         {isFirstPage && page.variant === "science" ? <ScienceMetaBar accent={example.accent} /> : null}
 
-        <div className={`grow space-y-5 ${pageTone} text-[0.95rem] leading-7 text-[#111827] sm:text-[1.01rem]`}>
-          {page.body.map((paragraph, index) => (
-            <p
-              key={paragraph}
-              className={`relative ${lineClassFor(page, paragraph, index)} ${
-                index > 0 && index <= page.comments.length ? "border-r-2 pr-3" : ""
-              }`}
-              style={index > 0 && index <= page.comments.length ? { borderColor: page.variant === "science" ? "#f08f8f" : `${example.accent}66` } : undefined}
-            >
-              {index > 0 && index <= page.comments.length ? (
-                <span
-                  className="absolute -right-7 top-2 hidden h-px w-7 lg:block"
-                  style={{ backgroundColor: page.variant === "science" ? "#f08f8f" : `${example.accent}99` }}
-                  aria-hidden="true"
-                />
-              ) : null}
-              {renderMarkedText(paragraph)}
-            </p>
-          ))}
+        {!isFirstPage ? (
+          <div className="mb-4 border-b border-ink/10 pb-3">
+            <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-charcoal/52">{page.eyebrow}</p>
+            <h3 className="mt-1 font-display text-xl font-semibold leading-tight text-ink">{page.heading}</h3>
+          </div>
+        ) : null}
+
+        <div className={`grow space-y-2.5 ${pageTone} text-[0.88rem] leading-[1.58] text-[#111827] sm:text-[0.94rem]`}>
+          {contentBlocks.map((block, index) => {
+            const anchoredComments = commentsForBlock(index);
+            const hasComment = anchoredComments.length > 0;
+
+            if (block.type === "table") {
+              return (
+                <div
+                  key={`table-${index}`}
+                  className={`relative ${hasComment ? "border-r-2 pr-3" : ""}`}
+                  style={hasComment ? { borderColor: page.variant === "science" ? "#f08f8f" : `${example.accent}66` } : undefined}
+                >
+                  {hasComment ? (
+                    <span
+                      className="absolute -right-8 top-3 hidden h-px w-8 lg:block"
+                      style={{ backgroundColor: page.variant === "science" ? "#f08f8f" : `${example.accent}99` }}
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                  <DocumentTable table={{ headers: block.headers, rows: block.rows }} />
+                </div>
+              );
+            }
+
+            return (
+              <p
+                key={`${block.text}-${index}`}
+                className={`relative ${lineClassFor(page, block.text, index, block.role, isGeologicalScreenshotSample)} ${hasComment ? "border-r-2 pr-3" : ""}`}
+                style={hasComment ? { borderColor: page.variant === "science" ? "#f08f8f" : `${example.accent}66` } : undefined}
+              >
+                {hasComment ? (
+                  <span
+                    className="absolute -right-8 top-3 hidden h-px w-8 lg:block"
+                    style={{ backgroundColor: page.variant === "science" ? "#f08f8f" : `${example.accent}99` }}
+                    aria-hidden="true"
+                  />
+                ) : null}
+                {renderMarkedText(block.text)}
+              </p>
+            );
+          })}
         </div>
 
         {page.figure ? <DocumentFigure type={page.figure} accent={example.accent} /> : null}
-        {page.table ? <DocumentTable table={page.table} /> : null}
 
         {isFirstPage ? (
-          <footer className="mt-10 flex items-center justify-between border-t border-ink/10 pt-4 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-charcoal/50">
+          <footer className="mt-6 flex items-center justify-between border-t border-ink/10 pt-3 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-charcoal/50">
             <span>Confidential sample preview</span>
             <span>{pageNumber}</span>
           </footer>
         ) : null}
       </div>
 
-      <aside className={`space-y-3 bg-[#eee9df] p-4 ${isFirstPage ? "lg:pt-36" : "lg:pt-8"}`}>
+      {hasComments ? <aside className={`space-y-3 bg-[#eee9df] p-4 ${isFirstPage ? "lg:pt-28" : "lg:pt-14"}`}>
         {page.comments.map((comment, index) => (
           <div
             key={`${comment.label}-${index}`}
@@ -373,12 +396,20 @@ function DocumentPage({
             )}
           </div>
         ))}
-      </aside>
+      </aside> : null}
     </article>
   );
 }
 
-function lineClassFor(page: WorkExamplePage, paragraph: string, index: number) {
+function lineClassFor(page: WorkExamplePage, paragraph: string, index: number, role?: Extract<WorkExampleBlock, { type: "paragraph" }>["role"], isGeologicalScreenshotSample = false) {
+  if (role === "title") return `font-display font-bold leading-tight text-ink ${isGeologicalScreenshotSample ? "text-2xl" : "text-2xl sm:text-3xl"}`;
+  if (role === "heading") return `mt-7 pb-1 font-display text-base font-bold leading-tight text-ink sm:text-lg ${isGeologicalScreenshotSample ? "" : "border-b border-ink/10"}`;
+  if (role === "caption") return "mt-7 text-[0.9rem] font-normal leading-6 text-charcoal/80";
+  if (role === "equation") return "font-serif text-base italic leading-6 text-ink";
+  if (role === "list") return "pl-4 before:absolute before:left-0 before:top-3 before:h-1.5 before:w-1.5 before:rounded-full before:bg-ink/45";
+  if (role === "sublist") return "ml-7 pl-4 text-[0.84rem] leading-5 before:absolute before:left-0 before:top-2.5 before:h-1 before:w-1 before:rounded-full before:bg-ink/40";
+  if (role === "footnote") return "pl-5 -indent-5 text-[0.76rem] leading-5 text-ink/85";
+  if (role === "reference") return "pl-7 -indent-7 text-[0.82rem] leading-5";
   if (page.variant === "references" && index > 0) return "pl-8 -indent-8 text-[0.92rem] leading-7";
   if (page.variant === "resume") {
     if (paragraph === paragraph.toUpperCase() && paragraph.length < 32) return "mt-6 border-b border-ink/20 pb-1 text-[0.72rem] font-bold uppercase tracking-[0.2em]";
@@ -386,7 +417,11 @@ function lineClassFor(page: WorkExamplePage, paragraph: string, index: number) {
     if (index === 1) return "text-center text-xs text-charcoal/70";
     return "pl-4 before:absolute before:left-0 before:top-3 before:h-1.5 before:w-1.5 before:rounded-full before:bg-ink/50";
   }
-  if (page.variant === "engineering") return "font-mono text-[0.9rem] leading-7";
+  if (page.variant === "engineering") {
+    if (paragraph === paragraph.toUpperCase() && paragraph.length < 46) return "mt-4 text-[0.72rem] font-bold uppercase tracking-[0.16em] text-charcoal/60";
+    if (/^(Table|Figure) \d+/.test(paragraph)) return "mt-3 text-[0.82rem] font-semibold leading-5 text-charcoal/75";
+    return "text-[0.92rem] leading-[1.62]";
+  }
   if (page.variant === "legal") return "text-[0.98rem] leading-8";
   if (page.variant === "humanities") return "text-[1.03rem] leading-8";
   if (page.variant === "science") return "text-[0.98rem] leading-6";
@@ -427,13 +462,13 @@ function LegalMemoBar() {
 }
 
 function renderMarkedText(text: string) {
-  const parts = text.split(/(<del>.*?<\/del>|<ins>.*?<\/ins>)/g);
+  const parts = text.split(/(<del>.*?<\/del>|<ins>.*?<\/ins>|<sup>.*?<\/sup>|<sub>.*?<\/sub>|<strong>.*?<\/strong>|<em>.*?<\/em>|<i>.*?<\/i>|<mark>.*?<\/mark>|<green>.*?<\/green>|<br \/>)/g);
 
   return parts.map((part, index) => {
     if (part.startsWith("<del>") && part.endsWith("</del>")) {
       return (
         <del key={index} className="px-0.5 text-red-700 decoration-red-700 decoration-2">
-          {part.replace("<del>", "").replace("</del>", "")}
+          {renderMarkedText(part.replace("<del>", "").replace("</del>", ""))}
         </del>
       );
     }
@@ -441,8 +476,48 @@ function renderMarkedText(text: string) {
     if (part.startsWith("<ins>") && part.endsWith("</ins>")) {
       return (
         <ins key={index} className="px-0.5 font-medium text-blue-700 no-underline">
-          {part.replace("<ins>", "").replace("</ins>", "")}
+          {renderMarkedText(part.replace("<ins>", "").replace("</ins>", ""))}
         </ins>
+      );
+    }
+
+    if (part.startsWith("<sup>") && part.endsWith("</sup>")) {
+      return <sup key={index}>{part.replace("<sup>", "").replace("</sup>", "")}</sup>;
+    }
+
+    if (part.startsWith("<sub>") && part.endsWith("</sub>")) {
+      return <sub key={index}>{part.replace("<sub>", "").replace("</sub>", "")}</sub>;
+    }
+
+    if (part === "<br />") {
+      return <br key={index} />;
+    }
+
+    if (part.startsWith("<strong>") && part.endsWith("</strong>")) {
+      return <strong key={index}>{renderMarkedText(part.replace("<strong>", "").replace("</strong>", ""))}</strong>;
+    }
+
+    if (part.startsWith("<em>") && part.endsWith("</em>")) {
+      return <em key={index}>{renderMarkedText(part.replace("<em>", "").replace("</em>", ""))}</em>;
+    }
+
+    if (part.startsWith("<i>") && part.endsWith("</i>")) {
+      return <i key={index}>{renderMarkedText(part.replace("<i>", "").replace("</i>", ""))}</i>;
+    }
+
+    if (part.startsWith("<mark>") && part.endsWith("</mark>")) {
+      return (
+        <mark key={index} className="bg-amber-100 px-0.5 font-semibold text-amber-700">
+          {renderMarkedText(part.replace("<mark>", "").replace("</mark>", ""))}
+        </mark>
+      );
+    }
+
+    if (part.startsWith("<green>") && part.endsWith("</green>")) {
+      return (
+        <span key={index} className="font-semibold text-green-700 underline decoration-green-700/70 underline-offset-2">
+          {renderMarkedText(part.replace("<green>", "").replace("</green>", ""))}
+        </span>
       );
     }
 
@@ -452,22 +527,22 @@ function renderMarkedText(text: string) {
 
 function DocumentTable({ table }: { table: NonNullable<WorkExamplePage["table"]> }) {
   return (
-    <div className="mt-8 overflow-hidden rounded-lg border border-ink/10">
-      <table className="w-full border-collapse text-left text-sm">
-        <thead className="bg-[#f5f7f9] text-xs uppercase tracking-[0.12em] text-charcoal/65">
+    <div className="mt-4 overflow-hidden rounded-md border border-ink/12 bg-white">
+      <table className="w-full border-collapse text-left text-[0.78rem] leading-5">
+        <thead className="bg-[#f4f6f8] text-[0.64rem] uppercase tracking-[0.12em] text-charcoal/65">
           <tr>
             {table.headers.map((header) => (
-              <th key={header} className="border-b border-ink/10 px-4 py-3 font-bold">
+              <th key={header} className="border-b border-ink/10 px-3 py-2 font-bold">
                 {header}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {table.rows.map((row) => (
-            <tr key={row.join("-")} className="border-b border-ink/8 last:border-b-0">
-              {row.map((cell) => (
-                <td key={cell} className="px-4 py-3 text-charcoal">
+          {table.rows.map((row, rowIndex) => (
+            <tr key={`${row.join("-")}-${rowIndex}`} className="border-b border-ink/8 last:border-b-0">
+              {row.map((cell, cellIndex) => (
+                <td key={`${cell}-${cellIndex}`} className="px-3 py-2 text-charcoal">
                   {cell}
                 </td>
               ))}

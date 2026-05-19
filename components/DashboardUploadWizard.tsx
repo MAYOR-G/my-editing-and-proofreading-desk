@@ -75,6 +75,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [wordCount, setWordCount] = useState<number | null>(null);
+  const [detectedWordCount, setDetectedWordCount] = useState<number | null>(null);
+  const [adjustedWordCount, setAdjustedWordCount] = useState("");
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
   const [selectedServices, setSelectedServices] = useState<string[]>(["Editing"]);
@@ -112,6 +114,12 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`] && paymentReadiness?.[item.id]?.configured !== false);
   }, [paymentReadiness, paymentSettings]);
   const hasAvailablePaymentMethods = activePaymentProviders.length > 0;
+
+  const applyAdjustedWordCount = (value: string, detected = detectedWordCount) => {
+    setAdjustedWordCount(value);
+    const parsed = Math.max(1, Math.round(Number(value) || 0));
+    setWordCount(value.trim() && Number.isFinite(parsed) ? parsed : detected);
+  };
 
   useEffect(() => {
     if (!wordCount || isWritingSupport || customReviewRequired) return;
@@ -246,6 +254,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     setFile(selectedFile);
     setIsParsing(true);
     setWordCount(null);
+    setDetectedWordCount(null);
+    setAdjustedWordCount("");
     setParseError("");
     setPricingNotice("");
     const formData = new FormData();
@@ -260,6 +270,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
       const detectedWordCount = Math.max(1, Math.round(Number(data.wordCount)));
       setWordCount(detectedWordCount);
+      setDetectedWordCount(detectedWordCount);
       if (detectedWordCount > 50000) setPricingNotice(CUSTOM_REVIEW_MESSAGE);
     } catch {
       setParseError("We could not read this file. Please re-upload a .docx or .txt file, or contact support if the issue continues.");
@@ -334,6 +345,9 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           service_type: selectedServices.join(", "),
           turnaround,
           word_count: wordCount,
+          detected_word_count: detectedWordCount || wordCount,
+          adjusted_word_count: adjustedWordCount.trim() ? wordCount : null,
+          final_word_count: wordCount,
           file_path: filePath,
           title: file.name,
           client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
@@ -535,82 +549,123 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
       <div className="min-h-[400px]">
         {/* Step 1: Project Details */}
         {step === 1 && (
-          <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Project details</h2>
-            <p className="mb-4 text-sm text-charcoal/68">Tell us about the document to ensure the right editorial fit.</p>
-            <div className="grid gap-5 md:grid-cols-2 md:items-start">
-              <label className="grid content-start gap-2 text-sm text-charcoal/72">
-                <span className="min-h-5">Document Type</span>
-                <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-12 w-full border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
+          <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Project details</h2>
+              <p className="text-sm text-charcoal/68">Tell us about the document to ensure the right editorial fit.</p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 md:items-start">
+              <label className="grid content-start gap-2.5 text-sm font-medium text-ink">
+                Document Type
+                <select value={documentType} onChange={(e) => setDocumentType(e.target.value)} className="min-h-[3.5rem] w-full appearance-none rounded-xl border border-hairline bg-surface-soft px-5 text-ink shadow-sm transition hover:border-primary/30 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary/20">
                   {DOCUMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
                 </select>
-                <span aria-hidden="true" className="min-h-10 text-xs leading-5 text-transparent">Document category</span>
+                <span className="text-xs font-normal leading-5 text-charcoal/50">Select the category that best fits your document.</span>
               </label>
-              <label className="grid content-start gap-2 text-sm text-charcoal/72">
-                <span className="min-h-5">Target Journal</span>
+              <label className="grid content-start gap-2.5 text-sm font-medium text-ink">
+                Target Journal
                 <input
                   value={targetJournal}
                   onChange={(e) => setTargetJournal(e.target.value)}
                   type="text"
                   placeholder="e.g. Journal of Applied Research"
-                  className="min-h-12 w-full border border-hairline bg-surface-soft px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory"
+                  className="min-h-[3.5rem] w-full rounded-xl border border-hairline bg-surface-soft px-5 text-ink placeholder:text-charcoal/38 shadow-sm transition hover:border-primary/30 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary/20"
                 />
-                <span className="min-h-10 text-xs leading-5 text-charcoal/48">Optional. Add the journal name if your document is being prepared for submission.</span>
+                <span className="text-xs font-normal leading-5 text-charcoal/50">Optional. Add the journal name if preparing for submission.</span>
               </label>
             </div>
-            <label className="grid gap-2 text-sm text-charcoal/72">Style of English
-              <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-ivory">
-                {ENGLISH_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
-              </select>
-            </label>
-            <label className="grid gap-2 text-sm text-charcoal/72">Academic Field / Industry
-              <input value={academicField} onChange={(e) => setAcademicField(e.target.value)} type="text" placeholder="e.g. Sociology, Tech Startup" className="min-h-12 border border-hairline bg-surface-soft px-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory" />
-            </label>
-            <label className="grid gap-2 text-sm text-charcoal/72">Notes to editors
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Specific concerns, tone preferences, or areas to focus on..." className="min-h-32 border border-hairline bg-surface-soft p-4 text-ink placeholder:text-charcoal/38 transition focus:border-primary focus:bg-ivory" />
+            
+            <div className="grid gap-6 md:grid-cols-2 md:items-start">
+              <label className="grid gap-2.5 text-sm font-medium text-ink">
+                Style of English
+                <select value={englishType} onChange={(e) => setEnglishType(e.target.value)} className="min-h-[3.5rem] appearance-none rounded-xl border border-hairline bg-surface-soft px-5 text-ink shadow-sm transition hover:border-primary/30 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary/20">
+                  {ENGLISH_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+                </select>
+              </label>
+              <label className="grid gap-2.5 text-sm font-medium text-ink">
+                Academic Field / Industry
+                <input value={academicField} onChange={(e) => setAcademicField(e.target.value)} type="text" placeholder="e.g. Sociology, Tech Startup" className="min-h-[3.5rem] rounded-xl border border-hairline bg-surface-soft px-5 text-ink placeholder:text-charcoal/38 shadow-sm transition hover:border-primary/30 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary/20" />
+              </label>
+            </div>
+            
+            <label className="grid gap-2.5 text-sm font-medium text-ink">
+              Notes to editors
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Specific concerns, tone preferences, or areas to focus on..." className="min-h-32 rounded-xl border border-hairline bg-surface-soft p-5 text-ink placeholder:text-charcoal/38 shadow-sm transition hover:border-primary/30 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary/20" />
             </label>
           </div>
         )}
 
         {/* Step 2: Upload */}
         {step === 2 && (
-          <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Upload document</h2>
-            <p className="mb-4 text-sm text-charcoal/68">We will calculate the word count from your uploaded file and use it for pricing.</p>
-            <div className="relative rounded-2xl border border-dashed border-primary/25 bg-primary/5 p-10 text-center shadow-[0_18px_55px_rgba(23,74,124,0.045)] transition duration-300 ease-premium-out hover:border-primary/45 hover:bg-primary/10 hover:shadow-[0_24px_70px_rgba(23,74,124,0.07)]">
+          <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Upload document</h2>
+              <p className="text-sm text-charcoal/68">We will calculate the word count from your uploaded file and use it for pricing.</p>
+            </div>
+            
+            <div className="relative rounded-2xl border-2 border-dashed border-primary/20 bg-primary/[0.03] p-12 text-center transition-all duration-300 ease-premium-out hover:border-primary/40 hover:bg-primary/[0.06]">
               <input type="file" accept=".docx,.txt" onChange={handleFileSelect} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               <div className="grid gap-3 justify-items-center pointer-events-none">
-                <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                <p className="text-lg font-medium text-ink">{file ? file.name : "Click or drag file here"}</p>
-                <p className="text-sm text-charcoal/55">Supports .docx and .txt files</p>
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-primary/10">
+                  <svg className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                </div>
+                <p className="mt-2 text-lg font-medium text-ink">{file ? file.name : "Click or drag file here"}</p>
+                <p className="text-sm text-charcoal/50">Supports .docx and .txt files</p>
               </div>
             </div>
-            {isParsing && <div className="rounded-xl border border-primary/20 bg-primary/10 p-4 text-center text-primary animate-pulse">Extracting text and calculating word count...</div>}
+            
+            {isParsing && (
+              <div className="flex items-center justify-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 text-sm font-medium text-primary animate-pulse">
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                Extracting text and calculating word count...
+              </div>
+            )}
+            
             {parseError ? (
-              <div className="rounded-xl border border-primary/20 bg-surface-soft p-5 text-sm leading-6 text-charcoal/72">
-                <p className="font-semibold text-ink">Word count could not be detected</p>
-                <p className="mt-1">{parseError}</p>
-                <a href="/contact" className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary transition hover:bg-primary hover:text-white">
+              <div className="flex flex-col items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/5 p-6 text-center shadow-sm">
+                <p className="text-base font-semibold text-red-700">Word count could not be detected</p>
+                <p className="text-sm text-red-700/80">{parseError}</p>
+                <a href="/contact" className="mt-2 inline-flex min-h-10 items-center justify-center rounded-full bg-white border border-red-500/30 px-5 text-xs font-bold uppercase tracking-[0.16em] text-red-700 shadow-sm transition hover:bg-red-500 hover:text-white">
                   Contact Support
                 </a>
               </div>
             ) : null}
+            
             {wordCount !== null && (
-              <div className="grid gap-4 rounded-2xl border border-cta/20 bg-cta-soft p-6 shadow-[0_18px_55px_rgba(31,143,90,0.055)]">
-                <div className="flex items-center justify-between gap-4">
+              <div className="grid gap-5 rounded-2xl border border-cta/20 bg-cta/[0.03] p-6 shadow-sm ring-1 ring-inset ring-white lg:p-8">
+                <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <p className="mb-1 text-xs uppercase tracking-widest text-cta">Detected word count</p>
-                    <p className="font-display text-3xl text-ink">{wordCount.toLocaleString()} words</p>
-                    <p className="mt-2 max-w-xl text-sm leading-6 text-charcoal/62">
-                      Pricing is based on the word count detected from your uploaded file.
-                    </p>
+                    <p className="mb-1 text-xs font-bold uppercase tracking-widest text-cta/80">Detected Word Count</p>
+                    <p className="font-display text-4xl text-ink">{(detectedWordCount || wordCount).toLocaleString()} <span className="text-xl text-charcoal/60">words</span></p>
+                    <p className="mt-2 text-sm text-charcoal/60">Pricing is based on this word count.</p>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cta text-white">✓</div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cta text-white shadow-sm ring-4 ring-cta/10">
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
                 </div>
+                
+                <div className="mt-2 border-t border-cta/10 pt-5">
+                  <label className="grid max-w-sm gap-2.5 text-sm font-medium text-ink">
+                    Adjusted word count
+                    <input
+                      value={adjustedWordCount}
+                      onChange={(event) => applyAdjustedWordCount(event.target.value)}
+                      inputMode="numeric"
+                      min={1}
+                      type="number"
+                      placeholder={detectedWordCount ? detectedWordCount.toString() : "Optional"}
+                      className="min-h-[3.5rem] rounded-xl border border-hairline bg-white px-5 text-ink placeholder:text-charcoal/38 shadow-sm transition hover:border-primary/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    />
+                    <span className="text-[0.75rem] font-normal leading-5 text-charcoal/50">Optional. Adjust if the detected count includes non-editable sections like references.</span>
+                    {adjustedWordCount.trim() ? <span className="mt-1 text-xs font-semibold text-primary">Pricing will use {wordCount?.toLocaleString()} words.</span> : null}
+                  </label>
+                </div>
+                
                 {customReviewRequired ? (
-                  <div className="rounded-lg border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
+                  <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-4 text-[0.85rem] leading-6 text-primary">
                     <p>{CUSTOM_REVIEW_MESSAGE}</p>
-                    <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/40 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                    <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full bg-white border border-primary/30 px-5 text-xs font-bold uppercase tracking-[0.16em] text-primary shadow-sm hover:bg-primary hover:text-white transition-colors">
                       Request Custom Quote
                     </a>
                   </div>
@@ -622,177 +677,207 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
         {/* Step 3: Service & Turnaround */}
         {step === 3 && (
-          <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Service & turnaround</h2>
-            <p className="mb-4 text-sm text-charcoal/68">Select your required timeline and service level.</p>
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)] lg:items-start">
-              <div className="grid gap-4">
-                <div className="grid gap-3">
-                  <div className="flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-medium text-ink">Service Level</p>
-                      <p className="mt-1 text-xs leading-5 text-charcoal/58">Select one or more services for this document.</p>
-                    </div>
-                    <div className="flex max-w-full flex-wrap gap-1.5">
-                      {selectedServices.map((service) => (
-                        <span key={service} className="border border-primary/20 bg-primary/[0.06] px-2.5 py-1 text-[0.68rem] font-medium text-primary">
-                          {service}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                    {SERVICE_OPTIONS.map((option) => {
-                      const selected = selectedServices.includes(option.label);
-                      return (
-                        <button
-                          key={option.label}
-                          type="button"
-                          onClick={() => handleServiceToggle(option.label)}
-                          className={`min-h-[4.1rem] border p-3 text-left transition ${
-                            selected
-                              ? "border-primary bg-primary/10 text-ink shadow-[0_14px_32px_rgba(23,74,124,0.10)]"
-                              : "border-hairline bg-surface-soft text-charcoal/70 hover:border-primary/40 hover:bg-ivory"
-                          }`}
-                        >
-                          <span className="flex items-start gap-3">
-                            <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border ${selected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-transparent"}`}>
-                              ✓
-                            </span>
-                            <span>
-                              <span className="block text-sm font-semibold text-ink">{option.label}</span>
-                              <span className="mt-1 block text-xs leading-4 text-charcoal/54">{option.note}</span>
-                            </span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {fieldErrors.selectedServices ? <p className="text-xs text-red-600">{fieldErrors.selectedServices}</p> : null}
+          <div className="grid gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Service & turnaround</h2>
+              <p className="text-sm text-charcoal/68">Select your required timeline and service level.</p>
+            </div>
+            
+            <div className="grid gap-5">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-ink">Service Level</p>
+                  <p className="mt-0.5 text-xs text-charcoal/58">Select one or more services for this document.</p>
                 </div>
+              </div>
+              
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {SERVICE_OPTIONS.map((option) => {
+                  const selected = selectedServices.includes(option.label);
+                  return (
+                    <button
+                      key={option.label}
+                      type="button"
+                      onClick={() => handleServiceToggle(option.label)}
+                      className={`group relative flex min-h-[4.5rem] items-start gap-3 rounded-xl border p-4 text-left transition-all duration-300 ${
+                        selected
+                          ? "border-primary bg-primary/[0.03] shadow-[0_4px_16px_rgba(23,74,124,0.06)] ring-1 ring-primary/20"
+                          : "border-hairline bg-surface-soft hover:border-primary/40 hover:bg-ivory hover:shadow-sm"
+                      }`}
+                    >
+                      <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors ${selected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-transparent group-hover:border-primary/40"}`}>
+                        <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className={`block truncate text-sm font-semibold transition-colors ${selected ? "text-primary" : "text-ink"}`}>{option.label}</span>
+                        <span className="mt-0.5 block text-[0.7rem] leading-[1.1rem] text-charcoal/60 line-clamp-2">{option.note}</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {fieldErrors.selectedServices ? <p className="text-xs text-red-600">{fieldErrors.selectedServices}</p> : null}
+            </div>
+            
+            {(includesFormattingService(selectedServices) || includesTranslationService(selectedServices)) && (
+              <div className="grid gap-3 sm:grid-cols-2">
                 {includesFormattingService(selectedServices) && (
-                  <div className="flex flex-wrap items-center justify-between gap-3 border border-primary/15 bg-primary/[0.04] p-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-ink">Formatting details</p>
-                      <p className="mt-1 truncate text-xs text-charcoal/58">{summarizeFormatting(formattingStyle, formattingInstructions)}</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/15 bg-primary/[0.02] p-4 shadow-sm">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-ink">Formatting details</p>
+                      <p className="mt-0.5 truncate text-xs text-charcoal/60">{summarizeFormatting(formattingStyle, formattingInstructions)}</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setActiveServiceModal("formatting")}
-                      className="min-h-9 shrink-0 rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:bg-primary hover:text-white"
+                      className="min-h-8 shrink-0 rounded-full border border-primary/30 bg-white px-4 text-xs font-semibold uppercase tracking-[0.12em] text-primary transition hover:bg-primary hover:text-white"
                     >
                       Edit
                     </button>
-                    {fieldErrors.formattingStyle ? <p className="text-xs text-red-600">{fieldErrors.formattingStyle}</p> : null}
-                    {fieldErrors.formattingInstructions ? <p className="text-xs text-red-600">{fieldErrors.formattingInstructions}</p> : null}
+                    <div className="w-full">
+                      {fieldErrors.formattingStyle ? <p className="text-xs text-red-600">{fieldErrors.formattingStyle}</p> : null}
+                      {fieldErrors.formattingInstructions ? <p className="text-xs text-red-600">{fieldErrors.formattingInstructions}</p> : null}
+                    </div>
                   </div>
                 )}
+                
                 {includesTranslationService(selectedServices) && (
-                  <div className="flex flex-wrap items-center justify-between gap-3 border border-primary/15 bg-primary/[0.04] p-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-ink">Translation details</p>
-                      <p className="mt-1 truncate text-xs text-charcoal/58">{summarizeTranslation(translationPreference, translationTargetLanguage)}</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/15 bg-primary/[0.02] p-4 shadow-sm">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-ink">Translation details</p>
+                      <p className="mt-0.5 truncate text-xs text-charcoal/60">{summarizeTranslation(translationPreference, translationTargetLanguage)}</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setActiveServiceModal("translation")}
-                      className="min-h-9 shrink-0 rounded-full border border-primary/30 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:bg-primary hover:text-white"
+                      className="min-h-8 shrink-0 rounded-full border border-primary/30 bg-white px-4 text-xs font-semibold uppercase tracking-[0.12em] text-primary transition hover:bg-primary hover:text-white"
                     >
                       Edit
                     </button>
-                    {fieldErrors.translationPreference ? <p className="text-xs text-red-600">{fieldErrors.translationPreference}</p> : null}
-                    {fieldErrors.translationTargetLanguage ? <p className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</p> : null}
+                    <div className="w-full">
+                      {fieldErrors.translationPreference ? <p className="text-xs text-red-600">{fieldErrors.translationPreference}</p> : null}
+                      {fieldErrors.translationTargetLanguage ? <p className="text-xs text-red-600">{fieldErrors.translationTargetLanguage}</p> : null}
+                    </div>
                   </div>
                 )}
-                <div className={`grid gap-3 border border-hairline bg-surface-soft p-4 text-sm text-charcoal/72 ${isWritingSupport || customReviewRequired ? "opacity-60" : ""}`}>
-                  <div className="flex items-center justify-between gap-4">
-                    <span>Turnaround Time</span>
-                    <span className="text-primary">{isWritingSupport ? "Fixed package" : turnaround}</span>
-                  </div>
-                  <input
-                    aria-label="Turnaround time"
-                    type="range"
-                    min={1}
-                    max={28}
-                    step={1}
-                    value={turnaroundDays}
-                    disabled={isWritingSupport || customReviewRequired}
-                    onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
-                    className="w-full accent-[#174a7c]"
-                  />
-                  <div className="grid grid-cols-4 gap-2">
-                    {[1, 2, 3, 7, 14, 21, 28].map((days) => {
-                      const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
-                      const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === days);
-                      return (
-                        <button
-                          key={days}
-                          type="button"
-                          onClick={() => handleTurnaroundSelect(days)}
-                          disabled={disabled}
-                          title={disabled ? getTurnaroundLimitMessage(days) || "Contact support for a custom review." : undefined}
-                          className={`min-h-10 border px-2 text-xs transition ${
-                            turnaroundDays === days && !disabled
-                              ? "border-primary bg-primary/10 text-primary"
-                              : disabled
-                                ? "cursor-not-allowed border-hairline bg-surface-soft text-charcoal/30"
-                                : "border-hairline bg-surface-soft text-charcoal/65 hover:border-primary/50"
-                          }`}
-                        >
-                          {option.label.replace(" / 28 days", "")}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs text-charcoal/50">{isWritingSupport ? "Writing Support uses a fixed package price." : TURNAROUND_SUPPORT_MESSAGE}</p>
-                </div>
               </div>
-              <div className="flex flex-col border border-primary/20 bg-primary/5 p-5 text-center lg:sticky lg:top-6">
-                <p className="mb-2 text-sm text-charcoal/62">{customReviewRequired ? "Custom review required" : "Estimated service total"}</p>
-                <p className="font-display text-4xl text-primary">{customReviewRequired ? "Custom" : `$${price.toFixed(2)}`}</p>
-                <div className="mt-4 grid w-full gap-2 border-t border-primary/15 pt-4 text-sm">
-                  <div className="flex justify-between gap-4 text-charcoal/62">
-                    <span>Service total</span>
-                    <span className="text-ink">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between gap-4 text-charcoal/62">
-                    <span>Processing fee</span>
-                    <span className="text-ink">Shown at payment step</span>
-                  </div>
-                </div>
-                <p className="mt-3 text-xs leading-5 text-charcoal/50">
-                  {isWritingSupport ? "Writing Support is a fixed package." : `Based on the detected ${wordCount?.toLocaleString()}-word count, selected services, and timeline.`}
+            )}
+            
+            {/* The Horizontal "In-Between" Live Quote Bar */}
+            <div className="flex flex-col gap-6 rounded-2xl border border-primary/15 bg-white p-6 shadow-[0_8px_30px_rgba(23,74,124,0.06)] sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="mb-1 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-primary/70">Live Quote</p>
+                <p className="font-display text-4xl tracking-tight text-ink">{customReviewRequired ? "Custom" : `$${price.toFixed(2)}`}</p>
+                <p className="mt-1 text-[0.75rem] text-charcoal/50">
+                  {isWritingSupport ? "Writing Support is a fixed package." : `Based on ${wordCount?.toLocaleString() || 0} words, services & timeline.`}
                 </p>
-                {pricingNotice || !validation.allowed ? (
-                  <div className="mt-4 rounded-lg border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
-                    <p>{customReviewRequired ? CUSTOM_REVIEW_MESSAGE : pricingNotice || validation.message}</p>
-                    {validation.contactRequired ? (
-                      <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full border border-primary/40 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                        Request Custom Quote
-                      </a>
-                    ) : null}
+              </div>
+              
+              <div className="grid gap-2 border-t border-hairline pt-4 text-sm sm:w-64 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                <div className="flex justify-between gap-4 text-charcoal/70">
+                  <span>Service total</span>
+                  <span className="font-medium text-ink">${subtotal.toFixed(2)}</span>
+                </div>
+                {priceBreakdown?.minimumApplied ? (
+                  <div className="flex justify-between gap-4 text-charcoal/70">
+                    <span>Minimum order</span>
+                    <span className="font-medium text-ink">$10.00</span>
                   </div>
                 ) : null}
+                <div className="flex justify-between gap-4 text-charcoal/70">
+                  <span>Processing fee</span>
+                  <span className="font-medium text-ink">At payment</span>
+                </div>
               </div>
             </div>
+
+            {pricingNotice || !validation.allowed ? (
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-[0.8rem] leading-5 text-primary shadow-sm">
+                <p>{customReviewRequired ? CUSTOM_REVIEW_MESSAGE : pricingNotice || validation.message}</p>
+                {validation.contactRequired ? (
+                  <a href="/contact" className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full bg-white border border-primary/30 px-6 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-primary shadow-sm hover:bg-primary hover:text-white transition-colors">
+                    Request Custom Quote
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
+            
+            <div className={`rounded-xl border border-hairline bg-surface-soft p-5 sm:p-6 shadow-sm transition-opacity ${isWritingSupport || customReviewRequired ? "opacity-60 pointer-events-none" : ""}`}>
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-4 border-b border-hairline pb-4">
+                <div>
+                  <h3 className="font-semibold text-ink">Turnaround Time</h3>
+                  <p className="text-xs text-charcoal/55 mt-0.5">Select when you need the document returned.</p>
+                </div>
+                <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary ring-1 ring-primary/20">
+                  {isWritingSupport ? "Fixed package" : turnaround}
+                </span>
+              </div>
+              
+              <div className="mb-6">
+                <input
+                  aria-label="Turnaround time"
+                  type="range"
+                  min={1}
+                  max={28}
+                  step={1}
+                  value={turnaroundDays}
+                  disabled={isWritingSupport || customReviewRequired}
+                  onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-hairline accent-[#174a7c]"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+                {[1, 2, 3, 7, 14, 21, 28].map((days) => {
+                  const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+                  const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === days);
+                  const isSelected = turnaroundDays === days && !disabled;
+                  
+                  return (
+                    <button
+                      key={days}
+                      type="button"
+                      onClick={() => handleTurnaroundSelect(days)}
+                      disabled={disabled}
+                      title={disabled ? getTurnaroundLimitMessage(days) || "Contact support for a custom review." : undefined}
+                      className={`flex h-10 items-center justify-center rounded-lg border text-[0.7rem] font-semibold transition-colors ${
+                        isSelected
+                          ? "border-primary bg-primary text-white shadow-sm"
+                          : disabled
+                            ? "cursor-not-allowed border-hairline bg-surface-soft text-charcoal/30"
+                            : "border-hairline bg-white text-charcoal/65 hover:border-primary/50 hover:bg-surface-soft hover:text-ink"
+                      }`}
+                    >
+                      {option.label.replace(" / 28 days", "")}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-5 text-[0.75rem] text-charcoal/50 text-center">{isWritingSupport ? "Writing Support uses a fixed package price." : TURNAROUND_SUPPORT_MESSAGE}</p>
+            </div>
+            
           </div>
         )}
 
         {/* Step 4: Payment Provider Selection */}
         {step === 4 && (
-          <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Select payment method</h2>
-            <p className="mb-6 text-sm text-charcoal/68">Choose from the payment methods currently enabled by our admin team.</p>
+          <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Select payment method</h2>
+              <p className="text-sm text-charcoal/68">Choose your preferred secure payment gateway.</p>
+            </div>
+            
             {isLoadingPaymentSettings ? (
-              <div className="border border-primary/20 bg-primary/10 p-5 text-sm text-primary animate-pulse">
+              <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 text-sm font-medium text-primary animate-pulse">
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                 Loading available payment methods...
               </div>
             ) : paymentSettingsError ? (
-              <div className="border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-700">
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-sm font-medium text-red-700 shadow-sm">
                 {paymentSettingsError}
               </div>
             ) : !hasAvailablePaymentMethods ? (
-              <div className="border border-hairline bg-surface-soft p-6 text-center text-sm text-charcoal/68">
+              <div className="rounded-xl border border-hairline bg-surface-soft p-6 text-center text-sm font-medium text-charcoal/68 shadow-sm">
                 No payment method is currently available. Please contact support.
               </div>
             ) : (
@@ -808,90 +893,115 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     setProvider(info.id);
                     setProviderNotice(null);
                   }}
-                  className={`group relative border p-6 text-left transition-all duration-300 ${
+                  className={`group relative rounded-xl border p-5 text-left transition-all duration-300 ${
                     isSelected
-                      ? "border-primary bg-primary/10 shadow-[0_20px_50px_rgba(23,74,124,0.12)]"
-                      : "border-hairline bg-surface-soft hover:border-primary/30 hover:bg-ivory"
+                      ? "border-primary bg-primary/[0.03] shadow-[0_4px_16px_rgba(23,74,124,0.06)] ring-1 ring-primary/20"
+                      : "border-hairline bg-surface-soft hover:border-primary/40 hover:bg-ivory hover:shadow-sm"
                   }`}
                 >
-                  {isSelected && (
-                    <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-primary">
-                      <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`flex h-10 w-10 items-center justify-center border text-sm font-bold ${isSelected ? "border-primary bg-primary text-white" : "border-hairline bg-ivory text-charcoal/60"}`}>
+                  <div className="absolute right-4 top-4 flex h-4 w-4 items-center justify-center rounded-[4px] border transition-colors">
+                    {isSelected ? (
+                      <span className="flex h-full w-full items-center justify-center bg-primary text-white border-primary">
+                        <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                    ) : (
+                      <span className="h-full w-full border-hairline bg-ivory group-hover:border-primary/40" />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-sm font-bold shadow-sm transition-colors ${isSelected ? "border-primary bg-primary text-white" : "border-hairline bg-white text-charcoal/60 group-hover:border-primary/30"}`}>
                       {PROVIDER_INITIALS[info.id]}
                     </div>
                     <div>
-                      <p className={`text-lg font-semibold ${isSelected ? "text-primary" : "text-ink"}`}>{info.label}</p>
-                      <p className="text-xs text-charcoal/55">{info.description}</p>
+                      <p className={`text-sm font-semibold transition-colors ${isSelected ? "text-primary" : "text-ink"}`}>{info.label}</p>
+                      <p className="mt-0.5 text-xs text-charcoal/55">{info.description}</p>
                     </div>
                   </div>
                 </button>
               )})}
             </div>
             )}
+            
             {providerNotice && (
-              <div className="border border-primary/25 bg-primary/10 p-4 text-sm text-primary">
+              <div className="rounded-xl border border-primary/25 bg-primary/10 p-4 text-sm font-medium text-primary shadow-sm">
                 {providerNotice}
               </div>
             )}
-            <div className="mt-4 flex items-center gap-3 border border-hairline bg-surface-soft p-4">
-              <svg className="h-5 w-5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              <p className="text-xs text-charcoal/55">Checkout opens after your file and order details are confirmed.</p>
+            
+            <div className="mt-2 flex items-start gap-3 rounded-xl border border-hairline bg-surface-soft p-5 shadow-sm">
+              <svg className="h-5 w-5 shrink-0 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <div>
+                <p className="text-sm font-semibold text-ink">Secure Checkout</p>
+                <p className="mt-0.5 text-xs leading-5 text-charcoal/60">Your payment will be securely processed by your selected provider in the final step. We do not store your card details.</p>
+              </div>
             </div>
           </div>
         )}
 
         {/* Step 5: Order Summary + Pay */}
         {step === 5 && (
-          <div className="grid gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Confirm & pay</h2>
-            <p className="mb-6 text-sm text-charcoal/68">Review your order details and proceed to payment.</p>
+          <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Confirm & pay</h2>
+              <p className="text-sm text-charcoal/68">Review your order details and proceed to payment.</p>
+            </div>
 
-            <div className="mb-2 border border-hairline bg-surface-soft p-6">
-              <div className="grid gap-3 text-sm">
-                {[
-                  ["Document", file?.name],
-                  ["Document Type", documentType],
-                  ["Target Journal", targetJournal.trim() || "Not provided"],
-                  ["Formatting Style", summarizeFormatting(formattingStyle, formattingInstructions)],
-                  ["Translation", summarizeTranslation(translationPreference, translationTargetLanguage)],
-                  ["Style of English", englishType],
-                  ["Services & Turnaround", `${selectedServices.join(", ")} — ${turnaround}`],
-                  ["Detected Word Count", wordCount?.toLocaleString()],
-                  ["Payment Provider", selectedProviderLabel],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex justify-between gap-4 border-b border-hairline pb-3">
-                    <span className="text-charcoal/60">{label}</span>
-                    <span className="text-right font-medium text-ink">{value}</span>
-                  </div>
-                ))}
-                <div className="grid gap-2 pt-2">
-                  <div className="flex justify-between gap-4">
-                    <span className="text-charcoal/60">Service total</span>
-                    <span className="font-medium text-ink">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-charcoal/60">Processing fee ({serviceChargePercentage}%)</span>
-                    <span className="font-medium text-ink">${serviceChargeAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between border-t border-hairline pt-3">
-                    <span className="text-lg text-charcoal/80">Total payable</span>
-                    <span className="font-display text-xl text-primary">${finalPaymentTotal.toFixed(2)}</span>
+            <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-sm">
+              <div className="border-b border-hairline bg-surface-soft px-6 py-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-charcoal/50">Order Summary</p>
+              </div>
+              <div className="p-6 text-sm">
+                <div className="grid gap-4">
+                  {[
+                    ["Document", file?.name],
+                    ["Document Type", documentType],
+                    ["Target Journal", targetJournal.trim() || "Not provided"],
+                    ["Formatting Style", summarizeFormatting(formattingStyle, formattingInstructions)],
+                    ["Translation", summarizeTranslation(translationPreference, translationTargetLanguage)],
+                    ["Style of English", englishType],
+                    ["Services & Turnaround", `${selectedServices.join(", ")} — ${turnaround}`],
+                    ["Detected Word Count", (detectedWordCount || wordCount)?.toLocaleString()],
+                    ["Adjusted Word Count", adjustedWordCount.trim() ? wordCount?.toLocaleString() : "Not provided"],
+                    ["Final Word Count", wordCount?.toLocaleString()],
+                    ["Payment Provider", selectedProviderLabel],
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4 border-b border-hairline/50 pb-3 last:border-0">
+                      <span className="text-charcoal/60">{label}</span>
+                      <span className="font-medium text-ink sm:text-right">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 rounded-xl border border-primary/10 bg-primary/[0.02] p-5">
+                  <div className="grid gap-3">
+                    <div className="flex justify-between gap-4">
+                      <span className="text-charcoal/60">Service total</span>
+                      <span className="font-medium text-ink">${subtotal.toFixed(2)}</span>
+                    </div>
+                    {priceBreakdown?.minimumApplied ? (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-charcoal/60">Minimum order amount</span>
+                        <span className="font-medium text-ink">$10.00</span>
+                      </div>
+                    ) : null}
+                    <div className="flex justify-between gap-4">
+                      <span className="text-charcoal/60">Processing fee ({serviceChargePercentage}%)</span>
+                      <span className="font-medium text-ink">${serviceChargeAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="mt-2 flex justify-between border-t border-primary/15 pt-4">
+                      <span className="font-display text-xl text-ink">Total payable</span>
+                      <span className="font-display text-3xl tracking-tight text-primary">${finalPaymentTotal.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-center text-xs text-charcoal/48">Final price is calculated again before checkout.</p>
-
             {!validation.allowed ? (
-              <div className="border border-primary/25 bg-primary/10 p-4 text-sm leading-6 text-primary">
-                <p>{validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote."}</p>
+              <div className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-6 text-center shadow-sm">
+                <p className="text-sm font-medium text-primary">{validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote."}</p>
                 {validation.contactRequired ? (
-                  <a href="/contact" className="mt-3 inline-flex min-h-10 items-center justify-center border border-primary/40 px-4 text-xs uppercase tracking-[0.16em] text-primary">
+                  <a href="/contact" className="inline-flex min-h-10 items-center justify-center rounded-full bg-white border border-primary/30 px-6 text-xs font-bold uppercase tracking-[0.16em] text-primary shadow-sm hover:bg-primary hover:text-white transition-colors">
                     Contact our editors
                   </a>
                 ) : null}
@@ -899,11 +1009,11 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             ) : null}
 
             {paymentError && (
-              <div className="p-4 border border-red-500/30 bg-red-500/10 text-red-300 text-sm flex items-start gap-3">
-                <svg className="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              <div className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-700 shadow-sm">
+                <svg className="h-5 w-5 shrink-0 mt-0.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
                 <div>
-                  <p className="font-medium">Payment Error</p>
-                  <p className="mt-1 text-red-300/80">{paymentError}</p>
+                  <p className="font-bold">Payment Error</p>
+                  <p className="mt-1 opacity-90">{paymentError}</p>
                 </div>
               </div>
             )}
@@ -911,7 +1021,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             <button
               onClick={handlePayment}
               disabled={isSubmitting || checkoutBlocked}
-              className="min-h-14 w-full rounded-full bg-cta px-5 text-base font-semibold text-white shadow-[0_18px_40px_rgba(31,143,90,0.18)] transition-all duration-300 hover:bg-cta-active disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]"
+              className="min-h-[3.75rem] w-full rounded-xl bg-cta px-6 text-base font-bold text-white shadow-[0_12px_30px_rgba(31,143,90,0.2)] transition-all duration-300 hover:bg-cta-active hover:shadow-[0_16px_40px_rgba(31,143,90,0.25)] hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none active:scale-[0.98]"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-3">
