@@ -71,12 +71,16 @@ function normalizeRow(row: any) {
 }
 
 function categoriesWithRows(rows: any[]) {
-  const latestByKey = new Map<string, any>();
+  const latestActiveByKey = new Map<string, any>();
 
   for (const row of rows.map(normalizeRow)) {
-    const existing = latestByKey.get(row.category_key);
+    const hasParsedContent = Array.isArray(row.parsed_content_json) && row.parsed_content_json.length > 0;
+    const isCurrentDocument = row.is_active && row.status !== "deleted" && row.parse_status !== "none" && hasParsedContent;
+    if (!isCurrentDocument) continue;
+
+    const existing = latestActiveByKey.get(row.category_key);
     if (!existing || new Date(row.updated_at || 0).getTime() > new Date(existing.updated_at || 0).getTime()) {
-      latestByKey.set(row.category_key, row);
+      latestActiveByKey.set(row.category_key, row);
     }
   }
 
@@ -85,7 +89,7 @@ function categoriesWithRows(rows: any[]) {
     category_label: example.title,
     document_title: example.documentTitle,
     accent: example.accent,
-    record: latestByKey.get(example.key) || null,
+    record: latestActiveByKey.get(example.key) || null,
   }));
 }
 
@@ -283,30 +287,17 @@ export async function POST(req: Request) {
     if (duplicateIds.length) {
       let { error: duplicateError } = await auth.adminClient
         .from("work_examples")
-        .update({
-          status: "deleted",
-          is_active: false,
-          parsed_content_json: [],
-          parsed_content: [],
-          source_file_name: null,
-          source_file_path: null,
-          source_doc_url: null,
-          parse_status: "none",
-          parse_warning: null,
-          parsed_block_count: 0,
-          updated_at: now,
-        })
+        .delete()
         .in("id", duplicateIds);
 
       if (duplicateError) {
-        console.warn("Work example duplicate cleanup with current schema failed, retrying legacy schema:", duplicateError);
+        console.warn("Work example duplicate delete failed, retrying legacy cleanup:", duplicateError);
         const legacyCleanup = await auth.adminClient
           .from("work_examples")
           .update({
             is_active: false,
             parsed_content: [],
             source_file_path: null,
-            updated_at: now,
           })
           .in("id", duplicateIds);
         duplicateError = legacyCleanup.error;
@@ -363,30 +354,17 @@ export async function DELETE(req: Request) {
 
   let { error } = await auth.adminClient
     .from("work_examples")
-    .update({
-      status: "deleted",
-      is_active: false,
-      parsed_content_json: [],
-      parsed_content: [],
-      source_file_name: null,
-      source_file_path: null,
-      source_doc_url: null,
-      parse_status: "none",
-      parse_warning: null,
-      parsed_block_count: 0,
-      updated_at: new Date().toISOString(),
-    })
+    .delete()
     .in("id", ids);
 
   if (error) {
-    console.warn("Work example delete with current schema failed, retrying legacy schema:", error);
+    console.warn("Work example row delete failed, retrying legacy deactivation:", error);
     const legacyResult = await auth.adminClient
       .from("work_examples")
       .update({
         is_active: false,
         parsed_content: [],
         source_file_path: null,
-        updated_at: new Date().toISOString(),
       })
       .in("id", ids);
     error = legacyResult.error;

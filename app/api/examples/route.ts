@@ -88,15 +88,18 @@ export async function GET() {
       }
     }
 
-    const latestByKey = new Map<string, ReturnType<typeof normalizePublicCandidate>>();
+    const latestActiveByKey = new Map<string, NonNullable<ReturnType<typeof normalizePublicCandidate>>>();
     for (const row of data || []) {
       const normalized = normalizePublicCandidate(row);
-      if (normalized && !latestByKey.has(normalized.key)) {
-        latestByKey.set(normalized.key, normalized);
+      if (!normalized?.example) continue;
+
+      const existing = latestActiveByKey.get(normalized.key);
+      if (!existing || new Date(normalized.updated_at || 0).getTime() > new Date(existing.updated_at || 0).getTime()) {
+        latestActiveByKey.set(normalized.key, normalized);
       }
     }
 
-    return noStoreResponse(Array.from(latestByKey.values()).map((entry) => entry?.example).filter(Boolean));
+    return noStoreResponse(Array.from(latestActiveByKey.values()).map((entry) => entry.example));
   } catch (error) {
     console.error("Public work examples route failed:", error);
     return noStoreResponse([]);
