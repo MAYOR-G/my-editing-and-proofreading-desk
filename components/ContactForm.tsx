@@ -12,6 +12,8 @@ type ContactFormProps = {
 
 type SubmitState = "idle" | "sending" | "success" | "error";
 
+const attachmentAccept = ".doc,.docx,.pdf,.txt,.rtf,.odt,.csv,.xls,.xlsx,.ppt,.pptx,.zip,.png,.jpg,.jpeg,.webp";
+
 export function ContactForm({ source = "Contact Form", defaultName = "", defaultEmail = "", compact = false }: ContactFormProps) {
   const [state, setState] = useState<SubmitState>("idle");
   const [feedback, setFeedback] = useState("");
@@ -159,17 +161,18 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
           />
         </label>
 
-        {compact ? (
-          <label className="grid min-w-0 gap-2 text-sm font-medium text-ink">
-            Attach document
-            <input
-              name="attachment"
-              type="file"
-              accept=".doc,.docx,.txt,.pdf,.png,.jpg,.jpeg,.webp"
-              className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
-            />
-          </label>
-        ) : null}
+        <label className="grid min-w-0 gap-2 text-sm font-medium text-ink">
+          Attach document <span className="text-xs font-normal text-body">Optional</span>
+          <input
+            name="attachment"
+            type="file"
+            accept={attachmentAccept}
+            className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+          />
+          <span className="text-xs font-normal leading-5 text-body">
+            PDF, Word, text, spreadsheet, presentation, image, or ZIP files up to 25MB.
+          </span>
+        </label>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button

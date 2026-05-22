@@ -25,6 +25,9 @@ ALTER TABLE public.contact_message_replies
   ADD COLUMN IF NOT EXISTS attachment_content_type TEXT,
   ADD COLUMN IF NOT EXISTS attachment_file_size INTEGER;
 
+ALTER TABLE public.contact_message_replies
+  ALTER COLUMN sent_to SET DEFAULT 'support@business.editandproofread.com';
+
 ALTER TABLE public.projects
   ADD COLUMN IF NOT EXISTS delivery_file_name TEXT,
   ADD COLUMN IF NOT EXISTS delivery_content_type TEXT,

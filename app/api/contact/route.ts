@@ -18,7 +18,24 @@ function makeSubject(subject: string, service?: string) {
 }
 
 const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
-const ALLOWED_ATTACHMENT_EXTENSIONS = new Set([".doc", ".docx", ".txt", ".pdf", ".png", ".jpg", ".jpeg", ".webp"]);
+const ALLOWED_ATTACHMENT_EXTENSIONS = new Set([
+  ".doc",
+  ".docx",
+  ".pdf",
+  ".txt",
+  ".rtf",
+  ".odt",
+  ".csv",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".zip",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".webp",
+]);
 
 function getExtension(filename: string) {
   const dotIndex = filename.lastIndexOf(".");
@@ -93,7 +110,7 @@ export async function POST(request: Request) {
       const extension = getExtension(attachment.name);
       if (!ALLOWED_ATTACHMENT_EXTENSIONS.has(extension)) {
         return NextResponse.json(
-          { error: "Unsupported attachment type. Use DOC, DOCX, TXT, PDF, PNG, JPG, or WEBP." },
+          { error: "Unsupported attachment type. Use a document, PDF, text, spreadsheet, presentation, image, or ZIP file." },
           { status: 415 }
         );
       }
@@ -129,6 +146,7 @@ export async function POST(request: Request) {
       service ? `Service interest: ${service}` : "",
       wordCount ? `Estimated word count: ${wordCount}` : "",
       turnaround ? `Preferred turnaround: ${turnaround}` : "",
+      attachmentMeta ? `Attachment: ${attachmentMeta.attachment_file_name} (${attachmentMeta.attachment_content_type || "unknown type"})` : "",
       message,
     ].filter(Boolean).join("\n\n");
 
@@ -147,6 +165,7 @@ export async function POST(request: Request) {
       ? await supabaseAdmin.from("contact_message_replies").insert({
           message_id: existingThread.id,
           reply: content,
+          sent_to: SUPPORT_EMAIL,
           sender_type: "user",
           sender_name: name,
           sender_email: email,

@@ -171,6 +171,12 @@ async function getReceivedEmail(event: any) {
 export async function POST(request: Request) {
   try {
     const payload = await request.text();
+    const previewEvent = JSON.parse(payload);
+
+    if (previewEvent?.type && previewEvent.type !== "email.received") {
+      return NextResponse.json({ received: true, ignored: previewEvent.type, version: INBOUND_HANDLER_VERSION });
+    }
+
     const event = await verifyResendEvent(request, payload);
 
     if (event?.type && event.type !== "email.received") {
