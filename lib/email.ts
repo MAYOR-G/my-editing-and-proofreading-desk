@@ -305,6 +305,38 @@ export async function sendDocumentReceivedEmail(to: string, project: {
   });
 }
 
+export async function sendProjectSubmittedEmail(to: string, project: {
+  clientName?: string | null;
+  friendlyId: string;
+  service: string;
+  wordCount: number;
+  turnaround: string;
+  paymentStatus?: string | null;
+}) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to,
+    subject: "Your project has been submitted",
+    html: brandedEmail({
+      preheader: `Project ${project.friendlyId} has been submitted.`,
+      title: "Project submitted successfully",
+      children: `
+        <p>Hello ${escapeHtml(project.clientName || "there")},</p>
+        <p>We've received your document and project details.</p>
+        ${detailList([
+          ["Project ID", project.friendlyId],
+          ["Service", project.service],
+          ["Word count", Number(project.wordCount || 0).toLocaleString()],
+          ["Turnaround", project.turnaround],
+          ["Payment status", project.paymentStatus || "Unpaid"],
+        ])}
+        <p>Once payment is confirmed, our team will begin working on your document. You can complete payment anytime from your dashboard.</p>
+      `,
+    }),
+  });
+}
+
 export async function sendEditorNotificationEmail(project: {
   friendlyId: string;
   clientName?: string | null;
@@ -318,17 +350,19 @@ export async function sendEditorNotificationEmail(project: {
   paymentStatus?: string | null;
   documentPath?: string | null;
   projectUrl?: string | null;
+  paid?: boolean;
 }) {
+  const isPaid = project.paid ?? project.paymentStatus === "paid";
   return sendEmail({
     from: `${BRAND_NAME} <${ADMIN_EMAIL}>`,
     replyTo: ADMIN_EMAIL,
     to: getInternalRecipient(),
-    subject: "New paid project received",
+    subject: isPaid ? "New paid project received" : "New unpaid project submitted",
     html: brandedEmail({
-      preheader: `New paid project ${project.friendlyId}.`,
-      title: "New paid project received",
+      preheader: `${isPaid ? "New paid project" : "New unpaid project"} ${project.friendlyId}.`,
+      title: isPaid ? "New paid project received" : "New unpaid project submitted",
       children: `
-        <p>A new paid project has been submitted.</p>
+        <p>${isPaid ? "A new paid project has been submitted." : "A new project has been submitted and is waiting for payment."}</p>
         ${detailList([
           ["Client", project.clientName || "Client"],
           ["Email", project.clientEmail || "Not available"],
@@ -337,8 +371,8 @@ export async function sendEditorNotificationEmail(project: {
           ["Target journal", project.targetJournal || "Not provided"],
           ["Word count", Number(project.wordCount || 0).toLocaleString()],
           ["Turnaround", project.turnaround],
-          ["Amount paid", formatMoney(project.amount, project.currency || "USD")],
-          ["Payment status", project.paymentStatus || "paid"],
+          [isPaid ? "Amount paid" : "Amount due", formatMoney(project.amount, project.currency || "USD")],
+          ["Payment status", project.paymentStatus || (isPaid ? "paid" : "unpaid")],
           ...(project.documentPath ? [["Document path", project.documentPath] as [string, unknown]] : []),
         ])}
         ${project.projectUrl ? `<p><a href="${escapeHtml(project.projectUrl)}" style="color:#1f5f8f; font-weight:700;">Open project dashboard</a></p>` : ""}

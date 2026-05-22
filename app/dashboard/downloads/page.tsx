@@ -2,6 +2,26 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { StatusBadge } from "@/components/DashboardShell";
 import Link from "next/link";
+import { getDashboardProjectsForUser } from "@/lib/dashboard-projects";
+
+function displayPaymentStatus(status?: string | null) {
+  if (status === "paid") return "Paid";
+  if (status === "failed") return "Failed payment";
+  if (status === "processing") return "Pending payment";
+  if (status === "pending") return "Pending payment";
+  return "Unpaid";
+}
+
+function isCompletedProject(status?: string | null) {
+  return String(status || "").trim().toLowerCase() === "completed";
+}
+
+function displayProjectStatus(status?: string | null) {
+  const value = String(status || "Completed").trim().toLowerCase();
+  if (value === "completed") return "Completed";
+  if (value === "in_progress" || value === "in progress") return "In Progress";
+  return "Pending";
+}
 
 export default async function DashboardDownloadsPage() {
   const supabase = createClient();
@@ -11,14 +31,9 @@ export default async function DashboardDownloadsPage() {
     redirect("/login");
   }
 
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("client_id", user.id)
-    .eq("status", "Completed")
-    .order("created_at", { ascending: false });
+  const projects = await getDashboardProjectsForUser(user);
 
-  const completedProjects = projects || [];
+  const completedProjects = projects.filter((project) => isCompletedProject(project.status));
 
   return (
     <>
@@ -37,16 +52,32 @@ export default async function DashboardDownloadsPage() {
       <section className="mt-8 grid gap-4 md:grid-cols-2">
         {completedProjects.length > 0 ? completedProjects.map((project) => (
           <div key={project.id} className="border border-ink/10 bg-ivory/90 p-6">
-            <StatusBadge>{project.status}</StatusBadge>
+            <div className="flex flex-wrap gap-2">
+              <StatusBadge>{displayProjectStatus(project.status)}</StatusBadge>
+              <StatusBadge>{displayPaymentStatus(project.payment_status)}</StatusBadge>
+            </div>
             <p className="mt-5 text-lg text-ink font-display">{project.service_type} Delivery</p>
             <p className="mt-3 text-sm font-light leading-6 text-charcoal/60">Secure file linked to {project.friendly_id}.</p>
-            <div className="mt-6 flex gap-3">
-              <button className="min-h-11 border border-ink/10 px-5 text-sm transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
-                Download document
-              </button>
-              <button className="min-h-11 border border-ink/10 px-5 text-sm transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
-                Editor notes
-              </button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {project.delivery_file_path ? (
+                <>
+                  <Link href={`/api/projects/${project.id}/file?file=delivery&action=view`} className="inline-flex min-h-11 items-center border border-ink/10 px-5 text-sm transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                    View completed file
+                  </Link>
+                  <Link href={`/api/projects/${project.id}/file?file=delivery&action=download`} className="inline-flex min-h-11 items-center border border-ink/10 px-5 text-sm transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                    Download completed file
+                  </Link>
+                </>
+              ) : (
+                <p className="text-sm font-light leading-6 text-charcoal/60">
+                  The completed file is not attached yet.
+                </p>
+              )}
+              {project.uploaded_file_path || project.upload_file_path ? (
+                <Link href={`/api/projects/${project.id}/file?action=download`} className="inline-flex min-h-11 items-center border border-ink/10 px-5 text-sm transition duration-200 ease-premium-out hover:border-gold hover:text-gold-deep active:scale-[0.98]">
+                  Download submitted document
+                </Link>
+              ) : null}
             </div>
           </div>
         )) : (

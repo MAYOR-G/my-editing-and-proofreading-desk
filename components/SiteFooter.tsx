@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { servicePages } from "@/lib/content";
-import { SUPPORT_EMAIL } from "@/lib/contact-info";
+import { COMPANY_PHONE, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 const platformLinks = [
   { href: "/about", label: "About us" },
@@ -37,6 +37,9 @@ export function SiteFooter() {
             <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Editorial inquiries</p>
             <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-3 block break-words font-display text-2xl font-bold leading-tight text-surface-soft transition hover:text-primary">
               {SUPPORT_EMAIL}
+            </a>
+            <a href="tel:+14088728603" className="mt-3 block text-sm font-semibold text-surface-soft/75 transition hover:text-primary">
+              {COMPANY_PHONE}
             </a>
             <p className="mt-4 text-sm leading-6 text-surface-soft/50">Include document type, expected word count, and deadline.</p>
           </div>

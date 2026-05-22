@@ -2,6 +2,18 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { MetricPanel, EmptyState } from "@/components/DashboardShell";
 import Link from "next/link";
+import { getDashboardProjectsForUser } from "@/lib/dashboard-projects";
+
+function isCompletedProject(status?: string | null) {
+  return String(status || "").trim().toLowerCase() === "completed";
+}
+
+function displayProjectStatus(status?: string | null) {
+  const value = String(status || "Pending").trim().toLowerCase();
+  if (value === "completed") return "Completed";
+  if (value === "in_progress" || value === "in progress") return "In Progress";
+  return "Pending";
+}
 
 export default async function DashboardOverviewPage() {
   const supabase = createClient();
@@ -17,16 +29,12 @@ export default async function DashboardOverviewPage() {
     .eq("id", user.id)
     .single();
 
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("client_id", user.id)
-    .order("created_at", { ascending: false });
+  const projects = await getDashboardProjectsForUser(user);
 
-  const activeProjects = projects?.filter(p => p.status !== "Completed") || [];
-  const completedProjects = projects?.filter(p => p.status === "Completed") || [];
-  const totalPaid = projects?.filter(p => p.payment_status === "paid").reduce((acc, curr) => acc + (curr.price || 0), 0) || 0;
-  const recentProjects = projects?.slice(0, 3) || [];
+  const activeProjects = projects.filter(p => !isCompletedProject(p.status));
+  const completedProjects = projects.filter(p => isCompletedProject(p.status));
+  const totalPaid = projects.filter(p => p.payment_status === "paid").reduce((acc, curr) => acc + (curr.price || 0), 0);
+  const recentProjects = projects.slice(0, 3);
 
   const displayName = profile?.full_name || user.user_metadata?.full_name || "Client";
   const firstName = displayName.split(" ")[0];
@@ -103,7 +111,7 @@ export default async function DashboardOverviewPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-ink">${project.price?.toFixed(2) || "0.00"}</p>
-                  <p className="mt-0.5 text-xs text-charcoal/50">{project.status}</p>
+                  <p className="mt-0.5 text-xs text-charcoal/50">{displayProjectStatus(project.status)}</p>
                 </div>
               </div>
             ))}

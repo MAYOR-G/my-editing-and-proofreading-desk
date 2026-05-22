@@ -79,6 +79,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       provider,
+      project_id,
       selected_services,
       service_type,
       turnaround,
@@ -132,6 +133,138 @@ export async function POST(request: Request) {
         },
         { status: 503 }
       );
+    }
+
+    // Existing submitted project: initialize payment without creating a duplicate project.
+    if (project_id) {
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("email")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile?.email) {
+        console.error(`[${trace}] Checkout profile lookup failed for user ${user.id}`);
+        return NextResponse.json(
+          { error: "We could not find your client profile. Please sign out and sign in again.", code: "profile_not_found", trace_id: trace },
+          { status: 400 }
+        );
+      }
+
+      const { data: existingProject, error: projectError } = await supabaseAdmin
+        .from("projects")
+        .select("id, friendly_id, client_id, price, final_price, payment_status, status, service_type, selected_services, target_journal, word_count, turnaround")
+        .eq("id", project_id)
+        .eq("client_id", user.id)
+        .single();
+
+      if (projectError || !existingProject) {
+        return NextResponse.json(
+          { error: "We could not find this project. Please refresh your dashboard and try again.", code: "project_not_found", trace_id: trace },
+          { status: 404 }
+        );
+      }
+
+      if (existingProject.payment_status === "paid") {
+        return NextResponse.json(
+          { error: "This project has already been paid.", code: "already_paid", trace_id: trace },
+          { status: 409 }
+        );
+      }
+
+      const reference = generateReference();
+      const currency = "USD";
+      const amount = Number(existingProject.final_price || existingProject.price || 0);
+      const amountInCents = Math.round(amount * 100);
+
+      if (!amountInCents || amountInCents <= 0) {
+        return NextResponse.json(
+          { error: "We could not confirm the payable amount for this project.", code: "invalid_amount", trace_id: trace },
+          { status: 400 }
+        );
+      }
+
+      const { error: updateProjectError } = await supabaseAdmin
+        .from("projects")
+        .update({
+          payment_status: "pending",
+          payment_provider: paymentProviderName,
+          selected_payment_method: paymentProviderName,
+          payment_reference: reference,
+          transaction_reference: reference,
+          payment_currency: currency,
+        })
+        .eq("id", existingProject.id)
+        .neq("payment_status", "paid");
+
+      if (updateProjectError) {
+        console.error(`[${trace}] Existing project payment reference update failed:`, updateProjectError);
+        return NextResponse.json(
+          { error: "We could not prepare this project for payment. Please try again.", code: "project_payment_update_failed", trace_id: trace },
+          { status: 500 }
+        );
+      }
+
+      const { error: paymentRecordError } = await supabaseAdmin
+        .from("payment_records")
+        .insert({
+          order_id: existingProject.id,
+          user_id: user.id,
+          provider: paymentProviderName,
+          transaction_reference: reference,
+          amount,
+          currency,
+          status: "pending",
+        });
+
+      if (paymentRecordError) {
+        console.warn(`[${trace}] Payment record creation skipped:`, paymentRecordError.message);
+      }
+
+      const siteUrl = getSafeAppUrl();
+      const callbackUrl = `${siteUrl}/dashboard/payment/success?reference=${encodeURIComponent(reference)}&provider=${paymentProviderName}`;
+      const paymentProvider = getProvider(paymentProviderName);
+
+      try {
+        const result = await paymentProvider.initialize({
+          email: profile.email,
+          amount: amountInCents,
+          currency,
+          reference,
+          callbackUrl,
+          metadata: {
+            project_id: existingProject.id,
+            friendly_id: existingProject.friendly_id,
+            service_type: existingProject.service_type,
+            selected_services: existingProject.selected_services,
+            target_journal: existingProject.target_journal,
+            word_count: existingProject.word_count,
+            turnaround: existingProject.turnaround,
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          authorization_url: result.authorizationUrl,
+          reference: result.reference,
+          project_id: existingProject.id,
+          price: amount,
+          final_total: amount,
+          currency,
+        });
+      } catch (paymentError) {
+        console.error(`[${trace}] Payment provider initialization error:`, paymentError);
+        await supabaseAdmin
+          .from("projects")
+          .update({ payment_status: "failed" })
+          .eq("id", existingProject.id)
+          .eq("transaction_reference", reference);
+
+        return NextResponse.json(
+          { error: "We could not start secure checkout. Please try again or contact support.", code: "payment_provider_failed", trace_id: trace },
+          { status: 502 }
+        );
+      }
     }
 
     const submittedServices = Array.isArray(selected_services) ? selected_services : service_type ? [service_type] : [];

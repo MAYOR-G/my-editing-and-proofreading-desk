@@ -11,6 +11,7 @@ const CONTENT_TYPES: Record<string, string> = {
   ".doc": "application/msword",
   ".txt": "text/plain",
 };
+const STORAGE_RETRY_DELAYS_MS = [350, 1000];
 
 function createTraceId() {
   return `upl_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -28,6 +29,15 @@ function sanitizeFilename(filename: string) {
     .slice(0, 120);
 
   return cleaned || "document";
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientStorageError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || "");
+  return /fetch failed|timeout|socket|network|econnreset|etimedout/i.test(message);
 }
 
 export async function POST(request: Request) {
@@ -81,24 +91,48 @@ export async function POST(request: Request) {
 
     const safeName = sanitizeFilename(file.name);
     const filePath = `${user.id}/${Date.now()}_${safeName}`;
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const contentType = file.type || CONTENT_TYPES[extension] || "application/octet-stream";
     const supabaseAdmin = createSupabaseAdminClient();
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from("uploads")
-      .upload(filePath, file, {
-        contentType: file.type || CONTENT_TYPES[extension] || "application/octet-stream",
-        upsert: false,
+    let uploadError: unknown = null;
+
+    for (let attempt = 0; attempt <= STORAGE_RETRY_DELAYS_MS.length; attempt += 1) {
+      const result = await supabaseAdmin.storage
+        .from("uploads")
+        .upload(filePath, fileBuffer, {
+          contentType,
+          upsert: false,
+        });
+
+      uploadError = result.error;
+      if (!uploadError) break;
+      if (!isTransientStorageError(uploadError) || attempt === STORAGE_RETRY_DELAYS_MS.length) break;
+
+      console.warn(`[${traceId}] Supabase storage upload retrying`, {
+        attempt: attempt + 1,
+        message: uploadError instanceof Error ? uploadError.message : String(uploadError),
       });
+      await sleep(STORAGE_RETRY_DELAYS_MS[attempt]);
+    }
 
     if (uploadError) {
       console.error(`[${traceId}] Supabase storage upload failed`, {
-        message: uploadError.message,
-        name: uploadError.name,
-        status: "status" in uploadError ? uploadError.status : undefined,
+        message: uploadError instanceof Error ? uploadError.message : String(uploadError),
+        name: uploadError instanceof Error ? uploadError.name : undefined,
+        status: typeof uploadError === "object" && uploadError && "status" in uploadError ? uploadError.status : undefined,
       });
 
+      const transient = isTransientStorageError(uploadError);
+
       return NextResponse.json(
-        { error: "We could not upload your document. Please try again or contact support.", code: "upload_failed", trace_id: traceId },
-        { status: 500 }
+        {
+          error: transient
+            ? "Supabase Storage is not reachable right now. Please try again in a moment."
+            : "We could not upload your document. Please try again or contact support.",
+          code: transient ? "storage_unreachable" : "upload_failed",
+          trace_id: traceId,
+        },
+        { status: transient ? 503 : 500 }
       );
     }
 

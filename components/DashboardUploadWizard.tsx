@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
 import { type PaymentSettings } from "@/lib/payment-settings";
 import {
@@ -41,6 +41,13 @@ const PROVIDER_INITIALS: Record<PaymentProviderName, string> = {
 const FORMAT_INSTRUCTION_OPTIONS = new Set(["Custom formatting", "Other", "Non-standard consistency"]);
 
 type PaymentReadiness = Record<PaymentProviderName, { configured: boolean; message: string | null }>;
+type SubmittedProject = {
+  id: string;
+  friendlyId: string;
+  amount: number;
+  paymentStatus: string;
+  status: string;
+};
 
 function includesFormattingService(services: string[]) {
   return services.some((service) => service === "Formatting" || service === "Formatting Style");
@@ -84,7 +91,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [activeServiceModal, setActiveServiceModal] = useState<"formatting" | "translation" | null>(null);
 
   // Payment state
-  const [provider, setProvider] = useState<PaymentProviderName>("paystack");
+  const [provider, setProvider] = useState<PaymentProviderName | "">("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [providerNotice, setProviderNotice] = useState<string | null>(null);
@@ -94,6 +101,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const [paymentSettingsError, setPaymentSettingsError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [pricingNotice, setPricingNotice] = useState("");
+  const [submittedProject, setSubmittedProject] = useState<SubmittedProject | null>(null);
+  const paymentSectionRef = useRef<HTMLDivElement | null>(null);
 
   const priceBreakdown = wordCount ? calculatePrice(wordCount, selectedServices, turnaroundDays) : null;
   const isWritingSupport = isWritingSupportService(selectedServices);
@@ -108,7 +117,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const validation: PricingValidation = wordCount && !isWritingSupport ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
   const checkoutBlocked = !validation.allowed;
   const standardDays = getStandardTurnaroundDays(wordCount ?? 1);
-  const selectedProviderLabel = PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Paystack";
+  const selectedProviderLabel = provider ? PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Selected provider" : "Select payment method";
   const activePaymentProviders = useMemo(() => {
     if (!paymentSettings) return [];
     return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`] && paymentReadiness?.[item.id]?.configured !== false);
@@ -149,10 +158,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
         if (cancelled) return;
         setPaymentSettings(data.settings);
         setPaymentReadiness(data.readiness || null);
-        const availableProviders = PAYMENT_PROVIDERS.filter((item) => data.settings[`${item.id}_enabled`] && data.readiness?.[item.id]?.configured !== false);
-        if (availableProviders.length > 0) {
-          setProvider((current) => availableProviders.some((item) => item.id === current) ? current : availableProviders[0].id);
-        }
       } catch (error: any) {
         if (!cancelled) setPaymentSettingsError(error.message || "Payment settings could not be loaded.");
       } finally {
@@ -166,6 +171,14 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!submittedProject) return;
+
+    window.setTimeout(() => {
+      paymentSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 80);
+  }, [submittedProject]);
 
   const validateServiceExtras = () => {
     const errors: Record<string, string> = {};
@@ -278,34 +291,35 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     finally { setIsParsing(false); }
   };
 
-  const handlePayment = async () => {
+  const projectPayload = (filePath: string) => ({
+    selected_services: selectedServices,
+    service_type: selectedServices.join(", "),
+    turnaround,
+    word_count: wordCount,
+    detected_word_count: detectedWordCount || wordCount,
+    adjusted_word_count: adjustedWordCount.trim() ? wordCount : null,
+    final_word_count: wordCount,
+    file_path: filePath,
+    title: file?.name,
+    client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
+    document_type: documentType,
+    target_journal: targetJournal.trim() || null,
+    formatting_style: formattingStyle,
+    formatting_instructions: formattingInstructions.trim() || null,
+    translation_preference: translationPreference || null,
+    translation_target_language: translationTargetLanguage.trim() || null,
+    english_type: englishType,
+  });
+
+  const handleSubmitProject = async () => {
     if (!file || !wordCount) return;
     if (!validateServiceExtras()) {
-      setPaymentError("Please complete the required service details before checkout.");
+      setPaymentError("Please complete the required service details before submitting.");
       setStep(3);
       return;
     }
     if (checkoutBlocked) {
       setPaymentError(validation.message || "This document requires a custom editorial timeline. Please contact our editors for a tailored quote.");
-      return;
-    }
-    if (isLoadingPaymentSettings) {
-      setPaymentError("Payment methods are still loading. Please wait a moment.");
-      return;
-    }
-    if (paymentSettingsError || !hasAvailablePaymentMethods) {
-      setPaymentError(paymentSettingsError || "No payment method is currently available. Please contact support.");
-      return;
-    }
-    if (!activePaymentProviders.some((item) => item.id === provider)) {
-      setPaymentError("Please choose an available payment method.");
-      setStep(4);
-      return;
-    }
-
-    const providerConfig = PAYMENT_PROVIDERS.find((item) => item.id === provider);
-    if (paymentReadiness?.[provider] && !paymentReadiness[provider].configured) {
-      setPaymentError(`${providerConfig?.label || "This payment method"} is currently unavailable. Please contact support or try another payment method.`);
       return;
     }
 
@@ -314,7 +328,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     setProviderNotice(null);
 
     try {
-      // 1. Upload file through the authenticated server route.
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
       const uploadRes = await fetch("/api/uploads/document", {
@@ -335,61 +348,83 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
 
       const filePath = uploadData.file_path;
 
-      // 2. Initialize payment (server calculates price)
-      const res = await fetch("/api/payments/initialize", {
+      const res = await fetch("/api/projects/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider,
-          selected_services: selectedServices,
-          service_type: selectedServices.join(", "),
-          turnaround,
-          word_count: wordCount,
-          detected_word_count: detectedWordCount || wordCount,
-          adjusted_word_count: adjustedWordCount.trim() ? wordCount : null,
-          final_word_count: wordCount,
-          file_path: filePath,
-          title: file.name,
-          client_notes: [academicField ? `Field / industry: ${academicField}` : "", notes].filter(Boolean).join("\n\n"),
-          document_type: documentType,
-          target_journal: targetJournal.trim() || null,
-          formatting_style: formattingStyle,
-          formatting_instructions: formattingInstructions.trim() || null,
-          translation_preference: translationPreference || null,
-          translation_target_language: translationTargetLanguage.trim() || null,
-          english_type: englishType,
-        }),
+        body: JSON.stringify(projectPayload(filePath)),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        console.error("Checkout initialization failed:", {
+        console.error("Project submission failed:", {
           status: res.status,
           code: data.code,
           error: data.error,
           traceId: data.trace_id,
         });
 
-        if (data.code === "checkout_setup_required") {
-          throw new Error("Checkout is temporarily unavailable while we finish a database update. Please contact support if this continues.");
-        }
-
-        if (data.code === "payment_provider_failed") {
-          throw new Error("We could not start secure checkout. Please try again or contact support.");
-        }
-
-        if (data.code === "order_create_failed") {
-          throw new Error("We could not create your order. Please try again or contact support.");
-        }
-
         if (data.code === "profile_not_found" || data.code === "auth_required") {
-          throw new Error(data.error || "Please sign in again before checkout.");
+          throw new Error(data.error || "Please sign in again before submitting.");
         }
 
-        throw new Error(data.error || "We could not prepare your order. Please try again or contact support.");
+        throw new Error(data.error || "We could not submit your project. Please try again or contact support.");
       }
 
-      // 3. Redirect to payment provider
+      setSubmittedProject({
+        id: data.project_id,
+        friendlyId: data.friendly_id,
+        amount: Number(data.final_total || data.amount || finalPaymentTotal),
+        paymentStatus: data.payment_status || "pending",
+        status: data.status || "Pending",
+      });
+      setPaymentError(null);
+    } catch (err: any) {
+      setPaymentError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePayment = async () => {
+    if (!submittedProject) return;
+    if (isLoadingPaymentSettings) {
+      setPaymentError("Payment methods are still loading. Please wait a moment.");
+      return;
+    }
+    if (paymentSettingsError || !hasAvailablePaymentMethods) {
+      setPaymentError(paymentSettingsError || "No payment method is currently available. Please contact support.");
+      return;
+    }
+    if (!provider || !activePaymentProviders.some((item) => item.id === provider)) {
+      setPaymentError("Please choose an available payment method.");
+      return;
+    }
+
+    const providerConfig = PAYMENT_PROVIDERS.find((item) => item.id === provider);
+    if (paymentReadiness?.[provider] && !paymentReadiness[provider].configured) {
+      setPaymentError(`${providerConfig?.label || "This payment method"} is currently unavailable. Please contact support or try another payment method.`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setPaymentError(null);
+    setProviderNotice(null);
+
+    try {
+      const res = await fetch("/api/payments/initialize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          provider,
+          project_id: submittedProject.id,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "We could not prepare payment. Please try again or contact support.");
+      }
+
       window.location.href = data.authorization_url;
     } catch (err: any) {
       setPaymentError(err.message || "Something went wrong. Please try again.");
@@ -397,11 +432,11 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
     }
   };
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   const renderStepIndicator = () => (
     <div className="mb-8 flex items-center justify-between border-b border-hairline pb-5">
-      {[1, 2, 3, 4, 5].map((s) => (
+      {[1, 2, 3, 4].map((s) => (
         <div key={s} className="flex flex-1 items-center last:flex-none">
           <div className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${step >= s ? "border-primary bg-primary text-white shadow-[0_12px_28px_rgba(23,74,124,0.18)]" : "border-hairline bg-surface-soft text-muted"}`}>
             {step > s ? "✓" : s}
@@ -859,92 +894,67 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
           </div>
         )}
 
-        {/* Step 4: Payment Provider Selection */}
+        {/* Step 4: Order Summary + Submit */}
         {step === 4 && (
           <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Select payment method</h2>
-              <p className="text-sm text-charcoal/68">Choose your preferred secure payment gateway.</p>
+              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">{submittedProject ? "Project submitted successfully." : "Review & submit"}</h2>
+              <p className="text-sm text-charcoal/68">
+                {submittedProject
+                  ? "We've received your document and project details. You can complete payment now or return to this project later from your dashboard."
+                  : "Review your project details. Submitting will save the project before payment."}
+              </p>
             </div>
-            
-            {isLoadingPaymentSettings ? (
-              <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 text-sm font-medium text-primary animate-pulse">
-                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                Loading available payment methods...
-              </div>
-            ) : paymentSettingsError ? (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-sm font-medium text-red-700 shadow-sm">
-                {paymentSettingsError}
-              </div>
-            ) : !hasAvailablePaymentMethods ? (
-              <div className="rounded-xl border border-hairline bg-surface-soft p-6 text-center text-sm font-medium text-charcoal/68 shadow-sm">
-                No payment method is currently available. Please contact support.
-              </div>
-            ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {activePaymentProviders.map((info) => {
-                const isSelected = provider === info.id;
 
-                return (
-                <button
-                  key={info.id}
-                  type="button"
-                  onClick={() => {
-                    setProvider(info.id);
-                    setProviderNotice(null);
-                  }}
-                  className={`group relative rounded-xl border p-5 text-left transition-all duration-300 ${
-                    isSelected
-                      ? "border-primary bg-primary/[0.03] shadow-[0_4px_16px_rgba(23,74,124,0.06)] ring-1 ring-primary/20"
-                      : "border-hairline bg-surface-soft hover:border-primary/40 hover:bg-ivory hover:shadow-sm"
-                  }`}
-                >
-                  <div className="absolute right-4 top-4 flex h-4 w-4 items-center justify-center rounded-[4px] border transition-colors">
-                    {isSelected ? (
-                      <span className="flex h-full w-full items-center justify-center bg-primary text-white border-primary">
-                        <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      </span>
-                    ) : (
-                      <span className="h-full w-full border-hairline bg-ivory group-hover:border-primary/40" />
-                    )}
+            {submittedProject ? (
+              <div className="rounded-2xl border border-cta/25 bg-cta/[0.04] p-6 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-cta">Saved project</p>
+                <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                  <div>
+                    <span className="text-charcoal/60">Project ID</span>
+                    <p className="mt-1 font-display text-3xl text-ink">{submittedProject.friendlyId}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-sm font-bold shadow-sm transition-colors ${isSelected ? "border-primary bg-primary text-white" : "border-hairline bg-white text-charcoal/60 group-hover:border-primary/30"}`}>
-                      {PROVIDER_INITIALS[info.id]}
-                    </div>
-                    <div>
-                      <p className={`text-sm font-semibold transition-colors ${isSelected ? "text-primary" : "text-ink"}`}>{info.label}</p>
-                      <p className="mt-0.5 text-xs text-charcoal/55">{info.description}</p>
-                    </div>
+                  <div>
+                    <span className="text-charcoal/60">Total payable</span>
+                    <p className="mt-1 font-display text-3xl text-primary">${submittedProject.amount.toFixed(2)}</p>
                   </div>
-                </button>
-              )})}
-            </div>
-            )}
-            
-            {providerNotice && (
-              <div className="rounded-xl border border-primary/25 bg-primary/10 p-4 text-sm font-medium text-primary shadow-sm">
-                {providerNotice}
+                  <div><span className="text-charcoal/60">Payment</span><p className="font-semibold text-ink">Unpaid</p></div>
+                  <div><span className="text-charcoal/60">Status</span><p className="font-semibold text-ink">{submittedProject.status}</p></div>
+                </div>
               </div>
-            )}
-            
-            <div className="mt-2 flex items-start gap-3 rounded-xl border border-hairline bg-surface-soft p-5 shadow-sm">
-              <svg className="h-5 w-5 shrink-0 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-              <div>
-                <p className="text-sm font-semibold text-ink">Secure Checkout</p>
-                <p className="mt-0.5 text-xs leading-5 text-charcoal/60">Your payment will be securely processed by your selected provider in the final step. We do not store your card details.</p>
-              </div>
-            </div>
-          </div>
-        )}
+            ) : null}
 
-        {/* Step 5: Order Summary + Pay */}
-        {step === 5 && (
-          <div className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div>
-              <h2 className="mb-2 font-display text-3xl leading-tight text-ink">Confirm & pay</h2>
-              <p className="text-sm text-charcoal/68">Review your order details and proceed to payment.</p>
-            </div>
+            {submittedProject ? (
+              <div ref={paymentSectionRef} className="rounded-2xl border border-hairline bg-white p-6 shadow-sm ring-2 ring-primary/10">
+                <p className="text-xs font-bold uppercase tracking-widest text-charcoal/50">Select payment method</p>
+                <div className="mt-4">
+                  {isLoadingPaymentSettings ? (
+                    <p className="text-sm text-charcoal/60">Loading available payment methods...</p>
+                  ) : paymentSettingsError ? (
+                    <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">{paymentSettingsError}</p>
+                  ) : !hasAvailablePaymentMethods ? (
+                    <p className="text-sm text-charcoal/60">No payment method is currently available. Please contact support.</p>
+                  ) : (
+                    <label className="grid gap-2 text-sm font-medium text-ink">
+                      Payment method
+                      <select
+                        value={provider}
+                        onChange={(event) => {
+                          setProvider(event.target.value as PaymentProviderName | "");
+                          setPaymentError(null);
+                        }}
+                        className="min-h-12 rounded-xl border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-white"
+                      >
+                        <option value="">Select payment method...</option>
+                        {activePaymentProviders.map((info) => (
+                          <option key={info.id} value={info.id}>{info.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                </div>
+              </div>
+            ) : null}
 
             <div className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-sm">
               <div className="border-b border-hairline bg-surface-soft px-6 py-4">
@@ -963,7 +973,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     ["Detected Word Count", (detectedWordCount || wordCount)?.toLocaleString()],
                     ["Adjusted Word Count", adjustedWordCount.trim() ? wordCount?.toLocaleString() : "Not provided"],
                     ["Final Word Count", wordCount?.toLocaleString()],
-                    ["Payment Provider", selectedProviderLabel],
+                    ["Payment Provider", submittedProject ? selectedProviderLabel : "Choose after submission"],
                   ].map(([label, value]) => (
                     <div key={label} className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4 border-b border-hairline/50 pb-3 last:border-0">
                       <span className="text-charcoal/60">{label}</span>
@@ -1019,26 +1029,40 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             )}
 
             <button
-              onClick={handlePayment}
-              disabled={isSubmitting || checkoutBlocked}
+              onClick={submittedProject ? handlePayment : handleSubmitProject}
+              disabled={isSubmitting || checkoutBlocked || (Boolean(submittedProject) && !provider)}
               className="min-h-[3.75rem] w-full rounded-xl bg-cta px-6 text-base font-bold text-white shadow-[0_12px_30px_rgba(31,143,90,0.2)] transition-all duration-300 hover:bg-cta-active hover:shadow-[0_16px_40px_rgba(31,143,90,0.25)] hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none active:scale-[0.98]"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-3">
                   <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                  Initializing secure payment...
+                  {submittedProject ? "Initializing secure payment..." : "Submitting project..."}
                 </span>
               ) : (
-                checkoutBlocked ? "Contact our editors" : `Pay $${finalPaymentTotal.toFixed(2)} with ${selectedProviderLabel}`
+                checkoutBlocked
+                  ? "Contact our editors"
+                  : submittedProject
+                    ? provider ? `Proceed to payment with ${selectedProviderLabel}` : "Select a payment method"
+                    : "Submit project and continue"
               )}
             </button>
+            {submittedProject ? (
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href={`/dashboard/active/${submittedProject.id}`} className="inline-flex min-h-11 items-center rounded-full border border-hairline px-5 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary">
+                  View project
+                </a>
+                <a href="/dashboard/active" className="inline-flex min-h-11 items-center rounded-full border border-hairline px-5 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary">
+                  Pay later
+                </a>
+              </div>
+            ) : null}
           </div>
         )}
       </div>
 
       <div className="mt-8 flex justify-between border-t border-hairline pt-6">
         {step > 1 ? (
-          <button onClick={() => { setStep(step - 1); setPaymentError(null); }} className="rounded-full border border-hairline px-6 py-3 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary" disabled={isSubmitting}>Back</button>
+          <button onClick={() => { setStep(step - 1); setPaymentError(null); }} className="rounded-full border border-hairline px-6 py-3 text-sm text-charcoal/70 transition hover:border-primary hover:text-primary" disabled={isSubmitting || Boolean(submittedProject)}>Back</button>
         ) : <div />}
         {step < totalSteps ? (
           <button
@@ -1050,7 +1074,6 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
             disabled={
               (step === 2 && wordCount === null) ||
               (step === 3 && checkoutBlocked) ||
-              (step === 4 && (isLoadingPaymentSettings || Boolean(paymentSettingsError) || !hasAvailablePaymentMethods)) ||
               isParsing
             }
             className="rounded-full bg-cta px-8 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition hover:bg-cta-active disabled:cursor-not-allowed disabled:opacity-50"
