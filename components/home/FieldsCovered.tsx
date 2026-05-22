@@ -53,7 +53,10 @@ export function FieldsCovered() {
   useEffect(() => {
     const fetchDynamicExamples = async () => {
       try {
-        const res = await fetch("/api/examples", { cache: "no-store" });
+        const res = await fetch(`/api/examples?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        });
         const data = await res.json();
         const uploadedByKey = new Map<string, any>((data.examples || []).map((example: any) => [example.category_key, example]));
 

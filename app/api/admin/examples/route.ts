@@ -8,6 +8,15 @@ import { type WorkExampleKey, workExamples } from "@/lib/work-example-data";
 export const dynamic = "force-dynamic";
 
 const categoryMap = new Map(workExamples.map((example) => [example.key, example]));
+const validCategoryKeys = new Set(workExamples.map((example) => example.key));
+
+function normalizeCategoryKey(value: unknown) {
+  const raw = String(value || "").trim();
+  if (validCategoryKeys.has(raw as WorkExampleKey)) return raw as WorkExampleKey;
+  if (raw.toLowerCase() === "geological engineering") return "geological-engineering";
+  const normalized = raw.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return validCategoryKeys.has(normalized as WorkExampleKey) ? normalized as WorkExampleKey : null;
+}
 
 async function requireAdminJson() {
   const supabase = createClient();
@@ -34,18 +43,15 @@ async function requireAdminJson() {
 }
 
 function rowKey(row: any) {
-  const raw = row.category_key || row.category || "";
-  if (categoryMap.has(raw)) return raw;
-  if (String(raw).toLowerCase() === "geological engineering") return "geological-engineering";
-  return String(raw).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return normalizeCategoryKey(row.category_key || row.category) || "";
 }
 
 function normalizeRow(row: any) {
-  const key = rowKey(row);
+  const key = rowKey(row) || String(row.category_key || row.category || "");
   return {
     id: row.id,
     category_key: key,
-    category_label: row.category_label || categoryMap.get(key)?.title || row.category || key,
+    category_label: row.category_label || categoryMap.get(key as WorkExampleKey)?.title || row.category || key,
     source_file_name: row.source_file_name || row.source_file_path?.split("/").pop() || null,
     source_file_path: row.source_file_path || null,
     source_doc_url: row.source_doc_url || null,
@@ -80,6 +86,49 @@ function categoriesWithRows(rows: any[]) {
   }));
 }
 
+async function getRowsForCategory(adminClient: ReturnType<typeof createSupabaseAdminClient>, categoryKey: WorkExampleKey) {
+  const { data, error } = await adminClient
+    .from("work_examples")
+    .select("*");
+
+  if (error) {
+    return { rows: [], error };
+  }
+
+  return {
+    rows: (data || []).filter((row) => rowKey(row) === categoryKey),
+    error: null,
+  };
+}
+
+function legacyPayloadFor(categoryKey: WorkExampleKey, category: NonNullable<ReturnType<typeof categoryMap.get>>, parsedPages: unknown[], filePath: string | null, now: string) {
+  return {
+    category: categoryKey,
+    title: category.documentTitle,
+    description: category.authorLine,
+    parsed_content: parsedPages,
+    source_file_path: filePath,
+    is_active: true,
+    updated_at: now,
+  };
+}
+
+async function removeStoredFiles(adminClient: ReturnType<typeof createSupabaseAdminClient>, paths: Array<string | null | undefined>) {
+  const uniquePaths = Array.from(new Set(paths.filter(Boolean))) as string[];
+  if (!uniquePaths.length) return;
+
+  const { error } = await adminClient.storage.from("uploads").remove(uniquePaths);
+  if (error) {
+    console.warn("Work example old storage cleanup failed:", error);
+  }
+}
+
+function noStoreJson(body: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  headers.set("Cache-Control", "no-store, no-cache, max-age=0, must-revalidate");
+  return NextResponse.json(body, { ...init, headers });
+}
+
 export async function GET() {
   const auth = await requireAdminJson();
   if (auth.error) return auth.error;
@@ -92,17 +141,17 @@ export async function GET() {
 
     if (error) {
       console.error("Admin work examples fetch failed:", error);
-      return NextResponse.json({
+      return noStoreJson({
         categories: categoriesWithRows([]),
         setupRequired: true,
         message: "Work examples table is not ready. Run supabase/migration_work_examples.sql.",
       });
     }
 
-    return NextResponse.json({ categories: categoriesWithRows(data || []) });
+    return noStoreJson({ categories: categoriesWithRows(data || []) });
   } catch (error) {
     console.error("Admin work examples fetch crashed:", error);
-    return NextResponse.json({
+    return noStoreJson({
       categories: categoriesWithRows([]),
       setupRequired: true,
       message: "Work examples could not be loaded. Check server logs and Supabase setup.",
@@ -119,23 +168,34 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const categoryKey = String(formData.get("category_key") || "");
-    const category = categoryMap.get(categoryKey as WorkExampleKey);
+    const categoryKey = normalizeCategoryKey(formData.get("category_key"));
+    const category = categoryKey ? categoryMap.get(categoryKey) : null;
 
-    if (!file || !category) {
-      return NextResponse.json({ error: "Missing file or unknown category." }, { status: 400 });
+    if (!file || !categoryKey || !category) {
+      return noStoreJson({ error: "Missing file or unknown category." }, { status: 400 });
     }
 
     if (!file.name.toLowerCase().endsWith(".docx")) {
-      return NextResponse.json({ error: "Please upload a DOCX file." }, { status: 400 });
+      return noStoreJson({ error: "Please upload a DOCX file." }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const parsed = await parseDocxDocument(buffer);
 
     if (!parsed.pages.length || parsed.blockCount === 0) {
-      return NextResponse.json({ error: "Uploaded, but parsing failed. Please check the document and try again." }, { status: 400 });
+      return noStoreJson({ error: "Uploaded, but parsing failed. Please check the document and try again." }, { status: 400 });
     }
+
+    const existingResult = await getRowsForCategory(auth.adminClient, categoryKey);
+    if (existingResult.error) {
+      console.error("Work example preflight fetch failed:", existingResult.error);
+      return noStoreJson({ error: "Upload failed while checking the current work example." }, { status: 500 });
+    }
+    const existingRows = existingResult.rows;
+    const previousPaths = existingRows.map((row) => row.source_file_path);
+    const rowToReplace = existingRows
+      .slice()
+      .sort((a, b) => new Date(b.updated_at || b.created_at || 0).getTime() - new Date(a.updated_at || a.created_at || 0).getTime())[0];
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     fileName = `examples/${categoryKey}/${crypto.randomUUID()}-${safeName}`;
@@ -148,7 +208,7 @@ export async function POST(req: Request) {
 
     if (uploadError) {
       console.error("Work example storage upload failed:", uploadError);
-      return NextResponse.json({ error: "Upload failed while saving the source document." }, { status: 500 });
+      return noStoreJson({ error: "Upload failed while saving the source document." }, { status: 500 });
     }
 
     const now = new Date().toISOString();
@@ -172,46 +232,89 @@ export async function POST(req: Request) {
       updated_at: now,
     };
 
-    let { data: example, error: dbError } = await auth.adminClient
-      .from("work_examples")
-      .upsert(payload, { onConflict: "category_key" })
-      .select()
-      .single();
+    let saveResult = rowToReplace?.id
+      ? await auth.adminClient
+          .from("work_examples")
+          .update(payload)
+          .eq("id", rowToReplace.id)
+          .select()
+          .single()
+      : await auth.adminClient
+          .from("work_examples")
+          .insert(payload)
+          .select()
+          .single();
 
-    if (dbError) {
-      console.warn("Work example save with current schema failed, retrying legacy schema:", dbError);
-      await auth.adminClient
-        .from("work_examples")
-        .delete()
-        .eq("category", categoryKey);
+    if (saveResult.error) {
+      console.warn("Work example save with current schema failed, retrying legacy schema:", saveResult.error);
+      const legacyPayload = legacyPayloadFor(categoryKey, category, parsed.pages, fileName, now);
+      saveResult = rowToReplace?.id
+        ? await auth.adminClient
+            .from("work_examples")
+            .update(legacyPayload)
+            .eq("id", rowToReplace.id)
+            .select()
+            .single()
+        : await auth.adminClient
+            .from("work_examples")
+            .insert(legacyPayload)
+            .select()
+            .single();
+    }
 
-      const legacyResult = await auth.adminClient
+    const example = saveResult.data;
+    const dbError = saveResult.error;
+
+    if (dbError || !example?.id) {
+      console.error("Work example save failed:", dbError);
+      await auth.adminClient.storage.from("uploads").remove([fileName]);
+      return noStoreJson({ error: "Upload failed while saving the parsed document." }, { status: 500 });
+    }
+
+    const duplicateIds = existingRows.map((row) => row.id).filter((id) => id && id !== example.id);
+    if (duplicateIds.length) {
+      let { error: duplicateError } = await auth.adminClient
         .from("work_examples")
-        .insert({
-          category: categoryKey,
-          title: category.documentTitle,
-          description: category.authorLine,
-          parsed_content: parsed.pages,
-          source_file_path: fileName,
-          is_active: true,
+        .update({
+          status: "deleted",
+          is_active: false,
+          parsed_content_json: [],
+          parsed_content: [],
+          source_file_name: null,
+          source_file_path: null,
+          source_doc_url: null,
+          parse_status: "none",
+          parse_warning: null,
+          parsed_block_count: 0,
+          updated_at: now,
         })
-        .select()
-        .single();
+        .in("id", duplicateIds);
 
-      example = legacyResult.data;
-      dbError = legacyResult.error;
+      if (duplicateError) {
+        console.warn("Work example duplicate cleanup with current schema failed, retrying legacy schema:", duplicateError);
+        const legacyCleanup = await auth.adminClient
+          .from("work_examples")
+          .update({
+            is_active: false,
+            parsed_content: [],
+            source_file_path: null,
+            updated_at: now,
+          })
+          .in("id", duplicateIds);
+        duplicateError = legacyCleanup.error;
+      }
 
-      if (dbError) {
-        console.error("Work example save failed:", dbError);
-        await auth.adminClient.storage.from("uploads").remove([fileName]);
-        return NextResponse.json({ error: "Upload failed while saving the parsed document." }, { status: 500 });
+      if (duplicateError) {
+        console.warn("Work example duplicate cleanup failed:", duplicateError);
       }
     }
+
+    await removeStoredFiles(auth.adminClient, previousPaths.filter((path) => path !== fileName));
 
     revalidatePath("/");
     revalidatePath("/admin/examples");
 
-    return NextResponse.json({
+    return noStoreJson({
       success: true,
       example: normalizeRow(example),
       message: `${category.title} uploaded and parsed successfully. ${parsed.blockCount} document blocks saved.`,
@@ -220,7 +323,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Work example upload handler failed:", error);
     if (fileName) await auth.adminClient.storage.from("uploads").remove([fileName]);
-    return NextResponse.json({ error: "Upload failed while processing the document." }, { status: 500 });
+    return noStoreJson({ error: "Upload failed while processing the document." }, { status: 500 });
   }
 }
 
@@ -229,10 +332,25 @@ export async function DELETE(req: Request) {
   if (auth.error) return auth.error;
 
   const { searchParams } = new URL(req.url);
-  const categoryKey = searchParams.get("category_key") || "";
+  const categoryKey = normalizeCategoryKey(searchParams.get("category_key"));
 
-  if (!categoryMap.has(categoryKey as WorkExampleKey)) {
-    return NextResponse.json({ error: "Unknown category." }, { status: 400 });
+  if (!categoryKey) {
+    return noStoreJson({ error: "Unknown category." }, { status: 400 });
+  }
+
+  const existingResult = await getRowsForCategory(auth.adminClient, categoryKey);
+  if (existingResult.error) {
+    console.error("Work example delete preflight failed:", existingResult.error);
+    return noStoreJson({ error: "Failed to find the current work example." }, { status: 500 });
+  }
+
+  const ids = existingResult.rows.map((row) => row.id).filter(Boolean);
+  const oldPaths = existingResult.rows.map((row) => row.source_file_path);
+
+  if (!ids.length) {
+    revalidatePath("/");
+    revalidatePath("/admin/examples");
+    return noStoreJson({ success: true });
   }
 
   let { error } = await auth.adminClient
@@ -250,7 +368,7 @@ export async function DELETE(req: Request) {
       parsed_block_count: 0,
       updated_at: new Date().toISOString(),
     })
-    .eq("category_key", categoryKey);
+    .in("id", ids);
 
   if (error) {
     console.warn("Work example delete with current schema failed, retrying legacy schema:", error);
@@ -260,19 +378,21 @@ export async function DELETE(req: Request) {
         is_active: false,
         parsed_content: [],
         source_file_path: null,
+        updated_at: new Date().toISOString(),
       })
-      .eq("category", categoryKey);
-
+      .in("id", ids);
     error = legacyResult.error;
-
-    if (error) {
-      console.error("Work example delete failed:", error);
-      return NextResponse.json({ error: "Failed to delete work example." }, { status: 500 });
-    }
   }
+
+  if (error) {
+    console.error("Work example delete failed:", error);
+    return noStoreJson({ error: "Failed to delete work example." }, { status: 500 });
+  }
+
+  await removeStoredFiles(auth.adminClient, oldPaths);
 
   revalidatePath("/");
   revalidatePath("/admin/examples");
 
-  return NextResponse.json({ success: true });
+  return noStoreJson({ success: true });
 }

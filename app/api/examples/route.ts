@@ -4,28 +4,56 @@ import { workExamples } from "@/lib/work-example-data";
 
 export const dynamic = "force-dynamic";
 
-const validKeys = new Set(workExamples.map((example) => example.key));
+const validKeys = new Set<string>(workExamples.map((example) => example.key));
 
-function normalizePublicRow(row: any) {
+function normalizeCategoryKey(value: unknown) {
+  const raw = String(value || "").trim();
+  if (validKeys.has(raw)) return raw;
+  if (raw.toLowerCase() === "geological engineering") return "geological-engineering";
+  const normalized = raw.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return validKeys.has(normalized) ? normalized : "";
+}
+
+function normalizePublicCandidate(row: any) {
   const rawKey = row.category_key || row.category;
-  const key = validKeys.has(rawKey)
-    ? rawKey
-    : String(rawKey || "").toLowerCase() === "geological engineering"
-      ? "geological-engineering"
-      : String(rawKey || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const key = normalizeCategoryKey(rawKey);
   const pages = row.parsed_content_json || row.parsed_content || [];
 
-  if (!validKeys.has(key) || !Array.isArray(pages) || pages.length === 0) return null;
-  if (row.status === "deleted" || row.is_active === false || row.parse_status === "failed") return null;
+  if (!key) return null;
+  const isAvailable = Array.isArray(pages)
+    && pages.length > 0
+    && row.status !== "deleted"
+    && row.status !== "inactive"
+    && row.is_active !== false
+    && row.parse_status !== "failed"
+    && row.parse_status !== "none";
 
   return {
-    category_key: key,
-    category_label: row.category_label || workExamples.find((example) => example.key === key)?.title || key,
-    source_file_name: row.source_file_name || null,
-    parsed_content_json: pages,
-    parse_status: row.parse_status || "parsed",
+    key,
+    example: isAvailable
+      ? {
+          category_key: key,
+          category_label: row.category_label || workExamples.find((example) => example.key === key)?.title || key,
+          source_file_name: row.source_file_name || null,
+          parsed_content_json: pages,
+          parse_status: row.parse_status || "parsed",
+          updated_at: row.updated_at || row.created_at || null,
+        }
+      : null,
     updated_at: row.updated_at || row.created_at || null,
   };
+}
+
+function noStoreResponse(examples: unknown[]) {
+  return NextResponse.json(
+    { examples },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate",
+        Pragma: "no-cache",
+      },
+    }
+  );
 }
 
 export async function GET() {
@@ -34,8 +62,6 @@ export async function GET() {
     let { data, error } = await supabaseAdmin
       .from("work_examples")
       .select("*")
-      .eq("is_active", true)
-      .neq("status", "deleted")
       .order("updated_at", { ascending: false });
 
     if (error) {
@@ -51,24 +77,21 @@ export async function GET() {
 
       if (error) {
         console.error("Public work examples fetch failed:", error);
-        return NextResponse.json({ examples: [] }, { headers: { "Cache-Control": "no-store" } });
+        return noStoreResponse([]);
       }
     }
 
-    const latestByKey = new Map<string, ReturnType<typeof normalizePublicRow>>();
+    const latestByKey = new Map<string, ReturnType<typeof normalizePublicCandidate>>();
     for (const row of data || []) {
-      const normalized = normalizePublicRow(row);
-      if (normalized && !latestByKey.has(normalized.category_key)) {
-        latestByKey.set(normalized.category_key, normalized);
+      const normalized = normalizePublicCandidate(row);
+      if (normalized && !latestByKey.has(normalized.key)) {
+        latestByKey.set(normalized.key, normalized);
       }
     }
 
-    return NextResponse.json(
-      { examples: Array.from(latestByKey.values()).filter(Boolean) },
-      { headers: { "Cache-Control": "no-store" } }
-    );
+    return noStoreResponse(Array.from(latestByKey.values()).map((entry) => entry?.example).filter(Boolean));
   } catch (error) {
     console.error("Public work examples route failed:", error);
-    return NextResponse.json({ examples: [] }, { headers: { "Cache-Control": "no-store" } });
+    return noStoreResponse([]);
   }
 }
