@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, FileText, Menu, MessageSquareText, Minus, PanelLeft, PenLine, Plus, Search, X } from "lucide-react";
-import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { WorkExample, WorkExampleBlock, WorkExamplePage } from "@/lib/work-example-data";
 
 type WorkPreviewModalProps = {
@@ -12,6 +12,8 @@ type WorkPreviewModalProps = {
 
 export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
   const [pageIndex, setPageIndex] = useState(0);
+  const [isEditedView, setIsEditedView] = useState(true);
+  const [zoom, setZoom] = useState(1);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -19,6 +21,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
 
   useEffect(() => {
     setPageIndex(0);
+    setZoom(1);
     window.setTimeout(() => {
       if (scrollRef.current) scrollRef.current.scrollTop = 0;
     }, 0);
@@ -173,12 +176,27 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
               </div>
 
               <div className="hidden items-center gap-2 sm:flex">
-                <Minus className="h-4 w-4" />
-                <Plus className="h-4 w-4" />
-                <span className="rounded border border-white/14 bg-black/10 px-3 py-1 text-xs">Page Width</span>
+                <button
+                  type="button"
+                  onClick={() => setIsEditedView(!isEditedView)}
+                  className={`rounded border px-3 py-1 text-xs font-semibold transition-colors ${
+                    isEditedView
+                      ? "border-[#2393ff] bg-[#2393ff]/20 text-white"
+                      : "border-white/14 bg-black/10 text-white/70 hover:bg-white/10"
+                  }`}
+                >
+                  {isEditedView ? "Edited View" : "Final View"}
+                </button>
               </div>
 
               <div className="flex items-center gap-3">
+                <button type="button" onClick={() => setZoom((value) => Math.max(0.8, Number((value - 0.1).toFixed(2))))} aria-label="Zoom out" className="hidden h-7 w-7 items-center justify-center rounded hover:bg-white/10 sm:inline-flex">
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="hidden min-w-12 text-center text-xs text-white/70 sm:inline">{Math.round(zoom * 100)}%</span>
+                <button type="button" onClick={() => setZoom((value) => Math.min(1.4, Number((value + 0.1).toFixed(2))))} aria-label="Zoom in" className="hidden h-7 w-7 items-center justify-center rounded hover:bg-white/10 sm:inline-flex">
+                  <Plus className="h-4 w-4" />
+                </button>
                 <PenLine className="h-4 w-4" />
                 <Menu className="h-4 w-4" />
               </div>
@@ -193,8 +211,9 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
                       pageRefs.current[index] = node;
                     }}
                     className="scroll-mt-5"
+                    style={{ zoom } as CSSProperties}
                   >
-                    <DocumentPage example={example} page={page} pageNumber={index + 1} />
+                    <DocumentPage example={example} page={page} pageNumber={index + 1} isEditedView={isEditedView} />
                   </div>
                 ))}
               </div>
@@ -252,11 +271,13 @@ function PageRail({
 function DocumentPage({
   example,
   page,
-  pageNumber
+  pageNumber,
+  isEditedView
 }: {
   example: WorkExample;
   page: WorkExamplePage;
   pageNumber: number;
+  isEditedView: boolean;
 }) {
   const pageTone = page.variant === "resume"
     ? "font-sans"
@@ -264,13 +285,15 @@ function DocumentPage({
       ? "font-serif"
       : "font-sans";
   const isFirstPage = pageNumber === 1;
-  const hasComments = page.comments.length > 0;
-  const isGeologicalScreenshotSample = example.key === "geological" && Boolean(page.blocks);
+  const hasComments = isEditedView && page.comments && page.comments.length > 0;
+  const isGeologicalScreenshotSample = example.key === "geological-engineering" && Boolean(page.blocks);
   const contentBlocks: WorkExampleBlock[] = page.blocks ?? page.body.map((text) => ({ type: "paragraph", text, role: "body" }));
   if (!page.blocks && page.table) contentBlocks.push({ type: "table", headers: page.table.headers, rows: page.table.rows });
 
-  const commentsForBlock = (blockIndex: number) =>
-    page.comments.filter((comment, commentIndex) => comment.anchor === blockIndex || (!comment.anchor && blockIndex > 0 && blockIndex === commentIndex + 1));
+  const commentsForBlock = (blockIndex: number) => {
+    if (!page.comments) return [];
+    return page.comments.filter((comment, commentIndex) => (comment as any).anchor === blockIndex || (!(comment as any).anchor && blockIndex > 0 && blockIndex === commentIndex + 1));
+  };
 
   return (
     <article className={`mx-auto grid gap-0 shadow-[0_18px_70px_rgba(0,0,0,0.28)] ${hasComments ? "max-w-[1230px] bg-[#ece7dd] lg:grid-cols-[minmax(0,910px)_270px]" : "max-w-[900px] bg-transparent"} lg:items-stretch`}>
@@ -356,7 +379,7 @@ function DocumentPage({
                     aria-hidden="true"
                   />
                 ) : null}
-                {renderMarkedText(block.text)}
+                {renderMarkedText(block.text, isEditedView)}
               </p>
             );
           })}
@@ -461,22 +484,26 @@ function LegalMemoBar() {
   );
 }
 
-function renderMarkedText(text: string) {
-  const parts = text.split(/(<del>.*?<\/del>|<ins>.*?<\/ins>|<sup>.*?<\/sup>|<sub>.*?<\/sub>|<strong>.*?<\/strong>|<em>.*?<\/em>|<i>.*?<\/i>|<mark>.*?<\/mark>|<green>.*?<\/green>|<br \/>)/g);
+function renderMarkedText(text: string, isEditedView: boolean = true) {
+  const parts = text.split(/(<del>.*?<\/del>|<ins>.*?<\/ins>|<sup>.*?<\/sup>|<sub>.*?<\/sub>|<strong>.*?<\/strong>|<em>.*?<\/em>|<i>.*?<\/i>|<mark>.*?<\/mark>|<green>.*?<\/green>|<br \/>|<span class="comment-marker".*?<\/span>)/g);
 
   return parts.map((part, index) => {
     if (part.startsWith("<del>") && part.endsWith("</del>")) {
+      if (!isEditedView) return null;
       return (
         <del key={index} className="px-0.5 text-red-700 decoration-red-700 decoration-2">
-          {renderMarkedText(part.replace("<del>", "").replace("</del>", ""))}
+          {renderMarkedText(part.replace("<del>", "").replace("</del>", ""), isEditedView)}
         </del>
       );
     }
 
     if (part.startsWith("<ins>") && part.endsWith("</ins>")) {
+      if (!isEditedView) {
+        return <span key={index}>{renderMarkedText(part.replace("<ins>", "").replace("</ins>", ""), isEditedView)}</span>;
+      }
       return (
         <ins key={index} className="px-0.5 font-medium text-blue-700 no-underline">
-          {renderMarkedText(part.replace("<ins>", "").replace("</ins>", ""))}
+          {renderMarkedText(part.replace("<ins>", "").replace("</ins>", ""), isEditedView)}
         </ins>
       );
     }
@@ -494,21 +521,21 @@ function renderMarkedText(text: string) {
     }
 
     if (part.startsWith("<strong>") && part.endsWith("</strong>")) {
-      return <strong key={index}>{renderMarkedText(part.replace("<strong>", "").replace("</strong>", ""))}</strong>;
+      return <strong key={index}>{renderMarkedText(part.replace("<strong>", "").replace("</strong>", ""), isEditedView)}</strong>;
     }
 
     if (part.startsWith("<em>") && part.endsWith("</em>")) {
-      return <em key={index}>{renderMarkedText(part.replace("<em>", "").replace("</em>", ""))}</em>;
+      return <em key={index}>{renderMarkedText(part.replace("<em>", "").replace("</em>", ""), isEditedView)}</em>;
     }
 
     if (part.startsWith("<i>") && part.endsWith("</i>")) {
-      return <i key={index}>{renderMarkedText(part.replace("<i>", "").replace("</i>", ""))}</i>;
+      return <i key={index}>{renderMarkedText(part.replace("<i>", "").replace("</i>", ""), isEditedView)}</i>;
     }
 
     if (part.startsWith("<mark>") && part.endsWith("</mark>")) {
       return (
         <mark key={index} className="bg-amber-100 px-0.5 font-semibold text-amber-700">
-          {renderMarkedText(part.replace("<mark>", "").replace("</mark>", ""))}
+          {renderMarkedText(part.replace("<mark>", "").replace("</mark>", ""), isEditedView)}
         </mark>
       );
     }
@@ -516,9 +543,13 @@ function renderMarkedText(text: string) {
     if (part.startsWith("<green>") && part.endsWith("</green>")) {
       return (
         <span key={index} className="font-semibold text-green-700 underline decoration-green-700/70 underline-offset-2">
-          {renderMarkedText(part.replace("<green>", "").replace("</green>", ""))}
+          {renderMarkedText(part.replace("<green>", "").replace("</green>", ""), isEditedView)}
         </span>
       );
+    }
+
+    if (part.startsWith("<span class=\"comment-marker\"")) {
+      return null;
     }
 
     return part;

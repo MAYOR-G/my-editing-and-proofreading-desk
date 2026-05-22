@@ -18,6 +18,7 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state === "sending") return;
     const form = event.currentTarget;
     const formData = new FormData(form);
 
@@ -25,20 +26,30 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
     setFeedback("Sending...");
 
     try {
+      const attachment = formData.get("attachment");
+      const hasAttachment = attachment instanceof File && attachment.size > 0;
+      const body = hasAttachment
+        ? formData
+        : JSON.stringify({
+            source,
+            name: formData.get("name"),
+            email: formData.get("email"),
+            subject: formData.get("subject"),
+            organization: formData.get("organization"),
+            service: formData.get("service"),
+            wordCount: formData.get("wordCount"),
+            turnaround: formData.get("turnaround"),
+            message: formData.get("message"),
+          });
+
+      if (hasAttachment) {
+        formData.set("source", source);
+      }
+
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source,
-          name: formData.get("name"),
-          email: formData.get("email"),
-          subject: formData.get("subject"),
-          organization: formData.get("organization"),
-          service: formData.get("service"),
-          wordCount: formData.get("wordCount"),
-          turnaround: formData.get("turnaround"),
-          message: formData.get("message"),
-        }),
+        headers: hasAttachment ? undefined : { "Content-Type": "application/json" },
+        body,
       });
 
       const data = await response.json();
@@ -148,12 +159,30 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
           />
         </label>
 
+        {compact ? (
+          <label className="grid min-w-0 gap-2 text-sm font-medium text-ink">
+            Attach document
+            <input
+              name="attachment"
+              type="file"
+              accept=".doc,.docx,.txt,.pdf,.png,.jpg,.jpeg,.webp"
+              className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+            />
+          </label>
+        ) : null}
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button
+            type="submit"
             disabled={state === "sending"}
             className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-7 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
-            {state === "sending" ? "Sending..." : compact ? "Send support message" : "Submit inquiry"}
+            <span className="inline-flex items-center justify-center gap-2">
+              {state === "sending" ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true" />
+              ) : null}
+              {state === "sending" ? "Sending..." : compact ? "Send support message" : "Submit inquiry"}
+            </span>
           </button>
           <p className="text-xs text-body">
             {compact ? SUPPORT_EMAIL : "We'll respond within one business day."}

@@ -6,9 +6,11 @@ type DashboardShellProps = {
   title: string;
   eyebrow: string;
   description: string;
-  nav: Array<{ href: string; label: string }>;
+  nav: Array<{ href: string; label: string; active?: boolean }>;
   primaryActionLabel?: string;
   secondaryActionLabel?: string;
+  primaryActionHref?: string;
+  secondaryActionHref?: string;
   children: ReactNode;
 };
 
@@ -19,6 +21,8 @@ export function DashboardShell({
   nav,
   primaryActionLabel = "New project",
   secondaryActionLabel = "Support",
+  primaryActionHref,
+  secondaryActionHref,
   children
 }: DashboardShellProps) {
   return (
@@ -28,18 +32,22 @@ export function DashboardShell({
           <BrandMark />
         </div>
         <nav className="mt-12 grid gap-2" aria-label="Dashboard navigation">
-          {nav.map((item, index) => (
+          {nav.map((item, index) => {
+            const isActive = item.active ?? index === 0;
+            return (
             <Link
               key={item.href}
               href={item.href}
               className={`group flex min-h-12 items-center justify-between border px-4 text-sm transition duration-200 ease-premium-out hover:border-primary/35 hover:bg-surface-soft hover:text-ink active:scale-[0.99] ${
-                index === 0 ? "border-primary/45 bg-primary/10 text-ink" : "border-transparent text-charcoal/64"
+                isActive ? "border-primary/45 bg-primary/10 text-ink" : "border-transparent text-charcoal/64"
               }`}
+              aria-current={isActive ? "page" : undefined}
             >
               {item.label}
               <span className="text-primary opacity-50 transition group-hover:opacity-100" aria-hidden="true">+</span>
             </Link>
-          ))}
+          );
+          })}
         </nav>
         <div className="absolute bottom-7 left-7 right-7 border-t border-hairline pt-6">
           <Link href="/" className="text-sm text-charcoal/64 transition hover:text-ink">
@@ -64,12 +72,24 @@ export function DashboardShell({
                   ))}
                 </div>
               </details>
-              <button type="button" className="hidden min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] sm:inline-flex">
-                {secondaryActionLabel}
-              </button>
-              <button type="button" className="min-h-11 rounded-full bg-cta px-4 text-sm font-medium text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98] sm:px-5">
-                {primaryActionLabel}
-              </button>
+              {secondaryActionHref ? (
+                <Link href={secondaryActionHref} className="hidden min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] sm:inline-flex">
+                  {secondaryActionLabel}
+                </Link>
+              ) : (
+                <button type="button" className="hidden min-h-11 items-center rounded-full border border-hairline px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-ink active:scale-[0.98] sm:inline-flex">
+                  {secondaryActionLabel}
+                </button>
+              )}
+              {primaryActionHref ? (
+                <Link href={primaryActionHref} className="inline-flex min-h-11 items-center rounded-full bg-cta px-4 text-sm font-medium text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98] sm:px-5">
+                  {primaryActionLabel}
+                </Link>
+              ) : (
+                <button type="button" className="min-h-11 rounded-full bg-cta px-4 text-sm font-medium text-white shadow-[0_14px_32px_rgba(31,143,90,0.16)] transition duration-200 ease-premium-out hover:bg-cta-active active:scale-[0.98] sm:px-5">
+                  {primaryActionLabel}
+                </button>
+              )}
             </div>
             <p className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.3em] text-primary sm:block">MEP portal</p>
             <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-full border border-hairline bg-ivory px-3 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] sm:px-5">

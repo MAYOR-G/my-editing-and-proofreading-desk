@@ -1,12 +1,24 @@
 import { Resend } from "resend";
 import { ADMIN_EMAIL, BRAND_NAME, INTERNAL_NOTIFICATION_EMAIL, PAYMENTS_EMAIL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
+type EmailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+};
+
 export { ADMIN_EMAIL, BRAND_NAME, INTERNAL_NOTIFICATION_EMAIL, PAYMENTS_EMAIL, SUPPORT_EMAIL };
 
 const getResendClient = () => new Resend(process.env.RESEND_API_KEY || "re_dummy");
 
+export const getEmailClient = getResendClient;
+
 function getInternalRecipient() {
   return process.env.INTERNAL_NOTIFICATION_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NOTIFICATION_GMAIL || INTERNAL_NOTIFICATION_EMAIL;
+}
+
+function getSiteUrl() {
+  return (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://business.editandproofread.com").replace(/\/$/, "");
 }
 
 function escapeHtml(value: unknown) {
@@ -27,18 +39,107 @@ function formatMoney(amount: unknown, currency = "USD") {
   return `${currency === "USD" ? "$" : `${currency} `}${numeric.toFixed(2)}`;
 }
 
+function brandedEmail({
+  preheader,
+  title,
+  children,
+  footerNote,
+}: {
+  preheader: string;
+  title: string;
+  children: string;
+  footerNote?: string;
+}) {
+  const logoUrl = `${getSiteUrl()}/assets/logo.png`;
+  return `
+    <!doctype html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
+      <body style="margin:0; padding:0; background:#f4f2ec; font-family: Georgia, 'Times New Roman', serif; color:#171717;">
+        <div style="display:none; overflow:hidden; line-height:1px; opacity:0; max-height:0; max-width:0;">${escapeHtml(preheader)}</div>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f2ec; margin:0; padding:28px 12px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px; background:#fffdf8; border:1px solid #e4dccd;">
+                <tr>
+                  <td style="padding:24px 28px; border-bottom:1px solid #e4dccd;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="vertical-align:middle;">
+                          <img src="${logoUrl}" width="118" alt="${escapeHtml(BRAND_NAME)}" style="display:block; max-width:118px; height:auto; border:0;" />
+                        </td>
+                        <td align="right" style="vertical-align:middle; font-family: Arial, sans-serif; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#1f5f8f;">
+                          Editorial Desk
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:32px 28px 12px;">
+                    <h1 style="margin:0; font-size:30px; line-height:1.15; font-weight:400; color:#11110f;">${escapeHtml(title)}</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:4px 28px 32px; font-family: Arial, sans-serif; font-size:15px; line-height:1.75; color:#2d2b27;">
+                    ${children}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:22px 28px; border-top:1px solid #e4dccd; font-family: Arial, sans-serif; font-size:13px; line-height:1.65; color:#6d665b;">
+                    <p style="margin:0 0 8px;">${footerNote || `If you have questions, reply to this email or contact <a href="mailto:${SUPPORT_EMAIL}" style="color:#1f5f8f; text-decoration:underline;">${SUPPORT_EMAIL}</a>.`}</p>
+                    <p style="margin:0;">Thank you,<br/><strong style="color:#171717;">${escapeHtml(BRAND_NAME)}</strong></p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `;
+}
+
+function detailList(items: Array<[string, unknown]>) {
+  return `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0; border-collapse:collapse; border:1px solid #e4dccd;">
+      ${items.map(([label, value]) => `
+        <tr>
+          <td style="padding:11px 14px; border-bottom:1px solid #e4dccd; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#6d665b; width:38%;">${escapeHtml(label)}</td>
+          <td style="padding:11px 14px; border-bottom:1px solid #e4dccd; color:#171717;">${escapeHtml(value || "N/A")}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
+function messageCard(content: unknown) {
+  return `
+    <div style="margin:18px 0; padding:18px; background:#f8f5ee; border:1px solid #e4dccd; color:#171717;">
+      ${paragraphize(content)}
+    </div>
+  `;
+}
+
 export async function sendEmail({
   to,
   from,
   replyTo,
   subject,
   html,
+  headers,
+  attachments,
 }: {
   to: string | string[];
   from: string;
   replyTo?: string;
   subject: string;
   html: string;
+  headers?: Record<string, string>;
+  attachments?: EmailAttachment[];
 }) {
   try {
     const resend = getResendClient();
@@ -48,6 +149,8 @@ export async function sendEmail({
       replyTo,
       subject,
       html,
+      headers,
+      attachments,
     });
 
     if (error) {
@@ -70,47 +173,64 @@ export async function sendContactNotificationEmail(message: {
   source: string;
   userId?: string | null;
   projectId?: string | null;
+  threadUrl?: string | null;
 }) {
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
     replyTo: message.email,
     to: getInternalRecipient(),
     subject: `New ${message.source}: ${message.subject}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
-        <h2>New message received</h2>
-        <p><strong>Source:</strong> ${escapeHtml(message.source)}</p>
-        <p><strong>Name:</strong> ${escapeHtml(message.name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(message.email)}</p>
-        ${message.userId ? `<p><strong>User ID:</strong> ${escapeHtml(message.userId)}</p>` : ""}
-        ${message.projectId ? `<p><strong>Related project:</strong> ${escapeHtml(message.projectId)}</p>` : ""}
-        <p><strong>Subject:</strong> ${escapeHtml(message.subject)}</p>
-        <div style="margin-top: 18px; padding: 16px; background: #f7f4ec; border: 1px solid #e8dfcf;">
-          ${paragraphize(message.content)}
-        </div>
-        <p style="margin-top: 18px;">Log in to the admin dashboard to review and reply.</p>
-      </div>
-    `,
+    html: brandedEmail({
+      preheader: `New ${message.source} from ${message.email}`,
+      title: "New message received",
+      children: `
+        ${detailList([
+          ["Source", message.source],
+          ["Name", message.name],
+          ["Email", message.email],
+          ["Subject", message.subject],
+          ...(message.userId ? [["User ID", message.userId] as [string, unknown]] : []),
+          ...(message.projectId ? [["Related project", message.projectId] as [string, unknown]] : []),
+        ])}
+        ${messageCard(message.content)}
+        ${message.threadUrl ? `<p><a href="${escapeHtml(message.threadUrl)}" style="color:#1f5f8f; font-weight:700;">Open this thread in Admin Messages</a></p>` : `<p>Log in to the admin dashboard to review and reply.</p>`}
+      `,
+      footerNote: `This notification was sent to the internal admin address. Do not forward private client content outside ${escapeHtml(BRAND_NAME)}.`,
+    }),
   });
 }
 
-export async function sendMessageReplyEmail(to: string, recipientName: string | null, subject: string, reply: string) {
+export async function sendMessageReplyEmail(to: string, recipientName: string | null, subject: string, reply: string, options?: {
+  threadId?: string;
+  inReplyTo?: string | null;
+  references?: string | null;
+  attachment?: EmailAttachment | null;
+}) {
+  const threadReplyTo = options?.threadId
+    ? `support+thread-${options.threadId}@business.editandproofread.com`
+    : SUPPORT_EMAIL;
+
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
-    replyTo: SUPPORT_EMAIL,
+    replyTo: threadReplyTo,
     to,
     subject,
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
+    headers: {
+      ...(options?.threadId ? { "X-MEP-Thread-ID": options.threadId } : {}),
+      ...(options?.inReplyTo ? { "In-Reply-To": options.inReplyTo } : {}),
+      ...(options?.references ? { References: options.references } : {}),
+    },
+    attachments: options?.attachment ? [options.attachment] : undefined,
+    html: brandedEmail({
+      preheader: `${BRAND_NAME} has replied to your message.`,
+      title: "Support reply",
+      children: `
         <p>Hello ${escapeHtml(recipientName || "there")},</p>
-        <p>${BRAND_NAME} has replied to your message.</p>
-        <div style="margin: 18px 0; padding: 16px; background: #f7f4ec; border: 1px solid #e8dfcf;">
-          ${paragraphize(reply)}
-        </div>
-        <p>If you have questions, reply to this email or contact ${SUPPORT_EMAIL}.</p>
-        <p>Thank you,<br/>${BRAND_NAME}</p>
-      </div>
-    `,
+        <p>${escapeHtml(BRAND_NAME)} has replied to your message.</p>
+        ${messageCard(reply)}
+        <p>If you have questions, simply reply to this email.</p>
+      `,
+    }),
   });
 }
 
@@ -131,24 +251,26 @@ export async function sendPaymentSuccessEmail(to: string, project: {
     replyTo: PAYMENTS_EMAIL,
     to,
     subject: "Payment received for your editing order",
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
+    html: brandedEmail({
+      preheader: `Payment received for ${project.friendlyId}.`,
+      title: "Payment received",
+      children: `
         <p>Hello ${escapeHtml(project.clientName || "there")},</p>
         <p>We have received your payment for your editing order.</p>
-        <ul>
-          <li><strong>Order ID:</strong> ${escapeHtml(project.friendlyId)}</li>
-          <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
-          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
-          <li><strong>Word count:</strong> ${Number(project.wordCount || 0).toLocaleString()}</li>
-          <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
-          <li><strong>Amount paid:</strong> ${formatMoney(project.amount, project.currency || "USD")}</li>
-          <li><strong>Payment date:</strong> ${escapeHtml(project.paymentDate || new Date().toLocaleString())}</li>
-          ${project.paymentMethod ? `<li><strong>Payment method:</strong> ${escapeHtml(project.paymentMethod)}</li>` : ""}
-        </ul>
+        ${detailList([
+          ["Order ID", project.friendlyId],
+          ["Service", project.service],
+          ["Target journal", project.targetJournal || "Not provided"],
+          ["Word count", Number(project.wordCount || 0).toLocaleString()],
+          ["Turnaround", project.turnaround],
+          ["Amount paid", formatMoney(project.amount, project.currency || "USD")],
+          ["Payment date", project.paymentDate || new Date().toLocaleString()],
+          ...(project.paymentMethod ? [["Payment method", project.paymentMethod] as [string, unknown]] : []),
+        ])}
         <p>Your document is now recorded in our system. If we need any additional information, our support team will contact you.</p>
-        <p>Thank you,<br/>${BRAND_NAME}</p>
-      </div>
-    `,
+      `,
+      footerNote: `For payment questions, reply to this email or contact <a href="mailto:${PAYMENTS_EMAIL}" style="color:#1f5f8f; text-decoration:underline;">${PAYMENTS_EMAIL}</a>.`,
+    }),
   });
 }
 
@@ -165,21 +287,21 @@ export async function sendDocumentReceivedEmail(to: string, project: {
     replyTo: SUPPORT_EMAIL,
     to,
     subject: "We have received your document",
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
+    html: brandedEmail({
+      preheader: `We have received your document for ${project.friendlyId}.`,
+      title: "Document received",
+      children: `
         <p>Hello ${escapeHtml(project.clientName || "there")},</p>
         <p>Thank you for submitting your document. Our team has received your file and will review it according to your selected service and turnaround.</p>
-        <ul>
-          <li><strong>Project ID:</strong> ${escapeHtml(project.friendlyId)}</li>
-          ${project.documentName ? `<li><strong>Document:</strong> ${escapeHtml(project.documentName)}</li>` : ""}
-          <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
-          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
-          <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
-        </ul>
-        <p>If you have questions, reply to this email or contact ${SUPPORT_EMAIL}.</p>
-        <p>Thank you,<br/>${BRAND_NAME}</p>
-      </div>
-    `,
+        ${detailList([
+          ["Project ID", project.friendlyId],
+          ...(project.documentName ? [["Document", project.documentName] as [string, unknown]] : []),
+          ["Service", project.service],
+          ["Target journal", project.targetJournal || "Not provided"],
+          ["Turnaround", project.turnaround],
+        ])}
+      `,
+    }),
   });
 }
 
@@ -202,26 +324,27 @@ export async function sendEditorNotificationEmail(project: {
     replyTo: ADMIN_EMAIL,
     to: getInternalRecipient(),
     subject: "New paid project received",
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
-        <h2>New paid project received</h2>
+    html: brandedEmail({
+      preheader: `New paid project ${project.friendlyId}.`,
+      title: "New paid project received",
+      children: `
         <p>A new paid project has been submitted.</p>
-        <ul>
-          <li><strong>Client:</strong> ${escapeHtml(project.clientName || "Client")}</li>
-          <li><strong>Email:</strong> ${escapeHtml(project.clientEmail || "Not available")}</li>
-          <li><strong>Project ID:</strong> ${escapeHtml(project.friendlyId)}</li>
-          <li><strong>Service:</strong> ${escapeHtml(project.service)}</li>
-          <li><strong>Target journal:</strong> ${escapeHtml(project.targetJournal || "Not provided")}</li>
-          <li><strong>Word count:</strong> ${Number(project.wordCount || 0).toLocaleString()}</li>
-          <li><strong>Turnaround:</strong> ${escapeHtml(project.turnaround)}</li>
-          <li><strong>Amount paid:</strong> ${formatMoney(project.amount, project.currency || "USD")}</li>
-          <li><strong>Payment status:</strong> ${escapeHtml(project.paymentStatus || "paid")}</li>
-          ${project.documentPath ? `<li><strong>Document path:</strong> ${escapeHtml(project.documentPath)}</li>` : ""}
-          ${project.projectUrl ? `<li><strong>Project dashboard:</strong> <a href="${escapeHtml(project.projectUrl)}">${escapeHtml(project.projectUrl)}</a></li>` : ""}
-        </ul>
-        <p>Log in to the admin dashboard to review the project and download the document.</p>
-      </div>
-    `,
+        ${detailList([
+          ["Client", project.clientName || "Client"],
+          ["Email", project.clientEmail || "Not available"],
+          ["Project ID", project.friendlyId],
+          ["Service", project.service],
+          ["Target journal", project.targetJournal || "Not provided"],
+          ["Word count", Number(project.wordCount || 0).toLocaleString()],
+          ["Turnaround", project.turnaround],
+          ["Amount paid", formatMoney(project.amount, project.currency || "USD")],
+          ["Payment status", project.paymentStatus || "paid"],
+          ...(project.documentPath ? [["Document path", project.documentPath] as [string, unknown]] : []),
+        ])}
+        ${project.projectUrl ? `<p><a href="${escapeHtml(project.projectUrl)}" style="color:#1f5f8f; font-weight:700;">Open project dashboard</a></p>` : ""}
+      `,
+      footerNote: `This internal notification was sent to the admin address ${escapeHtml(getInternalRecipient())}.`,
+    }),
   });
 }
 
@@ -231,13 +354,38 @@ export async function sendProjectReadyEmail(to: string, friendlyId: string) {
     replyTo: SUPPORT_EMAIL,
     to,
     subject: `Project ready for download - ${friendlyId}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.6;">
-        <h2>Your document is ready</h2>
+    html: brandedEmail({
+      preheader: `Your document for ${friendlyId} is ready.`,
+      title: "Your document is ready",
+      children: `
         <p>The editorial review for project <strong>${escapeHtml(friendlyId)}</strong> is complete.</p>
         <p>Please log in to your dashboard to download your files and review the editor's notes.</p>
-        <p>Thank you,<br/>${BRAND_NAME}</p>
-      </div>
-    `,
+      `,
+    }),
+  });
+}
+
+export async function sendProjectDeliveryEmail(to: string, project: {
+  clientName?: string | null;
+  friendlyId: string;
+  note?: string | null;
+  attachment: EmailAttachment;
+}) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to,
+    subject: `Completed file for ${project.friendlyId}`,
+    attachments: [project.attachment],
+    html: brandedEmail({
+      preheader: `Your completed file for ${project.friendlyId} is attached.`,
+      title: "Completed file attached",
+      children: `
+        <p>Hello ${escapeHtml(project.clientName || "there")},</p>
+        <p>Your completed file for project <strong>${escapeHtml(project.friendlyId)}</strong> is attached to this email.</p>
+        ${project.note ? messageCard(project.note) : ""}
+        <p>If you have questions or need a revision clarification, simply reply to this email.</p>
+      `,
+    }),
   });
 }

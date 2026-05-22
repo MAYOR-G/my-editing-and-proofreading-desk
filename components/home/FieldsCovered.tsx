@@ -19,11 +19,11 @@ import {
   Telescope
 } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WorkPreviewModal } from "@/components/home/WorkPreviewModal";
-import { type WorkExample, type WorkExampleKey, workExamples } from "@/lib/work-example-data";
+import { type WorkExample, workExamples as staticWorkExamples } from "@/lib/work-example-data";
 
-const fieldIcons: Record<WorkExampleKey, typeof Search> = {
+const fieldIcons: Record<string, typeof Search> = {
   education: BookMarked,
   astrophysics: Telescope,
   biology: Dna,
@@ -32,7 +32,7 @@ const fieldIcons: Record<WorkExampleKey, typeof Search> = {
   computing: Laptop,
   cv: Briefcase,
   economics: Calculator,
-  geological: Mountain,
+  "geological-engineering": Mountain,
   law: Gavel,
   "life-sciences": Microscope,
   marketing: Megaphone,
@@ -48,13 +48,41 @@ const fieldIcons: Record<WorkExampleKey, typeof Search> = {
 
 export function FieldsCovered() {
   const [selectedExample, setSelectedExample] = useState<WorkExample | null>(null);
+  const [examples, setExamples] = useState<WorkExample[]>(() => staticWorkExamples.map(withUnavailablePages));
+
+  useEffect(() => {
+    const fetchDynamicExamples = async () => {
+      try {
+        const res = await fetch("/api/examples", { cache: "no-store" });
+        const data = await res.json();
+        const uploadedByKey = new Map<string, any>((data.examples || []).map((example: any) => [example.category_key, example]));
+
+        setExamples(staticWorkExamples.map((staticExample) => {
+          const uploaded = uploadedByKey.get(staticExample.key);
+          if (!uploaded?.parsed_content_json?.length) return withUnavailablePages(staticExample);
+
+          return {
+            ...staticExample,
+            documentTitle: uploaded.source_file_name || staticExample.documentTitle,
+            authorLine: `${staticExample.title} uploaded sample`,
+            pages: uploaded.parsed_content_json,
+          };
+        }));
+      } catch (error) {
+        console.error("Homepage work examples fetch failed:", error);
+        setExamples(staticWorkExamples.map(withUnavailablePages));
+      }
+    };
+    
+    fetchDynamicExamples();
+  }, []);
 
   return (
     <section className="bg-white pb-28 pt-8 px-5 sm:px-10 border-b border-ink/5 relative overflow-hidden">
       <div className="max-w-screen-xl mx-auto relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {workExamples.map((field, idx) => {
-            const Icon = fieldIcons[field.key];
+          {examples.map((field, idx) => {
+            const Icon = fieldIcons[field.key] || BookMarked;
 
             return (
               <Reveal key={field.key} delay={idx * 0.025} variant={idx % 4 === 0 ? "fadeRight" : idx % 4 === 1 ? "clipUp" : idx % 4 === 2 ? "fadeLeft" : "scale"}>
@@ -78,4 +106,25 @@ export function FieldsCovered() {
       <WorkPreviewModal example={selectedExample} onClose={() => setSelectedExample(null)} />
     </section>
   );
+}
+
+function withUnavailablePages(example: WorkExample): WorkExample {
+  return {
+    ...example,
+    pages: [
+      {
+        eyebrow: "Sample updating",
+        heading: example.documentTitle,
+        body: ["This sample is being updated. Please check back soon."],
+        blocks: [
+          {
+            type: "paragraph",
+            text: "This sample is being updated. Please check back soon.",
+            role: "body",
+          },
+        ],
+        comments: [],
+      },
+    ],
+  };
 }

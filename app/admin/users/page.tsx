@@ -1,13 +1,7 @@
 import { DashboardShell } from "@/components/DashboardShell";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
-
-const nav = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/requests", label: "Messages" },
-  { href: "/admin/projects", label: "Projects" }
-];
+import { adminNav } from "@/lib/admin-nav";
 
 export default async function AdminUsersPage() {
   await requireAdmin();
@@ -30,9 +24,11 @@ export default async function AdminUsersPage() {
       eyebrow="Admin operations"
       title="Client Registry."
       description="View and manage all registered users on the platform."
-      nav={nav}
+      nav={adminNav("/admin/users")}
       primaryActionLabel="Update order"
+      primaryActionHref="/admin/projects"
       secondaryActionLabel="Messages"
+      secondaryActionHref="/admin/requests"
     >
       <section className="mt-8 border border-ink/10 bg-ivory/90 p-7">
         <div className="flex flex-wrap items-center justify-between mb-6">

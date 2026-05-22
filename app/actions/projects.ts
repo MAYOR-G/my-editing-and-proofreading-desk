@@ -66,7 +66,7 @@ export async function createProject(data: ProjectInput) {
     client_notes: data.client_notes,
     upload_file_path: data.upload_file_path,
     uploaded_file_path: data.upload_file_path,
-    status: "In Progress",
+    status: "Pending",
     payment_status: "pending",
     payment_provider: data.payment_provider || null,
     selected_payment_method: data.payment_provider || null,

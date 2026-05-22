@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Award, Calculator, FileCheck2, FilePenLine, ShieldCheck, UploadCloud, Zap } from "lucide-react";
 
 const processSteps = [
@@ -45,10 +45,12 @@ const trustItems = [
 ];
 
 export function ProcessFlow() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className="relative overflow-hidden border-y border-ink/5 bg-[linear-gradient(180deg,#f7fbff_0%,#ffffff_48%,#f4f8fd_100%)] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_50%_0%,rgba(37,106,168,0.12),transparent_58%)]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-[radial-gradient(circle_at_50%_100%,rgba(23,74,124,0.08),transparent_60%)]" />
+    <section className="relative overflow-hidden border-y border-ink/5 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_46%,#f5f9fd_100%)] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_50%_0%,rgba(37,106,168,0.095),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-[radial-gradient(circle_at_50%_100%,rgba(23,74,124,0.055),transparent_62%)]" />
 
       <div className="relative z-10 mx-auto max-w-screen-2xl">
         <motion.div
@@ -78,7 +80,7 @@ export function ProcessFlow() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.58, delay: 0.12 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
-                className="group relative flex min-h-[282px] w-full max-w-[330px] flex-col items-center rounded-[1.15rem] border border-primary/10 bg-white/90 px-6 pb-7 pt-10 text-center shadow-[0_14px_42px_rgba(13,42,73,0.065)] backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-[0_22px_62px_rgba(13,42,73,0.12)] sm:px-7 lg:max-w-none"
+                className="group relative flex min-h-[282px] w-full max-w-[330px] flex-col items-center rounded-[1.05rem] border border-[#d9e5f1] bg-white px-6 pb-7 pt-10 text-center shadow-[0_18px_38px_rgba(14,42,72,0.055),inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-500 ease-premium-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_48px_rgba(14,42,72,0.09),inset_0_1px_0_rgba(255,255,255,0.95)] sm:px-7 lg:max-w-none"
               >
                 {index !== processSteps.length - 1 && (
                   <>
@@ -87,10 +89,10 @@ export function ProcessFlow() {
                       whileInView={{ opacity: 1, scaleX: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.46, delay: 0.42 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
-                      className="absolute left-full top-[95px] z-20 hidden h-[2px] w-7 origin-left bg-primary lg:block"
+                      className="absolute left-[calc(100%+0.125rem)] top-[103px] z-20 hidden h-px w-[1.5rem] origin-left bg-primary/45 lg:block"
                     >
-                      <span className="absolute -left-1 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-[#1f7df2] shadow-[0_0_0_5px_rgba(37,106,168,0.08)]" />
-                      <span className="absolute -right-[1px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-r-2 border-t-2 border-primary" />
+                      <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_4px_rgba(37,106,168,0.08)]" />
+                      <span className="absolute -right-px top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-r-[1.5px] border-t-[1.5px] border-primary/70" />
                     </motion.div>
 
                     <motion.div
@@ -98,24 +100,38 @@ export function ProcessFlow() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.42, delay: 0.42 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
-                      className="absolute -bottom-9 left-1/2 z-0 h-8 w-[2px] -translate-x-1/2 bg-primary/[0.55] lg:hidden"
+                      className="absolute -bottom-9 left-1/2 z-0 h-8 w-px -translate-x-1/2 bg-primary/35 lg:hidden"
                     >
-                      <span className="absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rotate-[135deg] border-r-2 border-t-2 border-primary" />
+                      <span className="absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rotate-[135deg] border-r-[1.5px] border-t-[1.5px] border-primary/70" />
                     </motion.div>
                   </>
                 )}
 
-                <div className="absolute -top-5 left-1/2 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2d8cff,#174a7c)] text-base font-bold text-white shadow-[0_10px_24px_rgba(31,125,242,0.30)] ring-[6px] ring-white">
+                <div className="absolute -top-5 left-1/2 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2b82ea,#174a7c)] text-base font-bold text-white shadow-[0_10px_20px_rgba(31,105,180,0.22)] ring-[6px] ring-white">
                   {index + 1}
                 </div>
 
-                <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-full border border-primary/5 bg-[radial-gradient(circle_at_35%_30%,#ffffff_0%,#eaf4ff_54%,#dcecff_100%)] shadow-[inset_0_0_0_9px_rgba(255,255,255,0.42),0_14px_32px_rgba(37,106,168,0.10)] transition-all duration-500 group-hover:scale-[1.04] group-hover:shadow-[inset_0_0_0_9px_rgba(255,255,255,0.56),0_18px_42px_rgba(31,125,242,0.16)]">
-                  <div className="relative flex h-[68px] w-[68px] items-center justify-center rounded-2xl bg-white/70 text-primary shadow-[0_10px_22px_rgba(31,125,242,0.16)]">
-                    <span className="absolute -left-3 top-4 h-1.5 w-1.5 rotate-45 rounded-[2px] border border-[#2d8cff]" />
-                    <span className="absolute -right-2 top-6 h-1.5 w-1.5 rotate-45 rounded-[2px] bg-[#2d8cff]/70" />
-                    <step.icon className="h-8 w-8 drop-shadow-[0_6px_10px_rgba(31,125,242,0.20)] transition-transform duration-500 group-hover:scale-110" strokeWidth={1.8} />
+                <motion.div
+                  animate={shouldReduceMotion ? undefined : { y: [0, -4, 0] }}
+                  transition={shouldReduceMotion ? undefined : { duration: 5.5, repeat: Infinity, delay: index * 0.28, ease: "easeInOut" }}
+                  className="mb-6 flex h-28 w-28 items-center justify-center rounded-full border border-primary/10 bg-[radial-gradient(circle_at_38%_28%,#ffffff_0%,#eef7ff_55%,#e4f0fb_100%)] shadow-[inset_0_0_0_10px_rgba(255,255,255,0.58),0_12px_26px_rgba(37,106,168,0.075)] transition-all duration-500 group-hover:shadow-[inset_0_0_0_10px_rgba(255,255,255,0.68),0_16px_34px_rgba(31,105,180,0.12)]"
+                >
+                  <div className="relative flex h-[70px] w-[70px] items-center justify-center rounded-[1.05rem] border border-primary/5 bg-white/82 text-primary shadow-[0_10px_20px_rgba(37,106,168,0.095)] transition-transform duration-500 ease-premium-out group-hover:-translate-y-0.5">
+                    <span className="absolute inset-[-15px] rounded-full border border-primary/10 opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
+                    <motion.span
+                      aria-hidden="true"
+                      animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+                      transition={shouldReduceMotion ? undefined : { duration: 12, repeat: Infinity, ease: "linear", delay: index * 0.2 }}
+                      className="absolute inset-[-17px] rounded-full before:absolute before:left-1/2 before:top-[-3px] before:h-1.5 before:w-1.5 before:-translate-x-1/2 before:rounded-full before:bg-primary/65 before:shadow-[0_0_0_4px_rgba(37,106,168,0.08)]"
+                    />
+                    <span className="absolute -left-3 top-4 h-1.5 w-1.5 rotate-45 rounded-[2px] border border-primary/60 transition-transform duration-500 group-hover:-translate-x-0.5" />
+                    <span className="absolute -right-2 top-6 h-1.5 w-1.5 rotate-45 rounded-[2px] bg-primary/55 transition-transform duration-500 group-hover:translate-x-0.5" />
+                    <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.05rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      <span className="absolute inset-y-0 -left-8 w-8 rotate-12 bg-white/55 blur-[1px] transition-transform duration-700 group-hover:translate-x-28" />
+                    </span>
+                    <step.icon className="relative h-8 w-8 drop-shadow-[0_5px_8px_rgba(31,105,180,0.16)] transition-transform duration-500 ease-premium-out group-hover:-translate-y-0.5" strokeWidth={1.8} />
                   </div>
-                </div>
+                </motion.div>
 
                 <h3 className="mb-3 max-w-[13rem] text-lg font-extrabold leading-tight tracking-tight text-[#0e2145]">
                   {step.title}
@@ -130,14 +146,14 @@ export function ProcessFlow() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
-            className="mx-auto mt-10 grid max-w-4xl gap-4 rounded-[1.15rem] border border-primary/10 bg-white/[0.92] p-4 shadow-[0_14px_44px_rgba(13,42,73,0.075)] backdrop-blur sm:p-5 md:grid-cols-3 md:gap-0"
+            className="mx-auto mt-10 grid max-w-4xl gap-0 overflow-hidden rounded-[1.05rem] border border-[#dce6f0] bg-white/95 p-3 shadow-[0_18px_42px_rgba(14,42,72,0.07)] backdrop-blur sm:p-4 md:grid-cols-3"
           >
             {trustItems.map((item) => (
               <div
                 key={item.title}
-                className="flex items-center gap-3 rounded-2xl px-2 py-1.5 md:rounded-none md:px-5 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-primary/10 md:[&:not(:last-child)]:border-b-0 md:[&:not(:last-child)]:border-r"
+                className="flex items-center gap-3 px-3 py-3 md:px-6 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-primary/10 md:[&:not(:last-child)]:border-b-0 md:[&:not(:last-child)]:border-r"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/[0.07] text-primary">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/10 bg-[#f1f5f9] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
                   <item.icon className="h-5 w-5" strokeWidth={1.9} />
                 </div>
                 <div>

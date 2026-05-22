@@ -70,7 +70,7 @@ CREATE TABLE public.projects (
   service_charge_amount NUMERIC(10, 2),
   final_price NUMERIC(10, 2),
   minimum_applied BOOLEAN DEFAULT false NOT NULL,
-  status project_status DEFAULT 'In Progress'::project_status NOT NULL,
+  status project_status DEFAULT 'Pending'::project_status NOT NULL,
   payment_status payment_status DEFAULT 'pending'::payment_status NOT NULL,
   payment_provider TEXT,           -- 'paystack' | 'flutterwave' | 'stripe' | 'paypal'
   selected_payment_method TEXT,
@@ -83,6 +83,10 @@ CREATE TABLE public.projects (
   upload_file_path TEXT NOT NULL, -- Path in Supabase Storage
   uploaded_file_path TEXT,
   delivery_file_path TEXT, -- Path in Supabase Storage
+  delivery_file_name TEXT,
+  delivery_content_type TEXT,
+  delivery_file_size INTEGER,
+  delivery_sent_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
@@ -205,6 +209,17 @@ CREATE TABLE public.contact_messages (
   status TEXT DEFAULT 'New' NOT NULL CHECK (status IN ('New', 'Open', 'Replied', 'Closed')),
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL,
+  thread_key TEXT,
+  inbound_message_id TEXT,
+  email_references TEXT,
+  latest_message TEXT,
+  latest_message_at TIMESTAMPTZ,
+  last_sender TEXT DEFAULT 'user' NOT NULL CHECK (last_sender IN ('user', 'admin')),
+  unread_count INTEGER DEFAULT 1 NOT NULL,
+  attachment_file_path TEXT,
+  attachment_file_name TEXT,
+  attachment_content_type TEXT,
+  attachment_file_size INTEGER,
   admin_reply TEXT,
   replied_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
@@ -216,6 +231,15 @@ CREATE TABLE public.contact_message_replies (
   message_id UUID REFERENCES public.contact_messages(id) ON DELETE CASCADE NOT NULL,
   reply TEXT NOT NULL,
   sent_to TEXT NOT NULL,
+  sender_type TEXT DEFAULT 'admin' NOT NULL CHECK (sender_type IN ('user', 'admin')),
+  sender_name TEXT,
+  sender_email TEXT,
+  inbound_message_id TEXT,
+  email_references TEXT,
+  attachment_file_path TEXT,
+  attachment_file_name TEXT,
+  attachment_content_type TEXT,
+  attachment_file_size INTEGER,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
@@ -262,37 +286,8 @@ CREATE POLICY "Deliveries: Client Select" ON storage.objects FOR SELECT USING (
 
 
 -- ==============================================================================
--- 6. AUTOMATED 30-DAY DELETION (CRON JOB)
--- This requires pg_cron extension to be enabled in Supabase.
+-- 6. RETENTION
 -- ==============================================================================
 
--- First, ensure pg_cron is enabled (this usually requires Superuser, but Supabase allows it via Dashboard -> Database -> Extensions)
-CREATE EXTENSION IF NOT EXISTS pg_cron;
-
--- Create a function to delete old projects and their files
-CREATE OR REPLACE FUNCTION delete_old_completed_projects()
-RETURNS void AS $$
-DECLARE
-  old_project RECORD;
-BEGIN
-  -- Find projects completed more than 30 days ago
-  FOR old_project IN 
-    SELECT id, upload_file_path, delivery_file_path 
-    FROM public.projects 
-    WHERE status = 'Completed' 
-    AND completed_at < NOW() - INTERVAL '30 days'
-  LOOP
-    -- Note: To delete from storage securely, you normally call the Supabase storage API.
-    -- However, doing it via pure SQL is complex because storage API uses a separate schema/service.
-    -- The easiest way in Supabase is to let ON DELETE CASCADE handle relational data, 
-    -- and use a Supabase Edge Function triggered by a cron job to call the Storage API and delete the db row.
-    
-    -- But since you want DB-level deletion, we can delete the record here. 
-    -- YOU MUST ensure your Edge Function handles the actual file deletion if you want storage cleared!
-    DELETE FROM public.projects WHERE id = old_project.id;
-  END LOOP;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Schedule the cron job to run daily at 2:00 AM
-SELECT cron.schedule('delete_old_projects_job', '0 2 * * *', 'SELECT delete_old_completed_projects();');
+-- Paid project records are preserved. The admin UI filters in-progress work older
+-- than 30 days into an archive/history view instead of deleting business records.

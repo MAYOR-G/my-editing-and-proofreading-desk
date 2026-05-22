@@ -9,7 +9,7 @@ export type WorkExampleKey =
   | "computing"
   | "cv"
   | "economics"
-  | "geological"
+  | "geological-engineering"
   | "law"
   | "life-sciences"
   | "marketing"
@@ -195,7 +195,7 @@ const examples: ExampleSeed[] = [
     reference: "The visible introduction frames Bitcoin adoption through technology, regulation, security, volatility, and deflationary concerns."
   },
   {
-    key: "geological",
+    key: "geological-engineering",
     title: "Geological Engineering",
     shortTitle: "Engineering",
     kind: "technical",
@@ -381,7 +381,7 @@ function createPages(seed: ExampleSeed): WorkExamplePage[] {
   if (seed.key === "astrophysics") return createAstrophysicsPages();
   if (seed.kind === "resume") return createResumePages(seed);
   if (seed.kind === "reference") return createReferencePages(seed);
-  if (seed.key === "geological") return createGeologicalManuscriptPages(seed);
+  if (seed.key === "geological-engineering") return createGeologicalManuscriptPages(seed);
   if (seed.key === "biology") return createBiologyPages(seed);
   if (seed.key === "chemistry") return createChemistryPages(seed);
   if (seed.key === "law") return createLawPages(seed);
@@ -1979,7 +1979,7 @@ function createTheologyPages(seed: ExampleSeed): WorkExamplePage[] {
 function figureFor(key: WorkExampleKey): WorkExamplePage["figure"] {
   if (key === "biology") return "cell";
   if (key === "chemistry" || key === "geochemistry") return "molecule";
-  if (key === "geological") return "chart";
+  if (key === "geological-engineering") return "chart";
   if (key === "computing") return "code";
   if (key === "nursing" || key === "life-sciences") return "clinical";
   return "chart";

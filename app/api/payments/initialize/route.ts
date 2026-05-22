@@ -228,7 +228,7 @@ export async function POST(request: Request) {
       client_notes: client_notes || "",
       upload_file_path: file_path,
       uploaded_file_path: file_path,
-      status: "In Progress",
+      status: "Pending",
       payment_status: "pending",
       payment_provider: paymentProviderName,
       selected_payment_method: paymentProviderName,

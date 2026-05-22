@@ -170,7 +170,7 @@ export const userProjects = [
     id: "MEP-1048",
     title: "Research proposal revision",
     service: "Editing",
-    status: "In Progress",
+    status: "Pending",
     due: "7 days",
     words: "8,420",
     paid: "$168.40"
