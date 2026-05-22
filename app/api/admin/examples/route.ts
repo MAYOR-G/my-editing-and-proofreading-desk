@@ -6,6 +6,9 @@ import { parseDocxDocument } from "@/lib/docx-parser";
 import { type WorkExampleKey, workExamples } from "@/lib/work-example-data";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+export const runtime = "nodejs";
 
 const categoryMap = new Map(workExamples.map((example) => [example.key, example]));
 const validCategoryKeys = new Set(workExamples.map((example) => example.key));
@@ -126,6 +129,11 @@ async function removeStoredFiles(adminClient: ReturnType<typeof createSupabaseAd
 function noStoreJson(body: unknown, init?: ResponseInit) {
   const headers = new Headers(init?.headers);
   headers.set("Cache-Control", "no-store, no-cache, max-age=0, must-revalidate");
+  headers.set("CDN-Cache-Control", "no-store");
+  headers.set("Vercel-CDN-Cache-Control", "no-store");
+  headers.set("Surrogate-Control", "no-store");
+  headers.set("Pragma", "no-cache");
+  headers.set("Expires", "0");
   return NextResponse.json(body, { ...init, headers });
 }
 
