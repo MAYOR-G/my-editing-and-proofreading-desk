@@ -55,12 +55,85 @@ function cleanFormValue(formData: FormData, key: string, maxLength: number) {
   return cleanText(formData.get(key), maxLength);
 }
 
+function getClientIdentifier(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const cfIp = request.headers.get("cf-connecting-ip")?.trim();
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  const userAgent = request.headers.get("user-agent")?.slice(0, 80) || "unknown-agent";
+
+  return `${cfIp || forwarded || realIp || "anonymous"}:${userAgent}`;
+}
+
+function compactForDuplicateCheck(values: string[]) {
+  return values
+    .map((value) => value.trim().toLowerCase().replace(/\s+/g, " "))
+    .filter(Boolean)
+    .join("|")
+    .slice(0, 700);
+}
+
+function countLinks(value: string) {
+  return (value.match(/https?:\/\/|www\./gi) || []).length;
+}
+
+async function verifyTurnstile(token: string, request: Request) {
+  if (process.env.NODE_ENV !== "production") {
+    return true;
+  }
+
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+
+  if (!secret) {
+    console.error("Turnstile secret is missing in production.");
+    return false;
+  }
+
+  if (!token) return false;
+
+  const formData = new FormData();
+  formData.append("secret", secret);
+  formData.append("response", token);
+
+  const remoteIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  if (remoteIp) {
+    formData.append("remoteip", remoteIp);
+  }
+
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json() as { success?: boolean; "error-codes"?: string[] };
+
+    if (!result.success) {
+      console.warn("Turnstile verification failed:", result["error-codes"] || "unknown_error");
+    }
+
+    return Boolean(result.success);
+  } catch (error) {
+    console.error("Turnstile verification request failed:", error);
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const rateLimit = await checkRateLimit(`contact:${request.headers.get("x-forwarded-for") || "anonymous"}`, 5, 60);
-    if (!rateLimit.success) {
+    const clientIdentifier = getClientIdentifier(request);
+    const cooldown = await checkRateLimit(`contact-cooldown:${clientIdentifier}`, 1, 30);
+    if (!cooldown.success) {
+      console.warn("Contact submission blocked by cooldown:", clientIdentifier);
       return NextResponse.json(
-        { error: "Please wait a moment before sending another message." },
+        { error: "Please wait about 30 seconds before sending another message." },
+        { status: 429 }
+      );
+    }
+
+    const rateLimit = await checkRateLimit(`contact:${clientIdentifier}`, 5, 60);
+    if (!rateLimit.success) {
+      console.warn("Contact submission blocked by rate limit:", clientIdentifier);
+      return NextResponse.json(
+        { error: "Too many messages were sent in a short time. Please wait a moment and try again." },
         { status: 429 }
       );
     }
@@ -80,12 +153,50 @@ export async function POST(request: Request) {
     const message = formData ? cleanFormValue(formData, "message", 5000) : cleanText(payload.message, 5000);
     const source = (formData ? cleanFormValue(formData, "source", 120) : cleanText(payload.source, 120)) || "Contact Form";
     const projectId = (formData ? cleanFormValue(formData, "projectId", 80) : cleanText(payload.projectId, 80)) || null;
+    const honeypot = formData ? cleanFormValue(formData, "website", 200) : cleanText(payload.website, 200);
+    const turnstileToken = formData ? cleanFormValue(formData, "turnstileToken", 3000) : cleanText(payload.turnstileToken, 3000);
+
+    if (honeypot) {
+      console.warn("Contact submission blocked by honeypot:", clientIdentifier);
+      return NextResponse.json(
+        { error: "We could not verify this message. Please refresh the page and try again." },
+        { status: 400 }
+      );
+    }
+
+    const turnstileOk = await verifyTurnstile(turnstileToken, request);
+    if (!turnstileOk) {
+      return NextResponse.json(
+        { error: "Verification is required before sending your message. Please complete the check and try again." },
+        { status: 403 }
+      );
+    }
 
     if (!name || !email || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
         { error: "Please enter your name, a valid email address, and a message." },
         { status: 400 }
       );
+    }
+
+    if (message.length < 12 || countLinks(message) > 3 || countLinks(subject) > 1) {
+      console.warn("Contact submission blocked by suspicious content:", clientIdentifier);
+      return NextResponse.json(
+        { error: "Please send a clear project message without excessive links." },
+        { status: 400 }
+      );
+    }
+
+    const duplicateKey = compactForDuplicateCheck([email, subject, service, message]);
+    if (duplicateKey) {
+      const duplicateLimit = await checkRateLimit(`contact-duplicate:${clientIdentifier}:${duplicateKey}`, 1, 120);
+      if (!duplicateLimit.success) {
+        console.warn("Contact submission blocked as duplicate:", clientIdentifier);
+        return NextResponse.json(
+          { error: "This message was already sent. Please wait before submitting it again." },
+          { status: 409 }
+        );
+      }
     }
 
     const supabase = createClient();

@@ -54,10 +54,6 @@ export function ProcessFlow() {
 
       <div className="relative z-10 mx-auto max-w-screen-2xl">
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           className="mx-auto mb-12 max-w-3xl text-center sm:mb-14 lg:mb-16"
         >
           <div className="mb-4 inline-flex rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] text-primary shadow-sm">
@@ -76,19 +72,11 @@ export function ProcessFlow() {
             {processSteps.map((step, index) => (
               <motion.div
                 key={step.title}
-                initial={{ opacity: 0, y: 34, scale: 0.97 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.58, delay: 0.12 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
                 className="group relative flex min-h-[282px] w-full max-w-[330px] flex-col items-center rounded-[1.05rem] border border-[#d9e5f1] bg-white px-6 pb-7 pt-10 text-center shadow-[0_18px_38px_rgba(14,42,72,0.055),inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-500 ease-premium-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_22px_48px_rgba(14,42,72,0.09),inset_0_1px_0_rgba(255,255,255,0.95)] sm:px-7 lg:max-w-none"
               >
                 {index !== processSteps.length - 1 && (
                   <>
                     <motion.div
-                      initial={{ opacity: 0, scaleX: 0 }}
-                      whileInView={{ opacity: 1, scaleX: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.46, delay: 0.42 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
                       className="absolute left-[calc(100%+0.125rem)] top-[103px] z-20 hidden h-px w-[1.5rem] origin-left bg-primary/45 lg:block"
                     >
                       <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0_4px_rgba(37,106,168,0.08)]" />
@@ -96,10 +84,6 @@ export function ProcessFlow() {
                     </motion.div>
 
                     <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.42, delay: 0.42 + index * 0.12, ease: [0.23, 1, 0.32, 1] }}
                       className="absolute -bottom-9 left-1/2 z-0 h-8 w-px -translate-x-1/2 bg-primary/35 lg:hidden"
                     >
                       <span className="absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rotate-[135deg] border-r-[1.5px] border-t-[1.5px] border-primary/70" />
@@ -142,10 +126,6 @@ export function ProcessFlow() {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
             className="mx-auto mt-10 grid max-w-4xl gap-0 overflow-hidden rounded-[1.05rem] border border-[#dce6f0] bg-white/95 p-3 shadow-[0_18px_42px_rgba(14,42,72,0.07)] backdrop-blur sm:p-4 md:grid-cols-3"
           >
             {trustItems.map((item) => (

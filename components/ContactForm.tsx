@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import Script from "next/script";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
 
 type ContactFormProps = {
@@ -13,16 +14,74 @@ type ContactFormProps = {
 type SubmitState = "idle" | "sending" | "success" | "error";
 
 const attachmentAccept = ".doc,.docx,.pdf,.txt,.rtf,.odt,.csv,.xls,.xlsx,.ppt,.pptx,.zip,.png,.jpg,.jpeg,.webp";
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+const turnstileEnabled = Boolean(turnstileSiteKey) && process.env.NODE_ENV === "production";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        element: HTMLElement,
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          "expired-callback": () => void;
+          "error-callback": () => void;
+          theme?: "light" | "dark" | "auto";
+          size?: "normal" | "compact" | "flexible";
+        }
+      ) => string;
+      reset: (widgetId?: string) => void;
+    };
+  }
+}
 
 export function ContactForm({ source = "Contact Form", defaultName = "", defaultEmail = "", compact = false }: ContactFormProps) {
   const [state, setState] = useState<SubmitState>("idle");
   const [feedback, setFeedback] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetId = useRef<string | null>(null);
+
+  function renderTurnstile() {
+    if (!turnstileEnabled || !turnstileSiteKey || !turnstileRef.current || !window.turnstile || turnstileWidgetId.current) return;
+
+    turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+      sitekey: turnstileSiteKey,
+      theme: "light",
+      size: "flexible",
+      callback: (token) => setTurnstileToken(token),
+      "expired-callback": () => setTurnstileToken(""),
+      "error-callback": () => {
+        setTurnstileToken("");
+        setState("error");
+        setFeedback("Verification could not be completed. Please refresh the page and try again.");
+      },
+    });
+  }
+
+  useEffect(() => {
+    renderTurnstile();
+  }, []);
+
+  function resetVerification() {
+    setTurnstileToken("");
+    if (turnstileWidgetId.current) {
+      window.turnstile?.reset(turnstileWidgetId.current);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (state === "sending") return;
     const form = event.currentTarget;
     const formData = new FormData(form);
+
+    if (turnstileEnabled && !turnstileToken) {
+      setState("error");
+      setFeedback("Please complete the quick verification before sending your message.");
+      return;
+    }
 
     setState("sending");
     setFeedback("Sending...");
@@ -42,10 +101,13 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
             wordCount: formData.get("wordCount"),
             turnaround: formData.get("turnaround"),
             message: formData.get("message"),
+            website: formData.get("website"),
+            turnstileToken,
           });
 
       if (hasAttachment) {
         formData.set("source", source);
+        formData.set("turnstileToken", turnstileToken);
       }
 
       const response = await fetch("/api/contact", {
@@ -62,14 +124,24 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
       setState("success");
       setFeedback("Message sent successfully. Our team will get back to you soon.");
       form.reset();
+      resetVerification();
     } catch (error) {
       setState("error");
       setFeedback(error instanceof Error ? error.message : `We couldn't send your message right now. Please try again or email ${SUPPORT_EMAIL}.`);
+      resetVerification();
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className={`${compact ? "grid gap-5" : "min-w-0 rounded-2xl border border-hairline bg-canvas p-6 shadow-[0_24px_90px_rgba(17,17,15,0.055)] sm:p-8 lg:p-10"}`}>
+      {turnstileEnabled ? (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          strategy="afterInteractive"
+          onLoad={renderTurnstile}
+        />
+      ) : null}
+
       {!compact ? (
         <>
           <p className="text-xs uppercase tracking-[0.24em] text-primary">Inquiry form</p>
@@ -173,6 +245,21 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
             PDF, Word, text, spreadsheet, presentation, image, or ZIP files up to 25MB.
           </span>
         </label>
+
+        <label className="hidden" aria-hidden="true" tabIndex={-1}>
+          Website
+          <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </label>
+
+        {turnstileEnabled ? (
+          <div className="rounded-xl border border-hairline bg-surface-soft/70 p-3">
+            <div ref={turnstileRef} className="min-h-[65px]" />
+          </div>
+        ) : process.env.NODE_ENV === "production" ? (
+          <p className="rounded-xl border border-status-warning/25 bg-status-warning-light p-4 text-sm leading-6 text-status-warning">
+            Verification is not configured yet. Add the Turnstile site key before accepting public messages.
+          </p>
+        ) : null}
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button

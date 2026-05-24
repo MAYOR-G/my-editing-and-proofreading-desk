@@ -1,6 +1,6 @@
 import { Brain, FileLock2, MessageSquareText, SearchCheck } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
-import { HeroEditorialVisual } from "@/components/EditorialVisuals";
+import { EditorialPhotoVisual } from "@/components/EditorialVisuals";
 import { editorStandards } from "@/lib/content";
 
 const strengthIcons = [SearchCheck, MessageSquareText, FileLock2, Brain];
@@ -8,10 +8,18 @@ const strengthIcons = [SearchCheck, MessageSquareText, FileLock2, Brain];
 export default function EditorsPage() {
   return (
     <PublicPageShell
-      eyebrow="Editor standards"
+      eyebrow="Quality standards"
       title="Work reviewed by editors who understand your field."
       description="Our editors support academic, business, technical, and professional documents with careful attention to clarity, tone, structure, and meaning."
-      visual={<HeroEditorialVisual label="Editor standards" />}
+      visual={
+        <EditorialPhotoVisual
+          label="Review standards"
+          imageUrl="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=82"
+          imagePosition="center"
+          headline="Focused review from first read to final pass."
+          details={["Clarity", "Tone", "Structure"]}
+        />
+      }
     >
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">

@@ -1,12 +1,12 @@
 import { ContactVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { ContactForm } from "@/components/ContactForm";
-import { SUPPORT_EMAIL } from "@/lib/contact-info";
+import { COMPANY_PHONE, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 export default function ContactPage() {
   return (
     <PublicPageShell
-      eyebrow="Contact"
+      eyebrow="Secure contact"
       title="Tell us what your document needs."
       description="Use the contact page for service fit, project questions, document expectations, and business support."
       visual={<ContactVisual />}
@@ -15,7 +15,9 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl">
           {/* ─── Contact Info Card ─── */}
           <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:items-start">
-            <aside className="rounded-2xl border border-hairline bg-surface-soft p-6 shadow-[0_18px_60px_rgba(17,17,15,0.04)] sm:p-8">
+            <aside className="relative overflow-hidden rounded-2xl border border-hairline bg-surface-soft p-6 shadow-[0_18px_60px_rgba(17,17,15,0.04)] sm:p-8">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_0%,rgba(23,74,124,0.08),transparent_34%)]" aria-hidden="true" />
+              <div className="relative">
               <p className="text-xs uppercase tracking-[0.28em] text-primary">Business email</p>
               <a
                 href={`mailto:${SUPPORT_EMAIL}`}
@@ -26,6 +28,16 @@ export default function ContactPage() {
               <p className="mt-6 max-w-md text-base leading-7 text-body">
                 Include your document type, word count if known, service interest, and preferred turnaround.
               </p>
+
+              <div className="mt-8 border-t border-hairline pt-6">
+                <p className="text-xs uppercase tracking-[0.24em] text-primary">Phone</p>
+                <a
+                  href="tel:+14088728603"
+                  className="mt-3 inline-flex min-h-12 items-center rounded-full border border-primary/20 bg-canvas px-5 text-sm font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary"
+                >
+                  {COMPANY_PHONE}
+                </a>
+              </div>
 
               <div className="mt-8 border-t border-hairline pt-6">
                 <p className="text-xs uppercase tracking-[0.24em] text-primary">Mailing address</p>
@@ -63,6 +75,7 @@ export default function ContactPage() {
                     <p className="text-xs text-body">We'll outline next steps and pricing</p>
                   </div>
                 </div>
+              </div>
               </div>
             </aside>
 

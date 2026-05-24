@@ -6,7 +6,7 @@ import { faqs } from "@/lib/content";
 export default function FaqPage() {
   return (
     <PublicPageShell
-      eyebrow="FAQ"
+      eyebrow="Project guidance"
       title="Answers before you upload."
       description="A concise guide to files, pricing, privacy, project tracking, and delivery."
       visual={<FaqVisual />}

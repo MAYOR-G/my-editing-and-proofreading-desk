@@ -122,6 +122,54 @@ export function HeroEditorialVisual({ label = "Editorial desk" }: { label?: stri
   );
 }
 
+export function EditorialPhotoVisual({
+  label,
+  imageUrl,
+  imagePosition = "center",
+  headline,
+  details,
+}: {
+  label: string;
+  imageUrl: string;
+  imagePosition?: string;
+  headline: string;
+  details: string[];
+}) {
+  return (
+    <div className="relative min-h-[25rem] overflow-hidden border border-ink/10 bg-paper p-5 shadow-[0_28px_90px_rgba(17,17,15,0.06)] sm:min-h-[28rem] sm:p-6">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${imageUrl})`, backgroundPosition: imagePosition }}
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,11,13,0.05),rgba(10,11,13,0.54)),linear-gradient(90deg,rgba(10,11,13,0.58),rgba(10,11,13,0.08)_62%)]" aria-hidden="true" />
+      <div className="absolute inset-x-6 top-6 flex items-center gap-4" aria-hidden="true">
+        <span className="h-px flex-1 bg-white/40" />
+        <span className="bg-ink/45 px-3 py-2 text-xs uppercase tracking-[0.24em] text-white backdrop-blur-md">{label}</span>
+      </div>
+
+      <div className="relative z-10 flex min-h-[22rem] flex-col justify-end sm:min-h-[25rem]">
+        <div className="max-w-[26rem] border border-white/35 bg-white/88 p-5 shadow-[0_24px_80px_rgba(10,11,13,0.20)] backdrop-blur-md sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{label}</p>
+          <h3 className="mt-3 font-display text-3xl leading-tight text-ink">{headline}</h3>
+          <div className="mt-5 grid gap-3">
+            {details.map((detail) => (
+              <div key={detail} className="flex items-center gap-3 border-t border-ink/10 pt-3">
+                <span className="h-1.5 w-1.5 bg-primary" aria-hidden="true" />
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/72">{detail}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="absolute bottom-6 right-6 hidden border border-white/45 bg-white/82 px-4 py-3 text-xs uppercase tracking-[0.18em] text-primary shadow-[0_16px_50px_rgba(10,11,13,0.16)] backdrop-blur-md sm:block">
+          Reviewed with care
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ServiceSystemVisual() {
   return (
     <div className="relative min-h-[22rem] overflow-hidden border border-ink/10 bg-paper/80 p-6 shadow-[0_28px_90px_rgba(17,17,15,0.055)]">
@@ -272,25 +320,30 @@ export function ContactVisual() {
 
 export function FaqVisual() {
   return (
-    <div className="relative min-h-[25rem] overflow-hidden border border-ink/10 bg-ivory/50 p-7 shadow-[0_28px_90px_rgba(17,17,15,0.055)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(176,138,60,0.08),transparent_50%)]" aria-hidden="true" />
-      <div className="relative mx-auto mt-10 grid gap-6 max-w-[28rem]">
-        {[
-          { q: "How long does editing take?", a: "Standard turnaround is 48 hours for up to 5,000 words.", delay: 0 },
-          { q: "Is my document secure?", a: "Yes, all files are encrypted and automatically deleted after 30 days.", delay: 0.15 },
-          { q: "Do you offer formatting?", a: "We support APA, MLA, Chicago, and custom academic formats.", delay: 0.3 }
-        ].map((faq, index) => (
-          <div key={index} className="border border-ink/10 bg-paper p-5 shadow-sm editorial-drift" style={{ animationDelay: `${faq.delay}s` }}>
-            <div className="flex gap-4">
-              <span className="text-gold-deep font-display text-xl leading-none">Q</span>
-              <p className="text-sm text-ink">{faq.q}</p>
-            </div>
-            <div className="mt-3 flex gap-4 border-t border-ink/5 pt-3">
-              <span className="text-charcoal/40 font-display text-xl leading-none">A</span>
-              <p className="text-xs text-charcoal/60 leading-relaxed">{faq.a}</p>
-            </div>
+    <div className="relative min-h-[25rem] overflow-hidden border border-ink/10 bg-ivory/50 p-5 shadow-[0_28px_90px_rgba(17,17,15,0.055)] sm:min-h-[28rem] sm:p-6">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url(https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=82)",
+          backgroundPosition: "center",
+        }}
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(10,11,13,0.54)),linear-gradient(90deg,rgba(10,11,13,0.52),rgba(10,11,13,0.06)_64%)]" aria-hidden="true" />
+
+      <div className="relative z-10 flex min-h-[22rem] flex-col justify-end sm:min-h-[25rem]">
+        <div className="max-w-[28rem] border border-white/35 bg-white/90 p-5 shadow-[0_24px_80px_rgba(10,11,13,0.18)] backdrop-blur-md sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Project questions</p>
+          <h3 className="mt-3 font-display text-3xl leading-tight text-ink">Clear answers before you upload.</h3>
+          <div className="mt-5 grid gap-3">
+            {["Files and format", "Pricing and timelines", "Privacy and delivery"].map((item) => (
+              <div key={item} className="flex items-center justify-between border-t border-ink/10 pt-3">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/72">{item}</span>
+                <span className="h-px w-10 bg-primary/45" aria-hidden="true" />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

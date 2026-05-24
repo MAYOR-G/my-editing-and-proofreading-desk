@@ -93,11 +93,19 @@ export default async function DashboardOverviewPage() {
 
       {/* Recent activity or empty state */}
       <section className="mt-10">
-        <h2 className="mb-5 text-xs uppercase tracking-[0.28em] text-primary">Recent activity</h2>
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-xs uppercase tracking-[0.28em] text-primary">Recently submitted files</h2>
+          <Link
+            href="/dashboard/active"
+            className="inline-flex min-h-10 w-fit items-center justify-center rounded-full border border-primary/25 bg-ivory px-5 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition duration-200 ease-premium-out hover:border-primary hover:bg-primary hover:text-white"
+          >
+            View Projects
+          </Link>
+        </div>
         {recentProjects.length > 0 ? (
           <div className="divide-y divide-ink/10 border-y border-ink/10">
             {recentProjects.map((project) => (
-              <div key={project.id} className="flex items-center justify-between gap-4 py-5 transition duration-200 hover:bg-paper/60 px-2">
+              <Link key={project.id} href={`/dashboard/active/${project.id}`} className="flex items-center justify-between gap-4 px-2 py-5 transition duration-200 hover:bg-paper/60">
                 <div className="flex items-center gap-4">
                   <span className="grid h-9 w-9 shrink-0 place-items-center border border-ink/10 bg-paper text-xs font-display text-gold-deep">
                     {project.service_type?.charAt(0) || "E"}
@@ -113,7 +121,7 @@ export default async function DashboardOverviewPage() {
                   <p className="text-sm text-ink">${project.price?.toFixed(2) || "0.00"}</p>
                   <p className="mt-0.5 text-xs text-charcoal/50">{displayProjectStatus(project.status)}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

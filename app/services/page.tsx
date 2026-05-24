@@ -6,7 +6,7 @@ import { servicePages } from "@/lib/content";
 export default function ServicesPage() {
   return (
     <PublicPageShell
-      eyebrow="Services"
+      eyebrow="Editorial services"
       title="Choose the right editorial route."
       description="Each service is designed around the document, the reader, and the level of review needed before submission."
     >

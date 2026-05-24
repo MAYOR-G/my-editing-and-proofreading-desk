@@ -69,7 +69,11 @@ ADMIN_EMAIL="mudyblast@gmail.com"
 # AI editing tool
 OPENROUTER_API_KEY="your-openrouter-api-key"
 
-# Optional rate limiting
+# Contact form protection
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
+TURNSTILE_SECRET_KEY=""
+
+# Optional distributed rate limiting
 UPSTASH_REDIS_REST_URL=""
 UPSTASH_REDIS_REST_TOKEN=""
 
@@ -81,6 +85,7 @@ NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 Important:
 
 - Never expose `SUPABASE_SERVICE_ROLE_KEY`, `PAYSTACK_SECRET_KEY`, or `PAYSTACK_WEBHOOK_SECRET` in browser code.
+- Keep `TURNSTILE_SECRET_KEY` server-only. Only `NEXT_PUBLIC_TURNSTILE_SITE_KEY` belongs in browser code.
 - `NEXT_PUBLIC_*` variables are visible to the browser.
 - `PAYMENT_ACTIVE_PROVIDER` must stay `paystack` until another provider is fully implemented.
 
