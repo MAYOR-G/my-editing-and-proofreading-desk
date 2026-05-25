@@ -58,40 +58,41 @@ function brandedEmail({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
       </head>
-      <body style="margin:0; padding:0; background:#f4f2ec; font-family: Georgia, 'Times New Roman', serif; color:#171717;">
+      <body style="margin:0; padding:0; background:#f5f7fb; font-family: Arial, Helvetica, sans-serif; color:#111827;">
         <div style="display:none; overflow:hidden; line-height:1px; opacity:0; max-height:0; max-width:0;">${escapeHtml(preheader)}</div>
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f2ec; margin:0; padding:28px 12px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f7fb; margin:0; padding:28px 12px;">
           <tr>
             <td align="center">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px; background:#fffdf8; border:1px solid #e4dccd;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px; background:#ffffff; border:1px solid #dce4ee; border-radius:18px; overflow:hidden;">
                 <tr>
-                  <td style="padding:24px 28px; border-bottom:1px solid #e4dccd;">
+                  <td style="padding:22px 28px; border-bottom:4px solid #174a7c; background:#ffffff;">
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                       <tr>
                         <td style="vertical-align:middle;">
-                          <img src="${logoUrl}" width="118" alt="${escapeHtml(BRAND_NAME)}" style="display:block; max-width:118px; height:auto; border:0;" />
+                          <img src="${logoUrl}" width="112" alt="${escapeHtml(BRAND_NAME)}" style="display:block; max-width:112px; height:auto; border:0;" />
                         </td>
-                        <td align="right" style="vertical-align:middle; font-family: Arial, sans-serif; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#1f5f8f;">
-                          Editorial Desk
+                        <td align="right" style="vertical-align:middle;">
+                          <p style="margin:0; font-size:16px; line-height:1.25; font-weight:700; color:#111827;">${escapeHtml(BRAND_NAME)}</p>
+                          <p style="margin:4px 0 0; font-size:10px; letter-spacing:2.4px; text-transform:uppercase; color:#174a7c;">Editorial Desk</p>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:32px 28px 12px;">
-                    <h1 style="margin:0; font-size:30px; line-height:1.15; font-weight:400; color:#11110f;">${escapeHtml(title)}</h1>
+                  <td style="padding:34px 28px 10px;">
+                    <h1 style="margin:0; font-family: Georgia, 'Times New Roman', serif; font-size:30px; line-height:1.18; font-weight:400; color:#11110f;">${escapeHtml(title)}</h1>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:4px 28px 32px; font-family: Arial, sans-serif; font-size:15px; line-height:1.75; color:#2d2b27;">
+                  <td style="padding:6px 28px 34px; font-size:15px; line-height:1.75; color:#334155;">
                     ${children}
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:22px 28px; border-top:1px solid #e4dccd; font-family: Arial, sans-serif; font-size:13px; line-height:1.65; color:#6d665b;">
-                    <p style="margin:0 0 8px;">${footerNote || `If you have questions, reply to this email or contact <a href="mailto:${SUPPORT_EMAIL}" style="color:#1f5f8f; text-decoration:underline;">${SUPPORT_EMAIL}</a>.`}</p>
-                    <p style="margin:0;">Thank you,<br/><strong style="color:#171717;">${escapeHtml(BRAND_NAME)}</strong></p>
+                  <td style="padding:22px 28px; border-top:1px solid #dce4ee; background:#f8fafc; font-size:13px; line-height:1.65; color:#64748b;">
+                    <p style="margin:0 0 8px;">${footerNote || `If you have questions, reply to this email or contact <a href="mailto:${SUPPORT_EMAIL}" style="color:#174a7c; text-decoration:underline;">${SUPPORT_EMAIL}</a>.`}</p>
+                    <p style="margin:0;"><strong style="color:#111827;">${escapeHtml(BRAND_NAME)}</strong><br/>Editing, proofreading, and academic polish.</p>
                   </td>
                 </tr>
               </table>
@@ -105,11 +106,11 @@ function brandedEmail({
 
 function detailList(items: Array<[string, unknown]>) {
   return `
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0; border-collapse:collapse; border:1px solid #e4dccd;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:20px 0; border-collapse:separate; border-spacing:0; border:1px solid #dce4ee; border-radius:14px; overflow:hidden;">
       ${items.map(([label, value]) => `
         <tr>
-          <td style="padding:11px 14px; border-bottom:1px solid #e4dccd; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#6d665b; width:38%;">${escapeHtml(label)}</td>
-          <td style="padding:11px 14px; border-bottom:1px solid #e4dccd; color:#171717;">${escapeHtml(value || "N/A")}</td>
+          <td style="padding:12px 14px; border-bottom:1px solid #dce4ee; background:#f8fafc; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#64748b; width:38%;">${escapeHtml(label)}</td>
+          <td style="padding:12px 14px; border-bottom:1px solid #dce4ee; color:#111827; font-weight:600;">${escapeHtml(value || "N/A")}</td>
         </tr>
       `).join("")}
     </table>
@@ -118,9 +119,21 @@ function detailList(items: Array<[string, unknown]>) {
 
 function messageCard(content: unknown) {
   return `
-    <div style="margin:18px 0; padding:18px; background:#f8f5ee; border:1px solid #e4dccd; color:#171717;">
+    <div style="margin:20px 0; padding:18px 20px; background:#f8fafc; border:1px solid #dce4ee; border-left:4px solid #174a7c; border-radius:14px; color:#111827;">
       ${paragraphize(content)}
     </div>
+  `;
+}
+
+function ctaButton(label: string, href: string) {
+  return `
+    <table role="presentation" cellspacing="0" cellpadding="0" style="margin:22px 0 4px;">
+      <tr>
+        <td style="border-radius:999px; background:#174a7c;">
+          <a href="${escapeHtml(href)}" style="display:inline-block; padding:13px 22px; color:#ffffff; font-size:14px; font-weight:700; text-decoration:none; border-radius:999px;">${escapeHtml(label)}</a>
+        </td>
+      </tr>
+    </table>
   `;
 }
 
@@ -189,13 +202,40 @@ export async function sendContactNotificationEmail(message: {
           ["Name", message.name],
           ["Email", message.email],
           ["Subject", message.subject],
-          ...(message.userId ? [["User ID", message.userId] as [string, unknown]] : []),
           ...(message.projectId ? [["Related project", message.projectId] as [string, unknown]] : []),
         ])}
         ${messageCard(message.content)}
         ${message.threadUrl ? `<p><a href="${escapeHtml(message.threadUrl)}" style="color:#1f5f8f; font-weight:700;">Open this thread in Admin Messages</a></p>` : `<p>Log in to the admin dashboard to review and reply.</p>`}
       `,
       footerNote: `This notification was sent to the internal admin address. Do not forward private client content outside ${escapeHtml(BRAND_NAME)}.`,
+    }),
+  });
+}
+
+export async function sendContactConfirmationEmail(message: {
+  name: string;
+  email: string;
+  subject: string;
+  source: string;
+}) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to: message.email,
+    subject: "We received your message",
+    html: brandedEmail({
+      preheader: "Your message has reached My Editing and Proofreading Desk.",
+      title: "Message received",
+      children: `
+        <p>Hello ${escapeHtml(message.name || "there")},</p>
+        <p>Thank you for contacting us. Your message has been received, and our support team will review it carefully.</p>
+        ${detailList([
+          ["Subject", message.subject],
+          ["Source", message.source],
+          ["Response window", "Within one business day"],
+        ])}
+        <p>You can reply directly to this email if you need to add anything before we respond.</p>
+      `,
     }),
   });
 }
@@ -226,7 +266,7 @@ export async function sendMessageReplyEmail(to: string, recipientName: string | 
       title: "Support reply",
       children: `
         <p>Hello ${escapeHtml(recipientName || "there")},</p>
-        <p>${escapeHtml(BRAND_NAME)} has replied to your message.</p>
+        <p>Our support team has replied to your message.</p>
         ${messageCard(reply)}
         <p>If you have questions, simply reply to this email.</p>
       `,
@@ -268,6 +308,7 @@ export async function sendPaymentSuccessEmail(to: string, project: {
           ...(project.paymentMethod ? [["Payment method", project.paymentMethod] as [string, unknown]] : []),
         ])}
         <p>Your document is now recorded in our system. If we need any additional information, our support team will contact you.</p>
+        ${ctaButton("Open your dashboard", `${getSiteUrl()}/dashboard/active`)}
       `,
       footerNote: `For payment questions, reply to this email or contact <a href="mailto:${PAYMENTS_EMAIL}" style="color:#1f5f8f; text-decoration:underline;">${PAYMENTS_EMAIL}</a>.`,
     }),
@@ -300,6 +341,7 @@ export async function sendDocumentReceivedEmail(to: string, project: {
           ["Target journal", project.targetJournal || "Not provided"],
           ["Turnaround", project.turnaround],
         ])}
+        ${ctaButton("View your project", `${getSiteUrl()}/dashboard/active`)}
       `,
     }),
   });
@@ -332,6 +374,7 @@ export async function sendProjectSubmittedEmail(to: string, project: {
           ["Payment status", project.paymentStatus || "Unpaid"],
         ])}
         <p>Once payment is confirmed, our team will begin working on your document. You can complete payment anytime from your dashboard.</p>
+        ${ctaButton("Continue to dashboard", `${getSiteUrl()}/dashboard/active`)}
       `,
     }),
   });
@@ -375,7 +418,7 @@ export async function sendEditorNotificationEmail(project: {
           ["Payment status", project.paymentStatus || (isPaid ? "paid" : "unpaid")],
           ...(project.documentPath ? [["Document path", project.documentPath] as [string, unknown]] : []),
         ])}
-        ${project.projectUrl ? `<p><a href="${escapeHtml(project.projectUrl)}" style="color:#1f5f8f; font-weight:700;">Open project dashboard</a></p>` : ""}
+        ${project.projectUrl ? ctaButton("Open project dashboard", project.projectUrl) : ""}
       `,
       footerNote: `This internal notification was sent to the admin address ${escapeHtml(getInternalRecipient())}.`,
     }),
@@ -394,6 +437,7 @@ export async function sendProjectReadyEmail(to: string, friendlyId: string) {
       children: `
         <p>The editorial review for project <strong>${escapeHtml(friendlyId)}</strong> is complete.</p>
         <p>Please log in to your dashboard to download your files and review the editor's notes.</p>
+        ${ctaButton("Download from dashboard", `${getSiteUrl()}/dashboard/downloads`)}
       `,
     }),
   });
@@ -419,7 +463,57 @@ export async function sendProjectDeliveryEmail(to: string, project: {
         <p>Your completed file for project <strong>${escapeHtml(project.friendlyId)}</strong> is attached to this email.</p>
         ${project.note ? messageCard(project.note) : ""}
         <p>If you have questions or need a revision clarification, simply reply to this email.</p>
+        ${ctaButton("Open dashboard", `${getSiteUrl()}/dashboard/downloads`)}
       `,
+    }),
+  });
+}
+
+export async function sendProjectMessageEmail(to: string, message: {
+  recipientName?: string | null;
+  friendlyId?: string | null;
+  content: string;
+}) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to,
+    subject: `New message${message.friendlyId ? ` for ${message.friendlyId}` : ""}`,
+    html: brandedEmail({
+      preheader: "You have a new message from the editorial team.",
+      title: "New project message",
+      children: `
+        <p>Hello ${escapeHtml(message.recipientName || "there")},</p>
+        <p>You have a new message from the editorial team${message.friendlyId ? ` about project <strong>${escapeHtml(message.friendlyId)}</strong>` : ""}.</p>
+        ${messageCard(message.content)}
+        ${ctaButton("Reply in dashboard", `${getSiteUrl()}/dashboard/active`)}
+      `,
+    }),
+  });
+}
+
+export async function sendInternalProjectMessageEmail(message: {
+  clientName?: string | null;
+  clientEmail?: string | null;
+  content: string;
+}) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: message.clientEmail || SUPPORT_EMAIL,
+    to: getInternalRecipient(),
+    subject: `New client message from ${message.clientName || message.clientEmail || "client"}`,
+    html: brandedEmail({
+      preheader: "A client sent a new project message.",
+      title: "New client message",
+      children: `
+        ${detailList([
+          ["Client", message.clientName || "Client"],
+          ["Email", message.clientEmail || "Not available"],
+        ])}
+        ${messageCard(message.content)}
+        ${ctaButton("Open Admin Desk", `${getSiteUrl()}/admin`)}
+      `,
+      footerNote: `This internal notification was sent to ${escapeHtml(getInternalRecipient())}.`,
     }),
   });
 }

@@ -3,6 +3,7 @@
 import { useTransition, useState } from "react";
 import { signup } from "@/app/actions/auth";
 import Link from "next/link";
+import { TurnstileField, isClientTurnstileEnabled } from "@/components/TurnstileField";
 
 function getPasswordStrength(password: string): { level: number; label: string; color: string } {
   if (!password) return { level: 0, label: "", color: "" };
@@ -24,16 +25,23 @@ export function SignupPanel() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const strength = getPasswordStrength(password);
 
   const submit = (formData: FormData) => {
     setError(null);
     setSuccess(null);
+    if (isClientTurnstileEnabled() && !turnstileToken) {
+      setError("Please complete the security check before continuing.");
+      return;
+    }
+
     startTransition(async () => {
       const result = await signup(formData);
       if (result?.error) {
         setError(result.error);
+        setTurnstileToken("");
       } else if (result?.success) {
         setSuccess(result.message || "Success");
       }
@@ -125,6 +133,8 @@ export function SignupPanel() {
               </div>
             )}
           </label>
+
+          <TurnstileField token={turnstileToken} onTokenChange={setTurnstileToken} onError={setError} />
 
           <button 
             disabled={isPending}

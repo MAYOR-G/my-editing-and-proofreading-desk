@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
 import type { PaymentSettings } from "@/lib/payment-settings";
+import { PaymentMethodSelector, getPaymentMethodLabel } from "@/components/PaymentMethodSelector";
 
 type PaymentReadiness = Record<PaymentProviderName, { configured: boolean; message: string | null }>;
 
@@ -38,7 +39,7 @@ export function CompletePaymentPanel({ projectId }: { projectId: string }) {
 
   const availableProviders = useMemo(() => {
     if (!settings) return [];
-    return PAYMENT_PROVIDERS.filter((item) => settings[`${item.id}_enabled`] && readiness?.[item.id]?.configured !== false);
+    return PAYMENT_PROVIDERS.filter((item) => item.status === "available" && settings[`${item.id}_enabled`] && readiness?.[item.id]?.configured !== false);
   }, [readiness, settings]);
 
   async function startPayment() {
@@ -69,27 +70,26 @@ export function CompletePaymentPanel({ projectId }: { projectId: string }) {
   }
 
   if (!availableProviders.length) {
-    return <p className="text-sm text-charcoal/60">No payment method is currently available. Please contact support.</p>;
+    return (
+      <div className="grid gap-4">
+        <PaymentMethodSelector value={provider} onChange={setProvider} settings={settings} readiness={readiness} />
+        <p className="text-sm text-charcoal/60">No payment method is currently available. Please contact support.</p>
+      </div>
+    );
   }
 
   return (
     <div className="grid gap-4">
-      <label className="grid gap-2 text-sm font-medium text-ink">
-        Payment method
-        <select
-          value={provider}
-          onChange={(event) => {
-            setProvider(event.target.value as PaymentProviderName | "");
-            setError("");
-          }}
-          className="min-h-12 rounded-xl border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-white"
-        >
-          <option value="">Select payment method...</option>
-          {availableProviders.map((item) => (
-            <option key={item.id} value={item.id}>{item.label}</option>
-          ))}
-        </select>
-      </label>
+      <PaymentMethodSelector
+        value={provider}
+        onChange={(nextProvider) => {
+          setProvider(nextProvider);
+          setError("");
+        }}
+        settings={settings}
+        readiness={readiness}
+        disabled={submitting}
+      />
       {error ? <p className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-700">{error}</p> : null}
       <button
         type="button"
@@ -97,7 +97,7 @@ export function CompletePaymentPanel({ projectId }: { projectId: string }) {
         disabled={submitting || !provider}
         className="min-h-12 rounded-full bg-cta px-6 text-sm font-semibold text-white transition hover:bg-cta-active disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "Starting payment..." : provider ? "Complete payment" : "Select payment method"}
+        {submitting ? "Starting payment..." : provider ? `Complete payment with ${getPaymentMethodLabel(provider)}` : "Select payment method"}
       </button>
     </div>
   );

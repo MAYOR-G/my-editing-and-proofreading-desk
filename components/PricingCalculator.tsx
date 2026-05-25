@@ -10,6 +10,7 @@ import {
   TURNAROUND_OPTIONS,
   TURNAROUND_SUPPORT_MESSAGE,
   calculatePrice,
+  formatTurnaroundLabel,
   getNextValidTurnaroundDays,
   getStandardTurnaroundDays,
   getTurnaroundAdjustmentNotice,
@@ -29,14 +30,6 @@ const guidanceMessages = [
   "Longer timelines do not reduce the standard editing price. They simply give editors more room for careful review.",
   "For large or complex documents, our team can recommend the best editing plan before checkout."
 ];
-const turnaroundMilestones = [
-  { day: 1, label: "24h" },
-  { day: 3, label: "3 days" },
-  { day: 7, label: "7 days" },
-  { day: 14, label: "14 days" },
-  { day: 28, label: "4 weeks" }
-];
-
 function currency(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -45,23 +38,7 @@ function currency(value: number) {
   }).format(value);
 }
 
-function formatTurnaroundLabel(days: number) {
-  if (days === 1) return "24 hours";
-  if (days === 2) return "48 hours";
-  if (days === 28) return "4 weeks";
-  return `${days} days`;
-}
-
 function getSliderAdjustmentNotice(wordCount: number, requestedDays: number) {
-  if (requestedDays < 28 && wordCount > 30000) {
-    return "Documents above 30,000 words require a 4-week review window. We’ve adjusted the turnaround for this word count.";
-  }
-  if (requestedDays === 1 && wordCount > 5000) {
-    return "24-hour turnaround is available for documents up to 5,000 words. We’ve selected the nearest available timeline for this word count.";
-  }
-  if (requestedDays >= 2 && requestedDays < 7 && wordCount > 10000) {
-    return "This document length requires a longer review window. We’ve adjusted the turnaround to a suitable timeline.";
-  }
   return getTurnaroundAdjustmentNotice(wordCount, requestedDays) || TURNAROUND_SUPPORT_MESSAGE;
 }
 
@@ -79,13 +56,12 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
   const isWritingSupport = isWritingSupportService(selectedService.label);
   const customReviewRequired = !isWritingSupport && isCustomReviewRequired(safeWordCount);
   const validTurnaroundOptions = useMemo(() => getValidTurnaroundOptions(safeWordCount, selectedService.label), [safeWordCount, selectedService.label]);
-  const selectedTurnaround = TURNAROUND_OPTIONS.find((turnaround) => turnaround.days === turnaroundDays) ?? TURNAROUND_OPTIONS[13];
+  const selectedTurnaround = TURNAROUND_OPTIONS.find((turnaround) => turnaround.days === turnaroundDays) ?? TURNAROUND_OPTIONS.find((turnaround) => turnaround.days === 14)!;
 
   const priceBreakdown = useMemo(() => calculatePrice(safeWordCount, selectedService.label, selectedTurnaround.days), [safeWordCount, selectedService.label, selectedTurnaround.days]);
   const validation = isWritingSupport ? { allowed: true } : validateAutomaticPricing(safeWordCount, selectedTurnaround.days);
   const price = priceBreakdown.finalPrice;
   const standardDays = getStandardTurnaroundDays(safeWordCount);
-  const turnaroundProgress = ((Math.min(28, Math.max(1, turnaroundDays)) - 1) / 27) * 100;
   const paceLabel = isWritingSupport
     ? "Fixed package"
     : selectedTurnaround.days < standardDays
@@ -235,7 +211,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                 <label htmlFor="word-count" className="text-xs uppercase tracking-[0.24em] text-primary">
                   Word count
                 </label>
-                <div className={`mt-3 flex min-h-14 items-center rounded-xl border border-hairline bg-canvas px-4 shadow-[0_12px_34px_rgba(17,17,15,0.035)] ${isWritingSupport ? "opacity-55" : ""}`}>
+                <div className={`mt-3 grid min-h-14 grid-cols-[minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-hairline bg-canvas shadow-[0_12px_34px_rgba(17,17,15,0.035)] transition focus-within:border-primary focus-within:shadow-[0_0_0_3px_rgba(23,74,124,0.1)] ${isWritingSupport ? "opacity-55" : ""}`}>
                   <input
                     id="word-count"
                     type="number"
@@ -245,9 +221,9 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                     value={wordCount}
                     disabled={isWritingSupport}
                     onChange={(event) => handleWordCountChange(Number(event.target.value))}
-                    className="w-full bg-transparent font-display text-2xl leading-none text-ink outline-none [appearance:textfield] sm:text-3xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="min-w-0 bg-transparent px-4 py-3 font-display text-2xl leading-none text-ink outline-none [appearance:textfield] sm:text-3xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
-                  <span className="text-sm text-body">words</span>
+                  <span className="grid min-w-[4.6rem] place-items-center border-l border-hairline bg-surface-soft px-3 text-sm text-body">words</span>
                 </div>
                 <div className="mt-3 grid grid-cols-4 gap-2">
                   {quickCounts.map((count) => (
@@ -291,35 +267,25 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                   </div>
 
                   <div className="mt-5">
-                    <input
-                      aria-label="Select turnaround from 24 hours to 4 weeks"
-                      type="range"
-                      min={1}
-                      max={28}
-                      step={1}
-                      value={turnaroundDays}
-                      disabled={isWritingSupport || customReviewRequired}
-                      onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
-                      title={!isWritingSupport && !customReviewRequired ? getTurnaroundLimitMessage(turnaroundDays) || undefined : undefined}
-                      className="h-2 w-full cursor-pointer appearance-none rounded-full bg-hairline outline-none transition disabled:cursor-not-allowed disabled:opacity-50 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:shadow-[0_5px_18px_rgba(23,74,124,0.28)] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-[0_5px_18px_rgba(23,74,124,0.28)]"
-                      style={{
-                        background: `linear-gradient(90deg, #174a7c ${turnaroundProgress}%, #dee1e6 ${turnaroundProgress}%)`
-                      }}
-                    />
-                    <div className="mt-3 flex items-center justify-between text-[0.68rem] font-medium text-body">
-                      {turnaroundMilestones.map((milestone) => (
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      {TURNAROUND_OPTIONS.map((option) => {
+                        const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === option.days);
+                        const selected = turnaroundDays === option.days && !disabled;
+                        return (
                         <button
-                          key={milestone.day}
+                          key={option.days}
                           type="button"
-                          onClick={() => handleTurnaroundSelect(milestone.day)}
-                          disabled={isWritingSupport || customReviewRequired}
-                          className={`rounded-full px-1.5 py-1 transition duration-200 ease-premium-out hover:text-primary disabled:cursor-not-allowed disabled:opacity-45 ${
-                            turnaroundDays === milestone.day ? "bg-primary/10 text-primary" : ""
+                          onClick={() => handleTurnaroundSelect(option.days)}
+                          disabled={disabled}
+                          title={disabled ? getTurnaroundLimitMessage(option.days) || "Choose a longer timeline for this word count." : undefined}
+                          className={`min-h-10 rounded-full border px-3 text-[0.68rem] font-semibold transition duration-200 ease-premium-out disabled:cursor-not-allowed disabled:opacity-45 ${
+                            selected ? "border-primary bg-primary text-white" : "border-hairline bg-canvas text-body hover:border-primary/45 hover:text-primary"
                           }`}
                         >
-                          {milestone.label}
+                          {option.shortLabel}
                         </button>
-                      ))}
+                      );
+                      })}
                     </div>
                   </div>
 

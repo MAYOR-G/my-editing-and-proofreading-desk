@@ -6,6 +6,9 @@ import { getDashboardProjectsForUser } from "@/lib/dashboard-projects";
 
 function formatProvider(provider?: string | null) {
   if (!provider) return "Not selected";
+  if (provider === "paystack") return "Pay with Card";
+  if (provider === "stripe") return "Wire Transfer";
+  if (provider === "paypal") return "PayPal";
   return provider.charAt(0).toUpperCase() + provider.slice(1);
 }
 

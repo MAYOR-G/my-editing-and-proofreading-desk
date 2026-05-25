@@ -4,13 +4,20 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const turnstileToken = formData.get("turnstileToken") as string;
 
   if (!email || !password) {
     return { error: "Email and password are required." };
+  }
+
+  const securityCheck = await verifyTurnstileToken(turnstileToken);
+  if (!securityCheck.success) {
+    return { error: securityCheck.error || "Security verification failed. Please try again." };
   }
 
   const rateLimitResult = await checkRateLimit(`login-${email}`, 5, 300);
@@ -37,9 +44,15 @@ export async function signup(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = formData.get("full_name") as string;
+  const turnstileToken = formData.get("turnstileToken") as string;
 
   if (!email || !password || !fullName) {
     return { error: "All fields are required." };
+  }
+
+  const securityCheck = await verifyTurnstileToken(turnstileToken);
+  if (!securityCheck.success) {
+    return { error: securityCheck.error || "Security verification failed. Please try again." };
   }
 
   const rateLimitResult = await checkRateLimit(`signup-${email}`, 3, 3600); // 3 signups per hour per email
@@ -70,7 +83,7 @@ export async function signup(formData: FormData) {
 export async function signout() {
   const supabase = createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/");
 }
 
 export async function resetPasswordForEmail(formData: FormData) {

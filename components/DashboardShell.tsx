@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandMark } from "@/components/BrandMark";
+import { LogoutButton } from "@/components/LogoutButton";
 
 type DashboardShellProps = {
   title: string;
@@ -49,10 +50,13 @@ export function DashboardShell({
           );
           })}
         </nav>
-        <div className="absolute bottom-7 left-7 right-7 border-t border-hairline pt-6">
+        <div className="absolute bottom-7 left-7 right-7 grid gap-3 border-t border-hairline pt-6">
           <Link href="/" className="text-sm text-charcoal/64 transition hover:text-ink">
             Return to website
           </Link>
+          <LogoutButton mode="admin" className="text-left text-sm text-charcoal/45 transition hover:text-status-danger disabled:cursor-wait disabled:opacity-60">
+            Logout
+          </LogoutButton>
         </div>
       </aside>
 
@@ -70,6 +74,11 @@ export function DashboardShell({
                       {item.label}
                     </Link>
                   ))}
+                  <div className="mt-2 border-t border-ink/10 pt-2">
+                    <LogoutButton mode="admin" className="block w-full px-4 py-3 text-left text-sm text-charcoal/70 transition hover:bg-paper hover:text-status-danger disabled:cursor-wait disabled:opacity-60">
+                      Logout
+                    </LogoutButton>
+                  </div>
                 </div>
               </details>
               {secondaryActionHref ? (
@@ -92,10 +101,15 @@ export function DashboardShell({
               )}
             </div>
             <p className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.3em] text-primary sm:block">MEP portal</p>
-            <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-full border border-hairline bg-ivory px-3 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] sm:px-5">
-              <span className="hidden sm:inline">Return to website</span>
-              <span className="sm:hidden">Website</span>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-full border border-hairline bg-ivory px-3 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] sm:px-5">
+                <span className="hidden sm:inline">Return to website</span>
+                <span className="sm:hidden">Website</span>
+              </Link>
+              <LogoutButton mode="admin" className="hidden min-h-11 items-center justify-center rounded-full border border-hairline bg-ivory px-4 text-sm text-charcoal/70 transition duration-200 ease-premium-out hover:border-status-danger/40 hover:text-status-danger active:scale-[0.98] disabled:cursor-wait disabled:opacity-60 sm:inline-flex">
+                Logout
+              </LogoutButton>
+            </div>
           </div>
         </header>
 

@@ -4,13 +4,20 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export async function adminLogin(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const turnstileToken = formData.get("turnstileToken") as string;
 
   if (!email || !password) {
     return { error: "Email and password are required." };
+  }
+
+  const securityCheck = await verifyTurnstileToken(turnstileToken);
+  if (!securityCheck.success) {
+    return { error: securityCheck.error || "Security verification failed. Please try again." };
   }
 
   // Rate limit: 5 attempts per 5 minutes (300 seconds)
@@ -60,5 +67,5 @@ export async function adminLogin(formData: FormData) {
 export async function adminLogout() {
   const supabase = createClient();
   await supabase.auth.signOut();
-  redirect("/admin/login");
+  redirect("/");
 }

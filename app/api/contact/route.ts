@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
-import { SUPPORT_EMAIL, sendContactNotificationEmail } from "@/lib/email";
+import { SUPPORT_EMAIL, sendContactConfirmationEmail, sendContactNotificationEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { makeThreadKey, sanitizePlainText } from "@/lib/message-threading";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
 
@@ -76,47 +77,6 @@ function countLinks(value: string) {
   return (value.match(/https?:\/\/|www\./gi) || []).length;
 }
 
-async function verifyTurnstile(token: string, request: Request) {
-  if (process.env.NODE_ENV !== "production") {
-    return true;
-  }
-
-  const secret = process.env.TURNSTILE_SECRET_KEY;
-
-  if (!secret) {
-    console.error("Turnstile secret is missing in production.");
-    return false;
-  }
-
-  if (!token) return false;
-
-  const formData = new FormData();
-  formData.append("secret", secret);
-  formData.append("response", token);
-
-  const remoteIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  if (remoteIp) {
-    formData.append("remoteip", remoteIp);
-  }
-
-  try {
-    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      body: formData,
-    });
-    const result = await response.json() as { success?: boolean; "error-codes"?: string[] };
-
-    if (!result.success) {
-      console.warn("Turnstile verification failed:", result["error-codes"] || "unknown_error");
-    }
-
-    return Boolean(result.success);
-  } catch (error) {
-    console.error("Turnstile verification request failed:", error);
-    return false;
-  }
-}
-
 export async function POST(request: Request) {
   try {
     const clientIdentifier = getClientIdentifier(request);
@@ -164,10 +124,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const turnstileOk = await verifyTurnstile(turnstileToken, request);
-    if (!turnstileOk) {
+    const remoteIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const turnstile = await verifyTurnstileToken(turnstileToken, remoteIp);
+    if (!turnstile.success) {
       return NextResponse.json(
-        { error: "Verification is required before sending your message. Please complete the check and try again." },
+        { error: turnstile.error || "Security verification failed. Please try again." },
         { status: 403 }
       );
     }
@@ -350,6 +311,10 @@ export async function POST(request: Request) {
         { status: 502 }
       );
     }
+
+    sendContactConfirmationEmail({ name, email, subject, source }).catch((error) => {
+      console.warn("Contact confirmation email failed:", error);
+    });
 
     return NextResponse.json({ success: true, message: "Message sent successfully. Our team will get back to you soon." });
   } catch (error) {

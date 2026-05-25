@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { BrandMark } from "@/components/BrandMark";
+import { LogoutButton } from "@/components/LogoutButton";
 
 const nav = [
   { href: "/dashboard/overview", label: "Overview" },
@@ -47,11 +48,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="absolute bottom-7 left-7 right-7 grid gap-3 border-t border-hairline pt-6">
-          <form action="/auth/signout" method="POST">
-            <button type="submit" className="text-sm text-charcoal/45 transition hover:text-status-danger">
-              Sign out
-            </button>
-          </form>
+          <LogoutButton className="text-left text-sm text-charcoal/45 transition hover:text-status-danger disabled:cursor-wait disabled:opacity-60">
+            Sign out
+          </LogoutButton>
         </div>
       </aside>
 
@@ -80,6 +79,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   })}
                   <div className="mt-2 border-t border-ink/10 pt-2">
                      <Link href="/" className="block px-4 py-3 text-sm text-charcoal/70 transition hover:bg-paper">Return to website</Link>
+                     <LogoutButton className="block w-full px-4 py-3 text-left text-sm text-charcoal/70 transition hover:bg-paper hover:text-status-danger disabled:cursor-wait disabled:opacity-60">
+                       Sign out
+                     </LogoutButton>
                   </div>
                 </div>
               </details>

@@ -3,17 +3,25 @@
 import { useTransition, useState } from "react";
 import { login } from "@/app/actions/auth";
 import Link from "next/link";
+import { TurnstileField, isClientTurnstileEnabled } from "@/components/TurnstileField";
 
 export function LoginEmailPanel() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const submit = (formData: FormData) => {
     setError(null);
+    if (isClientTurnstileEnabled() && !turnstileToken) {
+      setError("Please complete the security check before continuing.");
+      return;
+    }
+
     startTransition(async () => {
       const result = await login(formData);
       if (result?.error) {
         setError(result.error);
+        setTurnstileToken("");
       }
     });
   };
@@ -65,6 +73,8 @@ export function LoginEmailPanel() {
           Forgot password?
         </Link>
       </div>
+
+      <TurnstileField token={turnstileToken} onTokenChange={setTurnstileToken} onError={setError} />
       
       <button 
         disabled={isPending}

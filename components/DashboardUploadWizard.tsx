@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PAYMENT_PROVIDERS, type PaymentProviderName } from "@/lib/payment";
 import { type PaymentSettings } from "@/lib/payment-settings";
+import { PaymentMethodSelector, getPaymentMethodLabel } from "@/components/PaymentMethodSelector";
 import {
   DOCUMENT_TYPES,
   ENGLISH_TYPES,
@@ -29,13 +30,6 @@ type WizardProps = {
   userId: string;
   userEmail: string;
   userName: string;
-};
-
-const PROVIDER_INITIALS: Record<PaymentProviderName, string> = {
-  paystack: "P",
-  flutterwave: "F",
-  stripe: "S",
-  paypal: "PP",
 };
 
 const FORMAT_INSTRUCTION_OPTIONS = new Set(["Custom formatting", "Other", "Non-standard consistency"]);
@@ -117,10 +111,10 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
   const validation: PricingValidation = wordCount && !isWritingSupport ? validateAutomaticPricing(wordCount, turnaroundDays) : { allowed: true };
   const checkoutBlocked = !validation.allowed;
   const standardDays = getStandardTurnaroundDays(wordCount ?? 1);
-  const selectedProviderLabel = provider ? PAYMENT_PROVIDERS.find((item) => item.id === provider)?.label || "Selected provider" : "Select payment method";
+  const selectedProviderLabel = getPaymentMethodLabel(provider);
   const activePaymentProviders = useMemo(() => {
     if (!paymentSettings) return [];
-    return PAYMENT_PROVIDERS.filter((item) => paymentSettings[`${item.id}_enabled`] && paymentReadiness?.[item.id]?.configured !== false);
+    return PAYMENT_PROVIDERS.filter((item) => item.status === "available" && paymentSettings[`${item.id}_enabled`] && paymentReadiness?.[item.id]?.configured !== false);
   }, [paymentReadiness, paymentSettings]);
   const hasAvailablePaymentMethods = activePaymentProviders.length > 0;
 
@@ -400,9 +394,8 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
       return;
     }
 
-    const providerConfig = PAYMENT_PROVIDERS.find((item) => item.id === provider);
     if (paymentReadiness?.[provider] && !paymentReadiness[provider].configured) {
-      setPaymentError(`${providerConfig?.label || "This payment method"} is currently unavailable. Please contact support or try another payment method.`);
+      setPaymentError(`${getPaymentMethodLabel(provider)} is currently unavailable. Please contact support or try another payment method.`);
       return;
     }
 
@@ -683,15 +676,18 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                 <div className="mt-2 border-t border-cta/10 pt-5">
                   <label className="grid max-w-sm gap-2.5 text-sm font-medium text-ink">
                     Adjusted word count
-                    <input
-                      value={adjustedWordCount}
-                      onChange={(event) => applyAdjustedWordCount(event.target.value)}
-                      inputMode="numeric"
-                      min={1}
-                      type="number"
-                      placeholder={detectedWordCount ? detectedWordCount.toString() : "Optional"}
-                      className="min-h-[3.5rem] rounded-xl border border-hairline bg-white px-5 text-ink placeholder:text-charcoal/38 shadow-sm transition hover:border-primary/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
-                    />
+                    <span className="grid min-h-[3.5rem] grid-cols-[minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-hairline bg-white shadow-sm transition hover:border-primary/30 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20">
+                      <input
+                        value={adjustedWordCount}
+                        onChange={(event) => applyAdjustedWordCount(event.target.value)}
+                        inputMode="numeric"
+                        min={1}
+                        type="number"
+                        placeholder={detectedWordCount ? detectedWordCount.toString() : "Optional"}
+                        className="min-w-0 bg-transparent px-5 text-ink placeholder:text-charcoal/38 outline-none"
+                      />
+                      <span className="grid min-w-[4.6rem] place-items-center border-l border-hairline bg-surface-soft px-3 text-xs font-normal text-charcoal/55">words</span>
+                    </span>
                     <span className="text-[0.75rem] font-normal leading-5 text-charcoal/50">Optional. Adjust if the detected count includes non-editable sections like references.</span>
                     {adjustedWordCount.trim() ? <span className="mt-1 text-xs font-semibold text-primary">Pricing will use {wordCount?.toLocaleString()} words.</span> : null}
                   </label>
@@ -848,23 +844,9 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                 </span>
               </div>
               
-              <div className="mb-6">
-                <input
-                  aria-label="Turnaround time"
-                  type="range"
-                  min={1}
-                  max={28}
-                  step={1}
-                  value={turnaroundDays}
-                  disabled={isWritingSupport || customReviewRequired}
-                  onChange={(event) => handleTurnaroundSelect(Number(event.target.value))}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-hairline accent-[#174a7c]"
-                />
-              </div>
-              
-              <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
-                {[1, 2, 3, 7, 14, 21, 28].map((days) => {
-                  const option = TURNAROUND_OPTIONS.find((item) => item.days === days)!;
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {TURNAROUND_OPTIONS.map((option) => {
+                  const days = option.days;
                   const disabled = isWritingSupport || customReviewRequired || !validTurnaroundOptions.some((item) => item.days === days);
                   const isSelected = turnaroundDays === days && !disabled;
                   
@@ -883,7 +865,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                             : "border-hairline bg-white text-charcoal/65 hover:border-primary/50 hover:bg-surface-soft hover:text-ink"
                       }`}
                     >
-                      {option.label.replace(" / 28 days", "")}
+                      {option.shortLabel}
                     </button>
                   );
                 })}
@@ -932,25 +914,17 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     <p className="text-sm text-charcoal/60">Loading available payment methods...</p>
                   ) : paymentSettingsError ? (
                     <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">{paymentSettingsError}</p>
-                  ) : !hasAvailablePaymentMethods ? (
-                    <p className="text-sm text-charcoal/60">No payment method is currently available. Please contact support.</p>
                   ) : (
-                    <label className="grid gap-2 text-sm font-medium text-ink">
-                      Payment method
-                      <select
-                        value={provider}
-                        onChange={(event) => {
-                          setProvider(event.target.value as PaymentProviderName | "");
-                          setPaymentError(null);
-                        }}
-                        className="min-h-12 rounded-xl border border-hairline bg-surface-soft px-4 text-ink transition focus:border-primary focus:bg-white"
-                      >
-                        <option value="">Select payment method...</option>
-                        {activePaymentProviders.map((info) => (
-                          <option key={info.id} value={info.id}>{info.label}</option>
-                        ))}
-                      </select>
-                    </label>
+                    <PaymentMethodSelector
+                      value={provider}
+                      onChange={(nextProvider) => {
+                        setProvider(nextProvider);
+                        setPaymentError(null);
+                      }}
+                      settings={paymentSettings}
+                      readiness={paymentReadiness}
+                      disabled={isSubmitting}
+                    />
                   )}
                 </div>
               </div>
@@ -973,7 +947,7 @@ export function DashboardUploadWizard({ userId, userEmail, userName }: WizardPro
                     ["Detected Word Count", (detectedWordCount || wordCount)?.toLocaleString()],
                     ["Adjusted Word Count", adjustedWordCount.trim() ? wordCount?.toLocaleString() : "Not provided"],
                     ["Final Word Count", wordCount?.toLocaleString()],
-                    ["Payment Provider", submittedProject ? selectedProviderLabel : "Choose after submission"],
+                    ["Payment Method", submittedProject ? selectedProviderLabel : "Choose after submission"],
                   ].map(([label, value]) => (
                     <div key={label} className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4 border-b border-hairline/50 pb-3 last:border-0">
                       <span className="text-charcoal/60">{label}</span>
