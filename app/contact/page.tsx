@@ -1,7 +1,7 @@
 import { ContactVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { ContactForm } from "@/components/ContactForm";
-import { COMPANY_PHONE, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 export default function ContactPage() {
   return (
@@ -32,7 +32,7 @@ export default function ContactPage() {
               <div className="mt-8 border-t border-hairline pt-6">
                 <p className="text-xs uppercase tracking-[0.24em] text-primary">Phone</p>
                 <a
-                  href="tel:+14088728603"
+                  href={`tel:${COMPANY_PHONE_TEL}`}
                   className="mt-3 inline-flex min-h-12 items-center rounded-full border border-primary/20 bg-canvas px-5 text-sm font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary"
                 >
                   {COMPANY_PHONE}
@@ -42,10 +42,7 @@ export default function ContactPage() {
               <div className="mt-8 border-t border-hairline pt-6">
                 <p className="text-xs uppercase tracking-[0.24em] text-primary">Mailing address</p>
                 <address className="mt-3 text-sm not-italic leading-7 text-body">
-                  1007 N Orange St. 4th Floor<br />
-                  Suite #5723<br />
-                  Wilmington, Delaware 19801<br />
-                  United States
+                  {COMPANY_ADDRESS}
                 </address>
               </div>
 

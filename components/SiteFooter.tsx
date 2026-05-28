@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { servicePages } from "@/lib/content";
-import { COMPANY_PHONE, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 const platformLinks = [
   { href: "/about", label: "About us" },
@@ -13,6 +13,12 @@ const platformLinks = [
 ];
 
 const trustBadges = ["Private uploads", "Secure payments", "Human review", "Dashboard delivery", "AI-assisted entry"];
+
+const legalLinks = [
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/refund-policy", label: "Refund Policy" },
+  { href: "/terms-and-conditions", label: "Terms and Conditions" },
+];
 
 export function SiteFooter() {
   return (
@@ -38,7 +44,7 @@ export function SiteFooter() {
             <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-3 block break-words font-display text-2xl font-bold leading-tight text-surface-soft transition hover:text-primary">
               {SUPPORT_EMAIL}
             </a>
-            <a href="tel:+14088728603" className="mt-3 block text-sm font-semibold text-surface-soft/75 transition hover:text-primary">
+            <a href={`tel:${COMPANY_PHONE_TEL}`} className="mt-3 block text-sm font-semibold text-surface-soft/75 transition hover:text-primary">
               {COMPANY_PHONE}
             </a>
             <p className="mt-4 text-sm leading-6 text-surface-soft/50">Include document type, expected word count, and deadline.</p>
@@ -47,10 +53,7 @@ export function SiteFooter() {
           <div className="text-sm leading-7 text-surface-soft/55">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Mailing address</p>
             <address className="mt-3 not-italic">
-              1007 N Orange St. 4th Floor<br />
-              Suite #5723<br />
-              Wilmington, Delaware 19801<br />
-              United States
+              {COMPANY_ADDRESS}
             </address>
           </div>
 
@@ -91,6 +94,17 @@ export function SiteFooter() {
                   </span>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="mt-9 border-t border-hairline/10 pt-7">
+            <h2 className="mb-2 text-sm font-bold text-surface-soft">Legal</h2>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm text-surface-soft/60">
+              {legalLinks.map((item) => (
+                <Link key={item.href} href={item.href} className="transition hover:text-primary">
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
