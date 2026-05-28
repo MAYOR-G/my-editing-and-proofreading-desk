@@ -8,9 +8,7 @@ import {
   AI_FILE_SIZE_LIMIT,
   AI_WORD_LIMIT,
   countWords,
-  editingModes,
   isAllowedAiFile,
-  type EditingModeId
 } from "@/lib/ai-editing";
 
 type InputMode = "paste" | "upload";
@@ -18,6 +16,7 @@ type Status = "idle" | "processing" | "ready" | "error" | "rate-limited";
 type InputOption = [InputMode, string, string, typeof ClipboardPenLine];
 
 type AiResult = {
+  originalText: string;
   editedText: string;
   highlights: string[];
   suggestions?: string[];
@@ -26,6 +25,7 @@ type AiResult = {
     wordCount?: number;
   };
 };
+type DiffSegment = { type: "same" | "delete" | "insert"; text: string };
 
 const trustStrip = ["1,000-word cost cap", "Server validation", "Human review available", "No replacement for editors", "Professional AI review"];
 const inputOptions: InputOption[] = [
@@ -57,24 +57,65 @@ function fileToBase64(file: File) {
   });
 }
 
+function tokenizeForDiff(value: string) {
+  return value.match(/\S+\s*/g) ?? [];
+}
+
+function diffWords(original: string, edited: string): DiffSegment[] {
+  const a = tokenizeForDiff(original);
+  const b = tokenizeForDiff(edited);
+  const dp = Array.from({ length: a.length + 1 }, () => Array<number>(b.length + 1).fill(0));
+
+  for (let i = a.length - 1; i >= 0; i--) {
+    for (let j = b.length - 1; j >= 0; j--) {
+      dp[i][j] = a[i].trim() === b[j].trim() ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+
+  const segments: DiffSegment[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i].trim() === b[j].trim()) {
+      segments.push({ type: "same", text: b[j] });
+      i++;
+      j++;
+    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+      segments.push({ type: "delete", text: a[i] });
+      i++;
+    } else {
+      segments.push({ type: "insert", text: b[j] });
+      j++;
+    }
+  }
+  while (i < a.length) segments.push({ type: "delete", text: a[i++] });
+  while (j < b.length) segments.push({ type: "insert", text: b[j++] });
+
+  return segments.reduce<DiffSegment[]>((merged, segment) => {
+    const last = merged[merged.length - 1];
+    if (last?.type === segment.type) last.text += segment.text;
+    else merged.push({ ...segment });
+    return merged;
+  }, []);
+}
+
 export function AiEditingTool() {
   const [inputMode, setInputMode] = useState<InputMode>("paste");
-  const [mode, setMode] = useState<EditingModeId>("grammar-clarity");
   const [text, setText] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const [result, setResult] = useState<AiResult | null>(null);
-  const [viewMode, setViewMode] = useState<"original" | "edited">("edited");
+  const [viewMode, setViewMode] = useState<"edited" | "final">("edited");
   const resultRef = useRef<HTMLDivElement | null>(null);
 
   const wordCount = useMemo(() => countWords(text), [text]);
   const overLimit = wordCount > AI_WORD_LIMIT;
   const empty = wordCount === 0;
-  const selectedMode = editingModes.find((item) => item.id === mode) ?? editingModes[0];
   const remainingWords = Math.max(0, AI_WORD_LIMIT - wordCount);
   const canSubmit = !empty && !overLimit && status !== "processing";
+  const diffSegments = useMemo(() => result ? diffWords(result.originalText || text, result.editedText) : [], [result, text]);
 
   async function handleUpload(file: File | undefined) {
     setFileError("");
@@ -122,7 +163,7 @@ export function AiEditingTool() {
 
       setText(data.text);
       setStatus("idle");
-      setMessage("File loaded. Review the extracted text, choose a mode, then request an AI first pass.");
+      setMessage("File loaded. Review the extracted text, then request an AI edit.");
     } catch {
       setStatus("error");
       setFileError("The file could not be read. Paste the passage or submit the full document for professional review.");
@@ -154,25 +195,25 @@ export function AiEditingTool() {
       const response = await fetch("/api/ai-edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, mode, source: inputMode, signedIn: false })
+        body: JSON.stringify({ text, source: inputMode, signedIn: false })
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         setStatus(response.status === 429 ? "rate-limited" : "error");
-        setMessage(typeof data.error === "string" ? data.error : "The AI request could not be completed.");
+        setMessage(typeof data.error === "string" ? data.error : "AI editing is temporarily unavailable. Please try again shortly or submit your document for human review.");
         return;
       }
 
       setResult(data);
       setViewMode("edited");
       setStatus("ready");
-      setMessage("First-pass edit complete. Review it carefully, then consider professional review for high-stakes work.");
+      setMessage("AI edit complete. Review the tracked changes, then open the clean final version.");
       window.setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
     } catch {
       setStatus("error");
-      setMessage("The AI service is temporarily unavailable. Your text is still here; try again shortly.");
+      setMessage("AI editing is temporarily unavailable. Please try again shortly or submit your document for human review.");
     }
   }
 
@@ -251,34 +292,6 @@ export function AiEditingTool() {
                       {label}
                     </span>
                     <span className={`mt-1 hidden text-xs leading-5 sm:block ${active ? "text-white/75" : "text-charcoal/54"}`}>{body}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="border-b border-ink/10 p-5 sm:p-7">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-primary">Editing mode</p>
-                <h3 className="mt-3 font-display text-4xl leading-none text-ink">Select the editorial lens.</h3>
-              </div>
-              <p className="max-w-sm text-sm leading-6 text-charcoal/58">{selectedMode.description}</p>
-            </div>
-            <div className="mt-6 grid gap-2 lg:grid-cols-5">
-              {editingModes.map((item) => {
-                const active = item.id === mode;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setMode(item.id)}
-                    className={`min-h-14 rounded-xl border px-3 text-left text-sm transition duration-200 ease-premium-out active:scale-[0.99] ${
-                      active ? "border-primary bg-primary text-white shadow-[0_10px_24px_rgba(23,74,124,0.16)]" : "border-ink/10 bg-white/70 text-charcoal/68 hover:border-primary/50 hover:bg-ivory hover:text-ink"
-                    }`}
-                    aria-pressed={active}
-                  >
-                    {item.shortLabel}
                   </button>
                 );
               })}
@@ -366,7 +379,7 @@ export function AiEditingTool() {
       {result ? (
         <section ref={resultRef} className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-2xl border border-hairline bg-paper p-7">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary">Key changes made</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary">Key improvements</p>
             <h2 className="mt-4 font-display text-5xl leading-none text-ink">Editorial notes.</h2>
             <div className="mt-8 grid gap-3">
               {result.highlights.map((highlight) => (
@@ -392,10 +405,10 @@ export function AiEditingTool() {
             <div className="flex flex-col gap-4 border-b border-ink/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-primary">
-                  <button type="button" onClick={() => setViewMode("original")} className={`mr-4 transition ${viewMode === "original" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Original Text</button>
-                  <button type="button" onClick={() => setViewMode("edited")} className={`transition ${viewMode === "edited" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Edited Text</button>
+                  <button type="button" onClick={() => setViewMode("edited")} className={`mr-4 transition ${viewMode === "edited" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Edited View</button>
+                  <button type="button" onClick={() => setViewMode("final")} className={`transition ${viewMode === "final" ? "text-primary" : "text-charcoal/40 hover:text-primary"}`}>Final View</button>
                 </p>
-                <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{viewMode === "edited" ? "Improved version" : "Original Version"}</h3>
+                <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{viewMode === "edited" ? "Tracked AI edit" : "Clean final version"}</h3>
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={copyResult} className="min-h-11 border border-ink/10 px-4 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">
@@ -406,9 +419,17 @@ export function AiEditingTool() {
                 </button>
               </div>
             </div>
-            <div className={`mt-6 whitespace-pre-wrap text-base leading-8 ${viewMode === "edited" ? "text-charcoal/78" : "text-charcoal/50"}`}>
-              {viewMode === "edited" ? result.editedText : text}
-            </div>
+            {viewMode === "edited" ? (
+              <div className="mt-6 whitespace-pre-wrap text-base leading-8 text-charcoal/78">
+                {diffSegments.map((segment, index) => {
+                  if (segment.type === "delete") return <del key={index} className="rounded bg-red-50 px-0.5 text-red-700 decoration-red-700">{segment.text}</del>;
+                  if (segment.type === "insert") return <ins key={index} className="rounded bg-primary/10 px-0.5 text-primary no-underline">{segment.text}</ins>;
+                  return <span key={index}>{segment.text}</span>;
+                })}
+              </div>
+            ) : (
+              <div className="mt-6 whitespace-pre-wrap text-base leading-8 text-charcoal/78">{result.editedText}</div>
+            )}
           </article>
         </section>
       ) : null}

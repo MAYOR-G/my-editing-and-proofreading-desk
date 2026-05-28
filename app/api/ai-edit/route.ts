@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AI_WORD_LIMIT, countWords, editingModes, isEditingModeId } from "@/lib/ai-editing";
+import { AI_WORD_LIMIT, countWords, isEditingModeId } from "@/lib/ai-editing";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createServerClient } from "@supabase/ssr";
@@ -12,7 +12,8 @@ const COOLDOWN_MS = 12 * 1000;
 const ANONYMOUS_DAILY_CAP = 3;
 const SIGNED_IN_DAILY_CAP = 12;
 const MAX_INPUT_CHARS = 9000;
-const MAX_OUTPUT_TOKENS = 1200;
+const MAX_OUTPUT_TOKENS = 1500;
+const AI_UNAVAILABLE_MESSAGE = "AI editing is temporarily unavailable. Please try again shortly or submit your document for human review.";
 
 type RateEntry = {
   count: number;
@@ -119,7 +120,7 @@ async function checkRateLimit(ip: string, user: any) {
   }
 }
 
-function buildFallbackEdit(text: string, modeLabel: string) {
+function buildFallbackEdit(text: string, modeLabel = "AI Editing") {
   const normalized = text
     .replace(/[ \t]+/g, " ")
     .replace(/\s+\n/g, "\n")
@@ -169,11 +170,33 @@ function buildFallbackEdit(text: string, modeLabel: string) {
   };
 }
 
-async function callOpenRouter(text: string, modeId: string) {
+function normalizeForCompare(value: string) {
+  return value.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function cleanupEditedText(value: string) {
+  return value
+    .replace(/[ \t]+/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .trim();
+}
+
+function parseJsonObject(content: string) {
+  const trimmed = content.trim();
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const match = trimmed.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("OpenRouter did not return JSON.");
+    return JSON.parse(match[0]);
+  }
+}
+
+async function callOpenRouter(text: string) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  // Using a very cost-effective, capable model for JSON instruction following
-  const model = process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-lite-preview-02-05:free";
-  const mode = editingModes.find((item) => item.id === modeId) ?? editingModes[0];
+  const model = process.env.OPENROUTER_AI_EDIT_MODEL || process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-lite-001";
 
   if (!apiKey) {
     return null;
@@ -195,13 +218,12 @@ async function callOpenRouter(text: string, modeId: string) {
         {
           role: "system",
           content:
-            "You are a professional proofreading and editing assistant for My Editing and Proofreading Desk. Improve the user's text for grammar, spelling, punctuation, clarity, sentence structure, flow, and readability while preserving the original meaning and voice. Do not simply repeat poor wording. Do not add facts. Return concise JSON only."
+            "You are a professional proofreading and editing assistant for My Editing and Proofreading Desk. Your job is to edit the user's text, not comment on it. Correct grammar, spelling, punctuation, awkward spacing, sentence structure, clarity, and flow while preserving the original meaning and voice. Do not add unsupported facts. Do not over-edit. Do not simply repeat flawed input. Return valid JSON only."
         },
         {
           role: "user",
           content:
-            `Task: ${mode.instruction}\n` +
-            "Return JSON with editedText, highlights, and suggestions. editedText must be the corrected polished version. highlights must be 3-5 short bullet-style strings naming the key changes made. suggestions must be 1-2 honest short suggestions and must not claim AI replaces human editors.\n\n" +
+            "Edit the text below. Return JSON with these exact keys: original_text, edited_text, change_summary. original_text must equal the submitted text. edited_text must be the clean corrected version only. change_summary must be an array of 3-5 short strings describing the main improvements. Do not wrap the edited text in markdown.\n\n" +
             `Text:\n${text}`
         }
       ],
@@ -219,17 +241,32 @@ async function callOpenRouter(text: string, modeId: string) {
     throw new Error("OpenRouter returned an unexpected response.");
   }
 
-  const parsed = JSON.parse(content) as { editedText?: unknown; highlights?: unknown; suggestions?: unknown };
-  if (typeof parsed.editedText !== "string" || !Array.isArray(parsed.highlights)) {
+  const parsed = parseJsonObject(content) as {
+    original_text?: unknown;
+    edited_text?: unknown;
+    change_summary?: unknown;
+    editedText?: unknown;
+    highlights?: unknown;
+    suggestions?: unknown;
+  };
+  const modelEditedText = typeof parsed.edited_text === "string" ? parsed.edited_text : typeof parsed.editedText === "string" ? parsed.editedText : "";
+  if (!modelEditedText || !Array.isArray(parsed.change_summary ?? parsed.highlights)) {
     throw new Error("OpenRouter response did not match the expected schema.");
   }
+  const cleanedModelText = cleanupEditedText(modelEditedText);
+  const fallback = buildFallbackEdit(text);
+  const editedText = normalizeForCompare(cleanedModelText) === normalizeForCompare(text) && normalizeForCompare(fallback.editedText) !== normalizeForCompare(text)
+    ? fallback.editedText
+    : cleanedModelText;
+  const summary = (parsed.change_summary ?? parsed.highlights) as unknown[];
 
   return {
-    editedText: parsed.editedText,
-    highlights: parsed.highlights.filter((item): item is string => typeof item === "string").slice(0, 5),
+    originalText: text,
+    editedText,
+    highlights: summary.filter((item): item is string => typeof item === "string").slice(0, 5),
     suggestions: Array.isArray(parsed.suggestions)
       ? parsed.suggestions.filter((item): item is string => typeof item === "string").slice(0, 2)
-      : ["Consider human editing for high-stakes documents where context, tone, and formatting matter."]
+      : ["Use this as a first pass before human review for high-stakes documents."]
   };
 }
 
@@ -237,7 +274,7 @@ export async function POST(request: Request) {
   try {
     const payload = await request.json();
     const text = typeof payload.text === "string" ? payload.text.trim() : "";
-    const mode = typeof payload.mode === "string" ? payload.mode : "";
+    const mode = typeof payload.mode === "string" && isEditingModeId(payload.mode) ? payload.mode : "ai-editing";
     
     // Secure Session Validation (Ignore client payload.signedIn)
     const user = await getUser();
@@ -250,13 +287,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "The input is too large for the AI trial. Please shorten it to 1,000 words or less." }, { status: 413 });
     }
 
-    if (!isEditingModeId(mode)) {
-      return NextResponse.json({ error: "Choose a valid editing mode." }, { status: 400 });
-    }
-
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json(
-        { error: "The AI editor is temporarily unavailable. Please try again later or contact support." },
+        { error: AI_UNAVAILABLE_MESSAGE },
         { status: 503 }
       );
     }
@@ -275,15 +308,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: message, retryAfter: rate.retryAfter, remaining: rate.remaining }, { status: 429 });
     }
 
-    const selectedMode = editingModes.find((item) => item.id === mode) ?? editingModes[0];
-    const openRouterResult = await callOpenRouter(text, mode).catch((error) => {
+    const openRouterResult = await callOpenRouter(text).catch((error) => {
       console.error("AI provider request failed:", error);
       return null;
     });
-    const result = openRouterResult ?? buildFallbackEdit(text, selectedMode.label);
+    if (!openRouterResult) {
+      return NextResponse.json({ error: AI_UNAVAILABLE_MESSAGE }, { status: 503 });
+    }
 
     return NextResponse.json({
-      ...result,
+      ...openRouterResult,
       meta: {
         mode,
         wordCount,
@@ -291,7 +325,8 @@ export async function POST(request: Request) {
         remainingToday: rate.remaining
       }
     });
-  } catch {
-    return NextResponse.json({ error: "The AI editing service is temporarily unavailable. Your text has not been lost." }, { status: 500 });
+  } catch (error) {
+    console.error("AI editing route failed:", error);
+    return NextResponse.json({ error: AI_UNAVAILABLE_MESSAGE }, { status: 500 });
   }
 }

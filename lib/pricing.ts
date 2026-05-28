@@ -89,9 +89,9 @@ export const TURNAROUND_OPTIONS = [
 ] as const;
 
 const TURNAROUND_RATE_SEQUENCES = {
-  full: [0.038, 0.034, 0.029, 0.036, 0.025, 0.024, 0.024, 0.024],
-  expressStart: [0.034, 0.029, 0.036, 0.025, 0.024, 0.024, 0.024],
-  shifted: [0.034, 0.029, 0.025, 0.024, 0.024, 0.024],
+  full: [0.038, 0.034, 0.029, 0.027, 0.025, 0.024, 0.023, 0.022],
+  expressStart: [0.034, 0.029, 0.027, 0.025, 0.024, 0.023, 0.022],
+  shifted: [0.034, 0.029, 0.027, 0.025, 0.024, 0.023],
 } as const;
 
 export type PriceBreakdown = {

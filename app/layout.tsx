@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { TawkWidget } from "@/components/TawkWidget";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -26,7 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <TawkWidget />
+      </body>
     </html>
   );
 }

@@ -178,14 +178,25 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
               <div className="hidden items-center gap-2 sm:flex">
                 <button
                   type="button"
-                  onClick={() => setIsEditedView(!isEditedView)}
-                  className={`rounded border px-3 py-1 text-xs font-semibold transition-colors ${
+                  onClick={() => setIsEditedView(true)}
+                  className={`rounded-l border px-3 py-1 text-xs font-semibold transition-colors ${
                     isEditedView
                       ? "border-[#2393ff] bg-[#2393ff]/20 text-white"
                       : "border-white/14 bg-black/10 text-white/70 hover:bg-white/10"
                   }`}
                 >
-                  {isEditedView ? "Edited View" : "Final View"}
+                  Edited View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditedView(false)}
+                  className={`-ml-2 rounded-r border px-3 py-1 text-xs font-semibold transition-colors ${
+                    !isEditedView
+                      ? "border-[#2393ff] bg-[#2393ff]/20 text-white"
+                      : "border-white/14 bg-black/10 text-white/70 hover:bg-white/10"
+                  }`}
+                >
+                  Final View
                 </button>
               </div>
 
