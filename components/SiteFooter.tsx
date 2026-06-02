@@ -52,7 +52,7 @@ export function SiteFooter() {
 
           <div className="text-sm leading-7 text-surface-soft/55">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Mailing address</p>
-            <address className="mt-3 not-italic">
+            <address className="mt-3 max-w-sm text-pretty not-italic">
               {COMPANY_ADDRESS}
             </address>
           </div>

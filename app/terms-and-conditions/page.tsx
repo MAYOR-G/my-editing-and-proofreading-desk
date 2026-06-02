@@ -3,10 +3,7 @@ import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
 export default function TermsAndConditionsPage() {
   return (
     <LegalPage title="Terms and Conditions">
-      <section className="rounded-2xl border border-primary/15 bg-canvas p-5 text-ink">
-        <p>MEP (editandproofread.com) is a property of Delevante Global Enterprise.</p>
-      </section>
-
+      
       <LegalSection title="1. Introduction">
         <p>Welcome to MEP (editandproofread.com). By accessing or using our website and services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
       </LegalSection>

@@ -41,7 +41,7 @@ export default function ContactPage() {
 
               <div className="mt-8 border-t border-hairline pt-6">
                 <p className="text-xs uppercase tracking-[0.24em] text-primary">Mailing address</p>
-                <address className="mt-3 text-sm not-italic leading-7 text-body">
+                <address className="mt-3 max-w-sm text-pretty text-sm not-italic leading-7 text-body">
                   {COMPANY_ADDRESS}
                 </address>
               </div>

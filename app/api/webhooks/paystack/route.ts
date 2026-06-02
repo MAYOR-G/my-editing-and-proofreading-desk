@@ -10,6 +10,14 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
  * Validates HMAC SHA-512 signature before processing.
  * Idempotent — checks payment_verified_at before updating.
  */
+type PaymentRecordLookup = {
+  order_id: string;
+  amount: number | string | null;
+  currency: string | null;
+  provider: string | null;
+  status: string | null;
+};
+
 export async function POST(request: Request) {
   try {
     const supabase = createSupabaseAdminClient();
@@ -35,19 +43,44 @@ export async function POST(request: Request) {
     }
 
     // ─── Find project ──────────────────────────────────────────────
-    const { data: project, error: fetchError } = await supabase
+    let paymentRecord: PaymentRecordLookup | null = null;
+    let { data: project, error: fetchError } = await supabase
       .from("projects")
       .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, target_journal, word_count, turnaround, uploaded_file_path, upload_file_path")
       .eq("transaction_reference", reference)
-      .single();
+      .maybeSingle();
 
     if (fetchError || !project) {
-      console.warn(`Paystack webhook: project not found for reference ${reference}`);
-      // Return 200 to prevent Paystack from retrying
-      return NextResponse.json({ received: true });
+      const { data: record, error: recordError } = await supabase
+        .from("payment_records")
+        .select("order_id, amount, currency, provider, status")
+        .eq("transaction_reference", reference)
+        .maybeSingle();
+
+      if (recordError || !record?.order_id) {
+        console.warn(`Paystack webhook: project not found for reference ${reference}`);
+        // Return 200 to prevent Paystack from retrying
+        return NextResponse.json({ received: true });
+      }
+
+      paymentRecord = record as PaymentRecordLookup;
+      const fallback = await supabase
+        .from("projects")
+        .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, target_journal, word_count, turnaround, uploaded_file_path, upload_file_path")
+        .eq("id", paymentRecord.order_id)
+        .single();
+
+      project = fallback.data;
+      fetchError = fallback.error;
+
+      if (fetchError || !project) {
+        console.warn(`Paystack webhook: fallback project not found for reference ${reference}`);
+        return NextResponse.json({ received: true });
+      }
     }
 
-    if (project.payment_provider !== "paystack") {
+    const recordedProvider = paymentRecord?.provider || project.payment_provider;
+    if (recordedProvider !== "paystack") {
       console.warn(`Paystack webhook: provider mismatch for reference ${reference}`);
       return NextResponse.json({ received: true });
     }
@@ -59,7 +92,8 @@ export async function POST(request: Request) {
     }
 
     // ─── Amount verification ───────────────────────────────────────
-    const expectedAmountCents = Math.round(project.price * 100);
+    const expectedAmount = Number(paymentRecord?.amount ?? project.price);
+    const expectedAmountCents = Math.round(expectedAmount * 100);
     if (amount !== expectedAmountCents || verified.amount !== expectedAmountCents) {
       console.error(
         `Paystack webhook amount mismatch: expected ${expectedAmountCents}, got ${amount}/${verified.amount} for ref ${reference}`
@@ -71,7 +105,7 @@ export async function POST(request: Request) {
     }
 
     // ─── Update project ────────────────────────────────────────────
-    const { error: updateError } = await supabase
+    const { data: updatedProjects, error: updateError } = await supabase
       .from("projects")
       .update({
         payment_status: "paid",
@@ -79,11 +113,14 @@ export async function POST(request: Request) {
         payment_verified_at: new Date().toISOString(),
       })
       .eq("id", project.id)
-      .eq("payment_status", "pending"); // Only update if still pending
+      .neq("payment_status", "paid")
+      .select("id"); // Only update and notify once.
 
     if (updateError) {
       console.error("Paystack webhook: failed to update project:", updateError);
     }
+
+    const processedNow = Boolean(updatedProjects?.length);
 
     const { error: paymentRecordError } = await supabase
       .from("payment_records")
@@ -108,7 +145,7 @@ export async function POST(request: Request) {
       .eq("id", project.client_id)
       .single();
 
-    if (profile?.email) {
+    if (processedNow && profile?.email) {
       const paidAt = verified.paidAt || new Date().toISOString();
       sendPaymentSuccessEmail(profile.email, {
         clientName: profile.full_name,
@@ -117,8 +154,8 @@ export async function POST(request: Request) {
         targetJournal: project.target_journal,
         wordCount: project.word_count,
         turnaround: project.turnaround,
-        amount: project.price,
-        currency: project.payment_currency,
+        amount: expectedAmount,
+        currency: paymentRecord?.currency || project.payment_currency,
         paymentDate: new Date(paidAt).toLocaleString(),
         paymentMethod: verified.channel || project.payment_provider,
       }).catch(
@@ -136,8 +173,8 @@ export async function POST(request: Request) {
         friendlyId: project.friendly_id,
         clientName: profile.full_name,
         clientEmail: profile.email,
-        amount: project.price,
-        currency: project.payment_currency,
+        amount: expectedAmount,
+        currency: paymentRecord?.currency || project.payment_currency,
         wordCount: project.word_count,
         service: project.service_type,
         targetJournal: project.target_journal,

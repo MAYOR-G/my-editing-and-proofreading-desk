@@ -16,6 +16,14 @@ function traceId() {
   return `ver_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
+type PaymentRecordLookup = {
+  order_id: string;
+  amount: number | string | null;
+  currency: string | null;
+  provider: string | null;
+  status: string | null;
+};
+
 /**
  * GET /api/payments/verify?reference=xxx&provider=paystack
  * 
@@ -61,21 +69,49 @@ export async function GET(request: Request) {
     }
 
     // ─── Find the project by reference ─────────────────────────────
-    const { data: project, error: fetchError } = await supabase
+    let paymentRecord: PaymentRecordLookup | null = null;
+    let { data: project, error: fetchError } = await supabase
       .from("projects")
       .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, target_journal, word_count, turnaround, uploaded_file_path, upload_file_path")
       .eq("transaction_reference", reference)
-      .single();
+      .maybeSingle();
 
     if (fetchError || !project) {
-      console.error(`[${trace}] Payment verify project lookup failed`, { reference, message: fetchError?.message });
-      return NextResponse.json(
-        { error: "We could not find this order. Please contact support if payment was completed.", code: "project_not_found", trace_id: trace },
-        { status: 404 }
-      );
+      const { data: record, error: recordError } = await supabase
+        .from("payment_records")
+        .select("order_id, amount, currency, provider, status")
+        .eq("transaction_reference", reference)
+        .maybeSingle();
+
+      if (recordError || !record?.order_id) {
+        console.error(`[${trace}] Payment verify project lookup failed`, { reference, message: fetchError?.message || recordError?.message });
+        return NextResponse.json(
+          { error: "We could not find this order. Please contact support if payment was completed.", code: "project_not_found", trace_id: trace },
+          { status: 404 }
+        );
+      }
+
+      paymentRecord = record as PaymentRecordLookup;
+      const fallback = await supabase
+        .from("projects")
+        .select("id, friendly_id, client_id, title, price, payment_status, payment_provider, payment_currency, payment_verified_at, service_type, target_journal, word_count, turnaround, uploaded_file_path, upload_file_path")
+        .eq("id", paymentRecord.order_id)
+        .single();
+
+      project = fallback.data;
+      fetchError = fallback.error;
+
+      if (fetchError || !project) {
+        console.error(`[${trace}] Payment verify fallback project lookup failed`, { reference, message: fetchError?.message });
+        return NextResponse.json(
+          { error: "We could not find this order. Please contact support if payment was completed.", code: "project_not_found", trace_id: trace },
+          { status: 404 }
+        );
+      }
     }
 
-    if (project.payment_provider !== provider) {
+    const recordedProvider = paymentRecord?.provider || project.payment_provider;
+    if (recordedProvider !== provider) {
       return NextResponse.json(
         { error: "We could not verify this payment. Please contact support if payment was completed.", verified: false, code: "provider_mismatch", trace_id: trace },
         { status: 400 }
@@ -125,7 +161,8 @@ export async function GET(request: Request) {
     }
 
     // ─── Amount verification ───────────────────────────────────────
-    const expectedAmountCents = Math.round(project.price * 100);
+    const expectedAmount = Number(paymentRecord?.amount ?? project.price);
+    const expectedAmountCents = Math.round(expectedAmount * 100);
     if (verifyResult.amount !== expectedAmountCents) {
       console.error(
         `[${trace}] Amount mismatch: expected ${expectedAmountCents}, got ${verifyResult.amount} for ref ${reference}`
@@ -137,7 +174,7 @@ export async function GET(request: Request) {
     }
 
     // ─── Update project as paid ────────────────────────────────────
-    const { error: updateError } = await supabase
+    const { data: updatedProjects, error: updateError } = await supabase
       .from("projects")
       .update({
         payment_status: "paid",
@@ -145,11 +182,14 @@ export async function GET(request: Request) {
         payment_verified_at: new Date().toISOString(),
       })
       .eq("id", project.id)
-      .eq("payment_status", "pending"); // Prevent double-update
+      .neq("payment_status", "paid")
+      .select("id"); // Prevent double-update and duplicate emails.
 
     if (updateError) {
       console.error("Failed to update project payment status:", updateError);
     }
+
+    const processedNow = Boolean(updatedProjects?.length);
 
     const { error: paymentRecordError } = await supabase
       .from("payment_records")
@@ -174,7 +214,7 @@ export async function GET(request: Request) {
       .eq("id", project.client_id)
       .single();
 
-    if (profile?.email) {
+    if (processedNow && profile?.email) {
       // Fire-and-forget — don't block response
       const paidAt = verifyResult.paidAt || new Date().toISOString();
       sendPaymentSuccessEmail(profile.email, {
@@ -217,10 +257,11 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       verified: true,
+      already_processed: !processedNow,
       project_id: project.id,
       friendly_id: project.friendly_id,
-      amount: project.price,
-      currency: project.payment_currency,
+      amount: expectedAmount,
+      currency: paymentRecord?.currency || project.payment_currency,
       trace_id: trace,
     });
   } catch (error: any) {
