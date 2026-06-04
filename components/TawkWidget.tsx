@@ -2,6 +2,9 @@
 
 import { useEffect } from "react";
 
+const TAWK_PROPERTY_ID = "6a2154b86d77da1c401dcf9f";
+const TAWK_WIDGET_ID = "1jq93635o";
+
 declare global {
   interface Window {
     Tawk_API?: Record<string, unknown>;
@@ -11,15 +14,8 @@ declare global {
 
 export function TawkWidget() {
   useEffect(() => {
-    const propertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-    const widgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-
-    if (!propertyId || !widgetId) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("tawk.to skipped: NEXT_PUBLIC_TAWK_PROPERTY_ID or NEXT_PUBLIC_TAWK_WIDGET_ID is missing.");
-      }
-      return;
-    }
+    const propertyId = TAWK_PROPERTY_ID;
+    const widgetId = TAWK_WIDGET_ID;
 
     const scriptId = "tawk-to-widget";
     if (document.getElementById(scriptId)) return;
