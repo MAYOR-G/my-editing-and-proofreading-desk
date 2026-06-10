@@ -1,12 +1,21 @@
+import type { Metadata } from "next";
 import { SignupPanel } from "@/components/SignupPanel";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { buildPageMetadata } from "@/lib/site";
 
 const trustBadges = [
   { icon: "shield", label: "Project tracking" },
   { icon: "lock", label: "Editor updates" },
   { icon: "check", label: "File delivery" }
 ];
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Create an Editorial Desk Account",
+  description: "Create a secure client account to manage editing projects, track progress, and communicate with your editor.",
+  path: "/signup",
+  noIndex: true,
+});
 
 export default function SignUpPage() {
   return (

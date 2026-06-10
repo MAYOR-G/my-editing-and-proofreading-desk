@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ServiceSystemVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { servicePages } from "@/lib/content";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Editing and Proofreading Services",
+  description: "Compare academic editing, business editing, proofreading, manuscript editing, translation review, and writing support services.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

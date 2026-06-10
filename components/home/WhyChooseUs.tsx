@@ -38,6 +38,10 @@ export function WhyChooseUs() {
               <img 
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1200" 
                 alt="Professional editor reviewing document" 
+                width={1200}
+                height={1500}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover" 
               />
             </div>
@@ -45,7 +49,7 @@ export function WhyChooseUs() {
             {/* Floating Badge 1 */}
             <div className="absolute bottom-10 left-6 z-20 flex w-[min(16.25rem,calc(100%-3rem))] items-center gap-4 rounded-2xl border border-ink/5 bg-white/95 p-4 shadow-[0_20px_44px_-14px_rgba(0,0,0,0.24)] backdrop-blur-md sm:left-8 sm:p-5">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eef2ff] text-primary">
-                <Star className="h-6 w-6 fill-primary" />
+                <Star className="h-6 w-6 fill-primary" aria-hidden="true" />
               </div>
               <div className="min-w-0">
                 <p className="font-bold text-ink text-lg leading-none mb-1">15+ Years</p>
@@ -56,7 +60,7 @@ export function WhyChooseUs() {
             {/* Floating Badge 2 */}
             <div className="absolute top-20 -right-6 sm:-right-12 bg-white rounded-2xl p-5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-ink/5 flex items-center gap-4 w-[240px]">
               <div className="w-12 h-12 rounded-full bg-[#ecfdf5] flex items-center justify-center text-emerald-500 shrink-0">
-                <ShieldCheck className="w-6 h-6" />
+                <ShieldCheck className="w-6 h-6" aria-hidden="true" />
               </div>
               <div>
                 <p className="font-bold text-ink text-lg leading-none mb-1">100% Secure</p>
@@ -83,7 +87,7 @@ export function WhyChooseUs() {
               {valuePoints.map((point) => (
                 <div key={point.title} className="flex gap-5">
                   <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary shrink-0 border border-primary/10">
-                    <point.icon className="w-6 h-6" />
+                    <point.icon className="w-6 h-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h4 className="font-display text-lg sm:text-xl text-ink font-bold mb-2">{point.title}</h4>

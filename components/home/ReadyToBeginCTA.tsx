@@ -15,7 +15,7 @@ export function ReadyToBeginCTA() {
           <div className="flex-1 p-10 sm:p-16 lg:p-24 flex flex-col justify-center relative z-10">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-accent" />
+                <Sparkles className="w-5 h-5 text-accent" aria-hidden="true" />
               </div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold">Ready to begin?</p>
             </div>
@@ -35,7 +35,7 @@ export function ReadyToBeginCTA() {
                 className="inline-flex h-14 items-center justify-center gap-3 bg-primary hover:bg-accent px-10 text-white font-semibold text-sm uppercase tracking-widest rounded-full shadow-[0_10px_30px_rgba(15,59,127,0.2)] transition-all hover:scale-105 hover:shadow-[0_15px_40px_rgba(59,130,246,0.3)] group"
               >
                 Start Your Project
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </Link>
               <Link 
                 href="/contact" 
@@ -52,6 +52,10 @@ export function ReadyToBeginCTA() {
             <img 
               src="/assets/premium_desk.png" 
               alt="Refining manuscript" 
+              width={1200}
+              height={900}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
           </div>

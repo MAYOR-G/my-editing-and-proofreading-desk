@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { FileCheck2, LockKeyhole, MessageSquareText, PenLine } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { buildPageMetadata } from "@/lib/site";
 
 const values = [
   {
@@ -23,6 +25,12 @@ const values = [
     icon: MessageSquareText
   }
 ];
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "About My Editing and Proofreading Desk",
+  description: "Learn how My Editing and Proofreading Desk provides human-led editing for academic, business, application, manuscript, and professional documents.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { servicePages } from "@/lib/content";
+import { buildPageMetadata, jsonLdScript, serviceJsonLd } from "@/lib/site";
 
 type ServiceDetailPageProps = {
   params: {
@@ -13,6 +15,24 @@ export function generateStaticParams() {
   return servicePages.map((service) => ({ slug: service.slug }));
 }
 
+export function generateMetadata({ params }: ServiceDetailPageProps): Metadata {
+  const service = servicePages.find((item) => item.slug === params.slug);
+
+  if (!service) {
+    return buildPageMetadata({
+      title: "Editing Service",
+      description: "Editorial services from My Editing and Proofreading Desk.",
+      path: "/services",
+    });
+  }
+
+  return buildPageMetadata({
+    title: `${service.name} Service`,
+    description: service.description,
+    path: `/services/${service.slug}`,
+  });
+}
+
 export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   const service = servicePages.find((item) => item.slug === params.slug);
 
@@ -22,6 +42,10 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
 
   return (
     <PublicPageShell eyebrow={service.eyebrow} title={service.name} description={service.description}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(serviceJsonLd(service))}
+      />
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr]">
           <aside className="border-l border-hairline pl-7">

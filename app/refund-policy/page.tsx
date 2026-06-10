@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { LegalList, LegalPage, LegalSection, LegalSubList } from "@/components/LegalPage";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Refund Policy",
+  description: "Review refund eligibility, non-refundable situations, duplicate payment handling, service delivery issues, and refund request timing.",
+  path: "/refund-policy",
+});
 
 export default function RefundPolicyPage() {
   return (

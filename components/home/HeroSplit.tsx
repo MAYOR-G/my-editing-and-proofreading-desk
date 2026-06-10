@@ -71,7 +71,7 @@ export function HeroSplit() {
       <div className="absolute inset-0 z-0 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=2400&auto=format&fit=crop"
-          alt="Editing Background"
+          alt=""
           fill
           className="object-cover opacity-10"
           priority
@@ -230,7 +230,7 @@ export function HeroSplit() {
           {features.map((feature, idx) => (
             <div key={idx} className="flex items-center justify-center gap-3 text-[10px] sm:text-xs uppercase tracking-[0.15em] text-charcoal font-semibold">
               <div className="grid place-items-center w-8 h-8 rounded-full bg-primary/10 border border-primary/20">
-                <feature.icon className="w-4 h-4 text-primary" strokeWidth={2.5} />
+                <feature.icon className="w-4 h-4 text-primary" strokeWidth={2.5} aria-hidden="true" />
               </div>
               <span className="hidden sm:inline-block">{feature.text}</span>
               <span className="sm:hidden">{feature.shortText}</span>

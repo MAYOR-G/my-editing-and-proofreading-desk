@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PricingCalculator } from "@/components/PricingCalculator";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Editing and Proofreading Pricing Calculator",
+  description: "Estimate editing, proofreading, formatting, translation, and writing support pricing by service, word count, and turnaround.",
+  path: "/pricing",
+});
 
 export default function PricingPage() {
   return (

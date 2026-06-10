@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { AnimatedAccordion } from "@/components/AnimatedAccordion";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { FaqVisual } from "@/components/EditorialVisuals";
 import { faqs } from "@/lib/content";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Editing and Proofreading FAQs",
+  description: "Answers about document uploads, word counts, pricing, turnaround options, privacy, AI editing, accepted files, and support.",
+  path: "/faq",
+});
 
 export default function FaqPage() {
   return (

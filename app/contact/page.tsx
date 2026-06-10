@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { ContactVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { ContactForm } from "@/components/ContactForm";
 import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contact My Editing and Proofreading Desk",
+  description: "Contact support about editing services, project fit, document expectations, timelines, pricing, uploads, and business inquiries.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

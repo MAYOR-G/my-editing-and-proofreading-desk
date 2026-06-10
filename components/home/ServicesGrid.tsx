@@ -27,7 +27,7 @@ export function ServicesGrid() {
               className="group inline-flex h-14 items-center justify-center bg-white border border-ink/10 px-8 text-sm font-semibold text-ink transition-all hover:border-primary hover:text-primary rounded-full shadow-sm"
             >
               View Our Services
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </Link>
           </div>
 
@@ -37,6 +37,10 @@ export function ServicesGrid() {
               <img 
                 src="/images/hero/editor_author_1777475345367.png" 
                 alt="Human editor reviewing a document on screen"
+                width={1200}
+                height={900}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -61,7 +65,7 @@ export function ServicesGrid() {
                     0{index + 1}
                   </div>
                   <div className="w-10 h-10 rounded-full bg-white border border-ink/10 flex items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-sm">
-                    <ArrowRight className="w-4 h-4 text-primary" />
+                    <ArrowRight className="w-4 h-4 text-primary" aria-hidden="true" />
                   </div>
                 </div>
                 <h3 className="font-display text-lg sm:text-xl font-bold text-ink mb-4 group-hover:text-primary transition-colors duration-300">

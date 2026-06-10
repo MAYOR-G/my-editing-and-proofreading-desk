@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Privacy Policy",
+  description: "Read how My Editing and Proofreading Desk collects, uses, protects, retains, and handles personal information and uploaded documents.",
+  path: "/privacy-policy",
+});
 
 export default function PrivacyPolicyPage() {
   return (

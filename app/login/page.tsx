@@ -1,12 +1,21 @@
+import type { Metadata } from "next";
 import { LoginEmailPanel } from "@/components/LoginEmailPanel";
 import { SiteHeader } from "@/components/SiteHeader";
 import Link from "next/link";
+import { buildPageMetadata } from "@/lib/site";
 
 const portalNotes = [
   "Track active projects",
   "Download completed files",
   "Message support"
 ];
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Client Login | My Editing and Proofreading Desk",
+  description: "Log in to your secure editorial desk to track projects, download completed files, and message support.",
+  path: "/login",
+  noIndex: true,
+});
 
 export default function LoginPage() {
   return (

@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { ForgotPasswordPanel } from "@/components/ForgotPasswordPanel";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Reset Your Password",
+  description: "Request a secure password reset link for your My Editing and Proofreading Desk account.",
+  path: "/forgot-password",
+  noIndex: true,
+});
 
 export default function ForgotPasswordPage() {
   return (

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { buildPageMetadata } from "@/lib/site";
 
 const fields = [
   "Academic writing",
@@ -54,6 +56,12 @@ const trustItems = [
   { title: "Subject-aware feedback", body: "Editors consider discipline, terminology, reader expectations, and submission context.", icon: SearchCheck },
   { title: "On-time delivery", body: "Projects are reviewed within the selected timeline, with clear status updates in the dashboard.", icon: ShieldCheck },
 ];
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Human Editor Standards",
+  description: "Learn how documents are matched with human editors who consider subject, purpose, audience, tone, structure, and delivery standards.",
+  path: "/editors",
+});
 
 function EditorialReviewVisual() {
   return (

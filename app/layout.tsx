@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { TawkWidget } from "@/components/TawkWidget";
+import { buildPageMetadata, jsonLdScript, organizationJsonLd, professionalServiceJsonLd, siteConfig, websiteJsonLd } from "@/lib/site";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -8,9 +9,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "My Editing and Proofreading Desk",
-  description: "Premium proofreading, editing, formatting, translation, and writing support with secure uploads, verified payments, and project dashboards.",
-  metadataBase: new URL("https://editandproofread.com"),
+  ...buildPageMetadata({
+    title: siteConfig.defaultTitle,
+    description: siteConfig.defaultDescription,
+    path: "/",
+  }),
   icons: {
     icon: [
       { url: "/assets/logo.png", type: "image/png" },
@@ -28,6 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={jsonLdScript([
+            organizationJsonLd(),
+            websiteJsonLd(),
+            professionalServiceJsonLd(),
+          ])}
+        />
         {children}
         <TawkWidget />
       </body>

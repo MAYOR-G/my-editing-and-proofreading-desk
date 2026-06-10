@@ -10,7 +10,10 @@ export function TrustedMapStats() {
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.1] pointer-events-none z-0">
          <img 
             src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg" 
-            alt="World Map" 
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
             className="w-full max-w-6xl object-contain opacity-50"
             style={{ filter: 'invert(50%) sepia(80%) saturate(300%) hue-rotate(90deg)' }}
          />

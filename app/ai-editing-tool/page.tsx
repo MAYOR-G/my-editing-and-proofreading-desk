@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AiEditingTool } from "@/components/AiEditingTool";
 import { AiRefinementVisual } from "@/components/EditorialVisuals";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { buildPageMetadata } from "@/lib/site";
 
+export const metadata: Metadata = buildPageMetadata({
+  title: "Free AI Editing Assistant",
+  description: "Try a free AI-assisted first pass for short text, then use human editing for high-stakes academic, business, and professional documents.",
+  path: "/ai-editing-tool",
+});
 
 export default function AiEditingToolPage() {
   return (

@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
+import { buildPageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Terms and Conditions",
+  description: "Read the terms for using My Editing and Proofreading Desk editing, proofreading, payment, confidentiality, and delivery services.",
+  path: "/terms-and-conditions",
+});
 
 export default function TermsAndConditionsPage() {
   return (

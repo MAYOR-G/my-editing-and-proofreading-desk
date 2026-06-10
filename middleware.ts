@@ -1,8 +1,31 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+function getOrigin(value: string | undefined) {
+  if (!value) return null;
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const primaryOrigin = getOrigin(process.env.NEXT_PUBLIC_SITE_URL);
+  const alternateOrigins = (process.env.NEXT_PUBLIC_ALTERNATE_DOMAINS || "")
+    .split(",")
+    .map((domain) => getOrigin(domain.trim()))
+    .filter((origin): origin is string => Boolean(origin));
+
+  if (
+    process.env.NODE_ENV === "production" &&
+    primaryOrigin &&
+    alternateOrigins.includes(request.nextUrl.origin)
+  ) {
+    return NextResponse.redirect(new URL(`${pathname}${request.nextUrl.search}`, primaryOrigin), 308);
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,

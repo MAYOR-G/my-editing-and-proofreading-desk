@@ -1,9 +1,11 @@
 import dynamic from "next/dynamic";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { faqs } from "@/lib/content";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
+import { buildPageMetadata } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
@@ -16,6 +18,12 @@ import { ReadyToBeginCTA } from "@/components/home/ReadyToBeginCTA";
 import { TrustedMapStats } from "@/components/home/TrustedMapStats";
 
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "My Editing and Proofreading Desk | Editing and Proofreading Services",
+  description: "Human-led editing, proofreading, formatting, translation review, and writing support for academic, business, author, and professional documents.",
+  path: "/",
+});
 
 export default function Home() {
   return (
@@ -62,6 +70,10 @@ export default function Home() {
               <img 
                 src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200&auto=format&fit=crop" 
                 alt="Professional AI robot assistant in a clean technology workspace"
+                width={1200}
+                height={800}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
