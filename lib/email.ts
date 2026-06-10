@@ -240,6 +240,41 @@ export async function sendContactConfirmationEmail(message: {
   });
 }
 
+export async function sendSubscriberWelcomeEmail(email: string) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to: email,
+    subject: "Thank you for subscribing",
+    html: brandedEmail({
+      preheader: `Thank you for subscribing to ${BRAND_NAME}.`,
+      title: "Thank you for subscribing",
+      children: `
+        <p>Hello,</p>
+        <p>Thank you for subscribing to ${escapeHtml(BRAND_NAME)}. We'll send occasional editorial updates, service notes, and helpful writing guidance from our desk.</p>
+        <p>If you ever need direct support for a document, you can reply to this email or contact us at <a href="mailto:${SUPPORT_EMAIL}" style="color:#174a7c; text-decoration:underline;">${SUPPORT_EMAIL}</a>.</p>
+      `,
+    }),
+  });
+}
+
+export async function sendAudienceMessageEmail(to: string, subject: string, message: string) {
+  return sendEmail({
+    from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
+    replyTo: SUPPORT_EMAIL,
+    to,
+    subject,
+    html: brandedEmail({
+      preheader: subject,
+      title: subject,
+      children: `
+        ${messageCard(message)}
+        <p>If you have questions, you can reply directly to this email.</p>
+      `,
+    }),
+  });
+}
+
 export async function sendMessageReplyEmail(to: string, recipientName: string | null, subject: string, reply: string, options?: {
   threadId?: string;
   inReplyTo?: string | null;

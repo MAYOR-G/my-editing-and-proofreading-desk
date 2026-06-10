@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
+import { NewsletterSubscribeForm } from "@/components/NewsletterSubscribeForm";
 import { servicePages } from "@/lib/content";
 import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
@@ -48,6 +49,14 @@ export function SiteFooter() {
               {COMPANY_PHONE}
             </a>
             <p className="mt-4 text-sm leading-6 text-surface-soft/50">Include document type, expected word count, and deadline.</p>
+          </div>
+
+          <div className="border-b border-hairline/10 pb-6">
+            <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Subscribe</p>
+            <p className="mt-3 max-w-sm text-sm leading-6 text-surface-soft/55">
+              Receive occasional editorial updates and service notes from our desk.
+            </p>
+            <NewsletterSubscribeForm />
           </div>
 
           <div className="text-sm leading-7 text-surface-soft/55">
