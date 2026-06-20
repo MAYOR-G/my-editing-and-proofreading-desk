@@ -3,15 +3,17 @@ import { PublicPageShell } from "@/components/PublicPageShell";
 
 type LegalPageProps = {
   title: string;
+  path: string;
   children: ReactNode;
 };
 
-export function LegalPage({ title, children }: LegalPageProps) {
+export function LegalPage({ title, path, children }: LegalPageProps) {
   return (
     <PublicPageShell
       eyebrow="Legal"
       title={title}
       description="Please read this information carefully before using My Editing and Proofreading Desk."
+      seoPath={path}
     >
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <article className="mx-auto max-w-4xl rounded-[1.35rem] border border-hairline bg-surface-soft p-6 text-body shadow-[0_24px_80px_rgba(17,17,15,0.045)] sm:p-9 lg:p-12">

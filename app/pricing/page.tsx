@@ -3,10 +3,10 @@ import Link from "next/link";
 import { PricingCalculator } from "@/components/PricingCalculator";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { buildPageMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing and Proofreading Pricing Calculator",
+  title: "Editing and Proofreading Service Pricing",
   description: "Estimate editing, proofreading, formatting, translation, and writing support pricing by service, word count, and turnaround.",
   path: "/pricing",
 });
@@ -14,6 +14,13 @@ export const metadata: Metadata = buildPageMetadata({
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Pricing", path: "/pricing" },
+        ]))}
+      />
       <SiteHeader />
       <section className="relative overflow-hidden border-b border-hairline bg-canvas px-5 pb-14 pt-28 sm:px-8 lg:pb-16 lg:pt-32">
         <div className="absolute inset-0 bg-surface-soft/35" aria-hidden="true" />

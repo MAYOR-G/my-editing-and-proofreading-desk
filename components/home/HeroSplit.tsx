@@ -72,10 +72,11 @@ export function HeroSplit() {
         <Image
           src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=2400&auto=format&fit=crop"
           alt=""
+          aria-hidden="true"
           fill
           className="object-cover opacity-10"
           priority
-          unoptimized
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-paper/95 via-paper/90 to-paper/80" />
       </div>

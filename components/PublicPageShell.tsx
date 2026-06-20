@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { HeroEditorialVisual } from "@/components/EditorialVisuals";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { breadcrumbJsonLd, jsonLdScript } from "@/lib/site";
 
 type PublicPageShellProps = {
   eyebrow: string;
@@ -9,12 +10,38 @@ type PublicPageShellProps = {
   description?: string;
   visual?: ReactNode; // Optional custom visual component
   isTransparent?: boolean; // If true, removes solid backgrounds
+  seoPath?: string;
+  breadcrumbItems?: Array<{ name: string; path: string }>;
   children: ReactNode;
 };
 
-export function PublicPageShell({ eyebrow, title, description, visual, isTransparent = false, children }: PublicPageShellProps) {
+export function PublicPageShell({
+  eyebrow,
+  title,
+  description,
+  visual,
+  isTransparent = false,
+  seoPath,
+  breadcrumbItems,
+  children,
+}: PublicPageShellProps) {
+  const breadcrumbs = breadcrumbItems ?? (
+    seoPath
+      ? [
+          { name: "Home", path: "/" },
+          { name: title, path: seoPath },
+        ]
+      : null
+  );
+
   return (
     <main className={`min-h-screen text-ink ${isTransparent ? 'bg-transparent' : 'bg-canvas'}`}>
+      {breadcrumbs ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd(breadcrumbs))}
+        />
+      ) : null}
       <SiteHeader />
       <section className="relative overflow-hidden border-b border-hairline px-5 pb-14 pt-28 sm:px-8 lg:pb-20 lg:pt-36">
         {!isTransparent && (

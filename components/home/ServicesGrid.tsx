@@ -2,6 +2,7 @@
 
 import { servicePages } from "@/lib/content";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function ServicesGrid() {
@@ -34,13 +35,11 @@ export function ServicesGrid() {
           {/* Right Image */}
           <div className="relative">
             <div className="rounded-3xl overflow-hidden aspect-[4/3] relative border border-ink/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]">
-              <img 
+              <Image
                 src="/images/hero/editor_author_1777475345367.png" 
                 alt="Human editor reviewing a document on screen"
-                width={1200}
-                height={900}
-                loading="lazy"
-                decoding="async"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="w-full h-full object-cover"
               />
             </div>

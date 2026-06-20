@@ -35,7 +35,7 @@ export function BackgroundCarousel({
           alt=""
           fill
           priority={index === 0}
-          unoptimized
+          sizes="100vw"
           className={`object-cover object-center transition-all duration-[2000ms] ease-in-out ${
             index === currentIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"
           }`}

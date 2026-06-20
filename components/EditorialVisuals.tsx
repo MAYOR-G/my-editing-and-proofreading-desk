@@ -29,7 +29,7 @@ export function ManuscriptSculpture({ tone = "light" }: { tone?: VisualTone }) {
       <div className="relative h-full min-h-[26.5rem] w-full overflow-hidden border border-ink/10">
         <Image
           src="/assets/premium_desk.png"
-          alt="Premium Editorial Desk"
+          alt="Editor reviewing a manuscript at a professional desk"
           fill
           className="object-cover transition-transform duration-[15s] ease-linear hover:scale-110"
           sizes="(max-width: 768px) 100vw, 50vw"

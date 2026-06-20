@@ -10,7 +10,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function TermsAndConditionsPage() {
   return (
-    <LegalPage title="Terms and Conditions">
+    <LegalPage title="Terms and Conditions" path="/terms-and-conditions">
       
       <LegalSection title="1. Introduction">
         <p>Welcome to MEP (editandproofread.com). By accessing or using our website and services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>

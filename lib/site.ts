@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
-const FALLBACK_SITE_URL = "https://www.editandproofread.com";
-
-function normalizeSiteUrl(value: string | undefined) {
-  const raw = value?.trim() || FALLBACK_SITE_URL;
-  try {
-    const url = new URL(raw);
-    return url.origin.replace(/\/$/, "");
-  } catch {
-    return FALLBACK_SITE_URL;
-  }
-}
+export const PRODUCTION_SITE_URL = "https://editandproofread.com";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";
@@ -20,15 +10,12 @@ function normalizePath(path = "/") {
 
 export const siteConfig = {
   siteName: BRAND_NAME,
-  siteUrl: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
-  alternateDomains: (process.env.NEXT_PUBLIC_ALTERNATE_DOMAINS || "")
-    .split(",")
-    .map((domain) => normalizeSiteUrl(domain))
-    .filter(Boolean),
-  defaultTitle: `${BRAND_NAME} | Editing and Proofreading Services`,
+  siteUrl: PRODUCTION_SITE_URL,
+  defaultTitle: `${BRAND_NAME} | Professional Editing & Proofreading Services`,
   defaultDescription:
-    "Premium proofreading, editing, formatting, translation, and writing support with secure uploads, verified payments, and project dashboards.",
-  defaultOgImage: "/assets/brand.jpeg",
+    "Professional editing and proofreading services for authors, students, businesses, and professionals who need clear, polished, error-free writing.",
+  defaultOgImage: "/assets/og-image.jpg",
+  defaultOgImageAlt: `${BRAND_NAME} professional editing and proofreading services`,
   contactEmail: SUPPORT_EMAIL,
   contactPhone: COMPANY_PHONE,
   contactPhoneTel: COMPANY_PHONE_TEL,
@@ -79,7 +66,10 @@ export function buildPageMetadata({
       images: [
         {
           url: imageUrl,
-          alt: siteConfig.siteName,
+          width: 1200,
+          height: 630,
+          alt: siteConfig.defaultOgImageAlt,
+          type: "image/jpeg",
         },
       ],
       locale: "en_US",
@@ -91,12 +81,17 @@ export function buildPageMetadata({
       description,
       images: [imageUrl],
     },
-    robots: noIndex
-      ? {
-          index: false,
-          follow: true,
-        }
-      : undefined,
+    robots: {
+      index: !noIndex,
+      follow: !noIndex,
+      googleBot: {
+        index: !noIndex,
+        follow: !noIndex,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
   };
 }
 
@@ -110,6 +105,14 @@ export function organizationJsonLd() {
     logo: assetUrl("/assets/logo.png"),
     email: siteConfig.contactEmail,
     telephone: siteConfig.contactPhoneTel,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: siteConfig.contactEmail,
+      telephone: siteConfig.contactPhoneTel,
+      availableLanguage: "English",
+      areaServed: "Worldwide",
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: "1007 N Orange St. 4th Floor Suite #5723",
@@ -149,10 +152,19 @@ export function professionalServiceJsonLd() {
     name: siteConfig.siteName,
     url: siteConfig.siteUrl,
     image: assetUrl(siteConfig.defaultOgImage),
+    logo: assetUrl("/assets/logo.png"),
     email: siteConfig.contactEmail,
     telephone: siteConfig.contactPhoneTel,
     address: organizationJsonLd().address,
     areaServed: "Worldwide",
+    serviceType: [
+      "Professional editing services",
+      "Proofreading services",
+      "Manuscript editing",
+      "Academic proofreading",
+      "Business document editing",
+      "Book editing",
+    ],
     description: siteConfig.defaultDescription,
     priceRange: "$$",
   };
@@ -170,6 +182,35 @@ export function serviceJsonLd(service: { name: string; description: string; slug
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     areaServed: "Worldwide",
+    mainEntityOfPage: absoluteUrl(`/services/${service.slug}`),
+  };
+}
+
+export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
+}
+
+export function faqPageJsonLd(items: Array<{ question: string; answer: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 }
 

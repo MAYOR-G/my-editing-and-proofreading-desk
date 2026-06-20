@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2678400,
     localPatterns: [
       {
         pathname: "/assets/**",
@@ -20,7 +22,27 @@ const nextConfig = {
     ]
   },
   async headers() {
+    const noIndexRoutes = [
+      "/admin/:path*",
+      "/api/:path*",
+      "/auth/:path*",
+      "/dashboard/:path*",
+      "/forgot-password",
+      "/login",
+      "/reset-password",
+      "/signup",
+    ];
+
     return [
+      ...noIndexRoutes.map((source) => ({
+        source,
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      })),
       {
         source: "/api/examples",
         headers: [
@@ -97,6 +119,10 @@ const nextConfig = {
           {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains; preload",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
           },
         ],
       },

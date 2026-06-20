@@ -27,7 +27,7 @@ const values = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About My Editing and Proofreading Desk",
+  title: "About Our Professional Editing and Proofreading Services",
   description: "Learn how My Editing and Proofreading Desk provides human-led editing for academic, business, application, manuscript, and professional documents.",
   path: "/about",
 });
@@ -38,6 +38,7 @@ export default function AboutPage() {
       eyebrow="Editorial care"
       title="Editing built around clarity, care, and precision."
       description="We help students, researchers, professionals, and businesses turn important documents into clear, polished writing while preserving the writer's voice."
+      seoPath="/about"
     >
       <section className="relative overflow-hidden bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="absolute inset-0 opacity-[0.045] [background-image:linear-gradient(rgba(23,74,124,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(23,74,124,0.12)_1px,transparent_1px)] [background-size:38px_38px]" aria-hidden="true" />

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FileText, ShieldCheck, Sparkles, Star, UserCheck } from "lucide-react";
 
@@ -35,13 +36,11 @@ export function WhyChooseUs() {
           {/* Left: Clean Single Image with Floating Stats */}
           <div className="relative mx-auto aspect-[4/5] w-full max-w-lg overflow-visible px-3 pb-6 sm:px-0 sm:pb-0 lg:mx-0">
             <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden border border-ink/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)]">
-              <img 
+              <Image
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1200" 
-                alt="Professional editor reviewing document" 
-                width={1200}
-                height={1500}
-                loading="lazy"
-                decoding="async"
+                alt="Professional editor reviewing a business document"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="w-full h-full object-cover" 
               />
             </div>
@@ -90,7 +89,7 @@ export function WhyChooseUs() {
                     <point.icon className="w-6 h-6" aria-hidden="true" />
                   </div>
                   <div>
-                    <h4 className="font-display text-lg sm:text-xl text-ink font-bold mb-2">{point.title}</h4>
+                    <h3 className="font-display text-lg sm:text-xl text-ink font-bold mb-2">{point.title}</h3>
                     <p className="text-charcoal/70 leading-relaxed text-base">
                       {point.body}
                     </p>

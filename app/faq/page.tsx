@@ -3,7 +3,7 @@ import { AnimatedAccordion } from "@/components/AnimatedAccordion";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { FaqVisual } from "@/components/EditorialVisuals";
 import { faqs } from "@/lib/content";
-import { buildPageMetadata } from "@/lib/site";
+import { buildPageMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Editing and Proofreading FAQs",
@@ -18,7 +18,12 @@ export default function FaqPage() {
       title="Answers before you upload."
       description="A concise guide to files, pricing, privacy, project tracking, and delivery."
       visual={<FaqVisual />}
+      seoPath="/faq"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(faqs))}
+      />
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.35fr_0.65fr] lg:items-start">
           <div className="rounded-2xl border border-hairline bg-surface-soft p-6 text-sm leading-7 text-body shadow-[0_18px_60px_rgba(17,17,15,0.035)]">

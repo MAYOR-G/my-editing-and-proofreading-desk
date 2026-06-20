@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { buildPageMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
 
 const fields = [
   "Academic writing",
@@ -58,7 +58,7 @@ const trustItems = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Human Editor Standards",
+  title: "Human Editors for Academic, Business, and Book Editing",
   description: "Learn how documents are matched with human editors who consider subject, purpose, audience, tone, structure, and delivery standards.",
   path: "/editors",
 });
@@ -116,6 +116,13 @@ function EditorialReviewVisual() {
 export default function EditorsPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Editor Standards", path: "/editors" },
+        ]))}
+      />
       <SiteHeader />
 
       <section className="relative overflow-hidden border-b border-hairline px-5 pb-16 pt-28 sm:px-8 lg:pb-20 lg:pt-36">

@@ -12,6 +12,8 @@ export function TrustedMapStats() {
             src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg" 
             alt=""
             aria-hidden="true"
+            width={1200}
+            height={600}
             loading="lazy"
             decoding="async"
             className="w-full max-w-6xl object-contain opacity-50"

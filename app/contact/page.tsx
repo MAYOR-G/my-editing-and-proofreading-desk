@@ -18,6 +18,7 @@ export default function ContactPage() {
       title="Tell us what your document needs."
       description="Use the contact page for service fit, project questions, document expectations, and business support."
       visual={<ContactVisual />}
+      seoPath="/contact"
     >
       <section className="bg-canvas px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">

@@ -6,7 +6,7 @@ import { servicePages } from "@/lib/content";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing and Proofreading Services",
+  title: "Professional Editing and Proofreading Services",
   description: "Compare academic editing, business editing, proofreading, manuscript editing, translation review, and writing support services.",
   path: "/services",
 });
@@ -17,6 +17,7 @@ export default function ServicesPage() {
       eyebrow="Editorial services"
       title="Choose the right editorial route."
       description="Each service is designed around the document, the reader, and the level of review needed before submission."
+      seoPath="/services"
     >
       <section className="bg-canvas px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.5fr_1.5fr] lg:items-start">

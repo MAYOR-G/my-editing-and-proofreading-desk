@@ -10,7 +10,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function RefundPolicyPage() {
   return (
-    <LegalPage title="Refund Policy">
+    <LegalPage title="Refund Policy" path="/refund-policy">
       <LegalSection title="1. General Policy">
         <p>At MEP (editandproofread.com), we strive to provide high-quality editing and proofreading services. Because our work involves intellectual effort and time investment, refunds are limited and subject to the conditions below.</p>
       </LegalSection>

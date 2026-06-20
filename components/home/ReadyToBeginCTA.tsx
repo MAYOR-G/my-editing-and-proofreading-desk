@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 
@@ -49,13 +50,11 @@ export function ReadyToBeginCTA() {
           {/* Image side */}
           <div className="lg:w-[45%] relative min-h-[400px] lg:min-h-full overflow-hidden group">
             <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10 pointer-events-none transition-opacity duration-700 group-hover:opacity-0" />
-            <img 
+            <Image
               src="/assets/premium_desk.png" 
-              alt="Refining manuscript" 
-              width={1200}
-              height={900}
-              loading="lazy"
-              decoding="async"
+              alt="Editor refining a manuscript at a professional desk"
+              fill
+              sizes="(max-width: 1024px) 100vw, 45vw"
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
           </div>

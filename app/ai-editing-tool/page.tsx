@@ -4,10 +4,10 @@ import { AiEditingTool } from "@/components/AiEditingTool";
 import { AiRefinementVisual } from "@/components/EditorialVisuals";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { buildPageMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Free AI Editing Assistant",
+  title: "Free AI Editing Tool for a Quick First Pass",
   description: "Try a free AI-assisted first pass for short text, then use human editing for high-stakes academic, business, and professional documents.",
   path: "/ai-editing-tool",
 });
@@ -15,6 +15,13 @@ export const metadata: Metadata = buildPageMetadata({
 export default function AiEditingToolPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Free AI Editing Tool", path: "/ai-editing-tool" },
+        ]))}
+      />
       <SiteHeader />
 
       <section className="relative overflow-hidden border-b border-hairline px-5 pb-14 pt-28 sm:px-8 lg:pb-20 lg:pt-36">

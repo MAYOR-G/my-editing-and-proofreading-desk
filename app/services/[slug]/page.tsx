@@ -15,6 +15,8 @@ export function generateStaticParams() {
   return servicePages.map((service) => ({ slug: service.slug }));
 }
 
+export const dynamicParams = false;
+
 export function generateMetadata({ params }: ServiceDetailPageProps): Metadata {
   const service = servicePages.find((item) => item.slug === params.slug);
 
@@ -27,7 +29,7 @@ export function generateMetadata({ params }: ServiceDetailPageProps): Metadata {
   }
 
   return buildPageMetadata({
-    title: `${service.name} Service`,
+    title: `${service.name} Service | Professional Editorial Support`,
     description: service.description,
     path: `/services/${service.slug}`,
   });
@@ -41,7 +43,17 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   }
 
   return (
-    <PublicPageShell eyebrow={service.eyebrow} title={service.name} description={service.description}>
+    <PublicPageShell
+      eyebrow={service.eyebrow}
+      title={service.name}
+      description={service.description}
+      seoPath={`/services/${service.slug}`}
+      breadcrumbItems={[
+        { name: "Home", path: "/" },
+        { name: "Services", path: "/services" },
+        { name: service.name, path: `/services/${service.slug}` },
+      ]}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(serviceJsonLd(service))}
