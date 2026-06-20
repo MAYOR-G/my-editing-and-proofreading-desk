@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
-export const PRODUCTION_SITE_URL = "https://editandproofread.com";
+export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";

@@ -2,11 +2,11 @@
 
 ## Production URLs
 
-- Domain: https://editandproofread.com/
-- Sitemap: https://editandproofread.com/sitemap.xml
-- Robots: https://editandproofread.com/robots.txt
-- Preferred hostname: `editandproofread.com`
-- Redirect: `www.editandproofread.com` permanently redirects to the matching non-`www` URL with HTTP 301.
+- Domain: https://www.editandproofread.com/
+- Sitemap: https://www.editandproofread.com/sitemap.xml
+- Robots: https://www.editandproofread.com/robots.txt
+- Preferred hostname: `www.editandproofread.com`
+- Redirect: `editandproofread.com` permanently redirects to the matching `www` URL with HTTP 301.
 
 ## Sitemap
 
@@ -76,7 +76,7 @@ All public pages use:
 
 ## Canonical Rules
 
-- Canonicals always use `https://editandproofread.com`.
+- Canonicals always use `https://www.editandproofread.com`.
 - The canonical host does not depend on local, preview, or staging environment variables.
 - Every public page canonicalizes to its own absolute URL.
 - Service pages canonicalize to their individual service URLs.
@@ -85,7 +85,7 @@ All public pages use:
 ## Social Preview
 
 - OG/Twitter image: `/public/assets/og-image.jpg`
-- Public URL: https://editandproofread.com/assets/og-image.jpg
+- Public URL: https://www.editandproofread.com/assets/og-image.jpg
 - Format: JPEG
 - Dimensions: 1200 × 630
 - Source: existing website brand artwork
@@ -127,8 +127,8 @@ The organization schema uses the existing business name, logo, support email, ph
 ## Google Search Console
 
 1. Add and verify the Domain property for `editandproofread.com` using a DNS TXT record.
-2. Confirm both `www` and non-`www` hostnames resolve and that `www` returns HTTP 301 to non-`www`.
-3. Submit `https://editandproofread.com/sitemap.xml`.
+2. Confirm both `www` and non-`www` hostnames resolve and that non-`www` returns HTTP 301 to `www`.
+3. Submit `https://www.editandproofread.com/sitemap.xml`.
 4. Inspect the homepage and each service URL, then request indexing after deployment.
 5. Review Page Indexing for blocked, duplicate, soft-404, and canonical-selection issues.
 6. Review Core Web Vitals after enough field data is available.
@@ -136,16 +136,16 @@ The organization schema uses the existing business name, logo, support email, ph
 
 ## Bing Webmaster Tools
 
-1. Add and verify `https://editandproofread.com/`.
+1. Add and verify `https://www.editandproofread.com/`.
 2. Import the verified property from Google Search Console or verify through DNS.
-3. Submit `https://editandproofread.com/sitemap.xml`.
+3. Submit `https://www.editandproofread.com/sitemap.xml`.
 4. Run Site Scan and URL Inspection after deployment.
 5. Enable IndexNow only if future content publishing needs faster discovery.
 
 ## Manual Launch Tasks
 
-- Update the production hosting environment so `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SITE_URL` are both `https://editandproofread.com`.
-- Configure DNS/hosting so the apex domain serves the deployment before enabling the `www` redirect.
+- Update the production hosting environment so `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SITE_URL` are both `https://www.editandproofread.com`.
+- Configure DNS/hosting so `www` serves the deployment and the apex domain redirects directly to `www`.
 - Deploy and verify the final HTTP status and `Content-Type` headers from the public internet.
 - Validate JSON-LD with Schema.org Validator and Google Rich Results Test.
 - Test social previews with LinkedIn Post Inspector, Facebook Sharing Debugger, and X Card Validator or an equivalent card inspector.
@@ -158,10 +158,10 @@ The organization schema uses the existing business name, logo, support email, ph
 
 ```bash
 npm run build
-curl -I https://editandproofread.com/
 curl -I https://www.editandproofread.com/
-curl -I https://editandproofread.com/sitemap.xml
-curl -I https://editandproofread.com/robots.txt
+curl -I https://editandproofread.com/
+curl -I https://www.editandproofread.com/sitemap.xml
+curl -I https://www.editandproofread.com/robots.txt
 ```
 
 Expected results:
@@ -169,4 +169,4 @@ Expected results:
 - Public pages: HTTP 200
 - Sitemap: HTTP 200 and `application/xml` or `text/xml`
 - Robots: HTTP 200 and `text/plain`
-- `www`: HTTP 301 to the same path and query on `https://editandproofread.com`
+- Apex/non-`www`: HTTP 301 to the same path and query on `https://www.editandproofread.com`

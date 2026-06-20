@@ -1,8 +1,8 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PREFERRED_ORIGIN = "https://editandproofread.com";
-const WWW_HOSTNAME = "www.editandproofread.com";
+const PREFERRED_ORIGIN = "https://www.editandproofread.com";
+const APEX_HOSTNAME = "editandproofread.com";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
 
   if (
     process.env.NODE_ENV === "production" &&
-    hostname === WWW_HOSTNAME
+    hostname === APEX_HOSTNAME
   ) {
     return NextResponse.redirect(
       new URL(`${pathname}${request.nextUrl.search}`, PREFERRED_ORIGIN),

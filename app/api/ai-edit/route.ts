@@ -207,7 +207,7 @@ async function callOpenRouter(text: string) {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://editandproofread.com",
+      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://www.editandproofread.com",
       "X-Title": "My Editing and Proofreading Desk"
     },
     body: JSON.stringify({

@@ -110,7 +110,7 @@ In Supabase Authentication:
    - Production: your deployed domain
 3. Add redirect URLs:
    - `http://localhost:3000/auth/callback`
-   - `https://editandproofread.com/auth/callback`
+   - `https://www.editandproofread.com/auth/callback`
 4. If email confirmation is enabled, users must verify their email before logging in.
 
 ### 4.3 Run Database SQL
