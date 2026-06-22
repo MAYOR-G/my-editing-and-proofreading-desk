@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing and Proofreading Service Pricing",
+  title: "Editing and Proofreading Pricing Calculator",
   description: "Estimate editing, proofreading, formatting, translation, and writing support pricing by service, word count, and turnaround.",
   path: "/pricing",
 });

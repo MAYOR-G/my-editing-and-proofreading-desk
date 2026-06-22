@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { AI_WORD_LIMIT, countWords, isEditingModeId } from "@/lib/ai-editing";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 
@@ -13,6 +12,7 @@ const ANONYMOUS_DAILY_CAP = 3;
 const SIGNED_IN_DAILY_CAP = 12;
 const MAX_INPUT_CHARS = 9000;
 const MAX_OUTPUT_TOKENS = 1500;
+const DEFAULT_OPENROUTER_MODEL = "google/gemini-2.5-flash-lite";
 const AI_UNAVAILABLE_MESSAGE = "AI editing is temporarily unavailable. Please try again shortly or submit your document for human review.";
 
 type RateEntry = {
@@ -32,28 +32,79 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
   });
 }
 
-async function getUser() {
+function decodeBase64Url(value: string) {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padding = "=".repeat((4 - (normalized.length % 4)) % 4);
+  return Buffer.from(`${normalized}${padding}`, "base64").toString("utf8");
+}
+
+function getCookieValue(cookieHeader: string, name: string) {
+  return cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${name}=`))
+    ?.slice(name.length + 1);
+}
+
+function getSupabaseAccessToken(request: Request) {
+  const authorization = request.headers.get("authorization");
+  if (authorization?.toLowerCase().startsWith("bearer ")) {
+    return authorization.slice(7).trim();
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const cookieHeader = request.headers.get("cookie");
+  if (!supabaseUrl || !cookieHeader) return null;
+
+  try {
+    const projectRef = new URL(supabaseUrl).hostname.split(".")[0];
+    const cookieName = `sb-${projectRef}-auth-token`;
+    const directValue = getCookieValue(cookieHeader, cookieName);
+    const chunkValues = Array.from({ length: 8 }, (_, index) => getCookieValue(cookieHeader, `${cookieName}.${index}`))
+      .filter((value): value is string => Boolean(value));
+    const encodedSession = directValue || (chunkValues.length ? chunkValues.join("") : null);
+
+    if (!encodedSession) return null;
+
+    const decodedCookie = decodeURIComponent(encodedSession);
+    const serializedSession = decodedCookie.startsWith("base64-")
+      ? decodeBase64Url(decodedCookie.slice("base64-".length))
+      : decodedCookie;
+    const session = JSON.parse(serializedSession) as { access_token?: unknown } | unknown[];
+
+    if (Array.isArray(session)) {
+      return typeof session[0] === "string" ? session[0] : null;
+    }
+
+    return typeof session.access_token === "string" ? session.access_token : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getUser(request: Request) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return null;
   }
+
+  const accessToken = getSupabaseAccessToken(request);
+  if (!accessToken) return null;
+
   try {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll() {},
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
         },
       }
     );
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
     if (error) return null;
     return user;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -194,14 +245,7 @@ function parseJsonObject(content: string) {
   }
 }
 
-async function callOpenRouter(text: string) {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_AI_EDIT_MODEL || process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-lite-001";
-
-  if (!apiKey) {
-    return null;
-  }
-
+async function callOpenRouterModel(text: string, apiKey: string, model: string) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -232,7 +276,10 @@ async function callOpenRouter(text: string) {
   });
 
   if (!response.ok) {
-    throw new Error(`OpenRouter request failed with ${response.status}`);
+    const providerMessage = (await response.text()).slice(0, 500);
+    const error = new Error(`OpenRouter request failed with ${response.status} for model ${model}: ${providerMessage}`);
+    Object.assign(error, { status: response.status });
+    throw error;
   }
 
   const data = await response.json();
@@ -270,6 +317,28 @@ async function callOpenRouter(text: string) {
   };
 }
 
+async function callOpenRouter(text: string) {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) return null;
+
+  const configuredModel = process.env.OPENROUTER_AI_EDIT_MODEL || process.env.OPENROUTER_MODEL;
+  const models = [...new Set([configuredModel, DEFAULT_OPENROUTER_MODEL].filter((model): model is string => Boolean(model)))];
+  let lastError: unknown = null;
+
+  for (const model of models) {
+    try {
+      return await callOpenRouterModel(text, apiKey, model);
+    } catch (error) {
+      lastError = error;
+      if ((error as { status?: number }).status !== 404) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError ?? new Error("No OpenRouter model was available.");
+}
+
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
@@ -277,7 +346,7 @@ export async function POST(request: Request) {
     const mode = typeof payload.mode === "string" && isEditingModeId(payload.mode) ? payload.mode : "ai-editing";
     
     // Secure Session Validation (Ignore client payload.signedIn)
-    const user = await getUser();
+    const user = await getUser(request);
 
     if (!text) {
       return NextResponse.json({ error: "Add text before requesting an AI edit." }, { status: 400 });

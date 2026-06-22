@@ -11,9 +11,9 @@ function normalizePath(path = "/") {
 export const siteConfig = {
   siteName: BRAND_NAME,
   siteUrl: PRODUCTION_SITE_URL,
-  defaultTitle: `${BRAND_NAME} | Professional Editing & Proofreading Services`,
+  defaultTitle: "Editing and Proofreading Services | My Editing Desk",
   defaultDescription:
-    "Professional editing and proofreading services for authors, students, businesses, and professionals who need clear, polished, error-free writing.",
+    "Human editing and proofreading for academic, business, manuscript, and professional documents. Secure uploads, clear pricing, and expert review.",
   defaultOgImage: "/assets/og-image.jpg",
   defaultOgImageAlt: `${BRAND_NAME} professional editing and proofreading services`,
   contactEmail: SUPPORT_EMAIL,
@@ -36,6 +36,7 @@ type PageMetadataInput = {
   description: string;
   path?: string;
   image?: string;
+  imageAlt?: string;
   type?: "website" | "article";
   noIndex?: boolean;
 };
@@ -45,6 +46,7 @@ export function buildPageMetadata({
   description,
   path = "/",
   image = siteConfig.defaultOgImage,
+  imageAlt = siteConfig.defaultOgImageAlt,
   type = "website",
   noIndex = false,
 }: PageMetadataInput): Metadata {
@@ -68,7 +70,7 @@ export function buildPageMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: siteConfig.defaultOgImageAlt,
+          alt: imageAlt,
           type: "image/jpeg",
         },
       ],
@@ -144,32 +146,6 @@ export function websiteJsonLd() {
   };
 }
 
-export function professionalServiceJsonLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "@id": `${siteConfig.siteUrl}/#professional-service`,
-    name: siteConfig.siteName,
-    url: siteConfig.siteUrl,
-    image: assetUrl(siteConfig.defaultOgImage),
-    logo: assetUrl("/assets/logo.png"),
-    email: siteConfig.contactEmail,
-    telephone: siteConfig.contactPhoneTel,
-    address: organizationJsonLd().address,
-    areaServed: "Worldwide",
-    serviceType: [
-      "Professional editing services",
-      "Proofreading services",
-      "Manuscript editing",
-      "Academic proofreading",
-      "Business document editing",
-      "Book editing",
-    ],
-    description: siteConfig.defaultDescription,
-    priceRange: "$$",
-  };
-}
-
 export function serviceJsonLd(service: { name: string; description: string; slug: string }) {
   return {
     "@context": "https://schema.org",
@@ -183,6 +159,43 @@ export function serviceJsonLd(service: { name: string; description: string; slug
     },
     areaServed: "Worldwide",
     mainEntityOfPage: absoluteUrl(`/services/${service.slug}`),
+  };
+}
+
+export function blogPostingJsonLd(post: {
+  title: string;
+  excerpt: string;
+  slug: string;
+  author: string;
+  datePublished: string;
+  dateUpdated: string;
+  heroImage: string;
+  heroImageAlt: string;
+}) {
+  const url = absoluteUrl(`/blog/${post.slug}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    mainEntityOfPage: url,
+    url,
+    image: {
+      "@type": "ImageObject",
+      url: assetUrl(post.heroImage),
+      caption: post.heroImageAlt,
+    },
+    datePublished: post.datePublished,
+    dateModified: post.dateUpdated,
+    author: {
+      "@type": "Organization",
+      name: post.author,
+    },
+    publisher: {
+      "@id": `${siteConfig.siteUrl}/#organization`,
+    },
+    inLanguage: "en-US",
   };
 }
 

@@ -58,7 +58,7 @@ const trustItems = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Human Editors for Academic, Business, and Book Editing",
+  title: "Human Editors for Academic, Business, and Manuscript Editing",
   description: "Learn how documents are matched with human editors who consider subject, purpose, audience, tone, structure, and delivery standards.",
   path: "/editors",
 });
@@ -77,7 +77,7 @@ function EditorialReviewVisual() {
               <h2 className="mt-2 font-display text-3xl leading-tight text-ink">Research methods review</h2>
             </div>
             <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-primary">
-              PhD-level
+              Subject-aligned
             </span>
           </div>
 
@@ -182,20 +182,20 @@ export default function EditorsPage() {
                 <GraduationCap className="h-5 w-5" aria-hidden="true" />
               </div>
               <h2 className="mt-5 font-display text-[clamp(2.1rem,3.6vw,3.55rem)] leading-tight text-ink">
-                Advanced academic and research expertise.
+                Selection standards for careful editorial work.
               </h2>
             </div>
             <div className="grid gap-5 text-base leading-8 text-body">
               <p>
-                Each of our editors has been carefully selected for specialized technical research expertise. All hold advanced degrees, either a master's or PhD, and bring proven experience in academic publishing.
+                Editors are selected for language judgment, relevant subject familiarity, careful handling of author voice, and the ability to explain changes clearly.
               </p>
               <p>
-                With a diverse and extensive team, we are able to match every project with an editor whose background aligns closely with the subject matter, ensuring the highest quality and relevance in our editorial support.
+                Each project is assessed by document type, field, audience, and level of support before assignment. Where a specialist match cannot be confirmed, the project should be reviewed with the client before work begins.
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {[
-                  ["Master's / PhD", "Advanced training"],
-                  ["Publishing", "Academic experience"],
+                  ["Language judgment", "Clear, accurate editing"],
+                  ["Editorial process", "Consistent review standards"],
                   ["Subject match", "Relevant expertise"],
                 ].map(([title, body]) => (
                   <div key={title} className="rounded-xl border border-hairline bg-surface-soft p-4">
@@ -266,9 +266,9 @@ export default function EditorsPage() {
       <section className="border-y border-hairline bg-surface-soft px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Process</p>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Editorial review layers</p>
             <h2 className="mt-4 font-display text-[clamp(2.2rem,4vw,4rem)] leading-tight text-ink">
-              A clear path from upload to polished delivery.
+              Layered review from assessment to polished delivery.
             </h2>
           </div>
           <div className="mt-10 grid gap-4 lg:grid-cols-5">
@@ -304,6 +304,17 @@ export default function EditorsPage() {
       </section>
 
       <section className="px-5 pb-16 sm:px-8 lg:pb-24">
+        <div className="mx-auto max-w-7xl rounded-2xl border border-hairline bg-surface-soft p-6 sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Future verified profiles</p>
+          <h2 className="mt-3 font-display text-3xl text-ink">Named editor profiles will be added after owner approval.</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-body">
+            This page currently explains editorial standards and project matching only. Real names, photographs, biographies, qualifications, and professional links will appear here only after the owner supplies and approves them.
+          </p>
+          {/* Reserved for owner-approved editor profile data. Do not render unverified names, photos, biographies, degrees, or links. */}
+        </div>
+      </section>
+
+      <section className="px-5 pb-16 sm:px-8 lg:pb-24">
         <div className="mx-auto max-w-7xl overflow-hidden rounded-[1.35rem] border border-hairline bg-primary p-7 text-white shadow-[0_30px_90px_rgba(23,74,124,0.22)] sm:p-10 lg:p-12">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
@@ -317,7 +328,7 @@ export default function EditorsPage() {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
               <Link href="/dashboard/uploads" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-primary transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-paper">
-                Submit Document <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                Submit Your Document <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 px-6 text-sm font-semibold text-white transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-white/10">
                 Ask a Question

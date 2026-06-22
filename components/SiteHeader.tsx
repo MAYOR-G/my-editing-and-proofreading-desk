@@ -10,6 +10,7 @@ const navItems = [
   { href: "/pricing", label: "Pricing" },
   { href: "/ai-editing-tool", label: "AI tool" },
   { href: "/editors", label: "Editors" },
+  { href: "/blog", label: "Blog" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" }
 ];

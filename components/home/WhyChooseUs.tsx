@@ -62,8 +62,8 @@ export function WhyChooseUs() {
                 <ShieldCheck className="w-6 h-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="font-bold text-ink text-lg leading-none mb-1">100% Secure</p>
-                <p className="text-charcoal/70 text-xs uppercase tracking-wider font-semibold">Confidentiality</p>
+                <p className="font-bold text-ink text-lg leading-none mb-1">Secure Uploads</p>
+                <p className="text-charcoal/70 text-xs uppercase tracking-wider font-semibold">Private handling</p>
               </div>
             </div>
           </div>

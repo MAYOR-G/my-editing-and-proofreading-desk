@@ -8,6 +8,7 @@ const platformLinks = [
   { href: "/about", label: "About us" },
   { href: "/editors", label: "Editor standards" },
   { href: "/pricing", label: "Pricing calculator" },
+  { href: "/blog", label: "Blog" },
   { href: "/ai-editing-tool", label: "AI Editing Tool" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" }
@@ -36,7 +37,7 @@ export function SiteFooter() {
           <div>
             <BrandMark tone="light" variant="footer" />
             <p className="mt-6 max-w-sm text-sm leading-7 text-surface-soft/68">
-              Premium editorial support for academic, business, author, and personal documents that need calm precision.
+              Human editing and proofreading for academic, business, manuscript, application, and professional documents.
             </p>
           </div>
 
@@ -67,7 +68,7 @@ export function SiteFooter() {
           </div>
 
           <Link href="/login" className="inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-primary px-7 text-sm font-bold text-white shadow-[0_14px_34px_rgba(23,74,124,0.28)] transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
-            Start a project
+            Start Secure Upload
           </Link>
         </aside>
 
@@ -118,9 +119,9 @@ export function SiteFooter() {
           </div>
 
           <div className="mt-10 grid gap-4 border-t border-hairline/10 pt-7 text-xs text-surface-soft/50 sm:grid-cols-[1fr_auto] sm:items-center">
-            <p className="font-medium">Secure, enterprise-grade editorial infrastructure for mission-critical business documents.</p>
+            <p className="font-medium">Secure document handling, clear project updates, and careful human review.</p>
             <div className="flex flex-wrap gap-2 sm:justify-end">
-              {["Privacy first", "Confidential", "SSL ready"].map((item) => (
+              {["Privacy first", "Confidential", "Secure connection"].map((item) => (
                 <span key={item} className="rounded border border-hairline/10 bg-dark-surface/70 px-3 py-2 font-bold">
                   {item}
                 </span>
@@ -135,7 +136,7 @@ export function SiteFooter() {
           My Editing and Proofreading Desk
         </p>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-surface-soft/35">
-          The standard for business communications.
+          Clearer writing for important work.
         </p>
       </div>
     </footer>

@@ -47,7 +47,7 @@ const fieldIcons: Record<string, typeof Search> = {
 
 export function FieldsCovered() {
   const [selectedExample, setSelectedExample] = useState<WorkExample | null>(null);
-  const [examples, setExamples] = useState<WorkExample[]>(() => staticWorkExamples.map(withUnavailablePages));
+  const [examples, setExamples] = useState<WorkExample[]>(() => staticWorkExamples);
 
   useEffect(() => {
     const fetchDynamicExamples = async () => {
@@ -61,7 +61,7 @@ export function FieldsCovered() {
 
         setExamples(staticWorkExamples.map((staticExample) => {
           const uploaded = uploadedByKey.get(staticExample.key);
-          if (!uploaded?.parsed_content_json?.length) return withUnavailablePages(staticExample);
+          if (!uploaded?.parsed_content_json?.length) return staticExample;
 
           return {
             ...staticExample,
@@ -72,7 +72,7 @@ export function FieldsCovered() {
         }));
       } catch (error) {
         console.error("Homepage work examples fetch failed:", error);
-        setExamples(staticWorkExamples.map(withUnavailablePages));
+        setExamples(staticWorkExamples);
       }
     };
     
@@ -107,25 +107,4 @@ export function FieldsCovered() {
       <WorkPreviewModal example={selectedExample} onClose={() => setSelectedExample(null)} />
     </section>
   );
-}
-
-function withUnavailablePages(example: WorkExample): WorkExample {
-  return {
-    ...example,
-    pages: [
-      {
-        eyebrow: "Sample updating",
-        heading: example.documentTitle,
-        body: ["This sample is being updated. Please check back soon."],
-        blocks: [
-          {
-            type: "paragraph",
-            text: "This sample is being updated. Please check back soon.",
-            role: "body",
-          },
-        ],
-        comments: [],
-      },
-    ],
-  };
 }

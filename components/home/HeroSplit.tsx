@@ -33,7 +33,7 @@ const focusAreas = [
 ];
 
 const features = [
-  { text: "100% Confidential", shortText: "Private", icon: ShieldCheck },
+  { text: "Confidential Handling", shortText: "Private", icon: ShieldCheck },
   { text: "Subject-Matter Experts", shortText: "Experts", icon: Users },
   { text: "On-Time Delivery", shortText: "On time", icon: Clock },
   { text: "Track Changes", shortText: "Changes", icon: History }
@@ -130,10 +130,13 @@ export function HeroSplit() {
               Premium Editorial Desk
             </p>
             <h1 className="max-w-[12ch] font-display text-[2.55rem] leading-[1.08] tracking-tight mb-8 text-ink min-[420px]:text-5xl sm:max-w-3xl lg:max-w-none lg:text-6xl">
-              Clarity and precision for your most <span className="text-primary italic">important</span> documents.
+              Professional editing and proofreading services for <span className="text-primary italic">important</span> documents.
             </h1>
+            <p className="mb-5 max-w-xl text-base leading-8 text-charcoal/80 sm:text-lg">
+              Human-led editing for academic papers, business documents, manuscripts, applications, and professional writing that needs clarity, structure, and polish.
+            </p>
             <div className="text-lg sm:text-xl text-charcoal font-medium leading-relaxed max-w-xl mb-12 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <span className="opacity-80">Expert support for:</span>
+              <span className="opacity-80">Specialist support for:</span>
               <span className="relative inline-flex h-8 max-w-full overflow-hidden font-display text-primary text-xl sm:text-2xl">
                 <AnimatePresence mode="popLayout">
                   <motion.span
@@ -158,7 +161,7 @@ export function HeroSplit() {
                 <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
               </Link>
               <Link href="/services" className="inline-flex h-14 w-full items-center justify-center rounded-full border-2 border-primary/20 bg-transparent px-6 text-sm font-semibold text-primary transition-all hover:border-primary hover:bg-primary/5 sm:w-auto sm:px-10">
-                View Our Services
+                View Editing Services
               </Link>
             </div>
 

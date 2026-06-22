@@ -27,7 +27,7 @@ const values = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About Our Professional Editing and Proofreading Services",
+  title: "About My Editing and Proofreading Desk",
   description: "Learn how My Editing and Proofreading Desk provides human-led editing for academic, business, application, manuscript, and professional documents.",
   path: "/about",
 });
@@ -76,24 +76,23 @@ export default function AboutPage() {
                 </div>
 
                 <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_9.5rem]">
-                  <div className="rounded-xl border border-hairline bg-paper/70 p-5 text-sm leading-7 text-charcoal/76 shadow-inner">
-                    <p>
-                      The proposal <span className="text-red-700 line-through decoration-red-500/70 decoration-2">need more clearer goals</span>{" "}
-                      <span className="rounded-sm bg-primary/10 px-1 font-medium text-primary">needs clearer goals</span> before it can be shared with the review committee.
-                    </p>
-                    <p className="mt-4">
-                      We recommend <span className="text-red-700 line-through decoration-red-500/70 decoration-2">fixing all grammar and make tone professional</span>{" "}
-                      <span className="rounded-sm bg-primary/10 px-1 font-medium text-primary">strengthening the grammar, tone, and structure</span> while keeping the author's original argument intact.
-                    </p>
-                    <p className="mt-4">
-                      The final version should read as confident, precise, and ready for submission.
-                    </p>
+                  <div className="grid gap-4 rounded-xl border border-hairline bg-paper/70 p-5 text-sm leading-7 text-charcoal/76 shadow-inner">
+                    <div>
+                      <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-red-700">Before</p>
+                      <p className="mt-1">The proposal needs clearer goals before it can be shared with the review committee.</p>
+                    </div>
+                    <div className="border-t border-hairline pt-4">
+                      <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">After</p>
+                      <p className="mt-1 rounded-sm bg-primary/10 px-2 py-1 font-medium text-primary">
+                        The proposal needs clearer objectives before it is shared with the review committee.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="grid content-start gap-3">
                     <div className="rounded-xl border border-primary/15 bg-canvas p-3 shadow-sm">
                       <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">Margin note</p>
-                      <p className="mt-2 text-xs leading-5 text-body">Clarify the outcome before the evidence section.</p>
+                      <p className="mt-2 text-xs leading-5 text-body">Clarify the outcome before expanding the evidence section.</p>
                     </div>
                     <div className="rounded-xl border border-gold/30 bg-gold/10 p-3 shadow-sm">
                       <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-gold-deep">Editor check</p>

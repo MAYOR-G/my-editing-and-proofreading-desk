@@ -21,8 +21,8 @@ import { TrustedMapStats } from "@/components/home/TrustedMapStats";
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "My Editing and Proofreading Desk | Professional Editing & Proofreading Services",
-  description: "Professional editing and proofreading services for authors, students, businesses, and professionals who need clear, polished, error-free writing.",
+  title: "Editing and Proofreading Services | My Editing Desk",
+  description: "Human editing and proofreading for academic, business, manuscript, and professional documents. Secure uploads, clear pricing, and expert review.",
   path: "/",
 });
 
@@ -70,7 +70,7 @@ export default function Home() {
             <div className="absolute inset-0 rounded-[2rem] overflow-hidden border border-ink/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] bg-white p-2">
               <Image
                 src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200&auto=format&fit=crop" 
-                alt="Professional AI robot assistant in a clean technology workspace"
+                alt="AI editing assistant interface for a quick first review"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="w-full h-full object-cover rounded-xl"

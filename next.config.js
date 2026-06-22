@@ -21,6 +21,16 @@ const nextConfig = {
       }
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "editandproofread.com" }],
+        destination: "https://www.editandproofread.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     const noIndexRoutes = [
       "/admin/:path*",

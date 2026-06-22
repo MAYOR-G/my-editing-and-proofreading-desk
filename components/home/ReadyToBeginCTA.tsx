@@ -35,14 +35,14 @@ export function ReadyToBeginCTA() {
                 href="/login" 
                 className="inline-flex h-14 items-center justify-center gap-3 bg-primary hover:bg-accent px-10 text-white font-semibold text-sm uppercase tracking-widest rounded-full shadow-[0_10px_30px_rgba(15,59,127,0.2)] transition-all hover:scale-105 hover:shadow-[0_15px_40px_rgba(59,130,246,0.3)] group"
               >
-                Start Your Project
+                Submit Your Document
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </Link>
               <Link 
                 href="/contact" 
                 className="inline-flex h-14 items-center justify-center bg-white border border-ink/10 hover:border-ink/20 hover:bg-paper px-8 text-ink font-semibold text-sm uppercase tracking-widest rounded-full transition-all"
               >
-                Contact Sales
+                Ask a Question
               </Link>
             </div>
           </div>

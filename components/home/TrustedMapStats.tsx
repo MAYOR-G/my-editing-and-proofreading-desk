@@ -41,14 +41,14 @@ export function TrustedMapStats() {
           </Reveal>
           <Reveal variant="clipUp" delay={0.16}>
             <div className="flex flex-col items-center">
-              <CountUpNumber target={150000} className="mb-2 font-display text-3xl font-bold text-ink sm:text-4xl" />
-              <span className="text-sm text-charcoal/60 font-medium">Documents</span>
+              <CountUpNumber target={110} suffix="+" className="mb-2 font-display text-3xl font-bold text-ink sm:text-4xl" />
+              <span className="text-sm text-charcoal/60 font-medium">Countries</span>
             </div>
           </Reveal>
           <Reveal variant="scale" delay={0.24}>
             <div className="flex flex-col items-center">
-              <CountUpNumber target={310} className="mb-2 font-display text-3xl font-bold text-ink sm:text-4xl" />
-              <span className="text-sm text-charcoal/60 font-medium">Editors</span>
+              <span className="mb-2 font-display text-3xl font-bold text-ink sm:text-4xl">Expert</span>
+              <span className="text-sm text-charcoal/60 font-medium">Subject-Matter Editors</span>
             </div>
           </Reveal>
           <Reveal variant="fadeLeft" delay={0.32}>
@@ -64,7 +64,7 @@ export function TrustedMapStats() {
             Examples of our work
           </h3>
           <p className="text-charcoal/60 text-sm">
-            Used by permission of the authors.
+            Select a subject below to view sample before-and-after edits and see how our editors improve clarity, structure, grammar, and presentation.
           </p>
         </Reveal>
       </div>

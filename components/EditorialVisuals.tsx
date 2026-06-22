@@ -299,8 +299,8 @@ export function ContactVisual() {
             </svg>
           </div>
           <div>
-            <div className="text-sm font-medium text-ink">Encrypted Connection</div>
-            <div className="text-xs text-charcoal/50">End-to-end security</div>
+            <div className="text-sm font-medium text-ink">Secure contact form</div>
+            <div className="text-xs text-charcoal/50">Private project details</div>
           </div>
         </div>
         <div className="mt-6 grid gap-3">

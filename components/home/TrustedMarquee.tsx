@@ -16,7 +16,10 @@ const trustLogos = [
 export function TrustedMarquee() {
   return (
     <section className="bg-paper py-16 border-y border-ink/5 overflow-hidden flex flex-col items-center">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-primary mb-8 font-bold">Trusted by Researchers At</p>
+      {/* Owner should verify institution/logo usage and provide permission or case-study evidence before using endorsement-style language. */}
+      <p className="max-w-3xl px-5 text-center text-[10px] uppercase tracking-[0.2em] text-primary mb-8 font-bold">
+        Documents from researchers and professionals associated with leading institutions
+      </p>
       
       <div className="relative w-full flex overflow-hidden">
         {/* Gradient Masks for smooth fade out at edges */}
