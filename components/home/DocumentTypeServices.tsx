@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 const documentServices = [
   {
     title: "Thesis & Dissertation Editing",
-    description: "Academic editing for chapter flow, scholarly tone, grammar, references, and consistent presentation.",
+    description: "Thesis editing and dissertation proofreading for chapter flow, scholarly tone, grammar, references, and presentation.",
     href: "/services/academic-editing",
   },
   {

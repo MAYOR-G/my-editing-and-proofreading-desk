@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/components/PublicPageShell";
-import { blogPosts, getBlogPost } from "@/lib/blog";
+import { blogPosts, type BlogRichText, getBlogPost } from "@/lib/blog";
 import { blogPostingJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/site";
 
 type BlogPostPageProps = {
@@ -11,6 +11,26 @@ type BlogPostPageProps = {
     slug: string;
   };
 };
+
+function RichText({ content }: { content: BlogRichText }) {
+  return (
+    <>
+      {content.map((part, index) => (
+        typeof part === "string" ? part : (
+          <Link
+            key={`${part.href}-${index}`}
+            href={part.href}
+            target={part.external ? "_blank" : undefined}
+            rel={part.external ? "noreferrer" : undefined}
+            className="font-medium text-primary underline decoration-primary/25 underline-offset-4 transition hover:decoration-primary"
+          >
+            {part.text}
+          </Link>
+        )
+      ))}
+    </>
+  );
+}
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -51,11 +71,6 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     id: section.id,
     label: section.heading,
   }));
-  const schemas = [
-    blogPostingJsonLd(post),
-    ...(post.faq.length > 0 ? [faqPageJsonLd(post.faq)] : []),
-  ];
-
   return (
     <PublicPageShell
       eyebrow={post.category}
@@ -68,7 +83,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         { name: post.title, path: `/blog/${post.slug}` },
       ]}
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(schemas)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(blogPostingJsonLd(post))} />
+      {post.faq.length > 0 ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(post.faq))} />
+      ) : null}
       <article className="px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-wrap gap-x-5 gap-y-2 border-b border-hairline pb-5 text-sm text-muted">
@@ -101,8 +119,60 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               <section key={section.id} id={section.id} className="scroll-mt-28">
                 <h2 className="font-display text-4xl leading-tight text-ink">{section.heading}</h2>
                 <div className="mt-5 grid gap-5 text-base leading-8 text-body">
-                  {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                  {section.paragraphs.map((paragraph, index) => <p key={`${section.id}-paragraph-${index}`}><RichText content={paragraph} /></p>)}
                 </div>
+
+                {section.callout ? (
+                  <div className="mt-6 rounded-2xl border border-primary/18 bg-primary/[0.045] p-6">
+                    <h3 className="font-display text-2xl text-ink">{section.callout.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-body"><RichText content={section.callout.text} /></p>
+                  </div>
+                ) : null}
+
+                {section.table ? (
+                  <div className="mt-7 overflow-x-auto rounded-2xl border border-hairline">
+                    <table className="min-w-full border-collapse text-left text-sm">
+                      <thead className="bg-primary text-white">
+                        <tr>
+                          {section.table.headers.map((header) => (
+                            <th key={header} scope="col" className="px-4 py-3 font-semibold">{header}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-hairline bg-canvas">
+                        {section.table.rows.map((row, rowIndex) => (
+                          <tr key={`${section.id}-row-${rowIndex}`} className="align-top">
+                            {row.map((cell, cellIndex) => (
+                              <td key={`${cell}-${cellIndex}`} className="min-w-36 px-4 py-3 leading-6 text-body first:font-semibold first:text-ink">{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : null}
+
+                {section.bullets ? (
+                  <ul className="mt-6 grid gap-3 text-base leading-7 text-body">
+                    {section.bullets.map((item, index) => (
+                      <li key={`${section.id}-bullet-${index}`} className="flex gap-3">
+                        <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                        <span><RichText content={item} /></span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {section.numberedSteps ? (
+                  <ol className="mt-6 grid gap-3 text-base leading-7 text-body">
+                    {section.numberedSteps.map((item, index) => (
+                      <li key={`${section.id}-step-${index}`} className="grid grid-cols-[2rem_1fr] gap-3">
+                        <span className="font-display text-xl text-primary">{String(index + 1).padStart(2, "0")}</span>
+                        <span><RichText content={item} /></span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : null}
               </section>
             ))}
           </div>

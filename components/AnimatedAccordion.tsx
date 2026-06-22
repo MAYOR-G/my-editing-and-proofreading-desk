@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -37,23 +37,19 @@ function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; i
             </motion.div>
           </span>
         </button>
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="border-t border-hairline px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
-                <p className="max-w-3xl text-sm leading-7 text-body sm:text-base">
-                  {item.answer}
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          initial={false}
+          animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+          className="overflow-hidden"
+          aria-hidden={!isOpen}
+        >
+          <div className="border-t border-hairline px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+            <p className="max-w-3xl text-sm leading-7 text-body sm:text-base">
+              {item.answer}
+            </p>
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -77,26 +73,22 @@ function AccordionRow({ item, isOpen, onToggle, tone }: { item: AccordionItem; i
           </motion.span>
         </span>
       </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="pb-7">
-              <div className="relative pl-5">
-                <div className={`absolute left-0 top-0 h-full w-px bg-gradient-to-b ${isDark ? "from-gold/40" : "from-gold/50"} to-transparent`} />
-                <p className={`max-w-2xl text-base font-light leading-7 ${isDark ? "text-ivory/70" : "text-charcoal/65"}`}>
-                  {item.answer}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        initial={false}
+        animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+        className="overflow-hidden"
+        aria-hidden={!isOpen}
+      >
+        <div className="pb-7">
+          <div className="relative pl-5">
+            <div className={`absolute left-0 top-0 h-full w-px bg-gradient-to-b ${isDark ? "from-gold/40" : "from-gold/50"} to-transparent`} />
+            <p className={`max-w-2xl text-base font-light leading-7 ${isDark ? "text-ivory/70" : "text-charcoal/65"}`}>
+              {item.answer}
+            </p>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }

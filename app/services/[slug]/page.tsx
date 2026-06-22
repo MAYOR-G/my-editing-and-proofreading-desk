@@ -45,6 +45,20 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
     notFound();
   }
 
+  const relatedGuide = service.slug === "academic-editing"
+    ? {
+        href: "/blog/thesis-proofreading-checklist",
+        title: "Thesis Proofreading Checklist Before Submission",
+        description: "Review grammar, chapter flow, references, formatting, tables, figures, and final export checks.",
+      }
+    : service.slug === "express-service"
+      ? {
+          href: "/blog/editing-vs-proofreading",
+          title: "Editing vs Proofreading: Which Service Do You Need?",
+          description: "Compare the two stages and decide whether your document needs editing, proofreading, or both.",
+        }
+      : null;
+
   return (
     <PublicPageShell
       eyebrow={service.eyebrow}
@@ -161,6 +175,18 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
               ) : null;
             })}
           </div>
+          {relatedGuide ? (
+            <div className="mt-8 rounded-2xl border border-hairline bg-primary/[0.045] p-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Related guide</p>
+                <h2 className="mt-2 font-display text-2xl text-ink">{relatedGuide.title}</h2>
+                <p className="mt-2 max-w-3xl text-sm leading-7 text-body">{relatedGuide.description}</p>
+              </div>
+              <Link href={relatedGuide.href} className="mt-5 inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-canvas px-5 text-sm font-semibold text-primary transition hover:border-primary/45 hover:bg-primary/5 sm:mt-0">
+                Read the guide
+              </Link>
+            </div>
+          ) : null}
         </div>
       </section>
     </PublicPageShell>

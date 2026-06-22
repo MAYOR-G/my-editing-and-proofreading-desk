@@ -15,11 +15,11 @@ export function BlogResourcePreview() {
               Editing and Proofreading Guides
             </h2>
             <p className="mt-5 max-w-3xl text-base leading-8 text-charcoal/72 sm:text-lg">
-              Read practical guides on academic editing, proofreading, manuscript preparation, business writing, and document submission.
+              Read practical guides that help you choose the right editing service, prepare your document, and avoid common submission mistakes.
             </p>
           </div>
           <Link href="/blog" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border border-primary/20 bg-white px-6 text-sm font-semibold text-primary transition hover:border-primary/45 hover:bg-primary/5">
-            Visit the Blog <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            View All Guides <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
 

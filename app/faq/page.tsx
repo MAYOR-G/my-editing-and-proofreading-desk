@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AnimatedAccordion } from "@/components/AnimatedAccordion";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { FaqVisual } from "@/components/EditorialVisuals";
@@ -31,6 +32,9 @@ export default function FaqPage() {
             <p className="mt-4">
               For custom timelines, large documents, or upload questions, contact support before checkout so we can guide the next step clearly.
             </p>
+            <Link href="/blog/editing-vs-proofreading" className="mt-5 inline-flex font-semibold text-primary underline decoration-primary/25 underline-offset-4">
+              Read our editing vs proofreading guide
+            </Link>
           </div>
           <div className="grid gap-10">
             {faqSections.map((section) => (
