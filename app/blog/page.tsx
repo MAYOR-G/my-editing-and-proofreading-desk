@@ -6,8 +6,8 @@ import { blogPosts } from "@/lib/blog";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing, Proofreading, and Writing Guides | My Editing Desk",
-  description: "Editorial guides and practical resources for academic, business, manuscript, application, and professional writing.",
+  title: "Editing and Proofreading Blog | Writing Guides",
+  description: "Practical editing, proofreading, academic writing, manuscript, and business writing guides from My Editing and Proofreading Desk.",
   path: "/blog",
 });
 
@@ -15,8 +15,8 @@ export default function BlogPage() {
   return (
     <PublicPageShell
       eyebrow="Editorial resources"
-      title="Practical guides for clearer writing."
-      description="Careful, useful guidance on editing, proofreading, structure, submission preparation, and professional writing."
+      title="Editing and Proofreading Guides"
+      description="Explore practical guides on academic editing, proofreading, manuscript preparation, business writing, grammar, and document submission."
       seoPath="/blog"
     >
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">

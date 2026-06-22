@@ -17,6 +17,8 @@ import { FlippingReviews } from "@/components/home/FlippingReviews";
 import { TrustedMarquee } from "@/components/home/TrustedMarquee";
 import { ReadyToBeginCTA } from "@/components/home/ReadyToBeginCTA";
 import { TrustedMapStats } from "@/components/home/TrustedMapStats";
+import { DocumentTypeServices } from "@/components/home/DocumentTypeServices";
+import { BlogResourcePreview } from "@/components/home/BlogResourcePreview";
 
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
@@ -39,6 +41,8 @@ export default function Home() {
 
       {/* B. Services Grid */}
       <ServicesGrid />
+
+      <DocumentTypeServices />
 
       {/* C. Why Choose Us (Horizontal Scroll) */}
       <WhyChooseUs />
@@ -88,11 +92,13 @@ export default function Home() {
       {/* E. Fields Covered Grid */}
       <FieldsCovered />
 
-      {/* F. Flipping Client Reviews */}
+      {/* F. Rotating editorial standards */}
       <FlippingReviews />
 
       {/* G. Trusted By Infinite Marquee */}
       <TrustedMarquee />
+
+      <BlogResourcePreview />
 
       {/* H. FAQ Section */}
       <section className="bg-[#f8f9fa] py-24 sm:py-32 px-5 sm:px-10 border-t border-b border-ink/5">

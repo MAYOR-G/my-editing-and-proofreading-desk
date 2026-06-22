@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AnimatedAccordion } from "@/components/AnimatedAccordion";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { FaqVisual } from "@/components/EditorialVisuals";
-import { faqs } from "@/lib/content";
+import { faqSections, faqs } from "@/lib/content";
 import { buildPageMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -16,7 +16,7 @@ export default function FaqPage() {
     <PublicPageShell
       eyebrow="Project guidance"
       title="Answers before you upload."
-      description="A concise guide to files, pricing, privacy, project tracking, and delivery."
+      description="Detailed guidance on choosing a service, academic and business editing, pricing, turnaround, privacy, files, delivery, and follow-up."
       visual={<FaqVisual />}
       seoPath="/faq"
     >
@@ -32,7 +32,19 @@ export default function FaqPage() {
               For custom timelines, large documents, or upload questions, contact support before checkout so we can guide the next step clearly.
             </p>
           </div>
-          <AnimatedAccordion items={faqs} tone="card" />
+          <div className="grid gap-10">
+            {faqSections.map((section) => (
+              <section key={section.title} aria-labelledby={`faq-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+                <h2
+                  id={`faq-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+                  className="mb-5 font-display text-3xl leading-tight text-ink"
+                >
+                  {section.title}
+                </h2>
+                <AnimatedAccordion items={section.items} tone="card" />
+              </section>
+            ))}
+          </div>
         </div>
       </section>
     </PublicPageShell>

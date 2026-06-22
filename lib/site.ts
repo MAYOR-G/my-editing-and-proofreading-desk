@@ -171,6 +171,7 @@ export function blogPostingJsonLd(post: {
   dateUpdated: string;
   heroImage: string;
   heroImageAlt: string;
+  category?: string;
 }) {
   const url = absoluteUrl(`/blog/${post.slug}`);
 
@@ -188,6 +189,7 @@ export function blogPostingJsonLd(post: {
     },
     datePublished: post.datePublished,
     dateModified: post.dateUpdated,
+    articleSection: post.category,
     author: {
       "@type": "Organization",
       name: post.author,

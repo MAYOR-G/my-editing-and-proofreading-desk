@@ -42,6 +42,34 @@ const improvements = [
   "Reader confidence",
 ];
 
+const expertiseAreas = [
+  {
+    title: "Academic editing",
+    body: "Essays, theses, dissertations, research papers, and journal manuscripts are reviewed for scholarly clarity, structure, terminology, and consistency.",
+  },
+  {
+    title: "Business editing",
+    body: "Reports, proposals, profiles, and client documents are refined for clear decisions, professional tone, and reader-focused organization.",
+  },
+  {
+    title: "Manuscript editing",
+    body: "Long-form work is checked for section flow, consistency, pacing, headings, references, and a coherent reading experience.",
+  },
+  {
+    title: "Language editing",
+    body: "Translated or multilingual drafts are improved for natural English, consistent terminology, appropriate tone, and accurate meaning.",
+  },
+];
+
+const finalChecks = [
+  "The requested service and client instructions have been followed",
+  "Grammar, punctuation, spelling, and terminology are consistent",
+  "Headings, lists, tables, captions, and references follow one clear pattern",
+  "Comments are useful, specific, and limited to decisions the writer needs to make",
+  "Tracked and clean files are complete, readable, and ready for secure delivery",
+  "No unsupported claims, sources, findings, or personal details have been added",
+];
+
 const process = [
   ["01", "Submit document", "Upload your file and share the audience, purpose, deadline, and any editorial priorities."],
   ["02", "We assess the needs", "The document is reviewed for service fit, word count, timeline, and subject requirements."],
@@ -82,21 +110,25 @@ function EditorialReviewVisual() {
           </div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-[1fr_8rem]">
-            <div className="rounded-xl border border-hairline bg-paper/70 p-4 text-sm leading-7 text-body">
-              <p>
-                The study <span className="text-red-700 line-through decoration-red-500/70 decoration-2">prove the model is correct</span>{" "}
-                <span className="rounded-sm bg-primary/10 px-1 font-medium text-primary">provides evidence that supports the model</span> within the stated research scope.
-              </p>
-              <p className="mt-4">
-                The conclusion should connect the findings to the research question before moving into limitations.
-              </p>
+            <div className="grid gap-4 rounded-xl border border-hairline bg-paper/70 p-4 text-sm leading-7 text-body">
+              <div>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-red-700">Before</p>
+                <p className="mt-1">The study prove the model is correct and the results is useful for future research.</p>
+              </div>
+              <div className="border-t border-hairline pt-4">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">After</p>
+                <p className="mt-1 rounded-sm bg-primary/10 px-2 py-1 font-medium text-primary">
+                  The study provides evidence that the model is reliable, and the results may support future research.
+                </p>
+              </div>
             </div>
             <div className="grid content-start gap-3">
-              {["Clarity", "Evidence", "Tone"].map((item) => (
-                <div key={item} className="rounded-xl border border-primary/15 bg-canvas px-3 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary shadow-sm">
-                  {item}
-                </div>
-              ))}
+              <div className="rounded-xl border border-primary/15 bg-canvas p-3 shadow-sm">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-primary">Editor note</p>
+                <p className="mt-2 text-xs leading-5 text-body">
+                  Improved subject-verb agreement, reduced overclaiming, and made the conclusion more academically precise.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -165,11 +197,30 @@ export default function EditorsPage() {
           </div>
           <div className="grid gap-5 text-base leading-8 text-body sm:text-lg">
             <p>
-              Our editing process is designed for documents where precision, tone, and reader confidence are paramount. Rather than focusing solely on surface-level corrections, our editors consider the broader purpose of the work and the expectations of its intended audience.
+              Our editing process is designed for documents where precision, tone, and reader confidence matter. Editors look beyond surface corrections to consider the purpose of the document and what its intended audience needs.
             </p>
             <p>
-              This approach ensures that every document is refined not only for accuracy, but also for clarity, impact, and trustworthiness.
+              The result should be accurate, clear, consistent, and recognizably yours.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-hairline bg-surface-soft px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Areas of editorial support</p>
+            <h2 className="mt-4 font-display text-[clamp(2.2rem,4vw,4rem)] leading-tight text-ink">
+              Different documents require different editorial judgment.
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {expertiseAreas.map((area) => (
+              <article key={area.title} className="rounded-2xl border border-hairline bg-canvas p-6 shadow-[0_18px_55px_rgba(17,17,15,0.04)]">
+                <h3 className="font-display text-3xl leading-tight text-ink">{area.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-body">{area.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -205,6 +256,28 @@ export default function EditorsPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.68fr_1.32fr] lg:items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Before delivery</p>
+            <h2 className="mt-4 font-display text-[clamp(2.1rem,3.8vw,3.75rem)] leading-tight text-ink">
+              What editors check before returning a document.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-8 text-body">
+              The final pass checks the document as a whole, not only the sentences that received visible edits.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {finalChecks.map((item) => (
+              <div key={item} className="flex gap-3 rounded-xl border border-hairline bg-surface-soft p-5 text-sm leading-7 text-body">
+                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>

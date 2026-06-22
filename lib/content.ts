@@ -122,48 +122,106 @@ export const processSteps = [
   }
 ];
 
-export const faqs = [
+export const faqSections = [
   {
-    question: "How do I upload my document?",
-    answer: "Start from the secure upload flow in your dashboard. Choose your service, upload the file, review the detected word count and estimate, then continue to checkout."
+    title: "Choosing a service",
+    items: [
+      {
+        question: "What is the difference between editing and proofreading?",
+        answer: "Editing addresses clarity, structure, flow, tone, sentence construction, and correctness. Proofreading is a final-stage check for grammar, spelling, punctuation, formatting consistency, and small wording problems. Choose editing when the draft still needs meaningful improvement; choose proofreading when the content and structure are already settled."
+      },
+      {
+        question: "What does academic editing include?",
+        answer: "Academic editing can improve argument flow, paragraph structure, scholarly tone, grammar, terminology, headings, and citation consistency. The editor works with the material you provide and preserves your authorship. The service does not invent evidence, sources, findings, or arguments."
+      },
+      {
+        question: "Can you edit a thesis or dissertation?",
+        answer: "Yes. Thesis and dissertation editing can cover chapter flow, clarity, academic tone, grammar, headings, tables, captions, citations, and reference consistency. Long or technically complex documents may need a custom timeline so the review can be planned properly."
+      },
+      {
+        question: "Can you edit a research paper before journal submission?",
+        answer: "Yes. Research paper editing focuses on clear presentation of the research question, methods, results, discussion, terminology, and scholarly tone. We can improve the writing and flag unclear claims, but we cannot guarantee journal acceptance or replace subject-matter decisions that belong to the author."
+      },
+      {
+        question: "Do you edit business reports and proposals?",
+        answer: "Yes. Business editing can improve message hierarchy, executive summaries, section flow, tone, concision, and reader-facing clarity in reports, proposals, profiles, and presentations. Editing strengthens communication but does not guarantee funding, approval, or commercial success."
+      },
+      {
+        question: "What does manuscript editing cover?",
+        answer: "Manuscript editing can address long-form organization, chapter or section flow, consistency, sentence clarity, headings, references, and presentation. The exact scope depends on the manuscript type, length, condition, and whether you need line editing, proofreading, or formatting support."
+      }
+    ]
   },
   {
-    question: "How is my word count calculated?",
-    answer: "When you upload your document, the system calculates the word count from the file. This detected word count is used for pricing and cannot be manually changed."
+    title: "Pricing and turnaround",
+    items: [
+      {
+        question: "How is pricing calculated?",
+        answer: "Pricing is based on the service selected, the word count detected from the uploaded file, and the available turnaround. The calculator provides an estimate before upload. Processing fees, where applicable, are shown at the final payment step rather than hidden in the initial rate."
+      },
+      {
+        question: "How long will editing take?",
+        answer: "Available turnaround depends on the service and word count. Short final drafts may fit a faster schedule, while theses, dissertations, manuscripts, and technically dense documents need more time. The available options are shown in the pricing and upload flow, and unusually large projects are reviewed separately."
+      },
+      {
+        question: "Why do documents above 50,000 words require a custom review?",
+        answer: "Long documents require a realistic schedule, consistent editor assignment, and enough time for whole-document quality checks. A custom review allows the team to confirm scope, formatting complexity, milestones, and delivery timing before payment."
+      },
+      {
+        question: "Can I request a quote before uploading?",
+        answer: "Yes. Use the pricing calculator for an initial estimate or contact support with the document type, approximate word count, required service, and deadline. A final price may still depend on the uploaded file and the level of work it requires."
+      }
+    ]
   },
   {
-    question: "Can I change the word count after upload?",
-    answer: "No. The uploaded file controls the word count so pricing stays consistent and fair. If the count looks wrong, contact support before you pay."
+    title: "Files, privacy, and delivery",
+    items: [
+      {
+        question: "How do I upload my document?",
+        answer: "Open the secure upload flow, choose the relevant service, and add the file with your audience, purpose, deadline, and editorial notes. The system displays the detected word count and estimate before checkout so you can review the project details first."
+      },
+      {
+        question: "What file types do you accept?",
+        answer: "The main upload flow accepts .doc, .docx, and .txt files so the system can read the document and calculate its word count. If your document contains complex layouts, figures, or another file type, contact support before payment to confirm the best format."
+      },
+      {
+        question: "Is my document confidential?",
+        answer: "Uploaded documents are handled privately and used only to provide the service requested. Access should be limited to the people involved in administration, payment, editing, and delivery. If your project has specific confidentiality requirements, include them before work begins."
+      },
+      {
+        question: "How is the word count confirmed?",
+        answer: "The upload system reads the file and calculates the word count used for pricing. The count cannot be manually changed in checkout. If the result appears incorrect because of tables, references, or unusual formatting, contact support before paying."
+      }
+    ]
   },
   {
-    question: "What happens after I upload?",
-    answer: "You will see the detected word count, selected service, turnaround, and estimated price. If everything looks correct, you can continue to secure checkout."
-  },
-  {
-    question: "How is pricing calculated?",
-    answer: "Pricing is based on the service you choose, the detected word count, and the selected turnaround. Processing fees are shown only at the final payment step."
-  },
-  {
-    question: "Why do documents above 50,000 words require custom review?",
-    answer: "Large documents often need a more careful timeline and review plan. Contact support so we can confirm the best approach before you proceed."
-  },
-  {
-    question: "Is my document confidential?",
-    answer: "Yes. Uploaded documents are handled privately and used only to provide the editing or proofreading service you requested."
-  },
-  {
-    question: "Do you use AI instead of human editors?",
-    answer: "No. The free AI tool is for quick suggestions. Human editing is still recommended for important academic, business, or professional documents."
-  },
-  {
-    question: "What file types do you accept?",
-    answer: "The upload flow accepts .doc, .docx, and .txt files so the system can read the document and calculate the word count reliably."
-  },
-  {
-    question: "How do I contact support?",
-    answer: "Use the Contact page or email support@business.editandproofread.com. Include your document type, expected word count, and deadline if you have one."
+    title: "Human review and follow-up",
+    items: [
+      {
+        question: "Do you use AI instead of human editors?",
+        answer: "No. The free AI tool provides a quick first pass for short text. Important academic, business, manuscript, and professional documents benefit from human judgment because an editor can consider context, audience, discipline, formatting, and the risk of changing the writer's meaning."
+      },
+      {
+        question: "Will an editor rewrite my work for me?",
+        answer: "Editors improve the writing you provide while protecting your voice and authorship. They may revise unclear sentences and leave comments on larger issues, but they do not invent experience, evidence, research findings, citations, or assessed content on your behalf."
+      },
+      {
+        question: "Can I ask questions after delivery?",
+        answer: "Yes. If you need clarification about an editorial change or comment, use the project support channel and refer to the relevant passage. Follow-up questions should relate to the agreed editing scope; substantial new material or a newly revised document may require a separate review."
+      },
+      {
+        question: "Are revisions included?",
+        answer: "Questions about the delivered edit can be reviewed within the agreed project scope. A complete second edit, newly added sections, or major rewriting after delivery may require a new quote. Contact support with the project reference so the request can be assessed fairly."
+      },
+      {
+        question: "How do I contact support?",
+        answer: "Use the Contact page or email support@business.editandproofread.com. Include the document type, expected word count, deadline, and project reference if one already exists so the team can respond with useful next steps."
+      }
+    ]
   }
 ];
+
+export const faqs = faqSections.flatMap((section) => section.items);
 
 export const userProjects = [
   {

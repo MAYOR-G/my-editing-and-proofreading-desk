@@ -11,9 +11,23 @@ export type BlogPost = {
   metaDescription: string;
   heroImage: string;
   heroImageAlt: string;
-  content: Array<{
-    heading?: string;
+  tableOfContents?: Array<{
+    id: string;
+    label: string;
+  }>;
+  body: Array<{
+    id: string;
+    heading: string;
     paragraphs: string[];
+  }>;
+  faq: Array<{
+    question: string;
+    answer: string;
+  }>;
+  internalLinks: Array<{
+    href: string;
+    label: string;
+    description: string;
   }>;
 };
 
