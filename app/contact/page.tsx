@@ -6,8 +6,8 @@ import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Contact My Editing and Proofreading Desk",
-  description: "Contact support about editing services, project fit, document expectations, timelines, pricing, uploads, and business inquiries.",
+  title: "Contact Our Editing Desk | Professional Proofreading Support",
+  description: "Reach out for business inquiries, custom project quotes, and dedicated support for your academic, manuscript, or corporate editing needs.",
   path: "/contact",
 });
 

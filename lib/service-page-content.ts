@@ -13,8 +13,8 @@ export type ServicePageContent = {
 
 export const servicePageContent: Record<string, ServicePageContent> = {
   "academic-editing": {
-    metaTitle: "Academic Editing Services for Essays, Theses & Research",
-    metaDescription: "Academic editing for essays, theses, dissertations, research papers, and journal manuscripts. Improve clarity, structure, scholarly tone, and consistency.",
+    metaTitle: "Academic Proofreading & Editing Services | Theses & Research",
+    metaDescription: "Expert academic editing for dissertations, theses, and research papers. Improve clarity, scholarly tone, and structure with secure, confidential human review.",
     h1: "Academic Editing Services for Essays, Theses, and Research",
     whoItIsFor: "This service is for students, researchers, doctoral candidates, and academic teams preparing work for assessment, supervision, peer review, or publication.",
     improvements: [
@@ -42,8 +42,8 @@ export const servicePageContent: Record<string, ServicePageContent> = {
     relatedSlugs: ["express-service", "manuscript-formatting", "writing-support"],
   },
   "express-service": {
-    metaTitle: "Professional Proofreading Services for Final Drafts",
-    metaDescription: "Professional proofreading services for final drafts. Correct grammar, spelling, punctuation, consistency, and distracting errors before submission.",
+    metaTitle: "Express Proofreading Services | Final Draft Review",
+    metaDescription: "Fast, accurate proofreading for final drafts. Fix grammar, spelling, and consistency errors quickly with our professional human editors.",
     h1: "Professional Proofreading Services for Final Drafts",
     whoItIsFor: "This service is for writers with a complete, well-structured draft that needs a careful final check before submission, publication, presentation, or delivery.",
     improvements: [
@@ -71,8 +71,8 @@ export const servicePageContent: Record<string, ServicePageContent> = {
     relatedSlugs: ["academic-editing", "non-academic-editing", "manuscript-formatting"],
   },
   "non-academic-editing": {
-    metaTitle: "Business Editing Services for Reports & Proposals",
-    metaDescription: "Business editing services for reports, proposals, profiles, presentations, and client documents that need clear structure, credible tone, and concise language.",
+    metaTitle: "Business & Corporate Editing Services | Reports & Proposals",
+    metaDescription: "Professional business editing for corporate reports, proposals, and presentations. Ensure clear, concise, and credible communication for your clients.",
     h1: "Business Editing Services for Reports and Proposals",
     whoItIsFor: "This service is for founders, consultants, teams, and professionals preparing reports, proposals, company profiles, presentations, and client-facing documents.",
     improvements: [
@@ -100,8 +100,8 @@ export const servicePageContent: Record<string, ServicePageContent> = {
     relatedSlugs: ["express-service", "writing-support", "translation"],
   },
   "manuscript-formatting": {
-    metaTitle: "Manuscript Editing Services for Authors & Researchers",
-    metaDescription: "Manuscript editing and thesis formatting support for authors and researchers. Improve long-form structure, consistency, readability, and presentation.",
+    metaTitle: "Manuscript Editing & Formatting Services for Authors",
+    metaDescription: "Comprehensive manuscript editing and formatting for authors and researchers. Enhance readability, structure, and pacing with dedicated editorial support.",
     h1: "Manuscript Editing Services for Authors and Researchers",
     whoItIsFor: "This service supports authors, researchers, graduate students, and independent writers working on books, theses, long reports, and other substantial manuscripts.",
     improvements: [
@@ -129,8 +129,8 @@ export const servicePageContent: Record<string, ServicePageContent> = {
     relatedSlugs: ["academic-editing", "express-service", "writing-support"],
   },
   translation: {
-    metaTitle: "Translation Review and Language Editing Services",
-    metaDescription: "Translation review and language editing for translated academic, business, and professional documents. Improve natural phrasing, tone, and terminology.",
+    metaTitle: "Translation Review & English Language Editing Services",
+    metaDescription: "Polish translated documents with expert English language editing. Improve natural phrasing, tone, and readability for academic and business texts.",
     h1: "Translation Review and Language Editing Services",
     whoItIsFor: "This service is for people and organizations with an existing translated draft that needs natural English, consistent terminology, and an audience-appropriate tone.",
     improvements: [
@@ -158,8 +158,8 @@ export const servicePageContent: Record<string, ServicePageContent> = {
     relatedSlugs: ["non-academic-editing", "academic-editing", "express-service"],
   },
   "writing-support": {
-    metaTitle: "Writing Support for Applications, Reports & Proposals",
-    metaDescription: "Writing support for applications, statements, reports, and proposals. Strengthen direction, structure, clarity, and revision plans while preserving authorship.",
+    metaTitle: "Professional Writing Support & Application Review",
+    metaDescription: "Get expert writing support and structural review for applications, proposals, and reports. Clear, actionable guidance to strengthen your document.",
     h1: "Writing Support for Applications, Reports, and Proposals",
     whoItIsFor: "This service is for applicants, professionals, students, and teams who have ideas or a partial draft but need clearer organization and practical revision guidance.",
     improvements: [

@@ -7,8 +7,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Free AI Editing Tool for a Quick First Pass",
-  description: "Try a free AI-assisted first pass for short text, then use human editing for high-stakes academic, business, and professional documents.",
+  title: "Free AI Grammar Checker & Editing Tool",
+  description: "Use our free AI editing tool for quick grammar checks and basic proofreading before submitting your documents for professional human review.",
   path: "/ai-editing-tool",
 });
 

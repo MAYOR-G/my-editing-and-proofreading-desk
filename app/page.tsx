@@ -23,8 +23,8 @@ import { BlogResourcePreview } from "@/components/home/BlogResourcePreview";
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing and Proofreading Services | My Editing Desk",
-  description: "Human editing and proofreading for academic, business, manuscript, and professional documents. Secure uploads, clear pricing, and expert review.",
+  title: "Professional Proofreading & Editing Services | My Editing Desk",
+  description: "Get professional proofreading and editing for academic, business, and manuscript documents. Clear human review, secure uploads, and expert corrections.",
   path: "/",
 });
 
@@ -66,15 +66,15 @@ export default function Home() {
               <p className="text-charcoal/80 leading-relaxed mb-10 max-w-lg text-lg">
                 Use our free AI tool to review your draft, spot basic issues, and get quick suggestions before working with a human editor. For high-stakes documents, our expert editors provide the final judgment, context, and polish that automated tools cannot replace.
               </p>
-              <Link href="/ai-editing-tool" className="inline-flex h-14 items-center justify-center bg-primary px-10 text-sm font-semibold text-white transition-all hover:bg-accent hover:scale-[1.02] shadow-[0_10px_30px_rgba(15,59,127,0.2)] rounded-full">
-                Try the Free Tool
+              <Link href="/ai-editing-tool" className="inline-flex h-14 items-center justify-center bg-primary px-10 text-sm font-semibold text-white transition-all hover:bg-accent hover:scale-[1.02] shadow-[0_10px_30px_rgba(15,59,127,0.2)] rounded-full" aria-label="Try our free AI grammar and proofreading tool">
+                Try our Free AI Grammar Checker
               </Link>
             </div>
             <div className="relative h-full min-h-[300px] lg:min-h-[400px]">
             <div className="absolute inset-0 rounded-[2rem] overflow-hidden border border-ink/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] bg-white p-2">
               <Image
                 src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200&auto=format&fit=crop" 
-                alt="AI editing assistant interface for a quick first review"
+                alt="Free AI editing and proofreading tool interface for grammar checks"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="w-full h-full object-cover rounded-xl"

@@ -27,8 +27,8 @@ const values = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About My Editing and Proofreading Desk",
-  description: "Learn how My Editing and Proofreading Desk provides human-led editing for academic, business, application, manuscript, and professional documents.",
+  title: "About Our Professional Editing & Proofreading Team",
+  description: "Learn how our expert team provides clear, human-led document editing. We support academics, professionals, and businesses with secure, confidential proofreading.",
   path: "/about",
 });
 

@@ -7,8 +7,8 @@ import { faqSections, faqs } from "@/lib/content";
 import { buildPageMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing and Proofreading FAQs",
-  description: "Answers about document uploads, word counts, pricing, turnaround options, privacy, AI editing, accepted files, and support.",
+  title: "Editing Services FAQs | Common Proofreading Questions",
+  description: "Get answers to common questions about document uploads, pricing, turnaround times, confidentiality, and our professional editing process.",
   path: "/faq",
 });
 

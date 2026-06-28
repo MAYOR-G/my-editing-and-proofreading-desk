@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { servicePages } from "@/lib/content";
 import { servicePageContent } from "@/lib/service-page-content";
-import { buildPageMetadata, jsonLdScript, serviceJsonLd } from "@/lib/site";
+import { buildPageMetadata, faqPageJsonLd, jsonLdScript, serviceJsonLd } from "@/lib/site";
 
 type ServiceDetailPageProps = {
   params: {
@@ -74,6 +74,10 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript(serviceJsonLd(service))}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(content.faqs))}
       />
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr]">

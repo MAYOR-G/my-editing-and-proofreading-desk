@@ -572,6 +572,478 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    title: "Dissertation Proofreading Checklist: What to Fix Before You Submit",
+    slug: "dissertation-proofreading-checklist",
+    excerpt: "Use this dissertation proofreading checklist to fix grammar, formatting, references, tables, figures, and clarity before final submission.",
+    category: "Academic writing",
+    author: brandAuthor,
+    datePublished: "2026-06-28",
+    dateUpdated: "2026-06-28",
+    readingTime: "11 min read",
+    metaTitle: "Dissertation Proofreading Checklist: 15 Fixes Before Submission",
+    metaDescription: "Use this dissertation proofreading checklist to fix grammar, formatting, references, tables, figures, and clarity before final submission.",
+    heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
+    heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
+    tableOfContents: [
+      { id: "quick-overview", label: "Quick overview" },
+      { id: "grammar-spelling-punctuation", label: "1. Check grammar, spelling, and punctuation" },
+      { id: "sentence-clarity-academic-tone", label: "2. Review sentence clarity and academic tone" },
+      { id: "remove-repetition", label: "3. Remove repetition and unclear phrasing" },
+      { id: "chapter-headings-structure", label: "4. Check chapter headings and structure" },
+      { id: "introduction-conclusion-consistency", label: "5. Review your introduction and conclusion for consistency" },
+      { id: "citations-reference-list", label: "6. Check citations and reference list formatting" },
+      { id: "tables-figures-captions", label: "7. Review tables, figures, captions, and numbering" },
+      { id: "page-numbers-formatting", label: "8. Check page numbers, margins, spacing, and formatting" },
+      { id: "english-consistency", label: "9. Confirm UK or US English consistency" },
+      { id: "acronyms-abbreviations", label: "10. Check acronyms, abbreviations, and key terms" },
+      { id: "appendices-supporting", label: "11. Review appendices and supporting documents" },
+      { id: "read-abstract", label: "12. Read the abstract separately" },
+      { id: "supervisor-guidelines", label: "13. Check supervisor or university guidelines" },
+      { id: "final-pdf-check", label: "14. Do a final PDF check before upload" },
+      { id: "second-human-review", label: "15. Get a second human review before submission" },
+      { id: "common-mistakes", label: "Common mistakes to avoid" },
+      { id: "professional-service", label: "When to use a professional service" },
+    ],
+    body: [
+      {
+        id: "quick-overview",
+        heading: "Dissertation Proofreading Checklist: Quick Overview",
+        paragraphs: [
+          [
+            "The final submission of a dissertation or thesis is a high-pressure moment for students and researchers. Small errors in grammar, inconsistent formatting, or missing references can significantly weaken an otherwise strong and well-researched dissertation.",
+          ],
+          [
+            "Proofreading a dissertation requires a systematic approach. You cannot spot every error in a single read-through. Instead, use this dissertation proofreading checklist to methodically check each part of your academic writing before final submission.",
+          ],
+        ],
+        table: {
+          headers: ["Check area", "What to review", "Why it matters"],
+          rows: [
+            ["Language & Tone", "Grammar, spelling, punctuation, sentence clarity, academic tone", "Ensures your argument is easily understood by examiners."],
+            ["Structure & Consistency", "Headings, introductions, conclusions, abbreviations", "Creates a cohesive narrative from chapter one to the end."],
+            ["Data & Evidence", "Tables, figures, citations, reference list", "Prevents academic misconduct and builds trust in findings."],
+            ["Formatting & Export", "Margins, page numbers, appendices, final PDF", "Meets strict university guidelines and avoids rejection."],
+          ]
+        },
+      },
+      {
+        id: "grammar-spelling-punctuation",
+        heading: "1. Check grammar, spelling, and punctuation",
+        paragraphs: [
+          [
+            "Start your final dissertation check by focusing purely on language mechanics. Read through specifically to catch basic grammatical errors, spelling mistakes, and punctuation issues that software might miss.",
+          ],
+        ],
+        bullets: [
+          ["Ensure subject-verb agreement across complex sentences."],
+          ["Verify that commas, semicolons, and colons are used correctly."],
+          ["Check for homophone errors (e.g., affect vs. effect)."],
+          ["Run a professional spell checker, but read manually for context errors."],
+        ]
+      },
+      {
+        id: "sentence-clarity-academic-tone",
+        heading: "2. Review sentence clarity and academic tone",
+        paragraphs: [
+          [
+            "Academic writing must be precise. Avoid overly complex sentences that confuse the reader. If a sentence requires multiple read-throughs to be understood, break it down. Maintain a formal, objective, and cautious academic tone, avoiding absolute claims unless fully supported by evidence.",
+          ],
+        ]
+      },
+      {
+        id: "remove-repetition",
+        heading: "3. Remove repetition and unclear phrasing",
+        paragraphs: [
+          [
+            "Students often repeat the same points across multiple chapters to hit word counts or reinforce arguments. Remove unnecessary repetition and vague phrasing. Ensure every paragraph introduces a unique point or clearly advances the central thesis.",
+          ],
+        ]
+      },
+      {
+        id: "chapter-headings-structure",
+        heading: "4. Check chapter headings and structure",
+        paragraphs: [
+          [
+            "Your dissertation editing and proofreading process must include a structural review. Compare your table of contents directly against the body of the dissertation. Ensure that heading levels (H1, H2, H3) are formatted consistently and that the structural hierarchy makes logical sense.",
+          ],
+        ]
+      },
+      {
+        id: "introduction-conclusion-consistency",
+        heading: "5. Review your introduction and conclusion for consistency",
+        paragraphs: [
+          [
+            "The introduction sets expectations, and the conclusion delivers on them. Read your introduction and conclusion back-to-back. Verify that the research questions posed in the introduction are definitively answered in the conclusion, and that no new information is introduced at the end.",
+          ],
+        ]
+      },
+      {
+        id: "citations-reference-list",
+        heading: "6. Check citations and reference list formatting",
+        paragraphs: [
+          [
+            "A critical step in proofreading a dissertation is verifying citations. Every in-text citation must have a corresponding entry in the reference list, and vice-versa. Ensure strict adherence to your university’s required style guide. The official ",
+            { text: "APA reference guide", href: "https://apastyle.apa.org/instructional-aids/reference-guide.pdf", external: true },
+            " provides excellent examples of standard formatting.",
+          ],
+        ]
+      },
+      {
+        id: "tables-figures-captions",
+        heading: "7. Review tables, figures, captions, and numbering",
+        paragraphs: [
+          [
+            "Check that all tables and figures are numbered sequentially (e.g., Figure 1, Figure 2). Ensure every visual element has a clear, descriptive caption and is explicitly referred to within the main text before it appears on the page.",
+          ],
+        ]
+      },
+      {
+        id: "page-numbers-formatting",
+        heading: "8. Check page numbers, margins, spacing, and formatting",
+        paragraphs: [
+          [
+            "Formatting errors are easily spotted by examiners and suggest a lack of care. Verify that margins meet university guidelines, line spacing is consistent (usually 1.5 or double spacing), and page numbers follow the correct format (e.g., Roman numerals for front matter, Arabic numerals for body text).",
+          ],
+        ]
+      },
+      {
+        id: "english-consistency",
+        heading: "9. Confirm UK or US English consistency",
+        paragraphs: [
+          [
+            "Mixing UK and US English spelling conventions is a common dissertation mistake. Choose one convention based on your university's location or guidelines, and apply it strictly. Check words like organize/organise, color/colour, and center/centre.",
+          ],
+        ]
+      },
+      {
+        id: "acronyms-abbreviations",
+        heading: "10. Check acronyms, abbreviations, and key terms",
+        paragraphs: [
+          [
+            "The first time you use an acronym or abbreviation, write the full term followed by the acronym in parentheses. From then on, use the acronym consistently. Consider including a List of Abbreviations in your front matter if your dissertation relies heavily on them.",
+          ],
+        ]
+      },
+      {
+        id: "appendices-supporting",
+        heading: "11. Review appendices and supporting documents",
+        paragraphs: [
+          [
+            "Do not neglect your appendices. Ensure they are clearly labeled (Appendix A, Appendix B), formatted neatly, and correctly referenced within the main text. Remove any supplementary material that does not directly support your research.",
+          ],
+        ]
+      },
+      {
+        id: "read-abstract",
+        heading: "12. Read the abstract separately",
+        paragraphs: [
+          [
+            "The abstract is often the first—and sometimes the only—part of your dissertation that people will read. It should be a flawless, standalone summary of your research question, methodology, key findings, and conclusions. Proofread it carefully as a separate document.",
+          ],
+        ]
+      },
+      {
+        id: "supervisor-guidelines",
+        heading: "13. Check supervisor or university guidelines",
+        paragraphs: [
+          [
+            "Before the final dissertation check is complete, cross-reference your document with the specific submission guidelines provided by your department. Check required word counts, title page formats, and mandatory declarations of originality.",
+          ],
+        ]
+      },
+      {
+        id: "final-pdf-check",
+        heading: "14. Do a final PDF check before upload",
+        paragraphs: [
+          [
+            "Never submit a Word document unless explicitly requested. Convert your dissertation to a PDF and read through it one final time. Check for formatting shifts, broken links, unreadable figures, or blank pages that may have occurred during conversion.",
+          ],
+        ]
+      },
+      {
+        id: "second-human-review",
+        heading: "15. Get a second human review before submission",
+        paragraphs: [
+          [
+            "After months of looking at the same document, you will develop a blindness to your own errors. A second pair of eyes is essential. Whether it is a peer, a mentor, or a professional, another human review will catch mistakes your brain automatically corrects. Institutions like ",
+            { text: "Purdue University's Writing Lab", href: "https://owl.purdue.edu/owl/general_writing/the_writing_process/proofreading/index.html", external: true },
+            " strongly recommend fresh perspectives when proofreading.",
+          ],
+        ]
+      },
+      {
+        id: "common-mistakes",
+        heading: "Common dissertation proofreading mistakes to avoid",
+        paragraphs: [
+          [
+            "Avoid relying entirely on automated spelling and grammar checkers, as they frequently misunderstand academic context and specialized terminology. Additionally, do not attempt to proofread the entire document in a single sitting; fatigue leads to missed errors. Finally, avoid making substantive structural changes during the proofreading phase, as this often introduces new typographical errors.",
+          ],
+        ]
+      },
+      {
+        id: "professional-service",
+        heading: "When should you use a professional dissertation proofreading service?",
+        paragraphs: [
+          [
+            "If your deadline is approaching, or if English is an additional language, a professional ",
+            { text: "academic proofreading", href: "/services/academic-editing" },
+            " service can be a vital investment. Professional editors ensure your writing is clear, grammatically correct, and formatted to strict academic standards, allowing you to submit with confidence.",
+          ],
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "What is included in dissertation proofreading?",
+        answer: "Dissertation proofreading includes correcting grammar, spelling, punctuation, and typographical errors. It also ensures consistency in tone, terminology, formatting, and citation styles, making the final document professional and readable."
+      },
+      {
+        question: "How long does it take to proofread a dissertation?",
+        answer: "The time varies based on word count and the quality of the draft. For a standard 80,000-word dissertation, professional proofreading typically takes 5 to 10 days, though faster turnaround times are often available for urgent deadlines."
+      },
+      {
+        question: "Should I proofread my dissertation myself?",
+        answer: "You should perform the initial proofreading yourself using a checklist. However, because authors become blind to their own errors, it is highly recommended to have a second person or a professional service conduct the final review."
+      },
+      {
+        question: "What is the difference between dissertation proofreading and editing?",
+        answer: "Editing focuses on improving the structure, argument flow, clarity, and overall academic tone. Proofreading is the final step, focusing strictly on correcting surface-level errors like grammar, spelling, punctuation, and formatting consistency."
+      },
+      {
+        question: "When should I get my dissertation proofread?",
+        answer: "You should get your dissertation proofread only after all substantive writing, editing, and supervisor revisions are complete. Proofreading should be the absolute final step before creating your submission file."
+      },
+      {
+        question: "Can proofreading improve my dissertation grade?",
+        answer: "While proofreading cannot fix poor research or weak arguments, it ensures that your ideas are communicated clearly and professionally. Eliminating distracting errors allows examiners to focus entirely on the academic merit of your work."
+      }
+    ],
+    internalLinks: [
+      {
+        href: "/services/academic-editing",
+        label: "Academic proofreading",
+        description: "Need a second pair of eyes before submission? Ensure your writing meets university standards.",
+      },
+      {
+        href: "/pricing",
+        label: "Check pricing",
+        description: "Review our rates for academic editing and proofreading based on your word count and deadline.",
+      },
+      {
+        href: "/contact",
+        label: "Contact us",
+        description: "Send your dissertation for a proofreading quote today and submit with confidence.",
+      }
+    ]
+  },
+  {
+    title: "How Much Does Proofreading Cost? A Simple Pricing Guide for Students, Authors, and Businesses",
+    slug: "how-much-does-proofreading-cost",
+    excerpt: "Learn what affects proofreading cost, from word count and deadline to document type. Compare student, author, academic, and business proofreading prices.",
+    category: "Pricing & Guides",
+    author: brandAuthor,
+    datePublished: "2026-06-28",
+    dateUpdated: "2026-06-28",
+    readingTime: "10 min read",
+    metaTitle: "Proofreading Cost Guide for Students, Authors & Businesses",
+    metaDescription: "Learn what affects proofreading cost, from word count and deadline to document type. Compare student, author, academic, and business proofreading prices.",
+    heroImage: "/images/blog/proofreading-cost-guide-hero.png",
+    heroImageAlt: "Modern workspace with a calculator and a printed document, symbolizing calculating proofreading costs and pricing",
+    tableOfContents: [
+      { id: "cost-factors", label: "What affects proofreading cost?" },
+      { id: "word-count", label: "Word count" },
+      { id: "turnaround-time", label: "Turnaround time" },
+      { id: "type-of-document", label: "Type of document" },
+      { id: "level-of-work", label: "Level of work needed" },
+      { id: "audience-types", label: "Academic, business, manuscript, and dissertation proofreading" },
+      { id: "pricing-models", label: "Proofreading price per word vs fixed quote" },
+      { id: "cheap-risks", label: "Why very cheap proofreading can be risky" },
+      { id: "proofreading-vs-editing", label: "Proofreading vs editing: why editing usually costs more" },
+      { id: "cost-examples", label: "Example proofreading cost scenarios" },
+      { id: "get-quote", label: "How to get an accurate proofreading quote" },
+      { id: "reduce-costs", label: "How to reduce proofreading costs before sending your document" },
+    ],
+    body: [
+      {
+        id: "cost-factors",
+        heading: "What affects proofreading cost?",
+        paragraphs: [
+          [
+            "When searching for editorial services, people immediately want to know: how much does proofreading cost? Because every document is unique, there is no single universal price. Instead, pricing depends on several specific factors.",
+          ],
+          [
+            "Understanding these variables will help you evaluate quotes from freelancers or agencies and choose a service that fits your budget and quality requirements.",
+          ]
+        ],
+        table: {
+          headers: ["Factor", "How it affects price", "Example"],
+          rows: [
+            ["Word count", "Longer documents require more time, increasing the total cost.", "A 2,000-word essay costs less than an 80,000-word manuscript."],
+            ["Turnaround time", "Urgent deadlines require editors to prioritize your work, incurring rush fees.", "A 24-hour turnaround costs more than a 7-day turnaround."],
+            ["Type of document", "Technical or specialized content takes longer to review accurately.", "A medical research paper costs more than a general blog post."],
+            ["Level of work", "Documents needing heavy restructuring cost more than those needing light typo fixes.", "Substantive editing is priced higher than basic proofreading."],
+          ]
+        }
+      },
+      {
+        id: "word-count",
+        heading: "Word count",
+        paragraphs: [
+          [
+            "The most significant factor in determining proofreading rates is the length of the document. Most professional agencies and freelancers charge based on the total word count, ensuring transparency so you only pay for the exact volume of text reviewed.",
+          ]
+        ]
+      },
+      {
+        id: "turnaround-time",
+        heading: "Turnaround time",
+        paragraphs: [
+          [
+            "Deadline pressure directly impacts editing and proofreading cost. If you can wait a week or more for your document, you will secure the most economical rate. If you require overnight or 24-hour delivery, expect to pay a premium for expedited service.",
+          ]
+        ]
+      },
+      {
+        id: "type-of-document",
+        heading: "Type of document",
+        paragraphs: [
+          [
+            "The complexity of the text influences the proofreading price per word. General fiction or standard business communications are straightforward to read. Conversely, highly technical engineering reports, legal documents, or complex academic studies require a slower reading pace and specialized knowledge, increasing the cost.",
+          ]
+        ]
+      },
+      {
+        id: "level-of-work",
+        heading: "Level of work needed",
+        paragraphs: [
+          [
+            "Not all texts are in the same condition. A document written by an experienced native speaker may only need a light sweep for typos. A document drafted hastily or by an author writing in an additional language may require heavier intervention for clarity and flow, which takes more time and therefore costs more.",
+          ]
+        ]
+      },
+      {
+        id: "audience-types",
+        heading: "Academic, business, manuscript, and dissertation proofreading",
+        paragraphs: [
+          [
+            "Different services cater to different needs. ",
+            { text: "Academic proofreading", href: "/services/academic-editing" },
+            " involves checking strict citation styles and formal tone. ",
+            { text: "Business proofreading", href: "/services/non-academic-editing" },
+            " prioritizes brand voice, conciseness, and persuasive clarity. Manuscript proofreading focuses on narrative flow and formatting for publication. Ensure the service you select matches your document type.",
+          ]
+        ]
+      },
+      {
+        id: "pricing-models",
+        heading: "Proofreading price per word vs fixed quote",
+        paragraphs: [
+          [
+            "Most reputable services calculate the proofreading price per word, which is the fairest method as you know the exact cost upfront. Professional organizations like ",
+            { text: "ACES: The Society for Editing", href: "https://aceseditors.org/", external: true },
+            " emphasize clarity in client agreements. Some editors charge an hourly rate, which can be unpredictable. Fixed project quotes are sometimes used for very large tasks, like full book manuscripts, after evaluating a sample chapter.",
+          ]
+        ]
+      },
+      {
+        id: "cheap-risks",
+        heading: "Why very cheap proofreading can be risky",
+        paragraphs: [
+          [
+            "It is tempting to choose the lowest advertised rate, but cheap proofreading often relies on automated software rather than human review, or uses inexperienced readers who rush through the text. High-quality proofreading requires deep concentration and time. If a price seems too good to be true, it likely sacrifices thoroughness and quality.",
+          ]
+        ]
+      },
+      {
+        id: "proofreading-vs-editing",
+        heading: "Proofreading vs editing: why editing usually costs more",
+        paragraphs: [
+          [
+            "Proofreading involves correcting surface errors (spelling, grammar, punctuation) on a finalized draft. Editing involves restructuring sentences, improving argument flow, and refining tone. Because editing requires more critical thought and extensive rewriting, the editing and proofreading cost will reflect this deeper level of work.",
+          ]
+        ]
+      },
+      {
+        id: "cost-examples",
+        heading: "Example proofreading cost scenarios",
+        paragraphs: [
+          [
+            "While exact prices vary, you can easily review different pricing tiers based on standard document lengths. For instance, a short application essay with a flexible deadline will fall into a very affordable tier, whereas a 60,000-word academic thesis needing a rapid turnaround will represent a larger investment. Review our ",
+            { text: "pricing page", href: "/pricing" },
+            " to estimate your specific scenario.",
+          ]
+        ]
+      },
+      {
+        id: "get-quote",
+        heading: "How to get an accurate proofreading quote",
+        paragraphs: [
+          [
+            "For an accurate price, the best approach is to send your document, word count, and deadline for a direct proofreading quote. This allows the editor to assess the current quality of the writing and confirm whether you need basic proofreading or a more substantive editing service.",
+          ]
+        ]
+      },
+      {
+        id: "reduce-costs",
+        heading: "How to reduce proofreading costs before sending your document",
+        paragraphs: [
+          [
+            "You can manage costs by planning ahead. Submit your document with a generous deadline to avoid rush fees. Additionally, self-edit as much as possible. According to the ",
+            { text: "Editorial Freelancers Association", href: "https://www.the-efa.org/rates/", external: true },
+            ", industry standard rates reflect the time required; a cleaner draft allows an editor to work more efficiently. Read the document aloud or use basic spelling tools to fix obvious errors before submitting.",
+          ]
+        ]
+      }
+    ],
+    faq: [
+      {
+        question: "How much does proofreading cost per 1,000 words?",
+        answer: "The cost per 1,000 words varies based on turnaround time and the level of intervention required. Check our pricing page for exact rates, which scale transparently based on your word count and urgency."
+      },
+      {
+        question: "Is proofreading charged per word or per page?",
+        answer: "Professional proofreading is almost always charged per word. This is much fairer than per-page pricing, as page length can vary drastically depending on fonts, margins, and line spacing."
+      },
+      {
+        question: "Why does dissertation proofreading cost more than short essay proofreading?",
+        answer: "Dissertation proofreading cost is higher because it involves a significantly larger word count, specialized academic terminology, and strict adherence to complex university formatting and citation guidelines."
+      },
+      {
+        question: "Is proofreading cheaper than editing?",
+        answer: "Yes, proofreading is generally cheaper than editing. Proofreading checks a finalized document for surface errors, while editing involves time-consuming structural changes, sentence rewriting, and clarity improvements."
+      },
+      {
+        question: "Do urgent deadlines cost more?",
+        answer: "Yes, urgent deadlines require editors to work outside standard hours or prioritize your document over others. Expedited turnaround times always incur a higher per-word rate."
+      },
+      {
+        question: "How can I get a proofreading quote?",
+        answer: "You can get an accurate quote by visiting our contact or upload page, entering your word count, and selecting your required deadline to see the exact price before you commit."
+      },
+      {
+        question: "Is cheap proofreading worth it?",
+        answer: "Extremely cheap proofreading is risky. It often means the reviewer is rushing, inexperienced, or relying entirely on AI software, which can miss contextual errors or damage your academic or professional reputation."
+      }
+    ],
+    internalLinks: [
+      {
+        href: "/pricing",
+        label: "Pricing Guide",
+        description: "View our transparent rates for proofreading based on word count and turnaround time.",
+      },
+      {
+        href: "/services/academic-editing",
+        label: "Academic Proofreading",
+        description: "Learn how we support students and researchers with rigorous thesis and dissertation reviews.",
+      },
+      {
+        href: "/contact",
+        label: "Request a Quote",
+        description: "If you are unsure whether you need proofreading or editing, send your file and we can recommend the right service.",
+      }
+    ]
+  },
 ];
 
 export function getBlogPost(slug: string) {
