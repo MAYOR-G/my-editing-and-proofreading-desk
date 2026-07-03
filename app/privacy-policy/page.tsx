@@ -3,14 +3,14 @@ import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Privacy Policy",
+  title: "Privacy Policy | Edit and Proofread",
   description: "Read how My Editing and Proofreading Desk collects, uses, protects, retains, and handles personal information and uploaded documents.",
-  path: "/privacy-policy",
+  path: "/privacy",
 });
 
 export default function PrivacyPolicyPage() {
   return (
-    <LegalPage title="Privacy Policy" path="/privacy-policy">
+    <LegalPage title="Privacy Policy" path="/privacy">
       <LegalSection title="1. Introduction">
         <p>At MEP (editandproofread.com), we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our website and services.</p>
       </LegalSection>

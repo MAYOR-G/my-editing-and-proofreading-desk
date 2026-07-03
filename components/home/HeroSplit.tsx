@@ -156,7 +156,7 @@ export function HeroSplit() {
             </div>
 
             <div className="flex max-w-sm flex-col gap-5 mb-6 sm:max-w-none sm:flex-row lg:mb-7">
-              <Link href="/dashboard/uploads" className="group inline-flex h-14 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-ivory transition-all hover:bg-primary-light hover:scale-[1.02] shadow-[0_8px_20px_rgba(15,59,127,0.15)] hover:shadow-[0_12px_25px_rgba(15,59,127,0.25)] sm:w-auto sm:px-10">
+              <Link href="/submit" className="group inline-flex h-14 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-ivory transition-all hover:bg-primary-light hover:scale-[1.02] shadow-[0_8px_20px_rgba(15,59,127,0.15)] hover:shadow-[0_12px_25px_rgba(15,59,127,0.25)] sm:w-auto sm:px-10">
                 Submit Your Document
                 <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
               </Link>

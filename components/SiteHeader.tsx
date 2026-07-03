@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
-import { servicePages } from "@/lib/content";
+import { seoServicePages } from "@/lib/seo-service-pages";
 
 const navItems = [
   { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/submit", label: "Submit" },
   { href: "/ai-editing-tool", label: "AI tool" },
   { href: "/editors", label: "Editors" },
   { href: "/blog", label: "Blog" },
@@ -36,10 +37,10 @@ export function SiteHeader() {
             </Link>
             <div className="invisible absolute left-1/2 top-full w-[27rem] -translate-x-1/2 pt-3 opacity-0 transition duration-200 ease-premium-out group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
               <div className="border border-hairline bg-canvas rounded-2xl p-3 shadow-xl">
-                {servicePages.map((service) => (
+                {seoServicePages.map((service) => (
                   <Link
                     key={service.slug}
-                    href={`/services/${service.slug}`}
+                    href={`/${service.slug}`}
                     className="grid gap-1 border-b border-hairline px-4 py-3 last:border-b-0 transition duration-200 ease-premium-out hover:bg-surface-soft hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary rounded-xl"
                   >
                     <span className="text-sm font-medium text-ink">{service.name}</span>
@@ -76,10 +77,10 @@ export function SiteHeader() {
             <span className="hidden min-[390px]:inline">Menu</span>
           </button>
           <Link
-            href="/login"
+            href="/submit"
             className="hidden min-h-11 items-center bg-primary rounded-full px-8 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] xl:inline-flex"
           >
-            Dashboard / Login
+            Submit Document
           </Link>
         </div>
       </div>
@@ -129,8 +130,8 @@ export function SiteHeader() {
             <div className="border-b border-hairline py-6">
               <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Services</p>
               <div className="mt-4 grid gap-3">
-                {servicePages.map((service) => (
-                  <Link key={service.slug} href={`/services/${service.slug}`} onClick={closeMobile} className="grid gap-1 text-sm text-body transition hover:text-primary">
+                {seoServicePages.map((service) => (
+                  <Link key={service.slug} href={`/${service.slug}`} onClick={closeMobile} className="grid gap-1 text-sm text-body transition hover:text-primary">
                     <span className="font-medium text-ink">{service.name}</span>
                     <span className="text-xs leading-5 text-muted">{service.eyebrow}</span>
                   </Link>
@@ -139,8 +140,8 @@ export function SiteHeader() {
             </div>
 
             <div className="grid gap-3 pt-6">
-              <Link href="/login" onClick={closeMobile} className="inline-flex rounded-full min-h-12 items-center justify-center bg-primary px-6 text-sm font-medium text-white transition hover:bg-primary-active">
-                Dashboard / Login
+              <Link href="/submit" onClick={closeMobile} className="inline-flex rounded-full min-h-12 items-center justify-center bg-primary px-6 text-sm font-medium text-white transition hover:bg-primary-active">
+                Submit Document
               </Link>
             </div>
           </div>

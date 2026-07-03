@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { FileCheck2, LockKeyhole, MessageSquareText, PenLine } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { buildPageMetadata } from "@/lib/site";
@@ -113,13 +114,13 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {values.map((value, index) => (
-                <article key={value.title} className="h-full rounded-2xl border border-hairline bg-canvas p-5 shadow-[0_18px_55px_rgba(17,17,15,0.04)] transition duration-300 ease-premium-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_24px_70px_rgba(17,17,15,0.065)]">
-                  <value.icon className="h-5 w-5 text-primary" aria-hidden="true" />
-                  <h3 className="mt-5 font-display text-2xl leading-tight text-ink">{value.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-body">{value.body}</p>
-                </article>
-              ))}
+            {values.map((value, index) => (
+              <article key={value.title} className="h-full rounded-2xl border border-hairline bg-canvas p-5 shadow-[0_18px_55px_rgba(17,17,15,0.04)] transition duration-300 ease-premium-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_24px_70px_rgba(17,17,15,0.065)]">
+                <value.icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h3 className="mt-5 font-display text-2xl leading-tight text-ink">{value.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-body">{value.body}</p>
+              </article>
+            ))}
           </div>
 
           <div className="mt-14 grid gap-8 rounded-[1.35rem] border border-hairline bg-surface-soft p-7 shadow-[0_28px_90px_rgba(17,17,15,0.055)] sm:p-10 lg:grid-cols-[0.78fr_1.22fr] lg:p-12">
@@ -136,6 +137,24 @@ export default function AboutPage() {
               <p>
                 When a change needs the writer's decision, we leave a clear comment rather than guessing. The result is a cleaner document and a transparent editorial trail.
               </p>
+            </div>
+          </div>
+
+          <div className="mt-10 rounded-[1.35rem] border border-primary/15 bg-primary/[0.045] p-7 sm:p-9 lg:flex lg:items-center lg:justify-between lg:gap-10">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Next step</p>
+              <h2 className="mt-3 font-display text-3xl leading-tight text-ink">Choose the right human review for your document.</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-body">
+                Compare editing, proofreading, academic proofreading, dissertation proofreading, manuscript editing, business proofreading, formatting, and translation review before you upload.
+              </p>
+            </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-0">
+              <Link href="/services" className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition hover:bg-primary-active">
+                View Services
+              </Link>
+              <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary/25 bg-canvas px-6 text-sm font-semibold text-primary transition hover:border-primary">
+                Contact the Desk
+              </Link>
             </div>
           </div>
         </div>

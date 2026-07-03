@@ -3,14 +3,14 @@ import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Terms and Conditions",
+  title: "Terms and Conditions | Edit and Proofread",
   description: "Read the terms for using My Editing and Proofreading Desk editing, proofreading, payment, confidentiality, and delivery services.",
-  path: "/terms-and-conditions",
+  path: "/terms",
 });
 
 export default function TermsAndConditionsPage() {
   return (
-    <LegalPage title="Terms and Conditions" path="/terms-and-conditions">
+    <LegalPage title="Terms and Conditions" path="/terms">
       
       <LegalSection title="1. Introduction">
         <p>Welcome to MEP (editandproofread.com). By accessing or using our website and services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ServiceSystemVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
-import { servicePages } from "@/lib/content";
+import { seoServicePages } from "@/lib/seo-service-pages";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Professional Proofreading & Editing Services Overview",
-  description: "Explore our academic editing, business proofreading, manuscript review, and writing support services. Secure, confidential, and expert human review.",
+  title: "Professional Editing and Proofreading Services | Service Options",
+  description: "Compare professional editing, proofreading, academic proofreading, dissertation proofreading, manuscript editing, business proofreading, formatting, and translation review services.",
   path: "/services",
 });
 
@@ -23,10 +23,10 @@ export default function ServicesPage() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.5fr_1.5fr] lg:items-start">
           <ServiceSystemVisual />
           <div className="grid gap-5">
-            {servicePages.map((service, index) => (
+            {seoServicePages.map((service, index) => (
               <Link
                 key={service.slug}
-                href={`/services/${service.slug}`}
+                href={`/${service.slug}`}
                 className="group grid gap-6 rounded-2xl border border-hairline bg-surface-soft p-6 transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:border-primary/35 hover:bg-canvas hover:shadow-[0_18px_60px_rgba(17,17,15,0.045)] md:grid-cols-[0.14fr_0.34fr_0.44fr_0.08fr]"
               >
                 <span className="font-display text-5xl leading-none text-primary">{String(index + 1).padStart(2, "0")}</span>
@@ -34,7 +34,7 @@ export default function ServicesPage() {
                   <span className="block text-xs uppercase tracking-[0.28em] text-primary">{service.eyebrow}</span>
                   <span className="mt-3 block font-display text-3xl leading-tight text-ink">{service.name}</span>
                 </span>
-                <span className="text-base leading-7 text-body">{service.description}</span>
+                <span className="text-base leading-7 text-body">{service.metaDescription}</span>
                 <span className="hidden items-center justify-end md:flex" aria-hidden="true">
                   <span className="h-px w-10 bg-hairline transition duration-200 ease-premium-out group-hover:w-16 group-hover:bg-primary" />
                 </span>

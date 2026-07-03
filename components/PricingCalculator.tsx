@@ -399,7 +399,7 @@ export function PricingCalculator({ compact = false }: { compact?: boolean }) {
                 Contact Support
               </Link>
             ) : (
-              <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-primary rounded-full px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
+              <Link href="/submit" className="inline-flex min-h-12 items-center justify-center bg-primary rounded-full px-6 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
                 Start Secure Upload
               </Link>
             )}

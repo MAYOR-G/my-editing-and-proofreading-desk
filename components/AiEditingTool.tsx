@@ -447,7 +447,7 @@ export function AiEditingTool() {
               AI is useful for a fast first pass. Professional editors provide deeper judgment, voice preservation, formatting awareness, academic/business context, and final delivery confidence.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/login" className="inline-flex min-h-12 items-center justify-center bg-primary px-7 text-sm text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] rounded-full">
+              <Link href="/submit" className="inline-flex min-h-12 items-center justify-center bg-primary px-7 text-sm text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98] rounded-full">
                 Submit for full review
               </Link>
               <Link href="/services" className="inline-flex min-h-12 items-center justify-center border border-hairline px-7 text-sm text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98] rounded-full">

@@ -1,6 +1,6 @@
 "use client";
 
-import { servicePages } from "@/lib/content";
+import { seoServicePages } from "@/lib/seo-service-pages";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,10 +50,10 @@ export function ServicesGrid() {
 
         {/* 6-Card Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {servicePages.map((service, index) => (
+          {seoServicePages.map((service, index) => (
             <Link 
               key={service.slug}
-              href={`/services/${service.slug}`}
+              href={`/${service.slug}`}
               className="block bg-white rounded-3xl p-8 sm:p-10 border border-ink/5 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 h-full group relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/[0.02] rounded-bl-[100px] -z-0 group-hover:bg-primary/[0.04] transition-colors" />
@@ -71,7 +71,7 @@ export function ServicesGrid() {
                   {service.name}
                 </h3>
                 <p className="text-charcoal/70 leading-relaxed text-sm sm:text-base">
-                  {service.description}
+                  {service.metaDescription}
                 </p>
               </div>
             </Link>

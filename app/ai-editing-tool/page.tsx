@@ -48,7 +48,7 @@ export default function AiEditingToolPage() {
               <Link href="#try-tool" className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-7 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
                 Try up to 1,000 words
               </Link>
-              <Link href="/login" className="inline-flex min-h-12 items-center justify-center rounded-full border border-hairline bg-white px-7 text-sm font-medium text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98]">
+              <Link href="/submit" className="inline-flex min-h-12 items-center justify-center rounded-full border border-hairline bg-white px-7 text-sm font-medium text-ink transition duration-200 ease-premium-out hover:border-primary hover:text-primary active:scale-[0.98]">
                 Submit full document
               </Link>
             </div>

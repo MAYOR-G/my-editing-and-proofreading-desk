@@ -173,7 +173,7 @@ export default function EditorsPage() {
               Your document is matched with editors who consider the subject, purpose, audience, and expected standard before they revise a single sentence.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/dashboard/uploads" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(23,74,124,0.22)] transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-primary-active">
+              <Link href="/submit" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(23,74,124,0.22)] transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-primary-active">
                 Submit Your Document <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary/22 bg-canvas px-6 text-sm font-semibold text-primary transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/5">
@@ -400,7 +400,7 @@ export default function EditorsPage() {
               </h2>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link href="/dashboard/uploads" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-primary transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-paper">
+              <Link href="/submit" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-primary transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-paper">
                 Submit Your Document <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 px-6 text-sm font-semibold text-white transition duration-200 ease-premium-out hover:-translate-y-0.5 hover:bg-white/10">

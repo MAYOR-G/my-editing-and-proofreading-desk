@@ -11,9 +11,9 @@ function normalizePath(path = "/") {
 export const siteConfig = {
   siteName: BRAND_NAME,
   siteUrl: PRODUCTION_SITE_URL,
-  defaultTitle: "Editing and Proofreading Services | My Editing Desk",
+  defaultTitle: "Professional Editing and Proofreading Services",
   defaultDescription:
-    "Human editing and proofreading for academic, business, manuscript, and professional documents. Secure uploads, clear pricing, and expert review.",
+    "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing. Secure upload and clear pricing.",
   defaultOgImage: "/assets/og-image.jpg",
   defaultOgImageAlt: `${BRAND_NAME} professional editing and proofreading services`,
   contactEmail: SUPPORT_EMAIL,
@@ -146,19 +146,48 @@ export function websiteJsonLd() {
   };
 }
 
-export function serviceJsonLd(service: { name: string; description: string; slug: string }) {
+export function professionalServiceJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "@id": `${absoluteUrl(`/services/${service.slug}`)}#service`,
-    name: service.name,
-    description: service.description,
-    url: absoluteUrl(`/services/${service.slug}`),
+    "@type": "ProfessionalService",
+    "@id": `${siteConfig.siteUrl}/#professional-service`,
+    name: siteConfig.siteName,
+    url: siteConfig.siteUrl,
+    image: assetUrl(siteConfig.defaultOgImage),
+    description: siteConfig.defaultDescription,
     provider: {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     areaServed: "Worldwide",
-    mainEntityOfPage: absoluteUrl(`/services/${service.slug}`),
+    serviceType: [
+      "Professional editing services",
+      "Professional proofreading services",
+      "Academic proofreading",
+      "Business proofreading",
+      "Manuscript editing",
+      "Document formatting",
+    ],
+    email: siteConfig.contactEmail,
+    telephone: siteConfig.contactPhoneTel,
+  };
+}
+
+export function serviceJsonLd(service: { name: string; description: string; slug: string; path?: string; serviceType?: string }) {
+  const path = service.path ?? `/services/${service.slug}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${absoluteUrl(path)}#service`,
+    name: service.name,
+    description: service.description,
+    serviceType: service.serviceType ?? service.name,
+    url: absoluteUrl(path),
+    provider: {
+      "@id": `${siteConfig.siteUrl}/#organization`,
+    },
+    areaServed: "Worldwide",
+    mainEntityOfPage: absoluteUrl(path),
   };
 }
 

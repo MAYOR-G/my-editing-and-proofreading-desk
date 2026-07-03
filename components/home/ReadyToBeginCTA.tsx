@@ -32,7 +32,7 @@ export function ReadyToBeginCTA() {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
-                href="/login" 
+                href="/submit" 
                 className="inline-flex h-14 items-center justify-center gap-3 bg-primary hover:bg-accent px-10 text-white font-semibold text-sm uppercase tracking-widest rounded-full shadow-[0_10px_30px_rgba(15,59,127,0.2)] transition-all hover:scale-105 hover:shadow-[0_15px_40px_rgba(59,130,246,0.3)] group"
               >
                 Submit Your Document

@@ -5,32 +5,32 @@ const documentServices = [
   {
     title: "Thesis & Dissertation Editing",
     description: "Thesis editing and dissertation proofreading for chapter flow, scholarly tone, grammar, references, and presentation.",
-    href: "/services/academic-editing",
+    href: "/thesis-editing",
   },
   {
     title: "Research Paper Editing",
     description: "Research paper editing for clear methods, results, discussion, terminology, and journal-ready language.",
-    href: "/services/academic-editing",
+    href: "/academic-proofreading",
   },
   {
     title: "Essay Proofreading",
     description: "Academic proofreading and final checks for essays that are already structured and nearly ready to submit.",
-    href: "/services/express-service",
+    href: "/proofreading-services",
   },
   {
     title: "Business Proposal Editing",
     description: "Business proposal and report editing for concise messaging, credible tone, and reader-focused structure.",
-    href: "/services/non-academic-editing",
+    href: "/business-proofreading",
   },
   {
     title: "Book & Manuscript Editing",
     description: "Manuscript editing for long-form organization, consistency, readability, headings, and references.",
-    href: "/services/manuscript-formatting",
+    href: "/manuscript-editing",
   },
   {
     title: "Application & Statement Editing",
     description: "Application editing and writing support for personal statements, proposals, and professional submissions.",
-    href: "/services/writing-support",
+    href: "/cv-resume-editing",
   },
 ];
 
@@ -70,13 +70,13 @@ export function DocumentTypeServices() {
         </div>
 
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-          <Link href="/services/express-service" className="font-semibold text-primary hover:underline">
+          <Link href="/proofreading-services" className="font-semibold text-primary hover:underline">
             Professional proofreading services
           </Link>
           <Link href="/pricing" className="font-semibold text-primary hover:underline">
             Review pricing
           </Link>
-          <Link href="/dashboard/uploads" className="font-semibold text-primary hover:underline">
+          <Link href="/submit" className="font-semibold text-primary hover:underline">
             Submit your document
           </Link>
         </div>

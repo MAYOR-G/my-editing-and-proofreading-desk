@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { NewsletterSubscribeForm } from "@/components/NewsletterSubscribeForm";
-import { servicePages } from "@/lib/content";
+import { seoServicePages } from "@/lib/seo-service-pages";
 import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 const platformLinks = [
   { href: "/about", label: "About us" },
   { href: "/editors", label: "Editor standards" },
+  { href: "/editorial-policy", label: "Editorial policy" },
+  { href: "/submit", label: "Submit document" },
   { href: "/pricing", label: "Pricing calculator" },
   { href: "/blog", label: "Blog" },
   { href: "/ai-editing-tool", label: "AI Editing Tool" },
@@ -17,9 +19,9 @@ const platformLinks = [
 const trustBadges = ["Private uploads", "Secure payments", "Human review", "Dashboard delivery", "AI-assisted entry"];
 
 const legalLinks = [
-  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/privacy", label: "Privacy Policy" },
   { href: "/refund-policy", label: "Refund Policy" },
-  { href: "/terms-and-conditions", label: "Terms and Conditions" },
+  { href: "/terms", label: "Terms and Conditions" },
 ];
 
 export function SiteFooter() {
@@ -67,7 +69,7 @@ export function SiteFooter() {
             </address>
           </div>
 
-          <Link href="/login" className="inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-primary px-7 text-sm font-bold text-white shadow-[0_14px_34px_rgba(23,74,124,0.28)] transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
+          <Link href="/submit" className="inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-primary px-7 text-sm font-bold text-white shadow-[0_14px_34px_rgba(23,74,124,0.28)] transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
             Start Secure Upload
           </Link>
         </aside>
@@ -78,8 +80,8 @@ export function SiteFooter() {
             <div>
               <h2 className="mb-2 text-sm font-bold text-surface-soft">Services</h2>
               <div className="mt-4 grid gap-3 text-sm text-surface-soft/60">
-                {servicePages.slice(0, 6).map((service) => (
-                  <Link key={service.slug} href={`/services/${service.slug}`} className="transition hover:text-primary">
+                {seoServicePages.map((service) => (
+                  <Link key={service.slug} href={`/${service.slug}`} className="transition hover:text-primary">
                     {service.name}
                   </Link>
                 ))}

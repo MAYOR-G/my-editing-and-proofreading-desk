@@ -57,16 +57,16 @@ const brandAuthor = "My Editing and Proofreading Desk";
 
 export const blogPosts: BlogPost[] = [
   {
-    title: "Editing vs Proofreading: Which Service Do You Need?",
+    title: "Editing vs Proofreading: What Is the Difference?",
     slug: "editing-vs-proofreading",
     excerpt: "A practical comparison of editing vs proofreading, with clear examples to help you choose the right level of review for your document.",
     category: "Editing services",
     author: brandAuthor,
     datePublished: "2026-06-22",
-    dateUpdated: "2026-06-22",
+    dateUpdated: "2026-07-03",
     readingTime: "9 min read",
-    metaTitle: "Editing vs Proofreading: Which Service Do You Need?",
-    metaDescription: "Understand editing vs proofreading, when to choose each service, and how to prepare your document for a clearer, more polished final draft.",
+    metaTitle: "Editing vs Proofreading: What Is the Difference? | Edit and Proofread",
+    metaDescription: "Compare editing vs proofreading, see what each service fixes, and choose the right human review for academic, business, manuscript, or professional writing.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
     heroImageAlt: "Side-by-side documents showing structural editing marks and final proofreading corrections",
     tableOfContents: [
@@ -129,7 +129,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "For academic editing, the review may focus on argument flow, scholarly tone, terminology, evidence language, headings, and citation consistency. Our ",
-            { text: "academic editing service", href: "/services/academic-editing" },
+            { text: "academic editing service", href: "/academic-proofreading" },
             " is intended for essays, theses, dissertations, and research papers that need more than correction of surface errors.",
           ],
         ],
@@ -156,7 +156,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "Our ",
-            { text: "professional proofreading service", href: "/services/express-service" },
+            { text: "professional proofreading service", href: "/proofreading-services" },
             " is designed for final drafts that need grammar, punctuation, spelling, consistency, and light readability corrections before they are shared.",
           ],
         ],
@@ -192,7 +192,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "For reports, proposals, and other professional documents, ",
-            { text: "business editing", href: "/services/non-academic-editing" },
+            { text: "business editing", href: "/editing-services" },
             " can strengthen reader focus before proofreading begins. Applications may also need structural support when the central message or organization is still developing.",
           ],
         ],
@@ -239,7 +239,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "Still unsure which service you need? ",
-            { text: "Submit your document", href: "/dashboard/uploads" },
+            { text: "Submit your document", href: "/submit" },
             " and we’ll help you choose the right level of review.",
           ],
         ],
@@ -269,6 +269,16 @@ export const blogPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
+        href: "/editing-services",
+        label: "Editing services",
+        description: "Choose editing when your document needs stronger structure, tone, clarity, and readability.",
+      },
+      {
+        href: "/proofreading-services",
+        label: "Proofreading services",
+        description: "Choose proofreading when your final draft needs grammar, punctuation, consistency, and presentation checks.",
+      },
+      {
         href: "/services",
         label: "Compare services",
         description: "Review the available editing, proofreading, manuscript, business, and writing-support options.",
@@ -279,7 +289,7 @@ export const blogPosts: BlogPost[] = [
         description: "Compare service, word-count, and turnaround options before you upload.",
       },
       {
-        href: "/dashboard/uploads",
+        href: "/submit",
         label: "Submit your document",
         description: "Still unsure which service you need? Submit your document and we’ll help you choose the right level of review.",
       },
@@ -318,7 +328,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           [
             "A reliable ",
-            { text: "thesis proofreading checklist", href: "/services/academic-editing" },
+            { text: "thesis proofreading checklist", href: "/thesis-editing" },
             " should cover more than spelling. Before submission, review grammar and punctuation, academic tone, argument clarity, chapter flow, tables and figures, citations and references, university formatting rules, and the final exported file.",
           ],
           [
@@ -385,7 +395,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "Read the abstract, introduction, and conclusion together. They should describe the same research problem, methods, principal findings, and contribution. If these sections make different promises, the thesis may need ",
-            { text: "academic editing", href: "/services/academic-editing" },
+            { text: "academic editing", href: "/academic-proofreading" },
             " rather than proofreading alone.",
           ],
         ],
@@ -496,7 +506,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "If you need a final language check after the thesis is stable, review the ",
-            { text: "academic proofreading service", href: "/services/express-service" },
+            { text: "academic proofreading service", href: "/academic-proofreading" },
             " and use the ",
             { text: "pricing calculator", href: "/pricing" },
             " to estimate the project. The ",
@@ -522,7 +532,7 @@ export const blogPosts: BlogPost[] = [
           ],
           [
             "Preparing your thesis for submission? Our ",
-            { text: "academic editors", href: "/services/academic-editing" },
+            { text: "academic editors", href: "/thesis-editing" },
             " can review grammar, structure, clarity, formatting, and final presentation.",
           ],
         ],
@@ -556,7 +566,7 @@ export const blogPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
-        href: "/services/academic-editing",
+        href: "/thesis-editing",
         label: "Academic editing",
         description: "Get help with thesis structure, scholarly clarity, language, and consistency before the final proofread.",
       },
@@ -566,7 +576,7 @@ export const blogPosts: BlogPost[] = [
         description: "Estimate academic editing or proofreading by word count and turnaround.",
       },
       {
-        href: "/dashboard/uploads",
+        href: "/submit",
         label: "Submit your thesis",
         description: "Preparing your thesis for submission? Our academic editors can review grammar, structure, clarity, formatting, and final presentation.",
       },
@@ -575,14 +585,14 @@ export const blogPosts: BlogPost[] = [
   {
     title: "Dissertation Proofreading Checklist: What to Fix Before You Submit",
     slug: "dissertation-proofreading-checklist",
-    excerpt: "Use this dissertation proofreading checklist to fix grammar, formatting, references, tables, figures, and clarity before final submission.",
+    excerpt: "Use this 15-point dissertation proofreading checklist to catch specific language, formatting, reference, table, figure, and final-file errors.",
     category: "Academic writing",
     author: brandAuthor,
     datePublished: "2026-06-28",
     dateUpdated: "2026-06-28",
     readingTime: "11 min read",
     metaTitle: "Dissertation Proofreading Checklist: 15 Fixes Before Submission",
-    metaDescription: "Use this dissertation proofreading checklist to fix grammar, formatting, references, tables, figures, and clarity before final submission.",
+    metaDescription: "Use this 15-point dissertation proofreading checklist to catch grammar, formatting, reference, table, figure, and final-file errors before submission.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
     tableOfContents: [
@@ -787,7 +797,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           [
             "If your deadline is approaching, or if English is an additional language, a professional ",
-            { text: "academic proofreading", href: "/services/academic-editing" },
+            { text: "academic proofreading", href: "/academic-proofreading" },
             " service can be a vital investment. Professional editors ensure your writing is clear, grammatically correct, and formatted to strict academic standards, allowing you to submit with confidence.",
           ],
         ]
@@ -821,7 +831,7 @@ export const blogPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
-        href: "/services/academic-editing",
+        href: "/dissertation-proofreading",
         label: "Academic proofreading",
         description: "Need a second pair of eyes before submission? Ensure your writing meets university standards.",
       },
@@ -838,16 +848,16 @@ export const blogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "How Much Does Proofreading Cost? A Simple Pricing Guide for Students, Authors, and Businesses",
+    title: "How Much Does Proofreading Cost in 2026?",
     slug: "how-much-does-proofreading-cost",
     excerpt: "Learn what affects proofreading cost, from word count and deadline to document type. Compare student, author, academic, and business proofreading prices.",
     category: "Pricing & Guides",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-06-28",
+    dateUpdated: "2026-07-03",
     readingTime: "10 min read",
-    metaTitle: "Proofreading Cost Guide for Students, Authors & Businesses",
-    metaDescription: "Learn what affects proofreading cost, from word count and deadline to document type. Compare student, author, academic, and business proofreading prices.",
+    metaTitle: "How Much Does Proofreading Cost in 2026? | Edit and Proofread",
+    metaDescription: "Learn what affects proofreading cost in 2026, including word count, turnaround, document type, editing vs proofreading, and how to choose a service.",
     heroImage: "/images/blog/proofreading-cost-guide-hero.png",
     heroImageAlt: "Modern workspace with a calculator and a printed document, symbolizing calculating proofreading costs and pricing",
     tableOfContents: [
@@ -928,9 +938,9 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           [
             "Different services cater to different needs. ",
-            { text: "Academic proofreading", href: "/services/academic-editing" },
+            { text: "Academic proofreading", href: "/academic-proofreading" },
             " involves checking strict citation styles and formal tone. ",
-            { text: "Business proofreading", href: "/services/non-academic-editing" },
+            { text: "Business proofreading", href: "/business-proofreading" },
             " prioritizes brand voice, conciseness, and persuasive clarity. Manuscript proofreading focuses on narrative flow and formatting for publication. Ensure the service you select matches your document type.",
           ]
         ]
@@ -1033,9 +1043,14 @@ export const blogPosts: BlogPost[] = [
         description: "View our transparent rates for proofreading based on word count and turnaround time.",
       },
       {
-        href: "/services/academic-editing",
+        href: "/academic-proofreading",
         label: "Academic Proofreading",
         description: "Learn how we support students and researchers with rigorous thesis and dissertation reviews.",
+      },
+      {
+        href: "/submit",
+        label: "Upload Your Document",
+        description: "Upload securely to confirm word count, turnaround, and final proofreading cost.",
       },
       {
         href: "/contact",
@@ -1043,6 +1058,181 @@ export const blogPosts: BlogPost[] = [
         description: "If you are unsure whether you need proofreading or editing, send your file and we can recommend the right service.",
       }
     ]
+  },
+  {
+    title: "How to Proofread a Dissertation Before Submission",
+    slug: "how-to-proofread-a-dissertation-before-submission",
+    excerpt: "A practical 2026 guide to proofreading a dissertation before submission, from grammar and clarity to formatting, references, appendices, and final files.",
+    category: "Academic writing",
+    author: brandAuthor,
+    datePublished: "2026-07-03",
+    dateUpdated: "2026-07-03",
+    readingTime: "10 min read",
+    metaTitle: "How to Proofread a Dissertation Before Submission | Edit and Proofread",
+    metaDescription: "Learn how to proofread a dissertation before submission. Check grammar, clarity, formatting, references, tables, figures, appendices, and final files.",
+    heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
+    heroImageAlt: "Dissertation pages, checklist notes, and academic proofreading marks before final submission",
+    tableOfContents: [
+      { id: "quick-answer", label: "Quick answer" },
+      { id: "proofreading-checklist", label: "Dissertation proofreading checklist" },
+      { id: "grammar-clarity", label: "Grammar and clarity checks" },
+      { id: "formatting", label: "Formatting checks" },
+      { id: "references", label: "References and citations" },
+      { id: "tables-figures", label: "Tables, figures, headings, and appendices" },
+      { id: "final-pass", label: "Why the final proofread matters" },
+    ],
+    body: [
+      {
+        id: "quick-answer",
+        heading: "How to proofread a dissertation before submission",
+        paragraphs: [
+          [
+            "To proofread a dissertation before submission, work in separate passes: first grammar and clarity, then formatting, references, tables, figures, headings, appendices, and the final exported file. Do not try to catch every problem in one read-through.",
+          ],
+          [
+            "A dissertation is too long and too important for a quick spell-check. Use this checklist after the content and chapter order are settled. If the argument, structure, or academic tone still needs deeper work, consider ",
+            { text: "thesis editing", href: "/thesis-editing" },
+            " before final proofreading.",
+          ],
+        ],
+        callout: {
+          title: "Before you start",
+          text: [
+            "Freeze the content, gather your university guidelines, refresh generated lists, and leave time to review corrections before the submission deadline.",
+          ],
+        },
+      },
+      {
+        id: "proofreading-checklist",
+        heading: "Dissertation proofreading checklist",
+        paragraphs: [
+          [
+            "Use this checklist after your supervisor-requested revisions are complete. For a paid final review, our ",
+            { text: "dissertation proofreading service", href: "/dissertation-proofreading" },
+            " can check language, consistency, formatting, and presentation before submission.",
+          ],
+        ],
+        table: {
+          headers: ["Area", "What to check", "Why it matters"],
+          rows: [
+            ["Grammar and clarity", "Sentence boundaries, tense, agreement, punctuation, repeated words, unclear phrasing", "Helps examiners focus on the research instead of language distractions"],
+            ["Formatting", "Margins, line spacing, fonts, headings, pagination, front matter, PDF export", "Keeps the document aligned with graduate school requirements"],
+            ["References", "Citation matches, reference entries, style consistency, DOI and URL presentation", "Reduces avoidable academic and presentation errors"],
+            ["Tables and figures", "Numbering, captions, callouts, source notes, legibility, appendix links", "Prevents confusion around evidence and results"],
+            ["Final file", "Bookmarks, links, blank pages, filename, upload format, backup copy", "Avoids last-minute technical submission problems"],
+          ],
+        },
+      },
+      {
+        id: "grammar-clarity",
+        heading: "Check grammar, clarity, and academic tone in separate passes",
+        paragraphs: [
+          [
+            "Read once for grammar and punctuation only. Then read again for clarity. Long dissertation sentences often hide missing verbs, unclear subjects, comma splices, weak transitions, or claims that overstate the evidence.",
+          ],
+          [
+            "Academic tone should be precise, cautious, and consistent. Replace vague phrases with specific terms, define abbreviations on first use, and make sure words such as “this,” “it,” and “they” clearly refer to the right idea.",
+          ],
+        ],
+        bullets: [
+          ["Search for your common errors instead of relying only on spell-check."],
+          ["Check abstract, footnotes, captions, table cells, and appendices as carefully as body text."],
+          ["Read the introduction and conclusion together to confirm they describe the same research problem and contribution."],
+          ["Leave comments for any claim that needs author or supervisor confirmation."],
+        ],
+      },
+      {
+        id: "formatting",
+        heading: "Review dissertation formatting requirements",
+        paragraphs: [
+          [
+            "Use your institution's current formatting guide, not memory or a friend's dissertation. Check margins, font, line spacing, page numbering, title page wording, declaration pages, contents lists, heading styles, appendices, and required file format.",
+          ],
+          [
+            "If your file has many section breaks, tables, figures, or reference lists, formatting can shift during final edits. Our ",
+            { text: "document formatting service", href: "/document-formatting" },
+            " can support submission-ready presentation when the rules are detailed.",
+          ],
+        ],
+      },
+      {
+        id: "references",
+        heading: "Match references and citations carefully",
+        paragraphs: [
+          [
+            "Every in-text citation should match a reference list entry, and every reference list entry should be used unless your required style permits uncited bibliography entries. Check author names, years, title capitalization, journal details, page ranges, DOIs, URLs, and access dates where required.",
+          ],
+          [
+            "Do not assume reference software has produced perfect output. Imported fields, capitalization, edition details, and source types are often wrong. Your university or department requirements should override general examples when they conflict.",
+          ],
+        ],
+      },
+      {
+        id: "tables-figures",
+        heading: "Inspect tables, figures, headings, and appendices",
+        paragraphs: [
+          [
+            "Tables and figures need their own proofread. Check numbering, captions, legends, axis labels, units, source notes, significance markers, and every in-text callout. A figure mentioned as Figure 4.2 should still be Figure 4.2 after final edits.",
+          ],
+          [
+            "Refresh the table of contents, list of figures, and list of tables only after headings and captions are final. Then inspect appendices to confirm labels, order, formatting, and cross-references are still correct.",
+          ],
+        ],
+      },
+      {
+        id: "final-pass",
+        heading: "Why final dissertation proofreading matters",
+        paragraphs: [
+          [
+            "Final proofreading cannot change the quality of the research, but it can protect the presentation of that research. Clean grammar, consistent formatting, accurate references, and readable tables help examiners move through the dissertation without avoidable distractions.",
+          ],
+          [
+            "If you want a second human review before submission, compare ",
+            { text: "pricing", href: "/pricing" },
+            ", ",
+            { text: "upload your dissertation securely", href: "/submit" },
+            ", or ",
+            { text: "contact the editing desk", href: "/contact" },
+            " if your deadline or formatting requirements are unusual.",
+          ],
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: "How many times should I proofread my dissertation?",
+        answer: "Proofread in multiple passes rather than one long reading. Complete separate checks for grammar, clarity, references, formatting, tables and figures, appendices, and the final exported file.",
+      },
+      {
+        question: "Should I proofread before or after formatting?",
+        answer: "Do a language proofread after content is final, then complete formatting checks near the end. After formatting and PDF export, inspect the final file again because conversion can introduce layout problems.",
+      },
+      {
+        question: "Can a professional proofreader check dissertation references?",
+        answer: "A proofreader can check consistency, missing details, citation-reference matching, and style presentation within the supplied document. Full source verification is a separate task and should be agreed before work begins.",
+      },
+      {
+        question: "What is the difference between dissertation editing and proofreading?",
+        answer: "Dissertation editing improves structure, argument flow, academic tone, clarity, and sentence construction. Dissertation proofreading is the final check for grammar, punctuation, references, formatting, and presentation after major revisions are complete.",
+      },
+    ],
+    internalLinks: [
+      {
+        href: "/dissertation-proofreading",
+        label: "Dissertation proofreading",
+        description: "Get a human final review for grammar, clarity, formatting, references, tables, figures, and presentation.",
+      },
+      {
+        href: "/document-formatting",
+        label: "Document formatting",
+        description: "Prepare headings, tables, references, page numbers, and submission-ready files.",
+      },
+      {
+        href: "/pricing",
+        label: "Check pricing",
+        description: "Estimate cost by word count, service depth, and turnaround before uploading.",
+      },
+    ],
   },
 ];
 
