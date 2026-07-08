@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { SERVICE_OPTIONS } from "@/lib/pricing";
+import { seoServicePages } from "@/lib/seo-service-pages";
 
 export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
+export const SITE_LAST_MODIFIED = "2026-07-07";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";
@@ -22,6 +25,34 @@ export const siteConfig = {
   address: COMPANY_ADDRESS,
   socialLinks: [] as string[],
 };
+
+export const siteAuthor = {
+  name: "My Editing and Proofreading Desk Editorial Team",
+  description:
+    "Human editors and proofreaders reviewing academic, business, manuscript, application, and professional documents.",
+};
+
+const serviceOfferCatalog = SERVICE_OPTIONS.map((service) => ({
+  "@type": "Offer",
+  name: service.label,
+  description: service.note,
+  priceCurrency: "USD",
+  availability: "https://schema.org/InStock",
+  url: absoluteUrl("/pricing"),
+  priceSpecification: "fixedPrice" in service && service.fixedPrice
+    ? {
+        "@type": "UnitPriceSpecification",
+        price: service.fixedPrice,
+        priceCurrency: "USD",
+        unitText: "project",
+      }
+    : {
+        "@type": "UnitPriceSpecification",
+        price: service.rate,
+        priceCurrency: "USD",
+        unitText: "word",
+      },
+}));
 
 export function absoluteUrl(path = "/") {
   return `${siteConfig.siteUrl}${normalizePath(path)}`;
@@ -59,6 +90,9 @@ export function buildPageMetadata({
     metadataBase: new URL(siteConfig.siteUrl),
     alternates: {
       canonical: url,
+      languages: {
+        "en-US": url,
+      },
     },
     openGraph: {
       title,
@@ -123,6 +157,26 @@ export function organizationJsonLd() {
       postalCode: "19801",
       addressCountry: "US",
     },
+    foundingLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Wilmington",
+        addressRegion: "DE",
+        addressCountry: "US",
+      },
+    },
+    knowsAbout: [
+      "Professional editing",
+      "Professional proofreading",
+      "Academic proofreading",
+      "Dissertation proofreading",
+      "Thesis editing",
+      "Manuscript editing",
+      "Business proofreading",
+      "Document formatting",
+      "Translation review",
+    ],
   };
 
   if (siteConfig.socialLinks.length > 0) {
@@ -143,6 +197,89 @@ export function websiteJsonLd() {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     inLanguage: "en-US",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteConfig.siteUrl}/blog?query={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+export function siteNavigationJsonLd() {
+  const primaryLinks = [
+    { name: "Services", path: "/services" },
+    { name: "Pricing", path: "/pricing" },
+    { name: "Submit Document", path: "/submit" },
+    { name: "AI Editing Tool", path: "/ai-editing-tool" },
+    { name: "Editors", path: "/editors" },
+    { name: "Blog", path: "/blog" },
+    { name: "FAQ", path: "/faq" },
+    { name: "Contact", path: "/contact" },
+    ...seoServicePages.map((service) => ({
+      name: service.name,
+      path: `/${service.slug}`,
+    })),
+  ];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${siteConfig.siteUrl}/#site-navigation`,
+    name: "Primary site navigation",
+    itemListElement: primaryLinks.map((item, index) => ({
+      "@type": "SiteNavigationElement",
+      position: index + 1,
+      name: item.name,
+      url: absoluteUrl(item.path),
+    })),
+  };
+}
+
+export function editorialTeamJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${siteConfig.siteUrl}/#editorial-team`,
+    name: siteAuthor.name,
+    description: siteAuthor.description,
+    worksFor: {
+      "@id": `${siteConfig.siteUrl}/#organization`,
+    },
+    knowsAbout: [
+      "Editing",
+      "Proofreading",
+      "Academic writing",
+      "Business writing",
+      "Manuscript preparation",
+      "Document formatting",
+    ],
+  };
+}
+
+export function webPageJsonLd(page: {
+  path: string;
+  name: string;
+  description: string;
+  dateModified?: string;
+  isPartOf?: string;
+}) {
+  const url = absoluteUrl(page.path);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: page.name,
+    description: page.description,
+    inLanguage: "en-US",
+    dateModified: page.dateModified ?? SITE_LAST_MODIFIED,
+    isPartOf: {
+      "@id": page.isPartOf ?? `${siteConfig.siteUrl}/#website`,
+    },
+    publisher: {
+      "@id": `${siteConfig.siteUrl}/#organization`,
+    },
   };
 }
 
@@ -157,6 +294,20 @@ export function professionalServiceJsonLd() {
     description: siteConfig.defaultDescription,
     provider: {
       "@id": `${siteConfig.siteUrl}/#organization`,
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "1007 N Orange St. 4th Floor Suite #5723",
+      addressLocality: "Wilmington",
+      addressRegion: "DE",
+      postalCode: "19801",
+      addressCountry: "US",
+    },
+    priceRange: "$$",
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Editing and proofreading service options",
+      itemListElement: serviceOfferCatalog,
     },
     areaServed: "Worldwide",
     serviceType: [
@@ -187,6 +338,15 @@ export function serviceJsonLd(service: { name: string; description: string; slug
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     areaServed: "Worldwide",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: 0.022,
+      highPrice: 0.055,
+      offerCount: SERVICE_OPTIONS.length,
+      url: absoluteUrl("/pricing"),
+      availability: "https://schema.org/InStock",
+    },
     mainEntityOfPage: absoluteUrl(path),
   };
 }
@@ -201,8 +361,23 @@ export function blogPostingJsonLd(post: {
   heroImage: string;
   heroImageAlt: string;
   category?: string;
+  body?: Array<{ heading: string; paragraphs: unknown[]; bullets?: unknown[]; numberedSteps?: unknown[] }>;
+  faq?: Array<{ question: string; answer: string }>;
+  metaDescription?: string;
 }) {
   const url = absoluteUrl(`/blog/${post.slug}`);
+  const textBlocks = post.body?.flatMap((section) => [
+    section.heading,
+    ...section.paragraphs.flat(),
+    ...(section.bullets?.flat() ?? []),
+    ...(section.numberedSteps?.flat() ?? []),
+  ]) ?? [];
+  const wordCount = textBlocks
+    .map((block) => typeof block === "string" ? block : "")
+    .join(" ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
 
   return {
     "@context": "https://schema.org",
@@ -219,13 +394,22 @@ export function blogPostingJsonLd(post: {
     datePublished: post.datePublished,
     dateModified: post.dateUpdated,
     articleSection: post.category,
+    keywords: [post.category, "editing", "proofreading", "professional editing services"].filter(Boolean),
+    wordCount: wordCount > 0 ? wordCount : undefined,
     author: {
-      "@type": "Organization",
-      name: post.author,
+      "@id": `${siteConfig.siteUrl}/#editorial-team`,
     },
     publisher: {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
+    mainEntity: post.faq?.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
     inLanguage: "en-US",
   };
 }

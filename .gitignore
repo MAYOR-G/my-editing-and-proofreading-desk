@@ -6,5 +6,6 @@ out
 .env
 .env.local
 .env.*.local
+.seo-cache
 tsconfig.tsbuildinfo
 *.log

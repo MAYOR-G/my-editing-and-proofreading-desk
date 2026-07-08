@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { blogPosts, type BlogRichText, getBlogPost } from "@/lib/blog";
-import { blogPostingJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/site";
+import { blogPostingJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 type BlogPostPageProps = {
   params: {
@@ -83,7 +83,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         { name: post.title, path: `/blog/${post.slug}` },
       ]}
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(blogPostingJsonLd(post))} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript([
+          blogPostingJsonLd(post),
+          webPageJsonLd({
+            path: `/blog/${post.slug}`,
+            name: post.title,
+            description: post.excerpt,
+            dateModified: post.dateUpdated,
+          }),
+        ])}
+      />
       {post.faq.length > 0 ? (
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(post.faq))} />
       ) : null}

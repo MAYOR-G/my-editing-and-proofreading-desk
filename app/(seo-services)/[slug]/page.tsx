@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { getSeoServicePage, seoServicePages } from "@/lib/seo-service-pages";
-import { buildPageMetadata, faqPageJsonLd, jsonLdScript, serviceJsonLd } from "@/lib/site";
+import { buildPageMetadata, faqPageJsonLd, jsonLdScript, serviceJsonLd, webPageJsonLd } from "@/lib/site";
 
 type SeoServiceRouteProps = {
   params: {
@@ -61,13 +61,20 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(serviceJsonLd({
-          name: page.name,
-          description: page.metaDescription,
-          slug: page.slug,
-          path: `/${page.slug}`,
-          serviceType: page.name,
-        }))}
+        dangerouslySetInnerHTML={jsonLdScript([
+          serviceJsonLd({
+            name: page.name,
+            description: page.metaDescription,
+            slug: page.slug,
+            path: `/${page.slug}`,
+            serviceType: page.name,
+          }),
+          webPageJsonLd({
+            path: `/${page.slug}`,
+            name: page.h1,
+            description: page.metaDescription,
+          }),
+        ])}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(page.faq))} />
 

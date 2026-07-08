@@ -1,23 +1,23 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/blog";
 import { seoServicePages } from "@/lib/seo-service-pages";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, SITE_LAST_MODIFIED } from "@/lib/site";
 
 const staticRoutes = [
-  { path: "/", priority: 1, changeFrequency: "weekly", lastModified: "2026-07-03" },
-  { path: "/about", priority: 0.8, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/services", priority: 0.9, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/submit", priority: 0.92, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/pricing", priority: 0.9, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/editorial-policy", priority: 0.65, changeFrequency: "yearly", lastModified: "2026-07-03" },
-  { path: "/ai-editing-tool", priority: 0.7, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/editors", priority: 0.75, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/blog", priority: 0.7, changeFrequency: "weekly", lastModified: "2026-07-03" },
-  { path: "/faq", priority: 0.7, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/contact", priority: 0.8, changeFrequency: "monthly", lastModified: "2026-07-03" },
-  { path: "/privacy", priority: 0.3, changeFrequency: "yearly", lastModified: "2026-07-03" },
-  { path: "/refund-policy", priority: 0.3, changeFrequency: "yearly", lastModified: "2026-07-03" },
-  { path: "/terms", priority: 0.3, changeFrequency: "yearly", lastModified: "2026-07-03" },
+  { path: "/", priority: 1, changeFrequency: "weekly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/about", priority: 0.8, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/services", priority: 0.9, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/submit", priority: 0.92, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/pricing", priority: 0.9, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/editorial-policy", priority: 0.65, changeFrequency: "yearly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/ai-editing-tool", priority: 0.7, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/editors", priority: 0.75, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/blog", priority: 0.7, changeFrequency: "weekly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/faq", priority: 0.7, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/contact", priority: 0.8, changeFrequency: "monthly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/privacy", priority: 0.3, changeFrequency: "yearly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/refund-policy", priority: 0.3, changeFrequency: "yearly", lastModified: SITE_LAST_MODIFIED },
+  { path: "/terms", priority: 0.3, changeFrequency: "yearly", lastModified: SITE_LAST_MODIFIED },
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     path: `/${service.slug}`,
     priority: 0.88,
     changeFrequency: "monthly" as const,
-    lastModified: "2026-07-03",
+    lastModified: SITE_LAST_MODIFIED,
   }));
 
   const blogRoutes = blogPosts.map((post) => ({

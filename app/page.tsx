@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { faqs } from "@/lib/content";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
-import { buildPageMetadata, jsonLdScript, professionalServiceJsonLd } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript, professionalServiceJsonLd, webPageJsonLd } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
@@ -31,7 +31,18 @@ export const metadata: Metadata = buildPageMetadata({
 export default function Home() {
   return (
     <main className="min-h-screen bg-ivory text-ink">
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(professionalServiceJsonLd())} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript([
+          professionalServiceJsonLd(),
+          webPageJsonLd({
+            path: "/",
+            name: "Professional Editing and Proofreading Services",
+            description: "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing.",
+          }),
+          breadcrumbJsonLd([{ name: "Home", path: "/" }]),
+        ])}
+      />
       {/* 
         Note: SiteHeader/SiteFooter are handled in their own components.
       */}

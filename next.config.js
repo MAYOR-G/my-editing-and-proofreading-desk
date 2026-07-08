@@ -29,6 +29,16 @@ const nextConfig = {
         destination: "https://www.editandproofread.com/:path*",
         permanent: true,
       },
+      {
+        source: "/privacy-policy",
+        destination: "/privacy",
+        permanent: true,
+      },
+      {
+        source: "/terms-and-conditions",
+        destination: "/terms",
+        permanent: true,
+      },
     ];
   },
   async headers() {
@@ -133,6 +143,10 @@ const nextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://embed.tawk.to https://*.tawk.to https://challenges.cloudflare.com https://js.stripe.com https://checkout.flutterwave.com https://js.paystack.co https://www.paypal.com https://www.paypalobjects.com; style-src 'self' 'unsafe-inline' https://embed.tawk.to https://*.tawk.to; img-src 'self' data: blob: https://images.unsplash.com https://upload.wikimedia.org https://embed.tawk.to https://*.tawk.to https://www.paypalobjects.com; media-src 'self' https://pub-9f4f9c9b1b3e477aba4991ccfd92f1ae.r2.dev; font-src 'self' data: https://embed.tawk.to https://*.tawk.to; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://embed.tawk.to https://*.tawk.to wss://*.tawk.to https://challenges.cloudflare.com https://api.stripe.com https://checkout.flutterwave.com https://api.paystack.co https://www.paypal.com; frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://checkout.flutterwave.com https://js.paystack.co https://www.paypal.com https://www.sandbox.paypal.com https://embed.tawk.to https://*.tawk.to; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
           },
         ],
       },

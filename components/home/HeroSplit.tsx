@@ -6,11 +6,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShieldCheck, Users, Clock, History } from "lucide-react";
 
-const heroVideo = {
-  title: "Human Editorial Review",
-  src: "https://pub-9f4f9c9b1b3e477aba4991ccfd92f1ae.r2.dev/202605121029%20(1).mp4",
-  poster: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600&auto=format&fit=crop"
-};
+const heroVideos = [
+  {
+    title: "Human Editorial Review",
+    src: "https://pub-9f4f9c9b1b3e477aba4991ccfd92f1ae.r2.dev/202605121029%20(1).mp4",
+    poster: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    title: "Professional Editing Desk",
+    src: "/videos/hero-editorial-review.mp4",
+    poster: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600&auto=format&fit=crop",
+  },
+] as const;
 
 const flipWords = [
   "Scientific Editing",
@@ -38,6 +45,36 @@ const features = [
   { text: "On-Time Delivery", shortText: "On time", icon: Clock },
   { text: "Track Changes", shortText: "Changes", icon: History }
 ];
+
+function HeroVideoFrame({ objectPosition }: { objectPosition: string }) {
+  const [videoIndex, setVideoIndex] = useState(0);
+  const activeVideo = heroVideos[videoIndex];
+  const playNextVideo = () => {
+    setVideoIndex((currentIndex) => (currentIndex + 1) % heroVideos.length);
+  };
+
+  return (
+    <div
+      className="absolute inset-0 bg-cover bg-center"
+      style={{ backgroundImage: `url("${activeVideo.poster}")` }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent z-10 opacity-70" />
+      <video
+        key={activeVideo.src}
+        src={activeVideo.src}
+        poster={activeVideo.poster}
+        autoPlay
+        muted
+        playsInline
+        preload="metadata"
+        onEnded={playNextVideo}
+        onError={playNextVideo}
+        aria-label={activeVideo.title}
+        className={`absolute inset-0 h-full w-full object-cover ${objectPosition}`}
+      />
+    </div>
+  );
+}
 
 export function HeroSplit() {
   const [wordIndex, setWordIndex] = useState(0);
@@ -93,23 +130,7 @@ export function HeroSplit() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-0 w-full h-full"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url("${heroVideo.poster}")` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent z-10 opacity-70" />
-            <video
-              src={heroVideo.src}
-              poster={heroVideo.poster}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-label={heroVideo.title}
-              className="absolute inset-0 h-full w-full object-cover [object-position:52%_48%]"
-            />
-          </div>
+          <HeroVideoFrame objectPosition="[object-position:52%_48%]" />
         </motion.div>
       </div>
 
@@ -201,23 +222,7 @@ export function HeroSplit() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full h-full bg-ivory shadow-2xl overflow-hidden rounded-[2rem] border border-ink/5 group"
           >
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url("${heroVideo.poster}")` }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent z-10 opacity-80" />
-              <video
-                src={heroVideo.src}
-                poster={heroVideo.poster}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-label={heroVideo.title}
-                className="absolute inset-0 h-full w-full object-cover [object-position:50%_48%]"
-              />
-            </div>
+            <HeroVideoFrame objectPosition="[object-position:50%_48%]" />
           </motion.div>
         </div>
       </div>

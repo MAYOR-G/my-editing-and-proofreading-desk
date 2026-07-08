@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { TawkWidget } from "@/components/TawkWidget";
-import { buildPageMetadata, jsonLdScript, organizationJsonLd, siteConfig, websiteJsonLd } from "@/lib/site";
+import { buildPageMetadata, editorialTeamJsonLd, jsonLdScript, organizationJsonLd, siteConfig, siteNavigationJsonLd, websiteJsonLd } from "@/lib/site";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -36,6 +36,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={jsonLdScript([
             organizationJsonLd(),
             websiteJsonLd(),
+            siteNavigationJsonLd(),
+            editorialTeamJsonLd(),
           ])}
         />
         {children}
