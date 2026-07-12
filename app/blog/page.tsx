@@ -24,17 +24,22 @@ export default function BlogPage() {
           {blogPosts.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {blogPosts.map((post) => (
-                <article key={post.slug} className="overflow-hidden rounded-2xl border border-hairline bg-surface-soft shadow-[0_18px_55px_rgba(17,17,15,0.04)]">
+                <article key={post.slug} className="flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface-soft shadow-[0_18px_55px_rgba(17,17,15,0.04)]">
                   <div className="relative aspect-[16/9]">
                     <Image src={post.heroImage} alt={post.heroImageAlt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                   </div>
-                  <div className="p-6">
+                  <div className="flex flex-1 flex-col p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{post.category}</p>
                     <h2 className="mt-3 font-display text-3xl leading-tight text-ink">
                       <Link href={`/blog/${post.slug}`} className="transition hover:text-primary">{post.title}</Link>
                     </h2>
                     <p className="mt-4 text-sm leading-7 text-body">{post.excerpt}</p>
-                    <p className="mt-5 text-xs text-muted">{post.datePublished} · {post.readingTime}</p>
+                    <div className="mt-auto pt-5">
+                      <p className="text-xs text-muted">{post.datePublished} · {post.readingTime}</p>
+                      <Link href={`/blog/${post.slug}`} className="mt-4 inline-flex min-h-10 items-center rounded-full border border-primary/20 px-4 text-sm font-semibold text-primary transition hover:border-primary/45 hover:bg-primary/5">
+                        Read article
+                      </Link>
+                    </div>
                   </div>
                 </article>
               ))}

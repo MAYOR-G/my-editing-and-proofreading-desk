@@ -1,3 +1,5 @@
+import { newLearningCenterPosts } from "@/lib/new-learning-center-posts";
+
 export type BlogTextPart =
   | string
   | {
@@ -56,6 +58,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 export const blogPosts: BlogPost[] = [
+  ...newLearningCenterPosts,
   {
     title: "Editing vs Proofreading: What Is the Difference?",
     slug: "editing-vs-proofreading",

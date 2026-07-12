@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { blogPosts } from "@/lib/blog";
 
@@ -26,12 +27,20 @@ export function BlogResourcePreview() {
         {visiblePosts.length > 0 ? (
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {visiblePosts.map((post) => (
-              <article key={post.slug} className="rounded-2xl border border-ink/5 bg-white p-6 shadow-[0_16px_50px_rgba(15,59,127,0.035)]">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{post.category}</p>
-                <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-ink">
-                  <Link href={`/blog/${post.slug}`} className="transition hover:text-primary">{post.title}</Link>
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-charcoal/68">{post.excerpt}</p>
+              <article key={post.slug} className="flex h-full flex-col overflow-hidden rounded-2xl border border-ink/5 bg-white shadow-[0_16px_50px_rgba(15,59,127,0.035)]">
+                <div className="relative aspect-[16/9]">
+                  <Image src={post.heroImage} alt={post.heroImageAlt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{post.category}</p>
+                  <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-ink">
+                    <Link href={`/blog/${post.slug}`} className="transition hover:text-primary">{post.title}</Link>
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-charcoal/68">{post.excerpt}</p>
+                  <Link href={`/blog/${post.slug}`} className="mt-auto inline-flex min-h-10 w-fit items-center rounded-full border border-primary/20 px-4 text-sm font-semibold text-primary transition hover:border-primary/45 hover:bg-primary/5">
+                    Read article
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
