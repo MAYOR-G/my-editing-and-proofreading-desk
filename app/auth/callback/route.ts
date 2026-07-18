@@ -4,7 +4,16 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") || "/dashboard";
+  const requestedNext = requestUrl.searchParams.get("next") || "/dashboard";
+  const safeCandidate = requestedNext.startsWith("/")
+    && !requestedNext.startsWith("//")
+    && !requestedNext.includes("\\")
+    ? requestedNext
+    : "/dashboard";
+  const nextUrl = new URL(safeCandidate, requestUrl.origin);
+  const next = nextUrl.origin === requestUrl.origin
+    ? `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`
+    : "/dashboard";
 
   if (code) {
     const supabase = createClient();

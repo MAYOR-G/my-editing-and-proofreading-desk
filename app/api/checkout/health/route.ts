@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { getSafeAppUrl } from "@/lib/payment";
+import { createClient } from "@/utils/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,19 @@ function keyMode(value: string | undefined, testPrefix: string, livePrefix: stri
 }
 
 export async function GET() {
+  const supabaseSession = createClient();
+  const { data: { user } } = await supabaseSession.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ status: "unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
+  }
+
+  const supabaseAdmin = createSupabaseAdminClient();
+  const { data: profile } = await supabaseAdmin.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin") {
+    return NextResponse.json({ status: "forbidden" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+  }
+
   const paystackSecretMode = keyMode(process.env.PAYSTACK_SECRET_KEY, "sk_test_", "sk_live_");
   const paystackPublicMode = keyMode(process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY, "pk_test_", "pk_live_");
   const env = {
@@ -83,7 +97,7 @@ export async function GET() {
   };
 
   try {
-    const supabase = createSupabaseAdminClient();
+    const supabase = supabaseAdmin;
     const [projects, paymentRecords, paymentSettings, buckets] = await Promise.all([
       supabase.from("projects").select(PROJECT_COLUMNS).limit(1),
       supabase.from("payment_records").select("id,order_id,user_id,provider,transaction_reference,amount,currency,status").limit(1),
@@ -137,5 +151,5 @@ export async function GET() {
     };
   }
 
-  return NextResponse.json(checks);
+  return NextResponse.json(checks, { headers: { "Cache-Control": "no-store" } });
 }

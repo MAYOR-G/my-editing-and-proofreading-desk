@@ -158,7 +158,7 @@ export function HeroSplit() {
             </p>
             <div className="text-lg sm:text-xl text-charcoal font-medium leading-relaxed max-w-xl mb-12 flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <span className="opacity-80">Specialist support for:</span>
-              <span className="relative inline-flex h-8 max-w-full overflow-hidden font-display text-primary text-xl sm:text-2xl">
+              <span className="relative inline-flex h-8 w-full max-w-[18rem] overflow-hidden font-display text-primary text-xl sm:text-2xl">
                 <AnimatePresence mode="popLayout">
                   <motion.span
                     key={wordIndex}
@@ -171,8 +171,6 @@ export function HeroSplit() {
                     {flipWords[wordIndex]}
                   </motion.span>
                 </AnimatePresence>
-                {/* Invisible element to maintain width */}
-                <span className="invisible whitespace-nowrap">{flipWords[wordIndex]}</span>
               </span>
             </div>
 

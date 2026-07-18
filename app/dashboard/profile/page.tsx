@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { signout } from "@/app/actions/auth";
+import Link from "next/link";
 
 export default async function DashboardProfilePage() {
   const supabase = createClient();
@@ -38,7 +39,7 @@ export default async function DashboardProfilePage() {
         <div className="mt-6 grid gap-3 text-sm text-charcoal/64">
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Email</span><span className="text-ink">{displayEmail}</span></div>
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Currency</span><span className="text-ink">USD</span></div>
-          <div className="flex justify-between border-t border-ink/10 pt-3"><span>Files retained</span><span className="text-ink">30 days</span></div>
+          <div className="flex justify-between gap-4 border-t border-ink/10 pt-3"><span>Document handling</span><Link href="/privacy" className="text-primary underline underline-offset-4">See Privacy Policy</Link></div>
         </div>
 
         <form action={signout} className="mt-10 pt-6 border-t border-ink/10">

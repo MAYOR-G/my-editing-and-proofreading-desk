@@ -570,6 +570,11 @@ export const newLearningCenterPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
+        href: "/blog/research-paper-editing-checklist-before-submission",
+        label: "Research paper editing checklist",
+        description: "Use the focused section-by-section workflow for journal rules, manuscript sections, declarations, and final files.",
+      },
+      {
         href: "/manuscript-editing",
         label: "Manuscript editing",
         description: "Improve manuscript clarity, structure, academic tone, and submission readiness.",

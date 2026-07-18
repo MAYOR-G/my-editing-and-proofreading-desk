@@ -6,8 +6,8 @@ import { seoServicePages } from "@/lib/seo-service-pages";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Professional Editing and Proofreading Services | Service Options",
-  description: "Compare professional editing, proofreading, academic proofreading, dissertation proofreading, manuscript editing, business proofreading, formatting, and translation review services.",
+  title: "Editing & Proofreading Service Options | Compare Services",
+  description: "Compare human editing, proofreading, formatting, academic, manuscript, business, CV, and translation-review options to choose the right document service.",
   path: "/services",
 });
 

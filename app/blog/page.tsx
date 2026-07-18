@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { blogPosts } from "@/lib/blog";
-import { buildPageMetadata } from "@/lib/site";
+import { blogCollectionJsonLd, buildPageMetadata, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Editing and Proofreading Blog | Writing Guides",
@@ -19,6 +19,13 @@ export default function BlogPage() {
       description="Explore practical guides on academic editing, proofreading, manuscript preparation, business writing, grammar, and document submission."
       seoPath="/blog"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript([
+          blogCollectionJsonLd(blogPosts),
+          webPageJsonLd({ path: "/blog", name: "Editing and Proofreading Guides", description: "Practical guides for editing, proofreading, academic writing, manuscript preparation, and document submission." }),
+        ])}
+      />
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           {blogPosts.length > 0 ? (

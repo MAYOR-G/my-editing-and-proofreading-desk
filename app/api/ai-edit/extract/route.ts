@@ -1,8 +1,11 @@
 import { inflateRawSync } from "node:zlib";
 import { NextResponse } from "next/server";
 import { AI_FILE_SIZE_LIMIT, AI_WORD_LIMIT, countWords, getFileExtension, isAllowedAiFile } from "@/lib/ai-editing";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
+const MAX_DOCX_ENTRIES = 500;
+const MAX_DOCUMENT_XML_BYTES = 4 * 1024 * 1024;
 
 function readUInt16(buffer: Buffer, offset: number) {
   return buffer.readUInt16LE(offset);
@@ -50,6 +53,7 @@ function extractDocxText(buffer: Buffer) {
   }
 
   const entries = readUInt16(buffer, eocdOffset + 10);
+  if (entries > MAX_DOCX_ENTRIES) throw new Error("DOCX contains too many archive entries.");
   let centralOffset = readUInt32(buffer, eocdOffset + 16);
 
   for (let index = 0; index < entries; index += 1) {
@@ -57,6 +61,7 @@ function extractDocxText(buffer: Buffer) {
 
     const method = readUInt16(buffer, centralOffset + 10);
     const compressedSize = readUInt32(buffer, centralOffset + 20);
+    const uncompressedSize = readUInt32(buffer, centralOffset + 24);
     const filenameLength = readUInt16(buffer, centralOffset + 28);
     const extraLength = readUInt16(buffer, centralOffset + 30);
     const commentLength = readUInt16(buffer, centralOffset + 32);
@@ -64,6 +69,9 @@ function extractDocxText(buffer: Buffer) {
     const filename = buffer.toString("utf8", centralOffset + 46, centralOffset + 46 + filenameLength);
 
     if (filename === "word/document.xml") {
+      if (uncompressedSize > MAX_DOCUMENT_XML_BYTES || (compressedSize > 0 && uncompressedSize / compressedSize > 100)) {
+        throw new Error("DOCX expanded content exceeds the safe extraction limit.");
+      }
       if (readUInt32(buffer, localOffset) !== 0x04034b50) {
         throw new Error("Invalid DOCX local header.");
       }
@@ -84,6 +92,13 @@ function extractDocxText(buffer: Buffer) {
 
 export async function POST(request: Request) {
   try {
+    const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const client = forwarded || request.headers.get("x-real-ip") || "anonymous";
+    const rate = await checkRateLimit(`ai-extract:${client}`, 12, 60);
+    if (!rate.success) {
+      return NextResponse.json({ error: "Too many extraction requests. Please wait and try again." }, { status: 429 });
+    }
+
     const payload = await request.json();
     const filename = typeof payload.filename === "string" ? payload.filename : "";
     const base64 = typeof payload.base64 === "string" ? payload.base64 : "";

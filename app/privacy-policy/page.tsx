@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
 import { buildPageMetadata } from "@/lib/site";
+import { SUPPORT_EMAIL } from "@/lib/contact-info";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy | Edit and Proofread",
@@ -12,7 +13,7 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalPage title="Privacy Policy" path="/privacy">
       <LegalSection title="1. Introduction">
-        <p>At MEP (editandproofread.com), we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our website and services.</p>
+        <p>My Editing and Proofreading Desk (editandproofread.com) provides online editorial services and a limited AI-assisted editing tool. This policy explains the information involved, why it is used, which service providers may process it, and the choices available to you.</p>
       </LegalSection>
 
       <LegalSection title="2. Information We Collect">
@@ -22,6 +23,7 @@ export default function PrivacyPolicyPage() {
           <li>Document Content: Files you upload for editing or proofreading.</li>
           <li>Technical Data: IP address, browser type, device information, and cookies.</li>
           <li>Communication Records: Emails or messages exchanged with our support team.</li>
+          <li>AI Tool Content: Text you paste into the free AI tool and its generated response.</li>
         </LegalList>
       </LegalSection>
 
@@ -38,16 +40,19 @@ export default function PrivacyPolicyPage() {
 
       <LegalSection title="4. Data Security">
         <LegalList>
-          <li>All files and personal data are stored securely.</li>
-          <li>Access is restricted to authorized staff only.</li>
-          <li>We use encryption and secure servers to protect your information.</li>
+          <li>Account and document access is restricted through authentication, private storage, and authorization rules.</li>
+          <li>Files are transferred over encrypted HTTPS connections and delivered through signed, time-limited links where applicable.</li>
+          <li>No online system can promise absolute security. Contact us promptly if you believe your account or document has been exposed.</li>
         </LegalList>
       </LegalSection>
 
       <LegalSection title="5. Sharing of Information">
-        <p>We do not sell, rent, or trade your personal data. We may share information only in these cases:</p>
+        <p>We do not sell personal data. We use service providers only where needed to operate the platform, communicate, prevent abuse, process payments, or provide a feature:</p>
         <LegalList>
-          <li>With trusted payment processors (for billing).</li>
+          <li>Supabase provides account, database, and private file-storage infrastructure.</li>
+          <li>Payment providers process checkout and payment verification; we do not store full card details.</li>
+          <li>Resend supports transactional email, Cloudflare Turnstile helps prevent automated abuse, and Tawk supports website chat.</li>
+          <li>OpenRouter and the model provider selected for a request process text submitted to the free AI tool. The tool requests zero-data-retention routing, but provider policies can vary. Do not submit confidential, unpublished, privileged, or personally sensitive material to it.</li>
           <li>When required by law or legal proceedings.</li>
           <li>To protect our rights, safety, or property.</li>
         </LegalList>
@@ -55,7 +60,7 @@ export default function PrivacyPolicyPage() {
 
       <LegalSection title="6. Cookies and Tracking">
         <LegalList>
-          <li>Our website may use cookies to enhance user experience.</li>
+          <li>Authentication, payment, security, and chat features may use cookies or similar browser storage.</li>
           <li>You can disable cookies in your browser settings, but some features may not function properly.</li>
         </LegalList>
       </LegalSection>
@@ -72,8 +77,9 @@ export default function PrivacyPolicyPage() {
 
       <LegalSection title="8. Data Retention">
         <LegalList>
-          <li>Documents are retained only as long as necessary to complete your order.</li>
-          <li>Personal data is stored for legal and accounting purposes, then securely deleted.</li>
+          <li>Order files and account records are kept while needed to provide the service, support the account, resolve disputes, meet legal or accounting obligations, and protect platform integrity.</li>
+          <li>The platform does not currently promise one automatic deletion period for every data category. You may request deletion; some transaction or security records may need to be retained where law or legitimate operational needs require it.</li>
+          <li>The application does not intentionally save free AI-tool input in the project database. It is transmitted to OpenRouter and an eligible model provider to generate the requested response.</li>
         </LegalList>
       </LegalSection>
 
@@ -82,11 +88,11 @@ export default function PrivacyPolicyPage() {
       </LegalSection>
 
       <LegalSection title="10. Changes to This Policy">
-        <p>We may update this Privacy Policy from time to time. Updates will be posted on this page with a revised date.</p>
+        <p>We may update this Privacy Policy as providers or platform features change. Material updates will be posted on this page. Last updated: July 18, 2026.</p>
       </LegalSection>
 
       <LegalSection title="11. Contact Us">
-        <p>For questions or requests regarding your privacy, please contact: 📧 [support@business.editandproofread.com](mailto:support@business.editandproofread.com)</p>
+        <p>For privacy questions, access requests, corrections, or deletion requests, email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
       </LegalSection>
     </LegalPage>
   );

@@ -4,7 +4,7 @@ import { SERVICE_OPTIONS } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
 export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
-export const SITE_LAST_MODIFIED = "2026-07-07";
+export const SITE_LAST_MODIFIED = "2026-07-18";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";
@@ -14,7 +14,7 @@ function normalizePath(path = "/") {
 export const siteConfig = {
   siteName: BRAND_NAME,
   siteUrl: PRODUCTION_SITE_URL,
-  defaultTitle: "Professional Editing and Proofreading Services",
+  defaultTitle: "Professional Editing & Proofreading Services | Human Editors",
   defaultDescription:
     "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing. Secure upload and clear pricing.",
   defaultOgImage: "/assets/og-image.jpg",
@@ -27,7 +27,7 @@ export const siteConfig = {
 };
 
 export const siteAuthor = {
-  name: "My Editing and Proofreading Desk Editorial Team",
+  name: "My Editing and Proofreading Desk",
   description:
     "Human editors and proofreaders reviewing academic, business, manuscript, application, and professional documents.",
 };
@@ -105,7 +105,11 @@ export function buildPageMetadata({
           width: 1200,
           height: 630,
           alt: imageAlt,
-          type: "image/jpeg",
+          type: image.toLowerCase().endsWith(".png")
+            ? "image/png"
+            : image.toLowerCase().endsWith(".webp")
+              ? "image/webp"
+              : "image/jpeg",
         },
       ],
       locale: "en_US",
@@ -157,15 +161,6 @@ export function organizationJsonLd() {
       postalCode: "19801",
       addressCountry: "US",
     },
-    foundingLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Wilmington",
-        addressRegion: "DE",
-        addressCountry: "US",
-      },
-    },
     knowsAbout: [
       "Professional editing",
       "Professional proofreading",
@@ -197,11 +192,6 @@ export function websiteJsonLd() {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     inLanguage: "en-US",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteConfig.siteUrl}/blog?query={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -238,11 +228,11 @@ export function siteNavigationJsonLd() {
 export function editorialTeamJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@type": "Organization",
     "@id": `${siteConfig.siteUrl}/#editorial-team`,
     name: siteAuthor.name,
     description: siteAuthor.description,
-    worksFor: {
+    parentOrganization: {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     knowsAbout: [
@@ -338,15 +328,6 @@ export function serviceJsonLd(service: { name: string; description: string; slug
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
     areaServed: "Worldwide",
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: "USD",
-      lowPrice: 0.022,
-      highPrice: 0.055,
-      offerCount: SERVICE_OPTIONS.length,
-      url: absoluteUrl("/pricing"),
-      availability: "https://schema.org/InStock",
-    },
     mainEntityOfPage: absoluteUrl(path),
   };
 }
@@ -397,20 +378,35 @@ export function blogPostingJsonLd(post: {
     keywords: [post.category, "editing", "proofreading", "professional editing services"].filter(Boolean),
     wordCount: wordCount > 0 ? wordCount : undefined,
     author: {
-      "@id": `${siteConfig.siteUrl}/#editorial-team`,
+      "@type": "Organization",
+      "@id": `${siteConfig.siteUrl}/#organization`,
+      name: siteConfig.siteName,
+      url: siteConfig.siteUrl,
     },
     publisher: {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
-    mainEntity: post.faq?.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
     inLanguage: "en-US",
+  };
+}
+
+export function blogCollectionJsonLd(posts: Array<{ title: string; slug: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${absoluteUrl("/blog")}#collection`,
+    name: "Editing and Proofreading Guides",
+    url: absoluteUrl("/blog"),
+    isPartOf: { "@id": `${siteConfig.siteUrl}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: posts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: post.title,
+        url: absoluteUrl(`/blog/${post.slug}`),
+      })),
+    },
   };
 }
 

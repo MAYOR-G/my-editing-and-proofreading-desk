@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { createClient } from "@/utils/supabase/server";
+import { validateDocumentFile } from "@/lib/document-file-validation";
 
 export const dynamic = "force-dynamic";
 
@@ -92,7 +93,14 @@ export async function POST(request: Request) {
     const safeName = sanitizeFilename(file.name);
     const filePath = `${user.id}/${Date.now()}_${safeName}`;
     const fileBuffer = Buffer.from(await file.arrayBuffer());
-    const contentType = file.type || CONTENT_TYPES[extension] || "application/octet-stream";
+    const validation = validateDocumentFile(extension, fileBuffer);
+    if (!validation.valid) {
+      return NextResponse.json(
+        { error: validation.reason, code: "file_signature_mismatch", trace_id: traceId },
+        { status: 415 }
+      );
+    }
+    const contentType = CONTENT_TYPES[extension] || "application/octet-stream";
     const supabaseAdmin = createSupabaseAdminClient();
     let uploadError: unknown = null;
 

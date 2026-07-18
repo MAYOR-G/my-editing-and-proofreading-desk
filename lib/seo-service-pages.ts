@@ -51,7 +51,7 @@ export const seoServicePages: SeoServicePage[] = [
     benefits: ["A stronger document before final proofreading", "Improved readability without automated rewriting", "Editorial comments that explain important changes", "Support for academic integrity and author ownership"],
     documentExamples: ["Academic drafts that need clearer structure", "Reports and proposals that feel wordy or uneven", "Manuscripts with inconsistent pacing or voice", "Applications, statements, and professional documents"],
     process: ["Choose editing and upload your draft with notes about audience and deadline.", "Review the estimate based on word count, service depth, and turnaround.", "A human editor improves structure, clarity, tone, and language.", "Download the edited file and review comments through your dashboard."],
-    pricingCta: "Editing usually costs more than proofreading because it addresses deeper writing issues. Check pricing or upload your document for the clearest estimate.",
+    pricingCta: "Your estimate depends on the selected service, word count, and turnaround. Check the live calculator or upload your document for the clearest scope.",
     related: ["manuscript-editing", "thesis-editing", "translation-review"],
     faq: [
       { question: "What is included in professional editing?", answer: "Editing can improve structure, paragraph flow, clarity, tone, word choice, grammar, and readability. The exact scope depends on the document type and condition." },
@@ -65,7 +65,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Students and researchers",
     metaTitle: "Academic Proofreading Services | Edit and Proofread",
     metaDescription: "Academic proofreading for essays, theses, dissertations, research papers, and journal manuscripts. Improve grammar, clarity, formatting, and presentation.",
-    h1: "Academic Proofreading Services for Students, Researchers, and Universities",
+    h1: "Academic Proofreading Services for Students and Researchers",
     intro: "Academic proofreading gives your final draft a careful human review before submission. We check grammar, clarity, consistency, references, formatting, and academic presentation while protecting your authorship.",
     audience: ["Undergraduate and postgraduate students", "PhD candidates preparing theses or dissertations", "Researchers submitting papers or journal manuscripts", "Academic departments and research teams needing consistent language review"],
     checks: ["Grammar, punctuation, spelling, tense, and sentence boundaries", "Academic tone, cautious claims, terminology, headings, and abbreviations", "Citation and reference consistency within the supplied document", "Tables, figures, captions, appendices, lists, and formatting details"],

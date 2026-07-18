@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { faqs } from "@/lib/content";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
-import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript, professionalServiceJsonLd, webPageJsonLd } from "@/lib/site";
+import { buildPageMetadata, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
@@ -23,8 +23,8 @@ import { BlogResourcePreview } from "@/components/home/BlogResourcePreview";
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Professional Editing and Proofreading Services",
-  description: "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing. Secure upload and clear pricing.",
+  title: "Professional Editing & Proofreading Services | Human Editors",
+  description: "Human editing and proofreading for academic papers, dissertations, manuscripts, business documents, CVs, and other important writing. Secure upload and clear pricing.",
   path: "/",
 });
 
@@ -34,13 +34,11 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLdScript([
-          professionalServiceJsonLd(),
           webPageJsonLd({
             path: "/",
             name: "Professional Editing and Proofreading Services",
             description: "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing.",
           }),
-          breadcrumbJsonLd([{ name: "Home", path: "/" }]),
         ])}
       />
       {/* 

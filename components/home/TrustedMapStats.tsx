@@ -28,7 +28,7 @@ export function TrustedMapStats() {
             and individuals worldwide
           </h2>
           <p className="text-charcoal/60 text-sm sm:text-base max-w-2xl mx-auto mb-16">
-            For 15+ years, we've provided professional editing services to a global client base in 110+ countries.
+            For 15+ years, we&apos;ve provided professional editing services to a global client base in 110+ countries.
           </p>
         </Reveal>
 
@@ -54,7 +54,7 @@ export function TrustedMapStats() {
           <Reveal variant="fadeLeft" delay={0.32}>
             <div className="flex flex-col items-center">
               <CountUpNumber target={15} className="mb-2 font-display text-3xl font-bold text-ink sm:text-4xl" />
-              <span className="text-sm text-charcoal/60 font-medium">Years' Experience</span>
+              <span className="text-sm text-charcoal/60 font-medium">Years&apos; Experience</span>
             </div>
           </Reveal>
         </div>

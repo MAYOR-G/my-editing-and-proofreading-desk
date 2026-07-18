@@ -24,6 +24,36 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/services/academic-editing",
+        destination: "/academic-proofreading",
+        permanent: true,
+      },
+      {
+        source: "/services/express-service",
+        destination: "/proofreading-services",
+        permanent: true,
+      },
+      {
+        source: "/services/non-academic-editing",
+        destination: "/business-proofreading",
+        permanent: true,
+      },
+      {
+        source: "/services/manuscript-formatting",
+        destination: "/manuscript-editing",
+        permanent: true,
+      },
+      {
+        source: "/services/translation",
+        destination: "/translation-review",
+        permanent: true,
+      },
+      {
+        source: "/services/writing-support",
+        destination: "/editing-services",
+        permanent: true,
+      },
+      {
         source: "/:path*",
         has: [{ type: "host", value: "editandproofread.com" }],
         destination: "https://www.editandproofread.com/:path*",
@@ -49,6 +79,7 @@ const nextConfig = {
       "/dashboard/:path*",
       "/forgot-password",
       "/login",
+      "/indexnow-key",
       "/reset-password",
       "/signup",
     ];

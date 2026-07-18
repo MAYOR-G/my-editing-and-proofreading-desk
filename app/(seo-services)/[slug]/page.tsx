@@ -11,6 +11,68 @@ type SeoServiceRouteProps = {
   };
 };
 
+const serviceEnhancements: Record<string, {
+  heading: string;
+  paragraphs: string[];
+  boundaries: string[];
+  guides: Array<{ href: string; label: string }>;
+}> = {
+  "editing-services": {
+    heading: "Sentence editing, structural review, and final proofreading are different stages.",
+    paragraphs: [
+      "Sentence-level editing improves clarity, concision, tone, and flow within the wording you provide. Structural review looks more broadly at section order, paragraph logic, repetition, and the reader's route through a paper, business document, or manuscript.",
+      "If the structure and wording are already settled, proofreading may be enough. We use human judgment and can return tracked changes and comments, but the author remains responsible for facts, evidence, decisions, and final approval.",
+    ],
+    boundaries: ["We do not invent facts, sources, results, qualifications, or assessed content.", "Source verification, fact-checking, and substantial new writing require separate written scope.", "Proofreading is a later quality-control pass and does not replace unresolved editing work."],
+    guides: [{ href: "/blog/editing-vs-proofreading", label: "Compare editing and proofreading" }, { href: "/blog/how-much-does-proofreading-cost", label: "Understand pricing factors" }],
+  },
+  "proofreading-services": {
+    heading: "Proofreading is the final check after content decisions are complete.",
+    paragraphs: [
+      "A proofreader checks the approved version for grammar, punctuation, spelling, consistency, and presentation. This is most useful when you are no longer moving sections or changing the argument, offer, story, or evidence.",
+      "For a paper, CV, manuscript, or business document that still feels unclear or uneven, editing should come first. We will flag when a draft appears to need work outside a final proofreading scope.",
+    ],
+    boundaries: ["Proofreading does not redesign the argument or reorganize substantial sections.", "It does not verify every factual claim, citation, name, number, or external source unless agreed separately.", "Corrections preserve the supplied meaning; the client approves the final file."],
+    guides: [{ href: "/blog/editing-vs-proofreading", label: "Choose the right review stage" }, { href: "/blog/how-much-does-proofreading-cost", label: "See how the calculator works" }],
+  },
+  "academic-proofreading": {
+    heading: "A broad final review for essays, research papers, and academic submissions.",
+    paragraphs: [
+      "Academic proofreading concentrates on language and presentation across shorter papers and final research documents. It can check scholarly tone, terminology, headings, citations, references, tables, and figures within the material supplied.",
+      "Thesis editing is more suitable for chapters that still need structural revision. Dissertation proofreading is a dedicated whole-document final pass for long graduate submissions with front matter, appendices, and institution-specific presentation rules.",
+    ],
+    boundaries: ["We do not select research methods, develop arguments, or write assessed content.", "We check citation consistency but do not assume that every cited source has been read or accurately represented.", "Institutional or journal rules provided by the author take priority over generic style conventions."],
+    guides: [{ href: "/blog/research-paper-editing-checklist-before-submission", label: "Research paper submission checklist" }, { href: "/blog/editing-vs-proofreading", label: "Editing or proofreading?" }],
+  },
+  "thesis-editing": {
+    heading: "Chapter-level revision before the thesis reaches its final proofread.",
+    paragraphs: [
+      "Thesis editing can work across the abstract, introduction, literature review, methods, results, discussion, and conclusion, with attention to how each chapter supports the research purpose. Supervisor comments and institutional guidance help define the appropriate scope.",
+      "The service improves the student's own draft. It can clarify transitions and flag gaps or inconsistencies, but decisions about methods, analysis, claims, and responses to supervisors remain with the author.",
+    ],
+    boundaries: ["We do not conduct research, generate findings, or write thesis chapters for assessment.", "Reference reconstruction and source-by-source verification are separate from language editing.", "After major revisions are accepted, a separate final proofread may still be useful."],
+    guides: [{ href: "/blog/thesis-proofreading-checklist", label: "Thesis final-review checklist" }, { href: "/blog/thesis-tables-figures-references-checklist", label: "Check tables, figures, and references" }],
+  },
+  "dissertation-proofreading": {
+    heading: "A whole-document final pass after supervisor and content revisions.",
+    paragraphs: [
+      "A dissertation proofread checks consistency across chapters as well as front matter, pagination, headings, captions, tables, figures, references, appendices, and the exported submission file. The best time to begin is after the argument and chapter order are stable.",
+      "Long documents need realistic scheduling and time for the author to review changes. Projects above the calculator's automatic word-count range require scope and turnaround confirmation before work begins.",
+    ],
+    boundaries: ["Proofreading does not repair an unresolved research design or rewrite the dissertation argument.", "We check supplied formatting guidance but do not guarantee acceptance by an institution or examiner.", "The author must confirm factual content, data, citation accuracy, and the required submission format."],
+    guides: [{ href: "/blog/dissertation-proofreading-checklist", label: "Use the 15-check dissertation list" }, { href: "/blog/how-to-proofread-a-dissertation-before-submission", label: "Follow a staged proofreading workflow" }, { href: "/blog/thesis-tables-figures-references-checklist", label: "Audit tables, figures, and references" }],
+  },
+  "manuscript-editing": {
+    heading: "Book manuscripts and research manuscripts need different editorial decisions.",
+    paragraphs: [
+      "Book editing may focus on chapter flow, pacing, voice, consistency, and readability. Journal or research manuscript editing focuses more on section logic, scholarly language, terminology, cautious claims, and alignment with the target journal's author instructions.",
+      "Copy editing improves wording and consistency; proofreading checks the final approved version; formatting applies the required presentation rules. Tell us the manuscript type and intended reader so the review can be scoped accurately.",
+    ],
+    boundaries: ["Editing cannot guarantee publication, acceptance, sales, or a particular review outcome.", "We do not fabricate citations, research results, plot material, or author credentials.", "Journal selection, peer-review responses, indexing, and typesetting are outside scope unless explicitly agreed."],
+    guides: [{ href: "/blog/research-paper-editing-checklist-before-submission", label: "Research paper editing checklist" }, { href: "/blog/editing-vs-proofreading", label: "Understand editing versus proofreading" }],
+  },
+};
+
 export function generateStaticParams() {
   return seoServicePages.map((page) => ({ slug: page.slug }));
 }
@@ -46,6 +108,7 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
   const relatedPages = page.related
     .map((slug) => getSeoServicePage(slug))
     .filter((related): related is NonNullable<typeof related> => Boolean(related));
+  const enhancement = serviceEnhancements[page.slug];
 
   return (
     <PublicPageShell
@@ -120,6 +183,33 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
           </div>
         </div>
       </section>
+
+      {enhancement ? (
+        <section className="border-y border-hairline bg-surface-soft px-5 py-16 sm:px-8 lg:py-24">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Scope and service fit</p>
+              <h2 className="mt-4 font-display text-4xl leading-tight text-ink">{enhancement.heading}</h2>
+              <div className="mt-6 grid gap-4 text-base leading-8 text-body">
+                {enhancement.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </div>
+              <div className="mt-7 flex flex-wrap gap-3">
+                {enhancement.guides.map((guide) => (
+                  <Link key={guide.href} href={guide.href} className="rounded-full border border-primary/25 bg-canvas px-4 py-2 text-sm font-semibold text-primary transition hover:border-primary">
+                    {guide.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <aside className="rounded-2xl border border-hairline bg-canvas p-6 sm:p-8">
+              <h2 className="font-display text-3xl text-ink">What is not included</h2>
+              <ul className="mt-5 grid gap-4 text-sm leading-7 text-body">
+                {enhancement.boundaries.map((boundary) => <li key={boundary} className="border-l border-primary/30 pl-4">{boundary}</li>)}
+              </ul>
+            </aside>
+          </div>
+        </section>
+      ) : null}
 
       <section className="border-y border-hairline bg-surface-soft px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2">

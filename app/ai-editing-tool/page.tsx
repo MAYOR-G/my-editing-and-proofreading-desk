@@ -44,6 +44,9 @@ export default function AiEditingToolPage() {
             <p className="max-w-2xl text-base leading-8 text-body">
               AI can help you spot basic issues quickly. Professional editors still provide the context, judgment, formatting awareness, and final polish needed for high-stakes documents.
             </p>
+            <p className="max-w-2xl text-sm leading-7 text-body">
+              Text is sent to OpenRouter and an eligible model provider using zero-data-retention routing. Provider policies can vary, so do not paste confidential, unpublished, privileged, or personally sensitive material. The app does not intentionally add AI-tool input to project records. Read the <Link href="/privacy" className="font-semibold text-primary underline underline-offset-4">Privacy Policy</Link>.
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="#try-tool" className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-7 text-sm font-medium text-white transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
                 Try up to 1,000 words

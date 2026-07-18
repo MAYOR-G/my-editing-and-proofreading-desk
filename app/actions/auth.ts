@@ -87,22 +87,39 @@ export async function signout() {
 }
 
 export async function resetPasswordForEmail(formData: FormData) {
-  const email = formData.get("email") as string;
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  const genericResponse: { success: boolean; message: string; error?: string } = {
+    success: true,
+    message: "If an account exists for that email, a password reset link has been sent.",
+  };
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return genericResponse;
+  }
+
+  const rateLimitResult = await checkRateLimit(`password-reset-${email}`, 3, 3600);
+  if (!rateLimitResult.success) {
+    return genericResponse;
+  }
+
   const supabase = createClient();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback?next=/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.editandproofread.com"}/auth/callback?next=/reset-password`,
   });
 
   if (error) {
-    return { error: error.message };
+    console.error("Password reset request failed", { code: error.code, status: error.status });
   }
 
-  return { success: true, message: "A password reset link has been sent to your email." };
+  return genericResponse;
 }
 
 export async function updatePassword(formData: FormData) {
   const password = formData.get("password") as string;
+  if (!password || password.length < 8) {
+    return { error: "Use a password with at least 8 characters." };
+  }
   const supabase = createClient();
 
   const { error } = await supabase.auth.updateUser({

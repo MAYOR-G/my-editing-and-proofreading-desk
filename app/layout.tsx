@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { TawkWidget } from "@/components/TawkWidget";
-import { buildPageMetadata, editorialTeamJsonLd, jsonLdScript, organizationJsonLd, siteConfig, siteNavigationJsonLd, websiteJsonLd } from "@/lib/site";
+import { buildPageMetadata, jsonLdScript, organizationJsonLd, siteConfig, siteNavigationJsonLd, websiteJsonLd } from "@/lib/site";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -8,12 +8,18 @@ export const viewport: Viewport = {
   colorScheme: "light"
 };
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+const rootMetadata = buildPageMetadata({
     title: siteConfig.defaultTitle,
     description: siteConfig.defaultDescription,
     path: "/",
-  }),
+  });
+
+export const metadata: Metadata = {
+  ...rootMetadata,
+  // Canonicals and robots directives belong to individual routes. Keeping
+  // them out of the root prevents 404/private pages inheriting homepage signals.
+  alternates: undefined,
+  robots: undefined,
   icons: {
     icon: [
       { url: "/assets/logo.png", type: "image/png" },
@@ -37,7 +43,6 @@ export default function RootLayout({
             organizationJsonLd(),
             websiteJsonLd(),
             siteNavigationJsonLd(),
-            editorialTeamJsonLd(),
           ])}
         />
         {children}

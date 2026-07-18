@@ -1,4 +1,5 @@
 import { newLearningCenterPosts } from "@/lib/new-learning-center-posts";
+import { seoOpportunityPosts } from "@/lib/seo-opportunity-posts";
 
 export type BlogTextPart =
   | string
@@ -58,6 +59,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 export const blogPosts: BlogPost[] = [
+  ...seoOpportunityPosts,
   ...newLearningCenterPosts,
   {
     title: "Editing vs Proofreading: What Is the Difference?",
@@ -305,7 +307,7 @@ export const blogPosts: BlogPost[] = [
     category: "Academic writing",
     author: brandAuthor,
     datePublished: "2026-06-22",
-    dateUpdated: "2026-06-22",
+    dateUpdated: "2026-07-18",
     readingTime: "10 min read",
     metaTitle: "Thesis Proofreading Checklist Before Submission",
     metaDescription: "Use this thesis proofreading checklist to review grammar, structure, formatting, citations, clarity, and final submission details.",
@@ -347,7 +349,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         id: "practical-checklist",
-        heading: "Practical thesis and dissertation proofreading checklist",
+        heading: "Practical thesis proofreading checklist",
         paragraphs: [
           [
             "Use this final control sheet after checking the full document. Keep questions for your supervisor, department, or graduate school.",
@@ -414,7 +416,7 @@ export const blogPosts: BlogPost[] = [
         heading: "3. Check chapter flow and internal consistency",
         paragraphs: [
           [
-            "A dissertation proofreading checklist should include chapter-level navigation. Every chapter needs a clear opening purpose, a logical sequence of sections, and a closing passage that tells the reader what has been established. Transitions should explain why the next section follows, not merely announce it.",
+            "A thesis proofreading checklist should include chapter-level navigation. Every chapter needs a clear opening purpose, a logical sequence of sections, and a closing passage that tells the reader what has been established. Transitions should explain why the next section follows, not merely announce it.",
           ],
           [
             "Check terminology, abbreviations, sample sizes, variable names, dates, and methodological labels across the entire thesis. A change made in Chapter 3 must also appear in the abstract, contents pages, results, discussion, appendices, and any list of abbreviations where relevant.",
@@ -569,6 +571,11 @@ export const blogPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
+        href: "/blog/thesis-tables-figures-references-checklist",
+        label: "Tables, figures, and references",
+        description: "Run a focused cross-reference, citation, permissions, accessibility, and final-PDF audit.",
+      },
+      {
         href: "/thesis-editing",
         label: "Academic editing",
         description: "Get help with thesis structure, scholarly clarity, language, and consistency before the final proofread.",
@@ -586,15 +593,15 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    title: "Dissertation Proofreading Checklist: What to Fix Before You Submit",
+    title: "Dissertation Proofreading Checklist: 15 Checks Before Submission",
     slug: "dissertation-proofreading-checklist",
     excerpt: "Use this 15-point dissertation proofreading checklist to catch specific language, formatting, reference, table, figure, and final-file errors.",
     category: "Academic writing",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-06-28",
+    dateUpdated: "2026-07-18",
     readingTime: "11 min read",
-    metaTitle: "Dissertation Proofreading Checklist: 15 Fixes Before Submission",
+    metaTitle: "Dissertation Proofreading Checklist: 15 Checks Before Submission",
     metaDescription: "Use this 15-point dissertation proofreading checklist to catch grammar, formatting, reference, table, figure, and final-file errors before submission.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
@@ -635,8 +642,8 @@ export const blogPosts: BlogPost[] = [
           rows: [
             ["Language & Tone", "Grammar, spelling, punctuation, sentence clarity, academic tone", "Ensures your argument is easily understood by examiners."],
             ["Structure & Consistency", "Headings, introductions, conclusions, abbreviations", "Creates a cohesive narrative from chapter one to the end."],
-            ["Data & Evidence", "Tables, figures, citations, reference list", "Prevents academic misconduct and builds trust in findings."],
-            ["Formatting & Export", "Margins, page numbers, appendices, final PDF", "Meets strict university guidelines and avoids rejection."],
+            ["Data & Evidence", "Tables, figures, citations, reference list", "Helps readers trace and interpret the supplied evidence."],
+            ["Formatting & Export", "Margins, page numbers, appendices, final submission file", "Helps the document follow the supplied university requirements."],
           ]
         },
       },
@@ -770,7 +777,7 @@ export const blogPosts: BlogPost[] = [
         heading: "14. Do a final PDF check before upload",
         paragraphs: [
           [
-            "Never submit a Word document unless explicitly requested. Convert your dissertation to a PDF and read through it one final time. Check for formatting shifts, broken links, unreadable figures, or blank pages that may have occurred during conversion.",
+            "Submit the file type required by your institution; some universities request a PDF, an editable file, or both. Inspect the exact file you will upload for formatting shifts, broken links, unreadable figures, or blank pages introduced during conversion.",
           ],
         ]
       },
@@ -813,7 +820,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         question: "How long does it take to proofread a dissertation?",
-        answer: "The time varies based on word count and the quality of the draft. For a standard 80,000-word dissertation, professional proofreading typically takes 5 to 10 days, though faster turnaround times are often available for urgent deadlines."
+        answer: "Turnaround depends on word count, draft condition, service scope, and formatting complexity. Documents above 50,000 words require a custom review so the editorial desk can confirm a realistic schedule and quote."
       },
       {
         question: "Should I proofread my dissertation myself?",
@@ -834,8 +841,13 @@ export const blogPosts: BlogPost[] = [
     ],
     internalLinks: [
       {
+        href: "/blog/thesis-tables-figures-references-checklist",
+        label: "Tables, figures, and references",
+        description: "Use the focused audit for captions, callouts, citations, permissions, and the final PDF.",
+      },
+      {
         href: "/dissertation-proofreading",
-        label: "Academic proofreading",
+        label: "Dissertation proofreading",
         description: "Need a second pair of eyes before submission? Ensure your writing meets university standards.",
       },
       {
@@ -851,16 +863,16 @@ export const blogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "How Much Does Proofreading Cost in 2026?",
+    title: "How Much Does Proofreading Cost? Pricing Factors and Calculator",
     slug: "how-much-does-proofreading-cost",
-    excerpt: "Learn what affects proofreading cost, from word count and deadline to document type. Compare student, author, academic, and business proofreading prices.",
+    excerpt: "See how this desk calculates proofreading cost from service selection, word count, and turnaround, including the minimum order, service charge, and custom-review threshold.",
     category: "Pricing & Guides",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-07-03",
+    dateUpdated: "2026-07-18",
     readingTime: "10 min read",
-    metaTitle: "How Much Does Proofreading Cost in 2026? | Edit and Proofread",
-    metaDescription: "Learn what affects proofreading cost in 2026, including word count, turnaround, document type, editing vs proofreading, and how to choose a service.",
+    metaTitle: "How Much Does Proofreading Cost? Pricing Guide",
+    metaDescription: "See how proofreading cost is calculated from service selection, word count, and turnaround, including the minimum order, service charge, and custom-review threshold.",
     heroImage: "/images/blog/proofreading-cost-guide-hero.png",
     heroImageAlt: "Modern workspace with a calculator and a printed document, symbolizing calculating proofreading costs and pricing",
     tableOfContents: [
@@ -871,8 +883,8 @@ export const blogPosts: BlogPost[] = [
       { id: "level-of-work", label: "Level of work needed" },
       { id: "audience-types", label: "Academic, business, manuscript, and dissertation proofreading" },
       { id: "pricing-models", label: "Proofreading price per word vs fixed quote" },
-      { id: "cheap-risks", label: "Why very cheap proofreading can be risky" },
-      { id: "proofreading-vs-editing", label: "Proofreading vs editing: why editing usually costs more" },
+      { id: "cheap-risks", label: "How to compare proofreading quotes" },
+      { id: "proofreading-vs-editing", label: "Proofreading vs editing price" },
       { id: "cost-examples", label: "Example proofreading cost scenarios" },
       { id: "get-quote", label: "How to get an accurate proofreading quote" },
       { id: "reduce-costs", label: "How to reduce proofreading costs before sending your document" },
@@ -893,9 +905,9 @@ export const blogPosts: BlogPost[] = [
           headers: ["Factor", "How it affects price", "Example"],
           rows: [
             ["Word count", "Longer documents require more time, increasing the total cost.", "A 2,000-word essay costs less than an 80,000-word manuscript."],
-            ["Turnaround time", "Urgent deadlines require editors to prioritize your work, incurring rush fees.", "A 24-hour turnaround costs more than a 7-day turnaround."],
-            ["Type of document", "Technical or specialized content takes longer to review accurately.", "A medical research paper costs more than a general blog post."],
-            ["Level of work", "Documents needing heavy restructuring cost more than those needing light typo fixes.", "Substantive editing is priced higher than basic proofreading."],
+            ["Turnaround time", "The calculator applies its published per-word turnaround rate and disables timelines that are not available for the word count.", "A 12-hour option is available only for eligible short documents."],
+            ["Selected services", "Each selected service contributes its published rate; formatting and translation use different base rates.", "Selecting more than one service changes the subtotal."],
+            ["Order rules", "A $10 minimum and 5% service charge apply to automatic orders.", "Documents above 50,000 words require a custom review."],
           ]
         }
       },
@@ -904,7 +916,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Word count",
         paragraphs: [
           [
-            "The most significant factor in determining proofreading rates is the length of the document. Most professional agencies and freelancers charge based on the total word count, ensuring transparency so you only pay for the exact volume of text reviewed.",
+            "This desk's calculator uses the document word count as a core input. The selected service rates and an eligible turnaround rate are applied to that count, making the estimate reproducible before checkout.",
           ]
         ]
       },
@@ -913,7 +925,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Turnaround time",
         paragraphs: [
           [
-            "Deadline pressure directly impacts editing and proofreading cost. If you can wait a week or more for your document, you will secure the most economical rate. If you require overnight or 24-hour delivery, expect to pay a premium for expedited service.",
+            "The live calculator offers timelines from 12 hours to four weeks, with availability tied to word count. It applies the rate shown for the selected eligible timeline; it does not add a separate hidden rush surcharge.",
           ]
         ]
       },
@@ -922,7 +934,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Type of document",
         paragraphs: [
           [
-            "The complexity of the text influences the proofreading price per word. General fiction or standard business communications are straightforward to read. Conversely, highly technical engineering reports, legal documents, or complex academic studies require a slower reading pace and specialized knowledge, increasing the cost.",
+            "Document type helps the desk understand the material and scope, but the automatic estimate is driven by the services selected, word count, and turnaround. Unusual formatting, specialist requirements, or files above the automatic limit may need scope confirmation before payment.",
           ]
         ]
       },
@@ -931,7 +943,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Level of work needed",
         paragraphs: [
           [
-            "Not all texts are in the same condition. A document written by an experienced native speaker may only need a light sweep for typos. A document drafted hastily or by an author writing in an additional language may require heavier intervention for clarity and flow, which takes more time and therefore costs more.",
+            "Draft condition determines whether proofreading is actually the right service. A final, well-developed document may need proofreading, while recurring clarity, tone, or structural problems point to editing. The calculator reflects the service you select, so choose scope before comparing totals.",
           ]
         ]
       },
@@ -953,27 +965,27 @@ export const blogPosts: BlogPost[] = [
         heading: "Proofreading price per word vs fixed quote",
         paragraphs: [
           [
-            "Most reputable services calculate the proofreading price per word, which is the fairest method as you know the exact cost upfront. Professional organizations like ",
+            "Editorial providers use different pricing models, including per-word, hourly, per-page, and fixed-project quotes. This desk uses a word-count calculator for eligible documents so the services, turnaround rate, minimum order, service charge, and final total are visible before payment. Professional organizations like ",
             { text: "ACES: The Society for Editing", href: "https://aceseditors.org/", external: true },
-            " emphasize clarity in client agreements. Some editors charge an hourly rate, which can be unpredictable. Fixed project quotes are sometimes used for very large tasks, like full book manuscripts, after evaluating a sample chapter.",
+            " publish resources for working with editors. Whatever the model, confirm the scope, schedule, deliverables, and fees in writing. Documents above this desk's 50,000-word automatic limit receive a custom review.",
           ]
         ]
       },
       {
         id: "cheap-risks",
-        heading: "Why very cheap proofreading can be risky",
+        heading: "How to compare proofreading quotes responsibly",
         paragraphs: [
           [
-            "It is tempting to choose the lowest advertised rate, but cheap proofreading often relies on automated software rather than human review, or uses inexperienced readers who rush through the text. High-quality proofreading requires deep concentration and time. If a price seems too good to be true, it likely sacrifices thoroughness and quality.",
+            "Compare like with like: the stated scope, turnaround, file format, delivery method, revision policy, minimum charge, and additional fees. A lower quote is not evidence of poor work, and a higher quote is not proof of quality. Ask what will be reviewed and what will be returned before deciding.",
           ]
         ]
       },
       {
         id: "proofreading-vs-editing",
-        heading: "Proofreading vs editing: why editing usually costs more",
+        heading: "Proofreading vs editing: compare scope before price",
         paragraphs: [
           [
-            "Proofreading involves correcting surface errors (spelling, grammar, punctuation) on a finalized draft. Editing involves restructuring sentences, improving argument flow, and refining tone. Because editing requires more critical thought and extensive rewriting, the editing and proofreading cost will reflect this deeper level of work.",
+            "Proofreading and editing solve different problems. On this desk's current calculator, proofreading and editing begin with the same listed service rate, while the selected service combination, word count, and turnaround determine the estimate. Choose editing for clarity, flow, tone, and sentence-level work; choose proofreading for the final error check.",
           ]
         ]
       },
@@ -982,7 +994,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Example proofreading cost scenarios",
         paragraphs: [
           [
-            "While exact prices vary, you can easily review different pricing tiers based on standard document lengths. For instance, a short application essay with a flexible deadline will fall into a very affordable tier, whereas a 60,000-word academic thesis needing a rapid turnaround will represent a larger investment. Review our ",
+            "Use the calculator for documents up to 50,000 words. It shows the subtotal, 5% service charge, minimum-order adjustment where relevant, and final total before payment. A 60,000-word thesis is outside automatic pricing and requires a custom review. Open the ",
             { text: "pricing page", href: "/pricing" },
             " to estimate your specific scenario.",
           ]
@@ -1002,9 +1014,7 @@ export const blogPosts: BlogPost[] = [
         heading: "How to reduce proofreading costs before sending your document",
         paragraphs: [
           [
-            "You can manage costs by planning ahead. Submit your document with a generous deadline to avoid rush fees. Additionally, self-edit as much as possible. According to the ",
-            { text: "Editorial Freelancers Association", href: "https://www.the-efa.org/rates/", external: true },
-            ", industry standard rates reflect the time required; a cleaner draft allows an editor to work more efficiently. Read the document aloud or use basic spelling tools to fix obvious errors before submitting.",
+            "Plan early so your word count has an eligible turnaround, remove material that will not be submitted, and confirm whether you need one service or several. Read the document aloud or use basic spelling tools to fix obvious errors, but do not select proofreading merely to reduce the estimate when the draft still needs editing.",
           ]
         ]
       }
@@ -1016,19 +1026,19 @@ export const blogPosts: BlogPost[] = [
       },
       {
         question: "Is proofreading charged per word or per page?",
-        answer: "Professional proofreading is almost always charged per word. This is much fairer than per-page pricing, as page length can vary drastically depending on fonts, margins, and line spacing."
+        answer: "This desk uses word count for its automatic calculator. Other providers may charge per word, per hour, per page, or by project, so compare the definition of a page and the included scope."
       },
       {
         question: "Why does dissertation proofreading cost more than short essay proofreading?",
-        answer: "Dissertation proofreading cost is higher because it involves a significantly larger word count, specialized academic terminology, and strict adherence to complex university formatting and citation guidelines."
+        answer: "A dissertation usually produces a larger total because it has more words. Selecting formatting or other services also changes the estimate. Documents above 50,000 words require a custom review."
       },
       {
         question: "Is proofreading cheaper than editing?",
-        answer: "Yes, proofreading is generally cheaper than editing. Proofreading checks a finalized document for surface errors, while editing involves time-consuming structural changes, sentence rewriting, and clarity improvements."
+        answer: "Not necessarily on every price list. This desk currently lists the same base service rate for proofreading and editing; the selected services, word count, and turnaround determine the final estimate."
       },
       {
         question: "Do urgent deadlines cost more?",
-        answer: "Yes, urgent deadlines require editors to work outside standard hours or prioritize your document over others. Expedited turnaround times always incur a higher per-word rate."
+        answer: "Turnaround changes the published per-word rate in this desk's calculator, and short timelines are disabled when the word count is too high. No separate hidden rush surcharge is added."
       },
       {
         question: "How can I get a proofreading quote?",
@@ -1036,7 +1046,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         question: "Is cheap proofreading worth it?",
-        answer: "Extremely cheap proofreading is risky. It often means the reviewer is rushing, inexperienced, or relying entirely on AI software, which can miss contextual errors or damage your academic or professional reputation."
+        answer: "Price alone does not establish quality. Compare scope, reviewer process, turnaround, delivery format, minimum charges, additional fees, and whether the service is human-led before deciding."
       }
     ],
     internalLinks: [

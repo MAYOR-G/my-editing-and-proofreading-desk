@@ -22,7 +22,8 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Profiles Policies
 CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+-- Profile changes are performed by trusted server-side code. Do not grant broad
+-- UPDATE access here: the role column is an authorization boundary.
 CREATE POLICY "Admins can view all profiles" ON public.profiles FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
@@ -95,7 +96,7 @@ ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
 -- Projects Policies
 CREATE POLICY "Clients can view own projects" ON public.projects FOR SELECT USING (auth.uid() = client_id);
-CREATE POLICY "Clients can create projects" ON public.projects FOR INSERT WITH CHECK (auth.uid() = client_id);
+-- Project creation is restricted to the validated server-side submission flow.
 CREATE POLICY "Admins can view all projects" ON public.projects FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
@@ -196,7 +197,13 @@ CREATE POLICY "Users can view messages for their projects" ON public.messages FO
   EXISTS (SELECT 1 FROM public.projects p WHERE p.id = project_id AND p.client_id = auth.uid()) OR
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
 );
-CREATE POLICY "Users can send messages" ON public.messages FOR INSERT WITH CHECK (auth.uid() = sender_id);
+CREATE POLICY "Users can send messages" ON public.messages FOR INSERT WITH CHECK (
+  auth.uid() = sender_id
+  AND EXISTS (
+    SELECT 1 FROM public.projects p
+    WHERE p.id = project_id AND p.client_id = auth.uid()
+  )
+);
 
 -- 6. Contact/support inbox used by public contact form and dashboard support.
 CREATE TABLE public.contact_messages (
