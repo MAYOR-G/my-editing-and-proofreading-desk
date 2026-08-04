@@ -3,6 +3,8 @@ import { blogPosts } from "@/lib/blog";
 import { seoServicePages } from "@/lib/seo-service-pages";
 import { absoluteUrl, SITE_LAST_MODIFIED } from "@/lib/site";
 
+const BLOG_POSTS_PER_PAGE = 12;
+
 const staticRoutes = [
   { path: "/", lastModified: SITE_LAST_MODIFIED },
   { path: "/about", lastModified: SITE_LAST_MODIFIED },
@@ -31,7 +33,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: post.dateUpdated,
   }));
 
-  return [...staticRoutes, ...seoServiceRoutes, ...blogRoutes].map((route) => ({
+  const paginatedBlogRoutes = Array.from(
+    { length: Math.max(Math.ceil(blogPosts.length / BLOG_POSTS_PER_PAGE) - 1, 0) },
+    (_, index) => ({
+      path: `/blog/page/${index + 2}`,
+      lastModified: SITE_LAST_MODIFIED,
+    })
+  );
+
+  return [...staticRoutes, ...paginatedBlogRoutes, ...seoServiceRoutes, ...blogRoutes].map((route) => ({
     url: route.path === "/" ? absoluteUrl(route.path).replace(/\/$/, "") : absoluteUrl(route.path),
     lastModified: new Date(`${route.lastModified}T00:00:00.000Z`),
   }));

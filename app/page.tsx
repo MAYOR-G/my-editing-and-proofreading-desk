@@ -24,7 +24,7 @@ const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion")
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Professional Editing & Proofreading Services | Human Editors",
-  description: "Human editing and proofreading for academic papers, dissertations, manuscripts, business documents, CVs, and other important writing. Secure upload and clear pricing.",
+  description: "Human editing and proofreading for academic papers, dissertations, manuscripts, business documents, CVs, and important writing. Secure upload and clear pricing.",
   path: "/",
 });
 

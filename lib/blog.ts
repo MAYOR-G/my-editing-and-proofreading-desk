@@ -1,4 +1,5 @@
 import { newLearningCenterPosts } from "@/lib/new-learning-center-posts";
+import { requestedBlogPosts } from "@/lib/requested-blog-posts";
 import { seoOpportunityPosts } from "@/lib/seo-opportunity-posts";
 
 export type BlogTextPart =
@@ -59,6 +60,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 export const blogPosts: BlogPost[] = [
+  ...requestedBlogPosts,
   ...seoOpportunityPosts,
   ...newLearningCenterPosts,
   {
@@ -301,24 +303,24 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    title: "Thesis Proofreading Checklist Before Submission",
+    title: "PhD Thesis Proofreading Checklist: Final Checks Before Submission",
     slug: "thesis-proofreading-checklist",
-    excerpt: "Use this thesis proofreading checklist to review language, chapter flow, references, formatting, figures, and the final submission file.",
-    category: "Academic writing",
+    excerpt: "Use this PhD thesis proofreading checklist to review cross-chapter consistency, research questions, terminology, tables, figures, references, front matter, appendices, and the final repository file.",
+    category: "PhD thesis proofreading",
     author: brandAuthor,
     datePublished: "2026-06-22",
-    dateUpdated: "2026-07-18",
-    readingTime: "10 min read",
-    metaTitle: "Thesis Proofreading Checklist Before Submission",
-    metaDescription: "Use this thesis proofreading checklist to review grammar, structure, formatting, citations, clarity, and final submission details.",
+    dateUpdated: "2026-08-04",
+    readingTime: "12 min read",
+    metaTitle: "PhD Thesis Proofreading Checklist: Final Checks Before Submission",
+    metaDescription: "Use this PhD thesis proofreading checklist to review research questions, terminology, tables, figures, references, appendices, and final PDF submission.",
     heroImage: "/images/blog/thesis-proofreading-checklist-hero-v2.png",
     heroImageAlt: "Thesis, proofreading checklist, reference pages, figures, and final PDF arranged for submission review",
     tableOfContents: [
-      { id: "quick-summary", label: "Quick summary" },
-      { id: "practical-checklist", label: "Practical checklist table" },
+      { id: "quick-summary", label: "PhD thesis focus" },
+      { id: "practical-checklist", label: "Doctoral checklist table" },
       { id: "grammar-and-punctuation", label: "Grammar and punctuation" },
-      { id: "academic-tone-and-clarity", label: "Academic tone and argument clarity" },
-      { id: "chapter-flow", label: "Chapter flow" },
+      { id: "academic-tone-and-clarity", label: "Research-question consistency" },
+      { id: "chapter-flow", label: "Cross-chapter consistency" },
       { id: "tables-and-figures", label: "Tables and figures" },
       { id: "citations-and-references", label: "Citations and references" },
       { id: "formatting-guidelines", label: "Formatting and guidelines" },
@@ -329,27 +331,34 @@ export const blogPosts: BlogPost[] = [
     body: [
       {
         id: "quick-summary",
-        heading: "Thesis proofreading checklist: quick summary",
+        heading: "PhD thesis proofreading checklist: quick summary",
         paragraphs: [
           [
             "A reliable ",
-            { text: "thesis proofreading checklist", href: "/thesis-editing" },
-            " should cover more than spelling. Before submission, review grammar and punctuation, academic tone, argument clarity, chapter flow, tables and figures, citations and references, university formatting rules, and the final exported file.",
+            { text: "PhD thesis proofreading checklist", href: "/thesis-editing" },
+            " should cover more than spelling. Before submission, review cross-chapter consistency, research-question alignment, terminology, tables and figures, citations and references, front matter, appendices, university formatting rules, and the final exported file.",
           ],
           [
-            "Work from large issues to small ones. Confirm that the thesis is complete and logically organized before correcting commas or page numbers. If chapters still need restructuring, begin with thesis editing rather than final proofreading.",
+            "Work from whole-thesis issues to page-level details. Confirm that the doctoral thesis is complete, chapter order is stable, and the contribution is described consistently before correcting commas or page numbers. If chapters still need restructuring, begin with thesis editing rather than final proofreading.",
+          ],
+          [
+            "If you need a shorter master's-focused control sheet, use the ",
+            { text: "master's dissertation proofreading checklist", href: "/blog/dissertation-proofreading-checklist" },
+            ". If you need to plan the full work sequence, read ",
+            { text: "how to proofread a dissertation", href: "/blog/how-to-proofread-a-dissertation-before-submission" },
+            " before using this final doctoral checklist.",
           ],
         ],
         callout: {
           title: "Quick summary",
           text: [
-            "Complete the content first, proofread in separate passes, check every cross-reference, and inspect the final PDF page by page before uploading it.",
+            "Freeze the doctoral argument, check every chapter against the research questions, audit tables and references, then inspect the final PDF and repository submission file page by page.",
           ],
         },
       },
       {
         id: "practical-checklist",
-        heading: "Practical thesis proofreading checklist",
+        heading: "Practical PhD thesis proofreading checklist",
         paragraphs: [
           [
             "Use this final control sheet after checking the full document. Keep questions for your supervisor, department, or graduate school.",
@@ -358,15 +367,15 @@ export const blogPosts: BlogPost[] = [
         table: {
           headers: ["Area", "What to check", "Complete"],
           rows: [
-            ["Grammar", "Agreement, tense, sentence boundaries, articles, pronouns", "□"],
-            ["Punctuation", "Commas, semicolons, colons, quotation marks, apostrophes", "□"],
-            ["Academic tone", "Precision, cautious claims, formal wording, consistent voice", "□"],
-            ["Argument", "Research question, chapter purpose, evidence, conclusions", "□"],
-            ["Chapter flow", "Introductions, transitions, summaries, heading hierarchy", "□"],
-            ["Tables and figures", "Numbers, titles, captions, callouts, source notes", "□"],
-            ["References", "Every citation matched; every entry complete and consistent", "□"],
-            ["Formatting", "Margins, spacing, fonts, pagination, front matter", "□"],
-            ["Final file", "Bookmarks, links, image quality, missing pages, upload name", "□"],
+            ["Research questions", "Same wording and scope in abstract, introduction, methods, findings, discussion, and conclusion", "□"],
+            ["Contribution", "Original contribution, aims, claims, and limitations stated consistently across chapters", "□"],
+            ["Terminology", "Key terms, abbreviations, variables, participant labels, and theory names used consistently", "□"],
+            ["Chapter map", "Every chapter opening, closing, and transition supports the whole-thesis argument", "□"],
+            ["Tables and figures", "Numbers, titles, captions, callouts, source notes, legends, and lists match", "□"],
+            ["Citations", "Every in-text citation has a reference entry and every reference entry is used as required", "□"],
+            ["Front matter", "Title page, abstract, acknowledgements, declarations, contents, and lists follow rules", "□"],
+            ["Appendices", "Appendix labels, permissions, ethics material, instruments, and cross-references align", "□"],
+            ["Final file", "PDF, bookmarks, links, page breaks, image quality, filename, and repository fields checked", "□"],
           ],
         },
       },
@@ -399,7 +408,7 @@ export const blogPosts: BlogPost[] = [
             "Academic proofreading should protect meaning, but a final review must still identify wording that overstates the evidence. Replace absolute claims such as “proves” or “always” when the study supports a narrower conclusion. Make sure uncertainty is expressed accurately rather than with vague hedging.",
           ],
           [
-            "Read the abstract, introduction, and conclusion together. They should describe the same research problem, methods, principal findings, and contribution. If these sections make different promises, the thesis may need ",
+            "Read the abstract, introduction, methods overview, discussion, and conclusion together. They should describe the same research problem, methods, principal findings, contribution, and limitations. If these sections make different promises, the thesis may need ",
             { text: "academic editing", href: "/academic-proofreading" },
             " rather than proofreading alone.",
           ],
@@ -413,13 +422,13 @@ export const blogPosts: BlogPost[] = [
       },
       {
         id: "chapter-flow",
-        heading: "3. Check chapter flow and internal consistency",
+        heading: "3. Check cross-chapter flow and internal consistency",
         paragraphs: [
           [
-            "A thesis proofreading checklist should include chapter-level navigation. Every chapter needs a clear opening purpose, a logical sequence of sections, and a closing passage that tells the reader what has been established. Transitions should explain why the next section follows, not merely announce it.",
+            "A PhD thesis proofreading checklist should include chapter-level navigation and whole-document consistency. Every chapter needs a clear opening purpose, a logical sequence of sections, and a closing passage that tells the reader what has been established. Transitions should explain why the next section follows, not merely announce it.",
           ],
           [
-            "Check terminology, abbreviations, sample sizes, variable names, dates, and methodological labels across the entire thesis. A change made in Chapter 3 must also appear in the abstract, contents pages, results, discussion, appendices, and any list of abbreviations where relevant.",
+            "Check terminology, abbreviations, sample sizes, variable names, dates, theory labels, and methodological labels across the entire thesis. A change made in Chapter 3 must also appear in the abstract, contents pages, results, discussion, appendices, and any list of abbreviations where relevant.",
           ],
         ],
         numberedSteps: [
@@ -545,12 +554,12 @@ export const blogPosts: BlogPost[] = [
     ],
     faq: [
       {
-        question: "How long should I allow for thesis proofreading?",
-        answer: "The time required depends on word count, language quality, formatting complexity, and the submission deadline. Leave enough time to review changes and fix final export issues. A long thesis should not be treated like a short essay completed in one rushed pass.",
+        question: "How long should I allow for PhD thesis proofreading?",
+        answer: "The time required depends on word count, language quality, formatting complexity, chapter count, and the submission deadline. Leave enough time to review changes, resolve supervisor questions, and fix final export or repository issues. A doctoral thesis should not be treated like a short essay completed in one rushed pass.",
       },
       {
-        question: "Should I proofread my thesis before or after supervisor approval?",
-        answer: "Complete major supervisor-requested revisions before the final proofread. You can check language during drafting, but the last systematic pass should happen when the argument, chapter order, tables, and conclusions are stable so later changes do not introduce new errors.",
+        question: "Should I proofread my PhD thesis before or after supervisor approval?",
+        answer: "Complete major supervisor-requested revisions before the final proofread. You can check language during drafting, but the last systematic pass should happen when the research questions, chapter order, tables, conclusions, and appendices are stable so later changes do not introduce new errors.",
       },
       {
         question: "What is the difference between thesis editing and thesis proofreading?",
@@ -565,11 +574,21 @@ export const blogPosts: BlogPost[] = [
         answer: "No. Proofreading can improve clarity, correctness, consistency, and presentation, but assessment depends on the research, argument, evidence, methodology, institutional criteria, and examiner judgment. No responsible editing service can guarantee a grade or examination outcome.",
       },
       {
-        question: "Can I use AI to proofread my dissertation?",
+        question: "Can I use AI to proofread my PhD thesis?",
         answer: "AI can flag possible language problems, but it may misread specialist terminology, alter meaning, or miss document-wide inconsistencies. Use it cautiously and review every suggestion. Human academic proofreading is more suitable when context, confidentiality, formatting, and precise claims matter.",
       },
     ],
     internalLinks: [
+      {
+        href: "/blog/dissertation-proofreading-checklist",
+        label: "Master's dissertation checklist",
+        description: "Use the shorter 15-point final-submission control sheet for a master's dissertation.",
+      },
+      {
+        href: "/blog/how-to-proofread-a-dissertation-before-submission",
+        label: "Dissertation workflow",
+        description: "Plan the proofreading schedule and passes before completing final checks.",
+      },
       {
         href: "/blog/thesis-tables-figures-references-checklist",
         label: "Tables, figures, and references",
@@ -593,20 +612,20 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    title: "Dissertation Proofreading Checklist: 15 Checks Before Submission",
+    title: "Master's Dissertation Proofreading Checklist: 15 Final Checks",
     slug: "dissertation-proofreading-checklist",
-    excerpt: "Use this 15-point dissertation proofreading checklist to catch specific language, formatting, reference, table, figure, and final-file errors.",
-    category: "Academic writing",
+    excerpt: "Use this concise 15-point master's dissertation proofreading checklist to check final language, formatting, references, tables, figures, university rules, and upload readiness.",
+    category: "Master's dissertation proofreading",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-07-18",
-    readingTime: "11 min read",
-    metaTitle: "Dissertation Proofreading Checklist: 15 Checks Before Submission",
-    metaDescription: "Use this 15-point dissertation proofreading checklist to catch grammar, formatting, reference, table, figure, and final-file errors before submission.",
+    dateUpdated: "2026-08-04",
+    readingTime: "8 min read",
+    metaTitle: "Master's Dissertation Proofreading Checklist: 15 Final Checks",
+    metaDescription: "Use this dissertation proofreading checklist for 15 final checks covering grammar, formatting, references, tables, figures, rules, and upload readiness.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
     tableOfContents: [
-      { id: "quick-overview", label: "Quick overview" },
+      { id: "quick-overview", label: "Master's checklist overview" },
       { id: "grammar-spelling-punctuation", label: "1. Check grammar, spelling, and punctuation" },
       { id: "sentence-clarity-academic-tone", label: "2. Review sentence clarity and academic tone" },
       { id: "remove-repetition", label: "3. Remove repetition and unclear phrasing" },
@@ -628,22 +647,37 @@ export const blogPosts: BlogPost[] = [
     body: [
       {
         id: "quick-overview",
-        heading: "Dissertation Proofreading Checklist: Quick Overview",
+        heading: "Master's dissertation proofreading checklist: quick overview",
         paragraphs: [
           [
-            "The final submission of a dissertation or thesis is a high-pressure moment for students and researchers. Small errors in grammar, inconsistent formatting, or missing references can significantly weaken an otherwise strong and well-researched dissertation.",
+            "The final submission of a master's dissertation is a high-pressure moment. Small errors in grammar, inconsistent formatting, missing references, or an incorrect upload file can weaken the presentation of otherwise careful postgraduate work.",
           ],
           [
-            "Proofreading a dissertation requires a systematic approach. You cannot spot every error in a single read-through. Instead, use this dissertation proofreading checklist to methodically check each part of your academic writing before final submission.",
+            "Use this 15-point dissertation proofreading checklist as a concise final control sheet after your main writing and supervisor revisions are complete. For a fuller schedule and step-by-step process, read ",
+            { text: "how to proofread a dissertation", href: "/blog/how-to-proofread-a-dissertation-before-submission" },
+            ". For a doctoral long-document review, use the ",
+            { text: "PhD thesis proofreading checklist", href: "/blog/thesis-proofreading-checklist" },
+            ".",
           ],
         ],
         table: {
-          headers: ["Check area", "What to review", "Why it matters"],
+          headers: ["Final check", "What to review", "Done"],
           rows: [
-            ["Language & Tone", "Grammar, spelling, punctuation, sentence clarity, academic tone", "Ensures your argument is easily understood by examiners."],
-            ["Structure & Consistency", "Headings, introductions, conclusions, abbreviations", "Creates a cohesive narrative from chapter one to the end."],
-            ["Data & Evidence", "Tables, figures, citations, reference list", "Helps readers trace and interpret the supplied evidence."],
-            ["Formatting & Export", "Margins, page numbers, appendices, final submission file", "Helps the document follow the supplied university requirements."],
+            ["1", "Grammar, spelling, and punctuation", "□"],
+            ["2", "Sentence clarity and academic tone", "□"],
+            ["3", "Repetition and unclear phrasing", "□"],
+            ["4", "Chapter headings and structure", "□"],
+            ["5", "Introduction and conclusion consistency", "□"],
+            ["6", "Citations and reference list", "□"],
+            ["7", "Tables, figures, captions, and numbering", "□"],
+            ["8", "Page numbers, margins, spacing, and formatting", "□"],
+            ["9", "UK or US English consistency", "□"],
+            ["10", "Acronyms, abbreviations, and key terms", "□"],
+            ["11", "Appendices and supporting documents", "□"],
+            ["12", "Abstract as a standalone summary", "□"],
+            ["13", "Supervisor, department, or university guidelines", "□"],
+            ["14", "Final PDF or required submission file", "□"],
+            ["15", "Second human review", "□"],
           ]
         },
       },
@@ -685,7 +719,9 @@ export const blogPosts: BlogPost[] = [
         heading: "4. Check chapter headings and structure",
         paragraphs: [
           [
-            "Your dissertation editing and proofreading process must include a structural review. Compare your table of contents directly against the body of the dissertation. Ensure that heading levels (H1, H2, H3) are formatted consistently and that the structural hierarchy makes logical sense.",
+            "Compare your table of contents directly against the body of the dissertation. Ensure that heading levels are formatted consistently and that the structural hierarchy makes logical sense. If chapter order or argument flow still needs major work, use the ",
+            { text: "step-by-step dissertation proofreading workflow", href: "/blog/how-to-proofread-a-dissertation-before-submission" },
+            " before returning to this final checklist.",
           ],
         ]
       },
@@ -703,7 +739,7 @@ export const blogPosts: BlogPost[] = [
         heading: "6. Check citations and reference list formatting",
         paragraphs: [
           [
-            "A critical step in proofreading a dissertation is verifying citations. Every in-text citation must have a corresponding entry in the reference list, and vice-versa. Ensure strict adherence to your university’s required style guide. The official ",
+            "A critical step in proofreading a dissertation is checking citation-reference consistency. Every in-text citation should have a corresponding entry in the reference list, and vice versa unless your university permits a separate bibliography. Follow your university's required style guide. The official ",
             { text: "APA reference guide", href: "https://apastyle.apa.org/instructional-aids/reference-guide.pdf", external: true },
             " provides excellent examples of standard formatting.",
           ],
@@ -806,9 +842,9 @@ export const blogPosts: BlogPost[] = [
         heading: "When should you use a professional dissertation proofreading service?",
         paragraphs: [
           [
-            "If your deadline is approaching, or if English is an additional language, a professional ",
-            { text: "academic proofreading", href: "/academic-proofreading" },
-            " service can be a vital investment. Professional editors ensure your writing is clear, grammatically correct, and formatted to strict academic standards, allowing you to submit with confidence.",
+            "If your deadline is approaching, if English is an additional language, or if you want an independent final read, a professional ",
+            { text: "dissertation proofreading service", href: "/dissertation-proofreading" },
+            " can check language, consistency, formatting, references, tables, figures, and presentation before submission.",
           ],
         ]
       }
@@ -824,7 +860,7 @@ export const blogPosts: BlogPost[] = [
       },
       {
         question: "Should I proofread my dissertation myself?",
-        answer: "You should perform the initial proofreading yourself using a checklist. However, because authors become blind to their own errors, it is highly recommended to have a second person or a professional service conduct the final review."
+        answer: "You can perform the initial proofreading yourself using a checklist, but a second person can often catch errors that feel invisible after months with the same document. A peer, mentor, or professional proofreader can provide that final fresh read."
       },
       {
         question: "What is the difference between dissertation proofreading and editing?",
@@ -836,10 +872,20 @@ export const blogPosts: BlogPost[] = [
       },
       {
         question: "Can proofreading improve my dissertation grade?",
-        answer: "While proofreading cannot fix poor research or weak arguments, it ensures that your ideas are communicated clearly and professionally. Eliminating distracting errors allows examiners to focus entirely on the academic merit of your work."
+        answer: "No. Proofreading cannot guarantee a grade, pass, approval, or outcome. It can improve clarity, correctness, consistency, and presentation so avoidable language and formatting errors do not distract from the work."
       }
     ],
     internalLinks: [
+      {
+        href: "/blog/how-to-proofread-a-dissertation-before-submission",
+        label: "Step-by-step workflow",
+        description: "Plan the proofreading schedule, passes, tools, and final file review before using this checklist.",
+      },
+      {
+        href: "/blog/thesis-proofreading-checklist",
+        label: "PhD thesis checklist",
+        description: "Use the doctoral checklist for cross-chapter consistency and repository submission checks.",
+      },
       {
         href: "/blog/thesis-tables-figures-references-checklist",
         label: "Tables, figures, and references",
@@ -1073,93 +1119,145 @@ export const blogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "How to Proofread a Dissertation Before Submission",
+    title: "How to Proofread a Dissertation: A Step-by-Step Workflow",
     slug: "how-to-proofread-a-dissertation-before-submission",
-    excerpt: "A practical 2026 guide to proofreading a dissertation before submission, from grammar and clarity to formatting, references, appendices, and final files.",
-    category: "Academic writing",
+    excerpt: "Plan a dissertation proofreading workflow with separate passes for scheduling, chapter review, language, formatting, references, tables, figures, Word tools, AI checks, human review, and final PDF inspection.",
+    category: "Dissertation proofreading",
     author: brandAuthor,
     datePublished: "2026-07-03",
-    dateUpdated: "2026-07-03",
-    readingTime: "10 min read",
-    metaTitle: "How to Proofread a Dissertation Before Submission | Edit and Proofread",
-    metaDescription: "Learn how to proofread a dissertation before submission. Check grammar, clarity, formatting, references, tables, figures, appendices, and final files.",
+    dateUpdated: "2026-08-04",
+    readingTime: "12 min read",
+    metaTitle: "How to Proofread a Dissertation: Step-by-Step Workflow",
+    metaDescription: "Learn how to proofread a dissertation with a workflow for scheduling, chapters, language, formatting, references, tables, tools, and final PDF checks.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Dissertation pages, checklist notes, and academic proofreading marks before final submission",
     tableOfContents: [
       { id: "quick-answer", label: "Quick answer" },
-      { id: "proofreading-checklist", label: "Dissertation proofreading checklist" },
-      { id: "grammar-clarity", label: "Grammar and clarity checks" },
-      { id: "formatting", label: "Formatting checks" },
-      { id: "references", label: "References and citations" },
-      { id: "tables-figures", label: "Tables, figures, headings, and appendices" },
-      { id: "final-pass", label: "Why the final proofread matters" },
+      { id: "when-to-begin", label: "When to begin" },
+      { id: "freeze-content", label: "Freeze the content" },
+      { id: "schedule", label: "Build the schedule" },
+      { id: "chapter-pass", label: "Chapter-by-chapter pass" },
+      { id: "language-pass", label: "Language passes" },
+      { id: "formatting-pass", label: "Formatting pass" },
+      { id: "references-pass", label: "References and citations" },
+      { id: "tables-figures-pass", label: "Tables and figures" },
+      { id: "tools-ai", label: "Word tools and AI" },
+      { id: "human-review", label: "Second human review" },
+      { id: "final-pdf", label: "Final PDF review" },
     ],
     body: [
       {
         id: "quick-answer",
-        heading: "How to proofread a dissertation before submission",
+        heading: "How to proofread a dissertation: the short workflow",
         paragraphs: [
           [
-            "To proofread a dissertation before submission, work in separate passes: first grammar and clarity, then formatting, references, tables, figures, headings, appendices, and the final exported file. Do not try to catch every problem in one read-through.",
+            "To proofread a dissertation, freeze the content first, create a realistic schedule, then work in separate passes: chapter consistency, language, formatting, references, tables and figures, appendices, software-generated fields, and the final exported file. Do not ask one read-through to solve every problem.",
           ],
           [
-            "A dissertation is too long and too important for a quick spell-check. Use this checklist after the content and chapter order are settled. If the argument, structure, or academic tone still needs deeper work, consider ",
-            { text: "thesis editing", href: "/thesis-editing" },
-            " before final proofreading.",
+            "This guide explains the process. When you need a shorter final control sheet, use the ",
+            { text: "master's dissertation proofreading checklist", href: "/blog/dissertation-proofreading-checklist" },
+            ". If the document is a doctoral thesis with cross-chapter contribution and repository checks, use the ",
+            { text: "PhD thesis proofreading checklist", href: "/blog/thesis-proofreading-checklist" },
+            " as the final pass.",
           ],
         ],
         callout: {
-          title: "Before you start",
+          title: "Workflow rule",
           text: [
-            "Freeze the content, gather your university guidelines, refresh generated lists, and leave time to review corrections before the submission deadline.",
+            "Schedule backwards from the deadline and leave time after proofreading for author review, final formatting, PDF inspection, technical upload, and backup copies.",
           ],
         },
       },
       {
-        id: "proofreading-checklist",
-        heading: "Dissertation proofreading checklist",
+        id: "when-to-begin",
+        heading: "1. Begin after the dissertation content is stable",
         paragraphs: [
           [
-            "Use this checklist after your supervisor-requested revisions are complete. For a paid final review, our ",
-            { text: "dissertation proofreading service", href: "/dissertation-proofreading" },
-            " can check language, consistency, formatting, and presentation before submission.",
+            "Proofreading works best after major supervisor revisions, chapter movement, data changes, and conclusion edits are complete. You can tidy language while drafting, but the final systematic proofread should happen when the dissertation is no longer changing substantially.",
+          ],
+          [
+            "If you still need to reorganize sections, strengthen the argument, or rewrite substantial passages, consider ",
+            { text: "thesis editing", href: "/thesis-editing" },
+            " before proofreading. Polishing sentences too early often creates repeated work when sections later move or disappear.",
+          ],
+        ],
+      },
+      {
+        id: "freeze-content",
+        heading: "2. Freeze the content and create a working copy",
+        paragraphs: [
+          [
+            "Save an unchanged master file before proofreading begins. Then create a dated working copy for corrections. Keep your university formatting guide, supervisor notes, required citation style, ethics material, appendices, and final submission instructions in the same folder.",
+          ],
+          [
+            "Decide how you will handle Track Changes, comments, accepted changes, and version names. A clear file workflow prevents last-minute confusion about which version is approved for upload.",
+          ],
+        ],
+        bullets: [
+          ["Keep one untouched master copy."],
+          ["Use dated file names for working drafts."],
+          ["Record unresolved author questions in comments or a separate notes file."],
+          ["Do not accept all changes until you have reviewed meaning and formatting."],
+        ],
+      },
+      {
+        id: "schedule",
+        heading: "3. Build a proofreading schedule backwards from the deadline",
+        paragraphs: [
+          [
+            "A dissertation proofreading schedule needs more than reading time. Include time for corrections, author decisions, supervisor questions, formatting fixes, PDF export, upload testing, and backup copies. Long documents also require rest breaks because fatigue makes errors easier to miss.",
+          ],
+          [
+            "If your deadline is close, choose the highest-risk passes first: university rules, references, tables, figures, abstract, conclusion, and final file checks. Use the ",
+            { text: "pricing calculator", href: "/pricing" },
+            " only after the word count and scope are stable.",
           ],
         ],
         table: {
-          headers: ["Area", "What to check", "Why it matters"],
+          headers: ["Time available", "Best use"],
           rows: [
-            ["Grammar and clarity", "Sentence boundaries, tense, agreement, punctuation, repeated words, unclear phrasing", "Helps examiners focus on the research instead of language distractions"],
-            ["Formatting", "Margins, line spacing, fonts, headings, pagination, front matter, PDF export", "Keeps the document aligned with graduate school requirements"],
-            ["References", "Citation matches, reference entries, style consistency, DOI and URL presentation", "Reduces avoidable academic and presentation errors"],
-            ["Tables and figures", "Numbering, captions, callouts, source notes, legibility, appendix links", "Prevents confusion around evidence and results"],
-            ["Final file", "Bookmarks, links, blank pages, filename, upload format, backup copy", "Avoids last-minute technical submission problems"],
+            ["2-3 weeks", "Complete every pass with rest days, author review, and final PDF inspection."],
+            ["1 week", "Prioritize chapter consistency, language, references, formatting, and final file checks."],
+            ["48 hours", "Focus on mechanical errors, required formatting, reference mismatches, captions, abstract, and upload file."],
           ],
         },
       },
       {
-        id: "grammar-clarity",
-        heading: "Check grammar, clarity, and academic tone in separate passes",
+        id: "chapter-pass",
+        heading: "4. Proofread chapter by chapter before checking small errors",
         paragraphs: [
           [
-            "Read once for grammar and punctuation only. Then read again for clarity. Long dissertation sentences often hide missing verbs, unclear subjects, comma splices, weak transitions, or claims that overstate the evidence.",
+            "Read each chapter for purpose and continuity before grammar. The introduction, methods, findings, discussion, and conclusion should describe the same study at the right level of certainty. Chapter openings and endings should guide the reader through the dissertation rather than standing as isolated essays.",
           ],
           [
-            "Academic tone should be precise, cautious, and consistent. Replace vague phrases with specific terms, define abbreviations on first use, and make sure words such as “this,” “it,” and “they” clearly refer to the right idea.",
+            "Search for old terminology, obsolete research-question wording, duplicated explanations, inconsistent sample labels, and claims that changed during revision. Leave author comments where a factual or methodological decision is needed.",
+          ],
+        ],
+      },
+      {
+        id: "language-pass",
+        heading: "5. Run separate language passes for grammar, clarity, and tone",
+        paragraphs: [
+          [
+            "Read once for grammar and punctuation, then again for clarity and tone. Long dissertation sentences often hide missing verbs, unclear subjects, comma splices, weak transitions, repeated words, or claims that overstate the evidence.",
+          ],
+          [
+            "Academic tone should be precise and cautious. Define abbreviations on first use, keep technical terms consistent, and make sure words such as “this,” “it,” and “they” clearly refer to the right idea.",
           ],
         ],
         bullets: [
           ["Search for your common errors instead of relying only on spell-check."],
-          ["Check abstract, footnotes, captions, table cells, and appendices as carefully as body text."],
-          ["Read the introduction and conclusion together to confirm they describe the same research problem and contribution."],
-          ["Leave comments for any claim that needs author or supervisor confirmation."],
+          ["Read headings, footnotes, captions, table cells, and appendices as carefully as body text."],
+          ["Check UK or US English consistency according to the university rules."],
+          ["Review every software suggestion before accepting it."],
         ],
       },
       {
-        id: "formatting",
-        heading: "Review dissertation formatting requirements",
+        id: "formatting-pass",
+        heading: "6. Complete a separate formatting pass",
         paragraphs: [
           [
-            "Use your institution's current formatting guide, not memory or a friend's dissertation. Check margins, font, line spacing, page numbering, title page wording, declaration pages, contents lists, heading styles, appendices, and required file format.",
+            "Use your institution's current formatting guide, not memory or another student's file. Check margins, font, line spacing, page numbering, title page wording, declaration pages, contents lists, heading styles, appendices, and required file format.",
           ],
           [
             "If your file has many section breaks, tables, figures, or reference lists, formatting can shift during final edits. Our ",
@@ -1169,11 +1267,11 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        id: "references",
-        heading: "Match references and citations carefully",
+        id: "references-pass",
+        heading: "7. Match references and citations in both directions",
         paragraphs: [
           [
-            "Every in-text citation should match a reference list entry, and every reference list entry should be used unless your required style permits uncited bibliography entries. Check author names, years, title capitalization, journal details, page ranges, DOIs, URLs, and access dates where required.",
+            "Every in-text citation should match a reference-list entry, and every reference-list entry should be used unless your required style permits uncited bibliography entries. Check author names, years, title capitalization, journal details, page ranges, DOIs, URLs, and access dates where required.",
           ],
           [
             "Do not assume reference software has produced perfect output. Imported fields, capitalization, edition details, and source types are often wrong. Your university or department requirements should override general examples when they conflict.",
@@ -1181,32 +1279,54 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        id: "tables-figures",
-        heading: "Inspect tables, figures, headings, and appendices",
+        id: "tables-figures-pass",
+        heading: "8. Inspect tables, figures, headings, and appendices",
         paragraphs: [
           [
             "Tables and figures need their own proofread. Check numbering, captions, legends, axis labels, units, source notes, significance markers, and every in-text callout. A figure mentioned as Figure 4.2 should still be Figure 4.2 after final edits.",
           ],
           [
-            "Refresh the table of contents, list of figures, and list of tables only after headings and captions are final. Then inspect appendices to confirm labels, order, formatting, and cross-references are still correct.",
+            "Refresh the table of contents, list of figures, and list of tables only after headings and captions are final. Then inspect appendices to confirm labels, order, formatting, permissions, and cross-references are still correct.",
           ],
         ],
       },
       {
-        id: "final-pass",
-        heading: "Why final dissertation proofreading matters",
+        id: "tools-ai",
+        heading: "9. Use Word tools, spell-checking, and AI cautiously",
         paragraphs: [
           [
-            "Final proofreading cannot change the quality of the research, but it can protect the presentation of that research. Clean grammar, consistent formatting, accurate references, and readable tables help examiners move through the dissertation without avoidable distractions.",
+            "Microsoft Word tools can help locate repeated spaces, inconsistent capitalization, broken fields, unresolved comments, spelling variants, and accessibility issues. Update fields and generated lists only when headings, captions, and pagination are stable.",
           ],
           [
-            "If you want a second human review before submission, compare ",
-            { text: "pricing", href: "/pricing" },
-            ", ",
-            { text: "upload your dissertation securely", href: "/submit" },
-            ", or ",
-            { text: "contact the editing desk", href: "/contact" },
-            " if your deadline or formatting requirements are unusual.",
+            "Spell-checking and AI tools can flag possible problems, but they may misunderstand specialist terms, change the intended meaning, or miss document-wide inconsistencies. Treat suggestions as prompts for human review, not automatic corrections.",
+          ],
+        ],
+      },
+      {
+        id: "human-review",
+        heading: "10. Get a second human review before the final file",
+        paragraphs: [
+          [
+            "After months with the same dissertation, familiar errors become hard to see. A peer, supervisor, mentor, or professional proofreader can notice missing words, awkward phrasing, formatting slips, and inconsistencies your own brain now corrects automatically.",
+          ],
+          [
+            "For a paid final review, our ",
+            { text: "dissertation proofreading service", href: "/dissertation-proofreading" },
+            " can check language, consistency, formatting, references, tables, figures, and presentation before submission.",
+          ],
+        ],
+      },
+      {
+        id: "final-pdf",
+        heading: "11. Review the final PDF and upload package",
+        paragraphs: [
+          [
+            "The editable document is not always the submitted document. Export the exact file required by your institution, then inspect every page. Check page breaks, blank pages, fonts, equations, symbols, table widths, figure resolution, hyperlinks, bookmarks, file size, filename, and repository or upload form fields.",
+          ],
+          [
+            "When the final file is approved, keep an unchanged copy of the submitted PDF, the final editable source file, and any confirmation receipts. Then use the ",
+            { text: "15-point dissertation proofreading checklist", href: "/blog/dissertation-proofreading-checklist" },
+            " as a final control sheet.",
           ],
         ],
       },
@@ -1214,7 +1334,7 @@ export const blogPosts: BlogPost[] = [
     faq: [
       {
         question: "How many times should I proofread my dissertation?",
-        answer: "Proofread in multiple passes rather than one long reading. Complete separate checks for grammar, clarity, references, formatting, tables and figures, appendices, and the final exported file.",
+        answer: "Proofread in multiple passes rather than one long reading. Complete separate checks for chapter consistency, grammar, clarity, references, formatting, tables and figures, appendices, software-generated fields, and the final exported file.",
       },
       {
         question: "Should I proofread before or after formatting?",
@@ -1228,8 +1348,22 @@ export const blogPosts: BlogPost[] = [
         question: "What is the difference between dissertation editing and proofreading?",
         answer: "Dissertation editing improves structure, argument flow, academic tone, clarity, and sentence construction. Dissertation proofreading is the final check for grammar, punctuation, references, formatting, and presentation after major revisions are complete.",
       },
+      {
+        question: "Can I use AI to proofread a dissertation?",
+        answer: "AI can be useful for prompts and possible language issues, but it can alter meaning, misunderstand specialist terms, or miss document-wide consistency. Review every suggestion yourself and avoid uploading confidential or restricted material to tools your institution does not permit.",
+      },
     ],
     internalLinks: [
+      {
+        href: "/blog/dissertation-proofreading-checklist",
+        label: "15-point checklist",
+        description: "Use the concise final control sheet after you complete the full proofreading workflow.",
+      },
+      {
+        href: "/blog/thesis-proofreading-checklist",
+        label: "PhD thesis checks",
+        description: "Use the doctoral checklist for cross-chapter consistency and repository submission.",
+      },
       {
         href: "/dissertation-proofreading",
         label: "Dissertation proofreading",

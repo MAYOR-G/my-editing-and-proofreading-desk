@@ -71,6 +71,42 @@ const serviceEnhancements: Record<string, {
     boundaries: ["Editing cannot guarantee publication, acceptance, sales, or a particular review outcome.", "We do not fabricate citations, research results, plot material, or author credentials.", "Journal selection, peer-review responses, indexing, and typesetting are outside scope unless explicitly agreed."],
     guides: [{ href: "/blog/research-paper-editing-checklist-before-submission", label: "Research paper editing checklist" }, { href: "/blog/editing-vs-proofreading", label: "Understand editing versus proofreading" }],
   },
+  "business-proofreading": {
+    heading: "Client-ready communication without distracting errors.",
+    paragraphs: [
+      "Business proofreading is for documents whose message, facts, pricing, and approval route are already settled. The review concentrates on grammar, punctuation, consistency, terminology, headings, names, numbers, and presentation details before a client, stakeholder, investor, or team reads the file.",
+      "If a proposal or report needs stronger positioning, a clearer executive narrative, or a different section order, professional editing should come first. Proofreading keeps the approved business meaning intact while removing avoidable distractions.",
+    ],
+    boundaries: ["We do not provide legal, financial, regulatory, or strategic approval.", "We do not invent claims, metrics, case studies, testimonials, or commercial results.", "Design, slide production, market research, and brand strategy need separate scope."],
+    guides: [{ href: "/blog/editing-vs-proofreading", label: "Choose editing or proofreading" }, { href: "/blog/how-much-does-proofreading-cost", label: "Review proofreading cost factors" }],
+  },
+  "cv-resume-editing": {
+    heading: "Clear applications that recruiters can scan quickly.",
+    paragraphs: [
+      "CV and resume editing improves the wording, order, consistency, and readability of the application material you provide. The goal is a clearer document that foregrounds relevant experience and reduces grammar, formatting, and repetition issues.",
+      "For cover letters, LinkedIn summaries, and personal statements, we can improve flow and tone while preserving truthful authorship. You remain responsible for confirming roles, dates, qualifications, achievements, and any role-specific requirements.",
+    ],
+    boundaries: ["We do not invent experience, employers, qualifications, achievements, references, or metrics.", "We do not guarantee interviews, admission, funding, hiring, or selection.", "ATS testing, recruitment strategy, and job matching are outside standard editing scope."],
+    guides: [{ href: "/blog/editing-vs-proofreading", label: "Understand editing depth" }, { href: "/pricing", label: "Estimate application editing" }],
+  },
+  "document-formatting": {
+    heading: "A consistent file that follows the required guidelines.",
+    paragraphs: [
+      "Document formatting focuses on presentation: margins, spacing, headings, page numbers, tables, figures, captions, references, appendices, lists, and final file readiness. It is most useful when the writing is close to final but the document needs a consistent structure and submission format.",
+      "Supply the university, journal, publisher, or company guidelines when available. Formatting can be paired with proofreading, but it does not replace a language review or solve unresolved content problems.",
+    ],
+    boundaries: ["We do not create research content, rewrite arguments, or verify every source.", "Complex typesetting, cover design, print production, and publisher production files require separate agreement.", "Institutional or publisher acceptance cannot be guaranteed."],
+    guides: [{ href: "/blog/thesis-tables-figures-references-checklist", label: "Audit tables and references" }, { href: "/blog/how-to-proofread-a-dissertation-before-submission", label: "Plan final file checks" }],
+  },
+  "translation-review": {
+    heading: "Natural English that preserves the intended meaning.",
+    paragraphs: [
+      "Translation review is for an existing English translation that needs smoother phrasing, clearer syntax, consistent terminology, and a tone suited to the target reader. When the source document is supplied, it can help clarify ambiguous wording and repeated terms.",
+      "This is editorial review, not certified translation. We improve the translated English while flagging places where the author or a source-language specialist must confirm meaning.",
+    ],
+    boundaries: ["We do not provide certified, sworn, or notarized translation.", "We do not guarantee legal, medical, regulatory, or technical equivalence.", "Back-translation, source-language specialist review, and terminology database creation require separate scope."],
+    guides: [{ href: "/blog/editing-vs-proofreading", label: "Compare review stages" }, { href: "/pricing", label: "Check translation-review pricing" }],
+  },
 };
 
 export function generateStaticParams() {
