@@ -340,8 +340,9 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           [
             "A reliable ",
-            { text: "PhD thesis proofreading checklist", href: "/thesis-editing" },
-            " should cover more than spelling. Before submission, review cross-chapter consistency, research-question alignment, terminology, tables and figures, citations and references, front matter, appendices, university formatting rules, and the final exported file.",
+            "PhD thesis proofreading checklist should cover more than spelling. Before submission, review cross-chapter consistency, research-question alignment, terminology, tables and figures, citations and references, front matter, appendices, university formatting rules, and the final exported file. If the draft still needs ",
+            { text: "thesis editing", href: "/thesis-editing" },
+            ", complete that deeper clarity and structure work before the final proofreading pass.",
           ],
           [
             "Work from whole-thesis issues to page-level details. Confirm that the doctoral thesis is complete, chapter order is stable, and the contribution is described consistently before correcting commas or page numbers. If chapters still need restructuring, begin with thesis editing rather than final proofreading.",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PricingCalculator } from "@/components/PricingCalculator";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { CUSTOM_REVIEW_WORD_COUNT, MINIMUM_ORDER, SERVICE_CHARGE_PERCENTAGE, SERVICE_OPTIONS, TURNAROUND_OPTIONS } from "@/lib/pricing";
 import { breadcrumbJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -54,7 +55,7 @@ export default function PricingPage() {
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-primary">Pricing</p>
               <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.45rem,5vw,5rem)] leading-[0.96] text-ink">
-                Estimate your project clearly.
+                Editing and proofreading pricing calculator.
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-body sm:text-lg">
                 Choose a service, enter your word count, and select a timeline. You will upload the file next so we can verify the word count before checkout.
@@ -77,14 +78,27 @@ export default function PricingPage() {
 
           <section className="mt-10 grid gap-5 lg:grid-cols-[0.72fr_0.28fr]">
             <div className="rounded-2xl border border-hairline bg-canvas/80 p-6 sm:p-7">
-              <h2 className="font-display text-3xl leading-tight text-ink">What affects your editing or proofreading rate?</h2>
+              <h2 className="font-display text-3xl leading-tight text-ink">How editing and proofreading pricing works</h2>
               <p className="mt-4 text-sm leading-7 text-body">
-                Price depends on the service selected, the current word count, document condition, deadline, and whether the work is a final proofread, deeper editing pass, formatting review, translation review, or writing-support project. Use the calculator for eligible files, then upload the stable draft so the document details can be verified before payment.
+                The calculator estimates eligible projects from the selected service, word count, and turnaround. Automatic estimates apply up to {CUSTOM_REVIEW_WORD_COUNT.toLocaleString()} words, with a ${MINIMUM_ORDER} minimum order and a {SERVICE_CHARGE_PERCENTAGE}% service charge shown before payment. The uploaded file is still reviewed so the word count, scope, deadline, and file requirements can be confirmed.
               </p>
-              <div className="mt-6 grid gap-3 text-sm leading-6 text-body sm:grid-cols-3">
-                <p className="border-l border-primary/30 pl-4">Proofreading is best for final drafts that need grammar, punctuation, spelling, and consistency checks.</p>
-                <p className="border-l border-primary/30 pl-4">Editing takes longer when structure, flow, wording, tone, or document-wide clarity need attention.</p>
-                <p className="border-l border-primary/30 pl-4">Formatting and long-document work may require guideline review, table checks, reference checks, and final file inspection.</p>
+              <div className="mt-6 grid gap-3 text-sm leading-6 text-body sm:grid-cols-2">
+                <p className="border-l border-primary/30 pl-4">Word count drives the estimate because longer documents require more review time. The calculator uses the current word count you enter before upload verification.</p>
+                <p className="border-l border-primary/30 pl-4">Turnaround options run from {TURNAROUND_OPTIONS[0].label} to {TURNAROUND_OPTIONS[TURNAROUND_OPTIONS.length - 1].label}; unavailable timelines are disabled for larger word counts.</p>
+                <p className="border-l border-primary/30 pl-4">Proofreading is for final grammar, punctuation, spelling, and consistency checks. Editing is for clarity, flow, tone, sentence-level polish, and academic or business presentation.</p>
+                <p className="border-l border-primary/30 pl-4">Large documents above {CUSTOM_REVIEW_WORD_COUNT.toLocaleString()} words, unusual files, or complex formatting needs require a custom quote before checkout.</p>
+              </div>
+              <div className="mt-6 overflow-hidden rounded-xl border border-hairline bg-surface-soft">
+                <div className="grid gap-px bg-hairline text-sm sm:grid-cols-2 lg:grid-cols-4">
+                  {SERVICE_OPTIONS.filter((service) => service.label === "Proofreading" || service.label === "Editing" || service.label === "Formatting" || service.label === "Writing Support").map((service) => (
+                    <div key={service.label} className="bg-canvas p-4">
+                      <h3 className="font-semibold text-ink">{service.label}</h3>
+                      <p className="mt-2 leading-6 text-body">
+                        {"fixedPrice" in service && service.fixedPrice ? `$${service.fixedPrice} fixed package` : `$${service.rate.toFixed(3)} per word before turnaround calculation`}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             <aside className="rounded-2xl border border-hairline bg-surface-soft p-6">
