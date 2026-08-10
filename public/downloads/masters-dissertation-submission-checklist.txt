@@ -1,0 +1,23 @@
+Master's Dissertation Final Submission Checklist
+Edit & Proofread
+Last updated: 2026-08-10
+
+Use this checklist when the dissertation argument, chapters, data, supervisor comments, and references are close to final.
+
+1. Confirm the required structure: title page, abstract, acknowledgements if needed, contents, chapters, references, appendices, and declarations.
+2. Check that the title, programme name, student details, supervisor details, date, and word count follow your department's rules.
+3. Read the introduction against the final research question, aims, and conclusion.
+4. Check chapter transitions so the reader can follow the argument from question to method, findings, discussion, and conclusion.
+5. Search for inconsistent spelling, capitalization, terminology, abbreviation use, and tense.
+6. Check tables, figures, captions, numbering, notes, units, and in-text callouts.
+7. Confirm that all cited works appear in the reference list and that every reference-list entry is cited in the text.
+8. Review reference style consistency, DOI/URL treatment, punctuation, italics, capitalization, and missing details.
+9. Check margins, spacing, heading hierarchy, page numbers, contents pages, and appendix labels.
+10. Proofread for grammar, punctuation, spelling, word choice, and sentence clarity after final content changes.
+11. Check quotations, paraphrases, and source acknowledgements against academic integrity requirements.
+12. Export the final PDF and inspect every page for layout errors, cropped visuals, missing symbols, and broken hyperlinks.
+13. Allow time to review tracked changes or comments before creating the final submission file.
+14. Upload the correct file to the correct portal and keep a copy of the submission confirmation.
+15. Archive the final editable file, final PDF, and any required supplementary files.
+
+Important: This checklist supports final quality control. It does not replace university rules, supervisor guidance, factual verification, source checking, ethics review, or examiner judgement.

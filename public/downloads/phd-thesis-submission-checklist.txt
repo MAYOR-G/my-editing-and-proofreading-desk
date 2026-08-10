@@ -1,0 +1,23 @@
+PhD Thesis Final Submission Checklist
+Edit & Proofread
+Last updated: 2026-08-10
+
+Use this checklist after your thesis chapters, findings, conclusion, tables, figures, appendices, and supervisor-requested revisions are stable.
+
+1. Confirm that every chapter title, heading level, table title, figure title, appendix title, and reference-list heading follows your university rules.
+2. Check that the thesis title, candidate name, department, degree name, submission date, and declaration pages match institutional requirements.
+3. Read the abstract against the final thesis, not an earlier draft.
+4. Check that research questions, aims, hypotheses, and conclusions use consistent wording across chapters.
+5. Search for inconsistent spelling, capitalization, terminology, abbreviations, symbols, and hyphenation.
+6. Confirm that all tables and figures are numbered in order and cited in the surrounding text.
+7. Check captions, notes, legends, units, statistical notation, permissions, and source acknowledgements.
+8. Update the table of contents, list of tables, list of figures, cross-references, and page numbers.
+9. Check every in-text citation against the reference list for missing, extra, or inconsistent entries.
+10. Review the reference list for style consistency, capitalization, italics, punctuation, DOI/URL treatment, and missing publication details.
+11. Check appendices, supplementary files, ethics approvals, data statements, acknowledgements, funding statements.
+12. Review spelling, grammar, punctuation, sentence clarity, and academic tone after substantive editing is complete.
+13. Export the final PDF and inspect it page by page for broken layout, cropped figures, blank pages, font substitution, and missing symbols.
+14. Keep a clean copy, a tracked-changes copy if used, and a final submitted PDF.
+15. Do a final portal or repository check before upload and keep confirmation of submission.
+
+Important: This checklist supports final quality control. It does not replace university rules, supervisor guidance, factual verification, source checking, ethics review, or examiner judgement.

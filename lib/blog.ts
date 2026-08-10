@@ -70,7 +70,7 @@ export const blogPosts: BlogPost[] = [
     category: "Editing services",
     author: brandAuthor,
     datePublished: "2026-06-22",
-    dateUpdated: "2026-07-03",
+    dateUpdated: "2026-08-10",
     readingTime: "9 min read",
     metaTitle: "Editing vs Proofreading: What Is the Difference? | Edit and Proofread",
     metaDescription: "Compare editing vs proofreading, see what each service fixes, and choose the right human review for academic, business, manuscript, or professional writing.",
@@ -286,6 +286,11 @@ export const blogPosts: BlogPost[] = [
         description: "Choose proofreading when your final draft needs grammar, punctuation, consistency, and presentation checks.",
       },
       {
+        href: "/thesis-editing",
+        label: "Thesis editing",
+        description: "Choose thesis editing when chapter flow, scholarly tone, and sentence clarity still need work.",
+      },
+      {
         href: "/services",
         label: "Compare services",
         description: "Review the available editing, proofreading, manuscript, business, and writing-support options.",
@@ -309,7 +314,7 @@ export const blogPosts: BlogPost[] = [
     category: "PhD thesis proofreading",
     author: brandAuthor,
     datePublished: "2026-06-22",
-    dateUpdated: "2026-08-04",
+    dateUpdated: "2026-08-10",
     readingTime: "12 min read",
     metaTitle: "PhD Thesis Proofreading Checklist: Final Checks Before Submission",
     metaDescription: "Use this PhD thesis proofreading checklist to review research questions, terminology, tables, figures, references, appendices, and final PDF submission.",
@@ -596,8 +601,18 @@ export const blogPosts: BlogPost[] = [
       },
       {
         href: "/thesis-editing",
-        label: "Academic editing",
+        label: "Thesis editing",
         description: "Get help with thesis structure, scholarly clarity, language, and consistency before the final proofread.",
+      },
+      {
+        href: "/academic-proofreading",
+        label: "Academic proofreading",
+        description: "Use a final academic language and presentation check when the thesis is stable.",
+      },
+      {
+        href: "/downloads/phd-thesis-submission-checklist.txt",
+        label: "Download the checklist",
+        description: "Save the PhD thesis final-submission checklist as a plain-text working copy.",
       },
       {
         href: "/pricing",
@@ -618,7 +633,7 @@ export const blogPosts: BlogPost[] = [
     category: "Master's dissertation proofreading",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-08-04",
+    dateUpdated: "2026-08-10",
     readingTime: "8 min read",
     metaTitle: "Master's Dissertation Proofreading Checklist: 15 Final Checks",
     metaDescription: "Use this dissertation proofreading checklist for 15 final checks covering grammar, formatting, references, tables, figures, rules, and upload readiness.",
@@ -902,9 +917,14 @@ export const blogPosts: BlogPost[] = [
         description: "Review our rates for academic editing and proofreading based on your word count and deadline.",
       },
       {
-        href: "/contact",
-        label: "Contact us",
-        description: "Send your dissertation for a proofreading quote today and submit with confidence.",
+        href: "/downloads/masters-dissertation-submission-checklist.txt",
+        label: "Download the checklist",
+        description: "Save the master's dissertation final-submission checklist as a plain-text working copy.",
+      },
+      {
+        href: "/submit",
+        label: "Submit your dissertation",
+        description: "Upload the stable file, guidelines, word count, and deadline securely.",
       }
     ]
   },
@@ -915,7 +935,7 @@ export const blogPosts: BlogPost[] = [
     category: "Pricing & Guides",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-07-18",
+    dateUpdated: "2026-08-10",
     readingTime: "10 min read",
     metaTitle: "How Much Does Proofreading Cost? Pricing Guide",
     metaDescription: "See how proofreading cost is calculated from service selection, word count, and turnaround, including the minimum order, service charge, and custom-review threshold.",
@@ -1100,6 +1120,16 @@ export const blogPosts: BlogPost[] = [
         href: "/pricing",
         label: "Pricing Guide",
         description: "View our transparent rates for proofreading based on word count and turnaround time.",
+      },
+      {
+        href: "/proofreading-services",
+        label: "Proofreading services",
+        description: "Review the final-draft proofreading scope before comparing rates.",
+      },
+      {
+        href: "/blog/editing-vs-proofreading",
+        label: "Editing vs proofreading",
+        description: "Compare scope before deciding which price estimate fits your document.",
       },
       {
         href: "/academic-proofreading",

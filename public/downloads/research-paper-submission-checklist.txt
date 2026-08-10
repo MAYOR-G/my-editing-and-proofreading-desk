@@ -1,0 +1,23 @@
+Research Paper Revision Checklist Before Journal Submission
+Edit & Proofread
+Last updated: 2026-08-10
+
+Use this checklist before submitting a research article to a journal. Always check the current author instructions for your target journal.
+
+1. Confirm the journal scope, article type, word limit, section rules, reference style, figure rules, and file-format requirements.
+2. Check that the title, abstract, keywords, introduction, methods, results, discussion, conclusion, references, tables, figures, and supplementary files are complete.
+3. Read the abstract against the final paper so claims, methods, findings, and implications match.
+4. Check that the introduction states the research problem, gap, aim, and contribution clearly.
+5. Review methods for clarity, reproducibility, ethics information, approvals, consent statements, and data/source details where relevant.
+6. Check results against tables, figures, values, percentages, units, statistical notation, and supplementary files.
+7. Review the discussion for overclaiming, unsupported statements, missing limitations, and unclear implications.
+8. Check every table and figure title, caption, note, permission, citation, and in-text callout.
+9. Cross-check in-text citations against the reference list and remove uncited reference-list entries.
+10. Review reference formatting, DOI/URL handling, capitalization, italics, punctuation, and missing publication details.
+11. Confirm author names, affiliations, ORCID details, acknowledgements, funding, conflicts of interest, data availability, and contribution statements.
+12. Proofread for grammar, punctuation, spelling, consistency, sentence clarity, and academic tone after all substantive revisions are complete.
+13. Export or prepare every required file and inspect it manually before upload.
+14. Check cover letter details, suggested reviewer rules, declarations, and submission portal fields.
+15. Keep a copy of the submitted manuscript, supplementary files, cover letter, and submission confirmation.
+
+Important: This checklist supports final quality control. It does not guarantee journal acceptance and does not replace author responsibility, peer review, ethics requirements, or factual/source verification.

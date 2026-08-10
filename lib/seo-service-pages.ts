@@ -4,6 +4,7 @@ export type SeoServicePage = {
   eyebrow: string;
   metaTitle: string;
   metaDescription: string;
+  dateUpdated: string;
   h1: string;
   intro: string;
   audience: string[];
@@ -23,6 +24,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Final draft review",
     metaTitle: "Professional Proofreading Services | Edit and Proofread",
     metaDescription: "Human proofreading for essays, dissertations, manuscripts, business documents, CVs, and professional writing. Secure upload and clear pricing.",
+    dateUpdated: "2026-08-04",
     h1: "Professional Proofreading Services for Academic, Business, and Author Documents",
     intro: "Get a careful final review before you submit, publish, or share your document. Our professional proofreading services correct grammar, punctuation, spelling, consistency, and presentation issues while preserving your meaning and voice.",
     audience: ["Students preparing essays, theses, and dissertations", "Researchers submitting journal manuscripts", "Authors polishing books and long-form drafts", "Professionals sending reports, CVs, proposals, and business documents"],
@@ -44,6 +46,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Clarity and structure",
     metaTitle: "Professional Editing Services | Edit and Proofread",
     metaDescription: "Human editing for academic papers, business documents, books, manuscripts, and professional writing. Improve clarity, structure, tone, and flow.",
+    dateUpdated: "2026-08-04",
     h1: "Professional Editing Services for Academic, Business, and Manuscript Writing",
     intro: "Professional editing improves how your document communicates. We refine clarity, structure, tone, sentence flow, and readability so your writing is easier to follow while still sounding like you.",
     audience: ["Students and researchers with complex academic drafts", "Authors preparing manuscripts or book chapters", "Businesses improving reports, proposals, and client-facing documents", "Professionals who need clearer applications, statements, or portfolios"],
@@ -65,6 +68,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Students and researchers",
     metaTitle: "Academic Proofreading Services | Edit and Proofread",
     metaDescription: "Academic proofreading for essays, theses, dissertations, research papers, and journal manuscripts. Improve grammar, clarity, formatting, and presentation.",
+    dateUpdated: "2026-08-04",
     h1: "Academic Proofreading Services for Students and Researchers",
     intro: "Academic proofreading gives your final draft a careful human review before submission. We check grammar, clarity, consistency, references, formatting, and academic presentation while protecting your authorship.",
     audience: ["Undergraduate and postgraduate students", "PhD candidates preparing theses or dissertations", "Researchers submitting papers or journal manuscripts", "Academic departments and research teams needing consistent language review"],
@@ -86,6 +90,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Graduate submission",
     metaTitle: "Dissertation Proofreading Service | Edit and Proofread",
     metaDescription: "Dissertation proofreading for grammar, clarity, references, formatting, tables, figures, and academic style. Secure upload and clear turnaround.",
+    dateUpdated: "2026-08-10",
     h1: "Dissertation Proofreading Service for Graduate Students",
     intro: "Before final submission, your dissertation needs more than a spell-check. Our dissertation proofreading service reviews grammar, clarity, academic style, references, formatting, tables, figures, and final presentation with careful human attention.",
     audience: ["Master's students preparing final dissertations", "PhD candidates preparing thesis or dissertation submission", "Graduate students with long documents and strict formatting rules", "Researchers who need a final academic language pass"],
@@ -107,6 +112,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Master's and PhD drafts",
     metaTitle: "Thesis Editing Services | Master's & PhD | Edit and Proofread",
     metaDescription: "Thesis editing for clarity, grammar, structure, academic tone, formatting, and references. Human editors help polish your thesis before submission.",
+    dateUpdated: "2026-08-10",
     h1: "Thesis Editing Services for Master's and PhD Students",
     intro: "Thesis editing helps turn a difficult academic draft into a clearer, more coherent submission. We improve structure, scholarly tone, paragraph flow, sentence clarity, grammar, and consistency while preserving your argument and authorship.",
     audience: ["Master's students revising a thesis", "PhD candidates improving chapter drafts", "Students responding to supervisor feedback", "Researchers preparing a thesis-based article or manuscript"],
@@ -128,6 +134,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Authors and researchers",
     metaTitle: "Manuscript Editing Services | Edit and Proofread",
     metaDescription: "Human manuscript editing for books, research papers, journal submissions, and long documents. Improve flow, clarity, grammar, and readability.",
+    dateUpdated: "2026-08-04",
     h1: "Manuscript Editing Services for Authors and Researchers",
     intro: "Manuscript editing strengthens long-form writing so readers can follow the ideas, story, or research without distraction. We improve clarity, flow, grammar, consistency, readability, and presentation for books, journal papers, and substantial professional documents.",
     audience: ["Authors preparing fiction or nonfiction manuscripts", "Researchers submitting journal manuscripts", "Graduate students with thesis-derived manuscripts", "Professionals preparing long reports or technical documents"],
@@ -149,6 +156,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Client-ready documents",
     metaTitle: "Business Proofreading Services | Edit and Proofread",
     metaDescription: "Business proofreading for reports, proposals, website copy, presentations, emails, and company documents. Make writing clear and client-ready.",
+    dateUpdated: "2026-08-04",
     h1: "Business Proofreading Services for Professional Documents",
     intro: "Business proofreading helps your documents look polished before clients, stakeholders, investors, or colleagues read them. We correct language, consistency, formatting, and presentation issues that can weaken trust.",
     audience: ["Founders, consultants, and business owners", "Teams preparing reports, proposals, presentations, and profiles", "Professionals sending client-facing emails and company documents", "Marketing and operations teams reviewing web copy or internal documents"],
@@ -170,6 +178,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Applications and careers",
     metaTitle: "CV and Resume Editing Services | Edit and Proofread",
     metaDescription: "Improve your CV, resume, cover letter, and LinkedIn profile with human editing for clarity, grammar, structure, and recruiter readability.",
+    dateUpdated: "2026-08-04",
     h1: "CV and Resume Editing Services for Job Applications",
     intro: "Your CV, resume, cover letter, or LinkedIn profile should be clear, professional, and easy for recruiters to scan. We edit application documents for grammar, structure, readability, tone, and confident presentation.",
     audience: ["Job seekers updating CVs and resumes", "Students and graduates preparing applications", "Professionals changing roles or industries", "Applicants refining cover letters and LinkedIn summaries"],
@@ -189,8 +198,9 @@ export const seoServicePages: SeoServicePage[] = [
     slug: "document-formatting",
     name: "Document Formatting Services",
     eyebrow: "Submission-ready files",
-    metaTitle: "Document Formatting Services | Edit and Proofread",
-    metaDescription: "Professional document formatting for theses, dissertations, manuscripts, reports, references, tables, headings, and submission-ready files.",
+    metaTitle: "Document Formatting Services for Academic & Professional Files",
+    metaDescription: "Professional document formatting for theses, dissertations, reports, manuscripts, Word styles, headings, tables, figures, references, and final PDFs.",
+    dateUpdated: "2026-08-10",
     h1: "Document Formatting Services for Academic, Business, and Manuscript Files",
     intro: "Document formatting makes your final file easier to read, navigate, and submit. We help align headings, spacing, references, tables, captions, page numbers, and presentation details for academic, business, and manuscript documents.",
     audience: ["Students formatting theses and dissertations", "Authors preparing manuscripts", "Professionals finalizing reports or proposals", "Researchers aligning journal or institutional submission files"],
@@ -212,6 +222,7 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Natural English review",
     metaTitle: "Translation Review and Editing Services | Edit and Proofread",
     metaDescription: "Human review and editing for translated documents to improve grammar, clarity, tone, readability, and natural English presentation.",
+    dateUpdated: "2026-08-04",
     h1: "Translation Review and Editing Services for Clear English Documents",
     intro: "Translation review improves translated English so the final document reads naturally and clearly. We refine grammar, tone, terminology, readability, and presentation while respecting the original purpose.",
     audience: ["Researchers with translated academic papers", "Businesses preparing translated reports or web copy", "Professionals sending translated applications or documents", "Authors and organizations needing natural English review"],

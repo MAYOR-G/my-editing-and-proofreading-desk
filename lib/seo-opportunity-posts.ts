@@ -4,16 +4,16 @@ const author = "My Editing and Proofreading Desk";
 
 export const seoOpportunityPosts: BlogPost[] = [
   {
-    title: "Research Paper Editing Checklist Before Journal Submission",
+    title: "Research Paper Revision Checklist Before Journal Submission",
     slug: "research-paper-editing-checklist-before-submission",
     excerpt: "A section-by-section research paper editing checklist for checking journal instructions, argument flow, language, tables, figures, references, declarations, and the final submission files.",
     category: "Research paper editing",
     author,
     datePublished: "2026-07-18",
-    dateUpdated: "2026-07-18",
+    dateUpdated: "2026-08-10",
     readingTime: "13 min read",
-    metaTitle: "Research Paper Editing Checklist Before Submission",
-    metaDescription: "Use this research paper editing checklist before journal submission to review every section, language, tables, figures, references, declarations, and files.",
+    metaTitle: "Research Paper Revision Checklist Before Journal Submission",
+    metaDescription: "Use this research paper revision checklist before journal submission to review title, abstract, argument, language, tables, figures, references, files, and formatting.",
     heroImage: "/images/blog/research-paper-editing-checklist-before-submission.webp",
     heroImageAlt: "Editor comparing two research paper pages with charts and careful correction marks before journal submission",
     tableOfContents: [
@@ -138,7 +138,9 @@ export const seoOpportunityPosts: BlogPost[] = [
     internalLinks: [
       { href: "/manuscript-editing", label: "Manuscript editing", description: "Review the scope of human editing for research and book manuscripts." },
       { href: "/academic-proofreading", label: "Academic proofreading", description: "Choose a final language and presentation check for an approved paper." },
+      { href: "/document-formatting", label: "Document formatting", description: "Prepare headings, tables, figures, references, and final files for submission." },
       { href: "/pricing", label: "Check pricing", description: "Estimate a service using the live word-count and turnaround calculator." },
+      { href: "/downloads/research-paper-submission-checklist.txt", label: "Download the checklist", description: "Save the journal-submission revision checklist as a plain-text working copy." },
       { href: "/submit", label: "Submit your paper", description: "Upload securely with the journal, deadline, and document requirements." },
     ],
   },
@@ -149,7 +151,7 @@ export const seoOpportunityPosts: BlogPost[] = [
     category: "Thesis proofreading",
     author,
     datePublished: "2026-07-18",
-    dateUpdated: "2026-07-18",
+    dateUpdated: "2026-08-10",
     readingTime: "14 min read",
     metaTitle: "Thesis Tables, Figures & References Checklist",
     metaDescription: "Check thesis tables, figures, captions, cross-references, citations, reference-list entries, permissions, accessibility, automatic lists, and the final PDF.",
@@ -287,6 +289,7 @@ export const seoOpportunityPosts: BlogPost[] = [
       { href: "/thesis-editing", label: "Thesis editing", description: "Improve chapter flow, scholarly language, and sentence clarity before final proofreading." },
       { href: "/dissertation-proofreading", label: "Dissertation proofreading", description: "Arrange a whole-document language and presentation review." },
       { href: "/document-formatting", label: "Document formatting", description: "Get help applying supplied institutional presentation requirements." },
+      { href: "/blog/thesis-proofreading-checklist", label: "PhD thesis checklist", description: "Use the broader doctoral submission checklist after this focused audit." },
       { href: "/submit", label: "Upload securely", description: "Include your guidelines, word count, and deadline for an accurate scope." },
     ],
   },

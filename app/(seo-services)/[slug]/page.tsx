@@ -48,7 +48,8 @@ const serviceEnhancements: Record<string, {
     heading: "Chapter-level revision before the thesis reaches its final proofread.",
     paragraphs: [
       "Thesis editing can work across the abstract, introduction, literature review, methods, results, discussion, and conclusion, with attention to how each chapter supports the research purpose. Supervisor comments and institutional guidance help define the appropriate scope.",
-      "The service improves the student's own draft. It can clarify transitions and flag gaps or inconsistencies, but decisions about methods, analysis, claims, and responses to supervisors remain with the author.",
+      "The service improves the student's own draft through tracked changes, comments, and human editorial judgment. It can clarify transitions and flag gaps or inconsistencies, but decisions about methods, analysis, claims, and responses to supervisors remain with the author.",
+      "Choose thesis editing while sentence clarity, academic tone, chapter flow, terminology, and argument presentation still need work. Choose thesis proofreading after structure and meaning are stable and the remaining task is final quality control.",
     ],
     boundaries: ["We do not conduct research, generate findings, or write thesis chapters for assessment.", "Reference reconstruction and source-by-source verification are separate from language editing.", "After major revisions are accepted, a separate final proofread may still be useful."],
     guides: [{ href: "/blog/thesis-proofreading-checklist", label: "Thesis final-review checklist" }, { href: "/blog/thesis-tables-figures-references-checklist", label: "Check tables, figures, and references" }],
@@ -57,7 +58,8 @@ const serviceEnhancements: Record<string, {
     heading: "A whole-document final pass after supervisor and content revisions.",
     paragraphs: [
       "A dissertation proofread checks consistency across chapters as well as front matter, pagination, headings, captions, tables, figures, references, appendices, and the exported submission file. The best time to begin is after the argument and chapter order are stable.",
-      "Long documents need realistic scheduling and time for the author to review changes. Projects above the calculator's automatic word-count range require scope and turnaround confirmation before work begins.",
+      "Long documents need realistic scheduling and time for the author to review tracked changes, answer comments, refresh fields, and inspect the final PDF. Projects above the calculator's automatic word-count range require scope and turnaround confirmation before work begins.",
+      "The delivered review is intended to improve final submission readiness, not to replace supervisor feedback, institutional approval, or the author's responsibility for research content.",
     ],
     boundaries: ["Proofreading does not repair an unresolved research design or rewrite the dissertation argument.", "We check supplied formatting guidance but do not guarantee acceptance by an institution or examiner.", "The author must confirm factual content, data, citation accuracy, and the required submission format."],
     guides: [{ href: "/blog/dissertation-proofreading-checklist", label: "Use the 15-check dissertation list" }, { href: "/blog/how-to-proofread-a-dissertation-before-submission", label: "Follow a staged proofreading workflow" }, { href: "/blog/thesis-tables-figures-references-checklist", label: "Audit tables, figures, and references" }],
@@ -94,8 +96,9 @@ const serviceEnhancements: Record<string, {
     paragraphs: [
       "Document formatting focuses on presentation: margins, spacing, headings, page numbers, tables, figures, captions, references, appendices, lists, and final file readiness. It is most useful when the writing is close to final but the document needs a consistent structure and submission format.",
       "Supply the university, journal, publisher, or company guidelines when available. Formatting can be paired with proofreading, but it does not replace a language review or solve unresolved content problems.",
+      "Microsoft Word styles, section breaks, generated contents lists, table and figure captions, reference presentation, and final PDF consistency are common formatting checks. Regulatory-document formatting is handled only when the required rules and scope are supplied and accepted in writing.",
     ],
-    boundaries: ["We do not create research content, rewrite arguments, or verify every source.", "Complex typesetting, cover design, print production, and publisher production files require separate agreement.", "Institutional or publisher acceptance cannot be guaranteed."],
+    boundaries: ["We do not create research content, rewrite arguments, or verify every source.", "Regulatory, legal, medical, or compliance approval is not included unless a separate qualified review is agreed.", "Complex typesetting, cover design, print production, and publisher production files require separate agreement.", "Institutional or publisher acceptance cannot be guaranteed."],
     guides: [{ href: "/blog/thesis-tables-figures-references-checklist", label: "Audit tables and references" }, { href: "/blog/how-to-proofread-a-dissertation-before-submission", label: "Plan final file checks" }],
   },
   "translation-review": {
@@ -172,6 +175,7 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
             path: `/${page.slug}`,
             name: page.h1,
             description: page.metaDescription,
+            dateModified: page.dateUpdated,
           }),
         ])}
       />

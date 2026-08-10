@@ -51,15 +51,15 @@ export function PublicPageShell({
         <div className="absolute bottom-0 left-0 h-px w-1/2 bg-gradient-to-r from-primary/20 to-transparent" aria-hidden="true" />
         <div className="absolute left-[7vw] top-32 hidden h-24 w-px bg-gradient-to-b from-primary/30 to-transparent lg:block" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.88fr_0.74fr] lg:items-center">
-          <div>
+          <div className="min-w-0">
             <p className="inline-flex items-center gap-3 border-y border-primary/18 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-primary">
               <span className="h-px w-8 bg-primary/45" aria-hidden="true" />
               {eyebrow}
             </p>
-            <h1 className="mt-5 max-w-5xl font-display text-[clamp(2.8rem,6.5vw,6.9rem)] leading-[0.94] text-ink">{title}</h1>
+            <h1 className="mt-5 w-[19rem] max-w-full whitespace-normal break-words font-display text-[1.65rem] leading-[1.08] text-ink [overflow-wrap:anywhere] sm:w-auto sm:max-w-5xl sm:text-[clamp(2.8rem,6.5vw,6.9rem)] sm:leading-[0.94]">{title}</h1>
           </div>
-          <div className="grid gap-7">
-            {description ? <p className="max-w-2xl border-l border-primary/20 pl-6 text-base leading-8 text-body sm:text-lg lg:justify-self-end">{description}</p> : null}
+          <div className="grid min-w-0 gap-7">
+            {description ? <p className="w-[19rem] max-w-full whitespace-normal break-words border-l border-primary/20 pl-6 text-base leading-8 text-body [overflow-wrap:anywhere] sm:w-auto sm:max-w-2xl sm:text-lg lg:justify-self-end">{description}</p> : null}
             {visual ? visual : null}
           </div>
         </div>

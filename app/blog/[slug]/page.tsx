@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DissertationPlanningEstimator } from "@/components/DissertationPlanningEstimator";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { blogPosts, type BlogRichText, getBlogPost } from "@/lib/blog";
 import { blogPostingJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
@@ -123,6 +124,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 ))}
               </ol>
             </nav>
+          ) : null}
+
+          {post.slug === "how-long-does-dissertation-proofreading-take" ? (
+            <DissertationPlanningEstimator />
           ) : null}
 
           <div className="mt-10 grid gap-10">

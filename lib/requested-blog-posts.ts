@@ -11,7 +11,7 @@ export const requestedBlogPosts: BlogPost[] = [
     category: "AI and Writing Tools",
     author,
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-08-10",
     readingTime: "8 min read",
     metaTitle: "AI Proofreading vs Human Proofreading | What Each Misses",
     metaDescription: "Compare AI proofreading vs human proofreading for grammar, meaning, tone, consistency, confidentiality, and final document review.",
@@ -22,6 +22,9 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "what-ai-catches", label: "What AI catches" },
       { id: "what-humans-catch", label: "What humans catch" },
       { id: "comparison", label: "Comparison table" },
+      { id: "document-risk", label: "Document risk" },
+      { id: "what-to-check", label: "What to check manually" },
+      { id: "future-study", label: "Future study structure" },
       { id: "safe-workflow", label: "Safe workflow" },
       { id: "choose-human", label: "When to choose human review" },
     ],
@@ -79,6 +82,56 @@ export const requestedBlogPosts: BlogPost[] = [
         },
       },
       {
+        id: "document-risk",
+        heading: "Match the proofreading method to the document risk",
+        paragraphs: [
+          ["The right choice depends on what can go wrong if an error remains. A short internal note may only need a fast cleanup. A thesis chapter, proposal, CV, manuscript, or translated document can carry higher risk because small language changes may affect meaning, credibility, compliance with instructions, or reader trust."],
+          ["For academic work, check your institution's rules before using any AI tool, especially if the text includes unpublished research, participant information, supervisor comments, or assessment material. For business and application documents, consider whether the tool is allowed to process client information, financial figures, personal data, or confidential strategy."],
+        ],
+        table: {
+          headers: ["Document type", "AI may help with", "Human review is stronger for"],
+          rows: [
+            ["Short draft text", "Obvious grammar, spelling, and repeated words", "Tone, audience fit, and final judgment"],
+            ["Thesis or dissertation", "Early low-risk language prompts", "Meaning, citations, formatting, policies, and consistency across chapters"],
+            ["Business proposal", "Simple sentence cleanup", "Client names, figures, scope wording, version control, and approved terminology"],
+            ["CV or resume", "Typos and wordiness", "Truthful positioning, chronology, role language, and recruiter readability"],
+            ["Translated English", "Awkward phrasing prompts", "Meaning preservation, terminology, and places needing source-language confirmation"],
+          ],
+        },
+      },
+      {
+        id: "what-to-check",
+        heading: "What to check before accepting an AI proofreading suggestion",
+        paragraphs: [
+          ["Do not accept suggestions in bulk. Read each change against the original sentence, the surrounding paragraph, and the document purpose. A correction can be fluent and still be wrong for the writer's meaning, discipline, client, or submission rule."],
+          ["Pay close attention to cautious academic wording, technical terms, names, dates, numbers, citations, headings, captions, and any sentence that describes responsibility, limitations, results, prices, or qualifications. Those are places where a small automated rewrite can create a larger problem."],
+        ],
+        numberedSteps: [
+          ["Compare the suggested sentence with the original meaning."],
+          ["Check whether technical terms, names, numbers, and citations stayed unchanged."],
+          ["Reject any suggestion that strengthens a claim beyond the evidence."],
+          ["Search the document for related terms so one accepted change does not create inconsistency."],
+          ["Use a final human pass when the document is important, confidential, or submission-ready."],
+        ],
+      },
+      {
+        id: "future-study",
+        heading: "Optional future AI vs human proofreading study structure",
+        paragraphs: [
+          ["This article is prepared for a future AI vs human proofreading study, but no results are published here because no anonymized test dataset has been supplied. Publishing numbers without real documents, a defined method, and repeatable scoring would be misleading."],
+          ["A legitimate study would need anonymized sample documents, clear consent and confidentiality controls, a fixed error taxonomy, blinded review where practical, and documented scoring rules before any statistics are added."],
+        ],
+        table: {
+          headers: ["Study element", "Required before publishing", "Status"],
+          rows: [
+            ["Sample documents", "Anonymized academic, business, manuscript, application, and translated text examples", "Manual data required"],
+            ["Error categories", "Grammar, punctuation, meaning, terminology, references, tables, figures, formatting, and confidentiality risks", "Framework drafted"],
+            ["Review process", "Defined AI tool settings and independent human review process", "Manual method required"],
+            ["Scoring", "Transparent scoring rules for caught, missed, introduced, and inappropriate corrections", "Manual validation required"],
+          ],
+        },
+      },
+      {
         id: "safe-workflow",
         heading: "A safe proofreading workflow",
         paragraphs: [
@@ -109,6 +162,10 @@ export const requestedBlogPosts: BlogPost[] = [
     internalLinks: [
       { href: "/ai-editing-tool", label: "Try the AI tool", description: "Use a quick first pass for short text before human review." },
       { href: "/proofreading-services", label: "Professional proofreading", description: "Get a human final check for important documents." },
+      { href: "/academic-proofreading", label: "Academic proofreading", description: "Use human review where policy, citations, and formatting matter." },
+      { href: "/editors", label: "Editor standards", description: "Review the human editorial standards behind the service." },
+      { href: "/pricing", label: "Check pricing", description: "Estimate a human proofreading or editing review before upload." },
+      { href: "/blog/ai-proofreading-thesis-dissertation", label: "AI and thesis rules", description: "Review thesis and dissertation risks before using AI." },
       { href: "/editorial-policy", label: "Editorial policy", description: "Review the boundaries of responsible editing and proofreading." },
     ],
   },
@@ -119,7 +176,7 @@ export const requestedBlogPosts: BlogPost[] = [
     category: "AI and Writing Tools",
     author,
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-08-10",
     readingTime: "8 min read",
     metaTitle: "AI Proofreading Thesis Guide | Risks and Human Review",
     metaDescription: "Learn how to use AI proofreading for a thesis carefully, including risks to meaning, confidentiality, citations, policies, and human review.",
@@ -200,7 +257,7 @@ export const requestedBlogPosts: BlogPost[] = [
     category: "Thesis and Dissertation",
     author,
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-08-10",
     readingTime: "7 min read",
     metaTitle: "How Long Does Dissertation Proofreading Take?",
     metaDescription: "Learn how long dissertation proofreading takes and what affects timing: word count, draft quality, tables, references, formatting, and review passes.",
@@ -210,6 +267,7 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "quick-answer", label: "Quick answer" },
       { id: "time-factors", label: "Timing factors" },
       { id: "review-passes", label: "Review passes" },
+      { id: "timeline-examples", label: "Timeline examples" },
       { id: "tracked-changes", label: "Tracked changes" },
       { id: "plan", label: "How to plan" },
     ],
@@ -240,6 +298,22 @@ export const requestedBlogPosts: BlogPost[] = [
         paragraphs: [["A careful dissertation proofread may involve separate passes for language, consistency, references, formatting, tables and figures, and the exported final file. Combining everything into one rushed reading increases the chance of missed errors."]],
       },
       {
+        id: "timeline-examples",
+        heading: "Example proofreading timelines by dissertation condition",
+        paragraphs: [
+          ["The examples below are planning guidance, not guaranteed turnaround times. Availability, document condition, service scope, and file complexity can change what is realistic. The safest approach is to share the stable draft, current word count, deadline, and formatting requirements before committing to a schedule."],
+        ],
+        table: {
+          headers: ["Dissertation situation", "Likely scheduling pressure", "Planning advice"],
+          rows: [
+            ["Short, clean master's dissertation", "May fit a shorter final-review window if the file is stable", "Leave time after delivery to review changes and export the final PDF"],
+            ["Long dissertation with many tables and references", "Needs more time for consistency, captions, callouts, citations, and formatting", "Send guidelines and avoid changing chapters during the proofread"],
+            ["Draft with heavy sentence problems", "May need editing rather than only proofreading", "Start earlier or choose a deeper review stage before final proofreading"],
+            ["Very near deadline", "Only a limited pass may be realistic", "Prioritize the highest-risk sections and final-file checks"],
+          ],
+        },
+      },
+      {
         id: "tracked-changes",
         heading: "Leave time to review tracked changes",
         paragraphs: [["Proofreading is not finished when the file returns to you. You need time to review corrections, respond to comments, accept or reject changes, refresh fields, export the final PDF, and inspect the submission file. Microsoft explains that tracked changes must be accepted or rejected to remove markup from a Word document; build that review step into your deadline.", { text: "Microsoft's Track Changes guidance", href: "https://support.microsoft.com/en-us/word/training/track-changes-in-word", external: true }]],
@@ -257,6 +331,7 @@ export const requestedBlogPosts: BlogPost[] = [
     ],
     internalLinks: [
       { href: "/dissertation-proofreading", label: "Dissertation proofreading", description: "Review the service scope for long graduate submissions." },
+      { href: "/blog/dissertation-proofreading-checklist", label: "Dissertation checklist", description: "Use a 15-point final check before submission." },
       { href: "/pricing", label: "Check pricing", description: "Estimate eligible projects by word count and turnaround." },
       { href: "/submit", label: "Submit your dissertation", description: "Upload the stable file and requirements securely." },
     ],
