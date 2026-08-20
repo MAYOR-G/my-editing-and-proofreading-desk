@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, FACEBOOK_URL, INSTAGRAM_URL, SUPPORT_EMAIL } from "@/lib/contact-info";
 import { SERVICE_OPTIONS } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
@@ -23,7 +23,7 @@ export const siteConfig = {
   contactPhone: COMPANY_PHONE,
   contactPhoneTel: COMPANY_PHONE_TEL,
   address: COMPANY_ADDRESS,
-  socialLinks: [] as string[],
+  socialLinks: [FACEBOOK_URL, INSTAGRAM_URL],
 };
 
 export const siteAuthor = {

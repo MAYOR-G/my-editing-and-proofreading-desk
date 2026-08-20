@@ -6,3 +6,5 @@ export const COMPANY_PHONE_TEL = "+14088728603";
 export const COMPANY_ADDRESS = "1007 N Orange St. 4th Floor Suite #5723, Wilmington, Delaware 19801, United States";
 export const INTERNAL_NOTIFICATION_EMAIL = "mudyblast@gmail.com";
 export const BRAND_NAME = "My Editing and Proofreading Desk";
+export const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61593299712622";
+export const INSTAGRAM_URL = "https://www.instagram.com/myepdesk/";

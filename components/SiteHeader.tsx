@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
+import { FacebookIcon, InstagramIcon } from "@/components/SocialIcons";
+import { FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/contact-info";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
 const navItems = [
@@ -144,9 +146,34 @@ export function SiteHeader() {
                 Submit Document
               </Link>
             </div>
+
+            <div className="mt-6 border-t border-hairline pt-6">
+              <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Follow our desk</p>
+              <div className="mt-3 flex items-center gap-3">
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface-soft text-ink transition hover:border-primary hover:text-primary active:scale-[0.98]"
+                >
+                  <FacebookIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface-soft text-ink transition hover:border-primary hover:text-primary active:scale-[0.98]"
+                >
+                  <InstagramIcon className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
           </div>
         </aside>
       </div>
     </header>
   );
 }
+

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { ContactVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { ContactForm } from "@/components/ContactForm";
-import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { FacebookIcon, InstagramIcon } from "@/components/SocialIcons";
+import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, FACEBOOK_URL, INSTAGRAM_URL, SUPPORT_EMAIL } from "@/lib/contact-info";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -55,6 +56,31 @@ export default function ContactPage() {
                 </address>
               </div>
 
+              <div className="mt-8 border-t border-hairline pt-6">
+                <p className="text-xs uppercase tracking-[0.24em] text-primary">Connect with us</p>
+                <p className="mt-2 text-xs text-body">Follow our desk and official updates on social media.</p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <a
+                    href={FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-primary/20 bg-canvas px-5 text-sm font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary active:scale-[0.98]"
+                  >
+                    <FacebookIcon className="h-4 w-4 text-primary" />
+                    <span>Facebook</span>
+                  </a>
+                  <a
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2.5 rounded-full border border-primary/20 bg-canvas px-5 text-sm font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary active:scale-[0.98]"
+                  >
+                    <InstagramIcon className="h-4 w-4 text-primary" />
+                    <span>Instagram</span>
+                  </a>
+                </div>
+              </div>
+
               {/* Response expectations */}
               <div className="mt-8 grid gap-4 border-t border-hairline pt-6">
                 <div className="flex items-center gap-3">
@@ -93,3 +119,4 @@ export default function ContactPage() {
     </PublicPageShell>
   );
 }
+

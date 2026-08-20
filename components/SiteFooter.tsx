@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { NewsletterSubscribeForm } from "@/components/NewsletterSubscribeForm";
+import { FacebookIcon, InstagramIcon } from "@/components/SocialIcons";
 import { seoServicePages } from "@/lib/seo-service-pages";
-import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, FACEBOOK_URL, INSTAGRAM_URL, SUPPORT_EMAIL } from "@/lib/contact-info";
 
 const platformLinks = [
   { href: "/about", label: "About us" },
@@ -60,6 +61,32 @@ export function SiteFooter() {
               Receive occasional editorial updates and service notes from our desk.
             </p>
             <NewsletterSubscribeForm />
+          </div>
+
+          <div className="border-b border-hairline/10 pb-6">
+            <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Follow our desk</p>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Facebook"
+                className="inline-flex items-center gap-2 rounded-full border border-hairline/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-surface-soft/80 transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
+              >
+                <FacebookIcon className="h-4 w-4" />
+                <span>Facebook</span>
+              </a>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Instagram"
+                className="inline-flex items-center gap-2 rounded-full border border-hairline/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-surface-soft/80 transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
+              >
+                <InstagramIcon className="h-4 w-4" />
+                <span>Instagram</span>
+              </a>
+            </div>
           </div>
 
           <div className="text-sm leading-7 text-surface-soft/55">
@@ -140,7 +167,28 @@ export function SiteFooter() {
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-surface-soft/35">
           Clearer writing for important work.
         </p>
+        <div className="mt-4 flex items-center justify-center gap-3 text-surface-soft/70">
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit our Facebook page"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/10 bg-white/[0.04] transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
+          >
+            <FacebookIcon className="h-4 w-4" />
+          </a>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit our Instagram profile"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/10 bg-white/[0.04] transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
+          >
+            <InstagramIcon className="h-4 w-4" />
+          </a>
+        </div>
       </div>
     </footer>
   );
 }
+
