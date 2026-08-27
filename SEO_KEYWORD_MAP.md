@@ -37,6 +37,10 @@ Updated: 18 July 2026. Each indexable URL has one primary intent. Keywords descr
 | `/blog/editing-and-proofreading-before-manuscript-submission` | why edit and proofread before manuscript submission | two-stage manuscript review, when to edit | Informational | Conceptual guide | New research-paper checklist owns detailed submission workflow | Narrow and cross-link |
 | `/blog/research-paper-editing-checklist-before-submission` | research paper editing checklist before submission | journal submission checklist, IMRaD editing | Informational | Detailed checklist | Existing manuscript article must stay conceptual | New page; primary opportunity |
 | `/blog/thesis-tables-figures-references-checklist` | thesis tables figures citations references checklist | cross-references, list of figures, final PDF | Informational | Specialist checklist | Existing thesis/dissertation pages should summarise and link | New focused spoke |
+| `/blog/sci-journal-manuscript-editing-guide-esl-researchers` | SCI journal manuscript editing for international authors | English proofreading for Chinese researchers, scientific paper editing, avoid language rejection | Informational / Commercial investigation | Guide | Targets international & Chinese researchers publishing in IEEE, Nature, Elsevier, Springer | High-converting international entry |
+| `/blog/uk-dissertation-and-phd-thesis-proofreading-guide` | UK dissertation and PhD thesis proofreading | Russell Group thesis guidelines, Edinburgh proofreading, Harvard UK, OSCOLA | Informational / Commercial investigation | Guide | Targets UK university postgraduate students | Connects UK desk to dissertation service |
+| `/blog/dubai-uae-business-report-and-proposal-editing-guide` | business document and proposal editing Dubai UAE | RFP tender editing, corporate pitch decks, MBA research proofreading | Informational / Commercial investigation | Guide | Targets UAE & GCC corporate and executive clients | Connects Dubai branch to business proofreading |
+| `/blog/canadian-academic-proofreading-and-thesis-guide` | academic proofreading Canada | thesis editing Toronto, Canadian Oxford spelling, U of T / McGill / UBC guidelines | Informational / Commercial investigation | Guide | Targets Canadian university students and researchers | Connects Toronto office to academic editing |
 
 ## Cluster linking rules
 
@@ -45,5 +49,6 @@ Updated: 18 July 2026. Each indexable URL has one primary intent. Keywords descr
 - Priority service pages → the closest comparison/checklist/cost guides and back to pricing/submit.
 - General checklists → specialist guide for tables/figures/references rather than repeating its full procedure.
 - Existing manuscript-submission article → research-paper checklist for the practical section-by-section workflow.
+- International guides (SCI journal, UK dissertation, Dubai business, Canadian thesis) → regional service anchors, pricing calculator, and secure upload flow.
 - Every guide → one or more relevant service pages, pricing where helpful, and submit only where transactional intent is appropriate.
 
