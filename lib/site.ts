@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
-import { BRAND_NAME, COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, FACEBOOK_URL, INSTAGRAM_URL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import {
+  BRAND_NAME,
+  COMPANY_ADDRESS,
+  COMPANY_OFFICES,
+  COMPANY_PHONE,
+  COMPANY_PHONE_TEL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  SUPPORT_EMAIL,
+} from "@/lib/contact-info";
 import { SERVICE_OPTIONS } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
@@ -23,6 +32,7 @@ export const siteConfig = {
   contactPhone: COMPANY_PHONE,
   contactPhoneTel: COMPANY_PHONE_TEL,
   address: COMPANY_ADDRESS,
+  offices: COMPANY_OFFICES,
   socialLinks: [FACEBOOK_URL, INSTAGRAM_URL],
 };
 
@@ -92,6 +102,12 @@ export function buildPageMetadata({
       canonical: url,
       languages: {
         "en-US": url,
+        "en-GB": url,
+        "en-CA": url,
+        "en-AE": url,
+        "en-NG": url,
+        "en": url,
+        "x-default": url,
       },
     },
     openGraph: {
@@ -136,6 +152,16 @@ export function buildPageMetadata({
 }
 
 export function organizationJsonLd() {
+  const officePostalAddresses = siteConfig.offices.map((office) => ({
+    "@type": "PostalAddress",
+    name: office.name,
+    streetAddress: office.streetAddress,
+    addressLocality: office.city,
+    addressRegion: office.region,
+    postalCode: office.postalCode,
+    addressCountry: office.countryCode,
+  }));
+
   const organization: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -145,22 +171,53 @@ export function organizationJsonLd() {
     logo: assetUrl("/assets/logo.png"),
     email: siteConfig.contactEmail,
     telephone: siteConfig.contactPhoneTel,
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer support",
-      email: siteConfig.contactEmail,
-      telephone: siteConfig.contactPhoneTel,
-      availableLanguage: "English",
-      areaServed: "Worldwide",
-    },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "1007 N Orange St. 4th Floor Suite #5723",
-      addressLocality: "Wilmington",
-      addressRegion: "DE",
-      postalCode: "19801",
-      addressCountry: "US",
-    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: siteConfig.contactEmail,
+        telephone: siteConfig.contactPhoneTel,
+        availableLanguage: ["English"],
+        areaServed: ["Worldwide", "US", "GB", "CA", "AE", "NG", "CN", "AU", "EU"],
+      },
+      {
+        "@type": "ContactPoint",
+        contactType: "editorial desk",
+        email: siteConfig.contactEmail,
+        availableLanguage: ["English"],
+        areaServed: ["United Kingdom", "United States", "Canada", "United Arab Emirates", "Nigeria", "China", "Worldwide"],
+      },
+    ],
+    address: officePostalAddresses[0],
+    location: officePostalAddresses,
+    department: siteConfig.offices.map((office) => ({
+      "@type": "ProfessionalService",
+      name: `${siteConfig.siteName} - ${office.name}`,
+      url: `${siteConfig.siteUrl}/contact`,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: office.streetAddress,
+        addressLocality: office.city,
+        addressRegion: office.region,
+        postalCode: office.postalCode,
+        addressCountry: office.countryCode,
+      },
+      areaServed: office.country,
+      telephone: office.phoneTel || siteConfig.contactPhoneTel,
+      email: office.email,
+    })),
+    areaServed: [
+      "Worldwide",
+      "United States",
+      "United Kingdom",
+      "Canada",
+      "United Arab Emirates",
+      "Nigeria",
+      "China",
+      "Australia",
+      "Europe",
+      "Asia",
+    ],
     knowsAbout: [
       "Professional editing",
       "Professional proofreading",
@@ -171,6 +228,11 @@ export function organizationJsonLd() {
       "Business proofreading",
       "Document formatting",
       "Translation review",
+      "British English editing (UK)",
+      "American English editing (US)",
+      "Canadian English editing (CA)",
+      "International ESL academic editing",
+      "SCI journal manuscript proofreading",
     ],
   };
 
@@ -274,6 +336,16 @@ export function webPageJsonLd(page: {
 }
 
 export function professionalServiceJsonLd() {
+  const officePostalAddresses = siteConfig.offices.map((office) => ({
+    "@type": "PostalAddress",
+    name: office.name,
+    streetAddress: office.streetAddress,
+    addressLocality: office.city,
+    addressRegion: office.region,
+    postalCode: office.postalCode,
+    addressCountry: office.countryCode,
+  }));
+
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -285,21 +357,26 @@ export function professionalServiceJsonLd() {
     provider: {
       "@id": `${siteConfig.siteUrl}/#organization`,
     },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "1007 N Orange St. 4th Floor Suite #5723",
-      addressLocality: "Wilmington",
-      addressRegion: "DE",
-      postalCode: "19801",
-      addressCountry: "US",
-    },
+    address: officePostalAddresses[0],
+    location: officePostalAddresses,
     priceRange: "$$",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Editing and proofreading service options",
       itemListElement: serviceOfferCatalog,
     },
-    areaServed: "Worldwide",
+    areaServed: [
+      "Worldwide",
+      "United States",
+      "United Kingdom",
+      "Canada",
+      "United Arab Emirates",
+      "Nigeria",
+      "China",
+      "Australia",
+      "Europe",
+      "Asia",
+    ],
     serviceType: [
       "Professional editing services",
       "Professional proofreading services",
@@ -307,6 +384,10 @@ export function professionalServiceJsonLd() {
       "Business proofreading",
       "Manuscript editing",
       "Document formatting",
+      "Translation review",
+      "UK & British English proofreading",
+      "US academic editing",
+      "ESL journal editing",
     ],
     email: siteConfig.contactEmail,
     telephone: siteConfig.contactPhoneTel,

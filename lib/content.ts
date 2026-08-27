@@ -218,6 +218,27 @@ export const faqSections = [
         answer: "Use the Contact page or email support@business.editandproofread.com. Include the document type, expected word count, deadline, and project reference if one already exists so the team can respond with useful next steps."
       }
     ]
+  },
+  {
+    title: "International standards and regional styles",
+    items: [
+      {
+        question: "Do you support British English (UK), Canadian, and Australian styles?",
+        answer: "Yes. When uploading your document, specify your required dialect—British English (UK), American English (US), Canadian English, or Australian English. Our editors will apply the proper spelling, punctuation, quotation styles, and regional academic conventions."
+      },
+      {
+        question: "Can you help non-native English and international researchers publish in SCI/Scopus journals?",
+        answer: "Yes. A substantial portion of our authors are international researchers and scholars from China, the Middle East, Europe, Africa, and Latin America. We specialize in ESL translation review, academic tone refinement, and sentence-level polishing to help overcome journal language barriers before submission to IEEE, Nature, Springer, Elsevier, and Wiley."
+      },
+      {
+        question: "Which referencing and style manuals do you support?",
+        answer: "We support all major academic and professional style guides, including APA (7th ed.), Harvard (UK & Australian formats), Chicago/Turabian (Notes & Bibliography and Author-Date), IEEE, Vancouver, MLA (9th ed.), OSCOLA (UK Law), MHRA, and custom journal guidelines."
+      },
+      {
+        question: "How do turnaround times work across international time zones?",
+        answer: "Our global editorial desks across North America, the UK, UAE, and Africa operate continuously. Once you upload and confirm your project, work commences immediately according to your chosen turnaround schedule, regardless of your local time zone."
+      }
+    ]
   }
 ];
 

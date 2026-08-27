@@ -3,7 +3,14 @@ import { BrandMark } from "@/components/BrandMark";
 import { NewsletterSubscribeForm } from "@/components/NewsletterSubscribeForm";
 import { FacebookIcon, InstagramIcon } from "@/components/SocialIcons";
 import { seoServicePages } from "@/lib/seo-service-pages";
-import { COMPANY_ADDRESS, COMPANY_PHONE, COMPANY_PHONE_TEL, FACEBOOK_URL, INSTAGRAM_URL, SUPPORT_EMAIL } from "@/lib/contact-info";
+import {
+  COMPANY_OFFICES,
+  COMPANY_PHONE,
+  COMPANY_PHONE_TEL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  SUPPORT_EMAIL,
+} from "@/lib/contact-info";
 
 const platformLinks = [
   { href: "/about", label: "About us" },
@@ -35,12 +42,12 @@ export function SiteFooter() {
       </div>
       <div className="absolute inset-x-0 top-14 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" aria-hidden="true" />
 
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-14 pt-24 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:pb-20 lg:pt-28 relative">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-14 pt-24 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:pb-20 lg:pt-28 relative">
         <aside className="grid content-start gap-8 relative z-10">
           <div>
             <BrandMark tone="light" variant="footer" />
             <p className="mt-6 max-w-sm text-sm leading-7 text-surface-soft/68">
-              Human editing and proofreading for academic, business, manuscript, application, and professional documents.
+              Human editing and proofreading for academic, business, manuscript, application, and professional documents worldwide.
             </p>
           </div>
 
@@ -89,11 +96,36 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div className="text-sm leading-7 text-surface-soft/55">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Mailing address</p>
-            <address className="mt-3 max-w-sm text-pretty not-italic">
-              {COMPANY_ADDRESS}
-            </address>
+          <div className="border-b border-hairline/10 pb-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Global Desks & Offices</p>
+              <Link href="/contact" className="text-xs font-medium text-surface-soft/50 hover:text-primary transition">
+                All offices →
+              </Link>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {COMPANY_OFFICES.map((office) => (
+                <div
+                  key={office.id}
+                  className="rounded-xl border border-hairline/10 bg-white/[0.02] p-3 text-xs leading-relaxed text-surface-soft/75 transition duration-200 hover:border-primary/30 hover:bg-white/[0.04]"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-surface-soft flex items-center gap-1.5">
+                      <span>{office.flag}</span>
+                      <span>{office.name}</span>
+                    </span>
+                    {office.isHeadquarters ? (
+                      <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary">
+                        HQ
+                      </span>
+                    ) : null}
+                  </div>
+                  <address className="mt-1.5 not-italic text-surface-soft/60">
+                    {office.fullAddress}
+                  </address>
+                </div>
+              ))}
+            </div>
           </div>
 
           <Link href="/submit" className="inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-primary px-7 text-sm font-bold text-white shadow-[0_14px_34px_rgba(23,74,124,0.28)] transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
