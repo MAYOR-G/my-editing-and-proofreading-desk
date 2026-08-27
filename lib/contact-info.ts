@@ -105,15 +105,33 @@ export const COMPANY_OFFICES: OfficeLocation[] = [
     shortName: "Nigeria / Africa",
     country: "Nigeria",
     countryCode: "NG",
-    region: "Rivers State",
-    city: "Port Harcourt / Rivers State",
-    streetAddress: "3B Peace Estate",
-    postalCode: "500001",
-    fullAddress: "3B Peace Estate, Rivers State, Nigeria",
+    region: "Federal Capital Territory",
+    city: "Abuja",
+    streetAddress: "Rivers House, Plot 83 Ralph Shodeinde Street, Central Business District",
+    building: "Rivers House",
+    postalCode: "901002",
+    fullAddress: "Rivers House, Plot 83 Ralph Shodeinde Street, Central Business District, Abuja 901002, Nigeria",
     email: SUPPORT_EMAIL,
     timezone: "WAT (UTC+1)",
     hours: "Mon – Fri: 8:00 AM – 5:00 PM WAT (24/7 Portal)",
     flag: "🇳🇬",
+  },
+  {
+    id: "cn",
+    name: "China & East Asia Office",
+    shortName: "China (East Asia)",
+    country: "China",
+    countryCode: "CN",
+    region: "Zhejiang",
+    city: "Ningbo",
+    streetAddress: "The MAF Center, 6/F, No. 661 Fuming Road, Fuming Street",
+    building: "The MAF Center",
+    postalCode: "315042",
+    fullAddress: "The MAF Center, 6/F, No. 661 Fuming Road, Fuming Street, Ningbo, Zhejiang 315042, China",
+    email: SUPPORT_EMAIL,
+    timezone: "CST (UTC+8)",
+    hours: "Mon – Fri: 9:00 AM – 6:00 PM CST (24/7 Portal)",
+    flag: "🇨🇳",
   },
 ];
 
@@ -122,4 +140,6 @@ export const UK_OFFICE_ADDRESS = COMPANY_OFFICES[1].fullAddress;
 export const CANADA_OFFICE_ADDRESS = COMPANY_OFFICES[2].fullAddress;
 export const UAE_OFFICE_ADDRESS = COMPANY_OFFICES[3].fullAddress;
 export const AFRICA_OFFICE_ADDRESS = COMPANY_OFFICES[4].fullAddress;
+export const CHINA_OFFICE_ADDRESS = COMPANY_OFFICES[5].fullAddress;
+
 

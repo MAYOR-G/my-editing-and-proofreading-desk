@@ -236,7 +236,7 @@ export const faqSections = [
       },
       {
         question: "How do turnaround times work across international time zones?",
-        answer: "Our global editorial desks across North America, the UK, UAE, and Africa operate continuously. Once you upload and confirm your project, work commences immediately according to your chosen turnaround schedule, regardless of your local time zone."
+        answer: "Our global editorial desks across North America, the UK, UAE, China & East Asia, and Africa operate continuously. Once you upload and confirm your project, work commences immediately according to your chosen turnaround schedule, regardless of your local time zone."
       }
     ]
   }

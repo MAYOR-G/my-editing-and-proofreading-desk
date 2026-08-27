@@ -106,6 +106,8 @@ export function buildPageMetadata({
         "en-CA": url,
         "en-AE": url,
         "en-NG": url,
+        "en-CN": url,
+        "zh-CN": url,
         "en": url,
         "x-default": url,
       },

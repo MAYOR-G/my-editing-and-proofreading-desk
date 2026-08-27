@@ -15,8 +15,8 @@ import { buildPageMetadata } from "@/lib/site";
 import { Building2, Globe2, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Contact Our Global Editing Desks | US, UK, Canada, UAE, & Africa",
-  description: "Get in touch with our global editorial desks in the US, UK, Canada, UAE, and Nigeria. Reach out for custom quotes, thesis proofreading, and business editing support.",
+  title: "Contact Our Global Editing Desks | US, UK, Canada, UAE, China, & Africa",
+  description: "Get in touch with our global editorial desks in the US, UK, Canada, UAE, China, and Nigeria. Reach out for custom quotes, thesis proofreading, SCI journal editing, and corporate document support.",
   path: "/contact",
 });
 
@@ -25,7 +25,7 @@ export default function ContactPage() {
     <PublicPageShell
       eyebrow="Global Editorial Desks"
       title="Tell us what your document needs."
-      description="Connect with our global offices across North America, Europe, the Middle East, and Africa for academic, manuscript, and corporate document support."
+      description="Connect with our global offices across North America, Europe, the Middle East, China & East Asia, and Africa for academic, manuscript, and corporate document support."
       visual={<ContactVisual />}
       seoPath="/contact"
     >
