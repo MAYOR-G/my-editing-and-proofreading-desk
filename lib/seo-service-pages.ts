@@ -117,26 +117,26 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Graduate submission",
     metaTitle: "Dissertation Proofreading Service | UK, US & Global | Edit and Proofread",
     metaDescription: "Professional dissertation proofreading for UK, US, Canadian, and global PhD/Master's students. Check grammar, Harvard/APA references, formatting, and tables.",
-    dateUpdated: "2026-08-10",
-    h1: "Dissertation Proofreading Service for Graduate Students Worldwide",
-    intro: "Before final submission, your dissertation needs more than a basic spell-check. Our dissertation proofreading service reviews grammar, clarity, academic tone, references, formatting, tables, figures, and final presentation with expert human attention across British, American, Canadian, and international styles.",
+    dateUpdated: "2026-09-29",
+    h1: "Dissertation Proofreading Services for Final Graduate Submission",
+    intro: "Your final dissertation needs a meticulous proofreading pass before deposit. We provide a rigorous final review focused on correcting typographical errors, ensuring reference consistency, formatting tables/figures, and verifying compliance with strict university submission guidelines across all major academic styles.",
     audience: [
-      "Master's and doctoral students in the UK (Edinburgh, London, Russell Group universities)",
-      "PhD candidates in the US, Canada, UAE, Europe, and Nigeria preparing final submission",
-      "International graduate students with long research documents and strict formatting guidelines",
-      "Scholars preparing thesis-derived publications"
+      "PhD candidates requiring a final polish before committee defense",
+      "Doctoral students in the UK (Russell Group) or North America",
+      "International graduates needing native English proofreading",
+      "Students executing a 15-point final dissertation checklist"
     ],
     checks: [
-      "Grammar, punctuation, spelling, tense, articles, and sentence clarity",
-      "Chapter headings, terminology, abbreviations, tables, figures, and appendices",
-      "Citation and reference presentation consistency (APA, Harvard, Chicago, OSCOLA, IEEE)",
-      "Margins, spacing, pagination, front matter, captions, and final file readiness"
+      "Final-pass grammar, spelling, and typographical error elimination",
+      "In-text citation matching with the final bibliography (APA, Harvard, etc.)",
+      "Table of contents, list of figures, and front matter accuracy",
+      "Formatting consistency across margins, headings, and spacing"
     ],
     benefits: [
-      "A cleaner final document for supervisor, committee, or graduate school examiners",
-      "Long-document consistency across all chapters, methodologies, and discussions",
-      "Human review that respects academic integrity and your research ownership",
-      "Secure upload, transparent word-count pricing, and dashboard delivery"
+      "Flawless presentation that meets stringent university deposit criteria",
+      "Absolute confidence during your final dissertation defense",
+      "Strict adherence to academic integrity—we polish, we do not write",
+      "Specialized handling of complex tables, figures, and appendices"
     ],
     documentExamples: ["Master's dissertations", "PhD dissertations and doctoral theses", "Abstracts, acknowledgements, and front matter", "Reference lists, tables, figures, and appendices"],
     process: ["Upload your dissertation and include university guidelines if available.", "Choose turnaround and review the word-count based estimate.", "A proofreader checks the document in staged passes.", "Review the delivered file and any comments before final submission."],
@@ -154,14 +154,39 @@ export const seoServicePages: SeoServicePage[] = [
     eyebrow: "Master's and PhD drafts",
     metaTitle: "Thesis Editing Services | Master's & PhD | Edit and Proofread",
     metaDescription: "Thesis editing for clarity, grammar, structure, academic tone, formatting, and references. Human editors help polish your thesis before submission.",
-    dateUpdated: "2026-08-10",
-    h1: "Thesis Editing Services for Master's and PhD Students",
-    intro: "Thesis editing helps turn a difficult academic draft into a clearer, more coherent submission. We improve structure, scholarly tone, paragraph flow, sentence clarity, grammar, and consistency while preserving your argument and authorship.",
-    audience: ["Master's students revising a thesis", "PhD candidates improving chapter drafts", "Students responding to supervisor feedback", "Researchers preparing a thesis-based article or manuscript"],
-    checks: ["Chapter structure, paragraph flow, transitions, and argument clarity", "Scholarly tone, cautious claims, terminology, and sentence construction", "Grammar, punctuation, citations, references, headings, and formatting consistency", "Comments where evidence, claims, or institutional rules need author attention"],
-    benefits: ["A clearer thesis before final proofreading", "Human editorial feedback that protects academic integrity", "Improved readability for supervisors, committees, and examiners", "Support for grammar, structure, tone, formatting, and references in one workflow"],
-    documentExamples: ["Master's thesis chapters", "PhD thesis drafts", "Literature reviews, methods, results, and discussion chapters", "Supervisor-revised drafts before final proofreading"],
-    process: ["Upload the thesis draft and include supervisor notes or requirements.", "Review the pricing estimate based on word count and turnaround.", "An editor works through structure, clarity, tone, grammar, and consistency.", "Receive the edited file securely and review comments before final revisions."],
+    dateUpdated: "2026-09-29",
+    h1: "Comprehensive Thesis Editing Services for Master's and PhD Chapters",
+    intro: "Thesis editing requires a deep understanding of academic structure. We offer chapter-by-chapter editing to improve logical flow, methodology alignment, scholarly tone, and sentence clarity while rigorously preserving your argument and authorship. For a structured approach, check our thesis tables and figures checklist in our resources.",
+    audience: [
+      "Master's students finalizing their thesis structure",
+      "PhD candidates submitting chapter-by-chapter drafts",
+      "Students integrating complex supervisor feedback",
+      "Researchers converting a thesis chapter into a journal article"
+    ],
+    checks: [
+      "Methodology and literature review narrative flow",
+      "Logical transitions between complex academic arguments",
+      "Scholarly tone consistency across independent chapters",
+      "Grammar, punctuation, citations, and reference formatting"
+    ],
+    benefits: [
+      "Deep structural improvements before final submission",
+      "Context-aware human editing that respects academic boundaries",
+      "Enhanced clarity for thesis defense committees and examiners",
+      "Chapter-level progression support throughout your degree"
+    ],
+    documentExamples: [
+      "Methodology and Literature Review chapters",
+      "Discussion and Results sections",
+      "Complete Master's thesis drafts",
+      "Post-defense revision drafts"
+    ],
+    process: [
+      "Upload specific thesis chapters or your entire draft.",
+      "Select your timeline—chapter-by-chapter review recommended.",
+      "Your editor refines structure, flow, tone, and grammar.",
+      "Review the tracked changes and detailed editorial comments."
+    ],
     pricingCta: "Use the pricing calculator for a thesis editing estimate, or contact us for very long or complex projects.",
     related: ["academic-proofreading", "dissertation-proofreading", "document-formatting"],
     faq: [

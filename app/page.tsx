@@ -17,14 +17,15 @@ import { FlippingReviews } from "@/components/home/FlippingReviews";
 import { TrustedMarquee } from "@/components/home/TrustedMarquee";
 import { ReadyToBeginCTA } from "@/components/home/ReadyToBeginCTA";
 import { TrustedMapStats } from "@/components/home/TrustedMapStats";
-import { DocumentTypeServices } from "@/components/home/DocumentTypeServices";
 import { BlogResourcePreview } from "@/components/home/BlogResourcePreview";
+import { EditMyPaperCTA } from "@/components/home/EditMyPaperCTA";
+import { PricingSnapshot } from "@/components/home/PricingSnapshot";
 
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Professional Editing & Proofreading Services | Human Editors",
-  description: "Human editing and proofreading for academic papers, dissertations, manuscripts, business documents, CVs, and important writing. Secure upload and clear pricing.",
+  description: "Human editing and proofreading for academic papers, dissertations, manuscripts, business documents, CVs, and important writing. Thesis editing • Dissertation proofreading • Paper editing. Secure upload and clear pricing.",
   path: "/",
 });
 
@@ -52,13 +53,15 @@ export default function Home() {
       {/* B. Services Grid */}
       <ServicesGrid />
 
-      <DocumentTypeServices />
+      <EditMyPaperCTA />
 
       {/* C. Why Choose Us (Horizontal Scroll) */}
       <WhyChooseUs />
 
       {/* D. The Process (Connected Glowing Timeline) */}
       <ProcessFlow />
+
+      <PricingSnapshot />
 
       {/* D. Smart Technology (AI) */}
       <section className="bg-ivory text-ink py-32 px-5 sm:px-10 border-t border-ink/5 relative overflow-hidden">

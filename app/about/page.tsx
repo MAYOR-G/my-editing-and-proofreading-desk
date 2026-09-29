@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FileCheck2, LockKeyhole, MessageSquareText, PenLine } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { AcademicResults } from "@/components/home/AcademicResults";
 import { buildPageMetadata } from "@/lib/site";
 
 const values = [
@@ -139,6 +140,8 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
+
+          <AcademicResults />
 
           <div className="mt-10 rounded-[1.35rem] border border-primary/15 bg-primary/[0.045] p-7 sm:p-9 lg:flex lg:items-center lg:justify-between lg:gap-10">
             <div>

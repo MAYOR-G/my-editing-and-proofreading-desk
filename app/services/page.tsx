@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ServiceSystemVisual } from "@/components/EditorialVisuals";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { DocumentTypeServices } from "@/components/home/DocumentTypeServices";
 import { seoServicePages } from "@/lib/seo-service-pages";
 import { buildPageMetadata } from "@/lib/site";
 
@@ -43,6 +44,7 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+      <DocumentTypeServices />
     </PublicPageShell>
   );
 }

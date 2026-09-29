@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AiEditingTool } from "@/components/AiEditingTool";
 import { AiRefinementVisual } from "@/components/EditorialVisuals";
+import { HumanVsAiBlock } from "@/components/home/HumanVsAiBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
@@ -65,6 +66,8 @@ export default function AiEditingToolPage() {
           <AiEditingTool />
         </div>
       </section>
+
+      <HumanVsAiBlock />
 
       <SiteFooter />
     </main>
