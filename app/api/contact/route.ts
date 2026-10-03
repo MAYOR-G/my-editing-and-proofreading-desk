@@ -171,6 +171,43 @@ export async function POST(request: Request) {
       attachment_file_size: number;
     } | null = null;
 
+    const uploadedAttachment = !formData && payload.attachment && typeof payload.attachment === "object"
+      ? payload.attachment as Record<string, unknown>
+      : null;
+    if (uploadedAttachment) {
+      const filePath = typeof uploadedAttachment.path === "string" ? uploadedAttachment.path : "";
+      const fileName = typeof uploadedAttachment.name === "string" ? sanitizeFilename(uploadedAttachment.name) : "";
+      const contentType = typeof uploadedAttachment.contentType === "string" ? uploadedAttachment.contentType.slice(0, 160) : "application/octet-stream";
+      const fileSize = Number(uploadedAttachment.size);
+      const fileExtension = getExtension(fileName);
+      const fileObjectName = filePath.startsWith("contact-support/") ? filePath.slice("contact-support/".length) : "";
+
+      if (!/^contact-support\/[a-f0-9-]{36}_[\w.\-]+$/i.test(filePath)
+        || !fileName
+        || !ALLOWED_ATTACHMENT_EXTENSIONS.has(fileExtension)
+        || !Number.isFinite(fileSize)
+        || fileSize <= 0
+        || fileSize > MAX_ATTACHMENT_BYTES
+        || !fileObjectName.endsWith(`_${fileName}`)) {
+        return NextResponse.json({ error: "We could not confirm the uploaded attachment. Please upload it again." }, { status: 400 });
+      }
+
+      const { data: storedObjects, error: storedObjectError } = await supabaseAdmin.storage
+        .from("uploads")
+        .list("contact-support", { search: fileObjectName, limit: 1 });
+      const storedObject = storedObjects?.find((object) => object.name === fileObjectName);
+      if (storedObjectError || !storedObject || (storedObject.metadata?.size && Number(storedObject.metadata.size) !== fileSize)) {
+        return NextResponse.json({ error: "We could not confirm that the attachment finished uploading. Please try again." }, { status: 400 });
+      }
+
+      attachmentMeta = {
+        attachment_file_path: filePath,
+        attachment_file_name: fileName,
+        attachment_content_type: contentType,
+        attachment_file_size: fileSize,
+      };
+    }
+
     if (attachment instanceof File && attachment.size > 0) {
       if (attachment.size > MAX_ATTACHMENT_BYTES) {
         return NextResponse.json(

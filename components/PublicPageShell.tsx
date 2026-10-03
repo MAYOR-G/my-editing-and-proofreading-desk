@@ -56,10 +56,10 @@ export function PublicPageShell({
               <span className="h-px w-8 bg-primary/45" aria-hidden="true" />
               {eyebrow}
             </p>
-            <h1 className="mt-5 w-[19rem] max-w-full whitespace-normal break-words font-display text-[1.65rem] leading-[1.08] text-ink [overflow-wrap:anywhere] sm:w-auto sm:max-w-5xl sm:text-[clamp(2.8rem,6.5vw,6.9rem)] sm:leading-[0.94]">{title}</h1>
+            <h1 className="mt-5 w-full min-w-0 max-w-full whitespace-normal break-words font-display text-[1.65rem] leading-[1.08] text-ink [overflow-wrap:anywhere] sm:max-w-5xl sm:text-[clamp(2.8rem,6.5vw,6.9rem)] sm:leading-[0.94]">{title}</h1>
           </div>
           <div className="grid min-w-0 gap-7">
-            {description ? <p className="w-[19rem] max-w-full whitespace-normal break-words border-l border-primary/20 pl-6 text-base leading-8 text-body [overflow-wrap:anywhere] sm:w-auto sm:max-w-2xl sm:text-lg lg:justify-self-end">{description}</p> : null}
+            {description ? <p className="w-full min-w-0 max-w-full whitespace-normal break-words border-l border-primary/20 pl-5 text-base leading-7 text-body [overflow-wrap:anywhere] sm:max-w-2xl sm:pl-6 sm:text-lg sm:leading-8 lg:justify-self-end">{description}</p> : null}
             {visual ? visual : null}
           </div>
         </div>

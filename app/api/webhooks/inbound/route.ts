@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { getEmailClient, sendContactNotificationEmail, SUPPORT_EMAIL } from "@/lib/email";
 import { makeThreadKey, sanitizePlainText } from "@/lib/message-threading";
+import { ADMIN_ATTACHMENT_MAX_BYTES, getExtension, sanitizeFilename } from "@/lib/attachment-utils";
 
 export const dynamic = "force-dynamic";
 
-const INBOUND_HANDLER_VERSION = "inbound-threaded-2026-05-22";
+const INBOUND_HANDLER_VERSION = "inbound-threaded-attachments-2026-10-03";
+const INBOUND_ATTACHMENT_EXTENSIONS = new Set([".doc", ".docx", ".pdf", ".txt"]);
 
 type ContactThread = {
   id: string;
@@ -163,9 +165,46 @@ async function getReceivedEmail(event: any) {
     text: eventData.text || "",
     html: eventData.html || null,
     headers: eventData.headers || null,
+    attachments: Array.isArray(eventData.attachments) ? eventData.attachments : [],
     message_id: eventData.message_id || "",
     created_at: eventData.created_at || new Date().toISOString(),
   };
+}
+
+async function getInboundAttachmentReference(emailId: string) {
+  if (!emailId) return null;
+
+  try {
+    const resend = getEmailClient();
+    const { data, error } = await resend.emails.receiving.attachments.list({ emailId });
+    if (error || !data?.data?.length) {
+      console.warn("Inbound attachment list unavailable:", error);
+      return null;
+    }
+
+    const eligible = data.data
+      .filter((item) => {
+        const extension = getExtension(item.filename || "");
+        return item.content_disposition !== "inline"
+          && INBOUND_ATTACHMENT_EXTENSIONS.has(extension)
+          && item.size > 0
+          && item.size <= ADMIN_ATTACHMENT_MAX_BYTES;
+      })
+      .sort((a, b) => Number(getExtension(b.filename || "") === ".pdf") - Number(getExtension(a.filename || "") === ".pdf"));
+    const selected = eligible[0];
+    if (!selected?.id || !selected.filename) return null;
+    const filename = sanitizeFilename(selected.filename);
+
+    return {
+      attachment_file_path: `resend:${emailId}:${selected.id}`,
+      attachment_file_name: filename,
+      attachment_content_type: selected.content_type || "application/octet-stream",
+      attachment_file_size: selected.size,
+    };
+  } catch (error) {
+    console.error("Inbound attachment lookup failed:", error);
+    return null;
+  }
 }
 
 export async function POST(request: Request) {
@@ -208,6 +247,7 @@ export async function POST(request: Request) {
     const inboundMessageId = sanitizePlainText(received.message_id || event?.data?.message_id || "", 240);
     const inboundReferences = sanitizePlainText(getHeader(headers, "References"), 1000);
     const inboundInReplyTo = sanitizePlainText(getHeader(headers, "In-Reply-To"), 240);
+    const emailId = sanitizePlainText(eventData.email_id || received.id || "", 200);
 
     console.info("Inbound email webhook received:", {
       eventType: event?.type || "unknown",
@@ -314,6 +354,19 @@ export async function POST(request: Request) {
       }
     }
 
+    const inboundAttachments = Array.isArray(received.attachments) ? received.attachments : [];
+    const supportedAttachmentCount = inboundAttachments.filter((item: Record<string, any>) => (
+      item.content_disposition !== "inline"
+      && INBOUND_ATTACHMENT_EXTENSIONS.has(getExtension(item.filename || ""))
+    )).length;
+    const storedAttachment = supportedAttachmentCount ? await getInboundAttachmentReference(emailId) : null;
+    const attachmentNote = supportedAttachmentCount
+      ? storedAttachment
+        ? `\n\nAttachment available in this thread: ${storedAttachment.attachment_file_name} (${Math.ceil(storedAttachment.attachment_file_size / (1024 * 1024))} MB).${supportedAttachmentCount > 1 ? " Only the first supported attachment is shown in this thread; check Resend for any additional files." : ""}`
+        : `\n\nThe email included ${supportedAttachmentCount} supported attachment(s), but none could be linked in this thread. Check the original email in Resend. Supported attachments up to 25 MB: PDF, DOC, DOCX, TXT.`
+      : "";
+    const messageWithAttachment = `${textContent}${attachmentNote}`;
+
     if (!threadId) {
       const created = await supabase
         .from("contact_messages")
@@ -322,15 +375,16 @@ export async function POST(request: Request) {
           name: fromEmail,
           email: fromEmail,
           subject,
-          message: textContent,
+          message: messageWithAttachment,
           source: "Email Reply",
           status: "New",
-          latest_message: textContent,
+          latest_message: messageWithAttachment,
           latest_message_at: now,
           last_sender: "user",
           unread_count: 1,
           inbound_message_id: inboundMessageId || null,
           email_references: referencesWith(inboundMessageId, inboundReferences || inboundInReplyTo),
+          ...(storedAttachment || {}),
         })
         .select("id, name, email, unread_count, source, user_id, project_id, email_references")
         .single();
@@ -345,13 +399,14 @@ export async function POST(request: Request) {
       const currentThread = thread;
       const { error: replyError } = await supabase.from("contact_message_replies").insert({
         message_id: threadId,
-        reply: textContent,
+        reply: messageWithAttachment,
         sent_to: SUPPORT_EMAIL,
         sender_type: "user",
         sender_name: currentThread?.name || fromEmail,
         sender_email: fromEmail,
         inbound_message_id: inboundMessageId || null,
         email_references: referencesWith(inboundMessageId, inboundReferences || inboundInReplyTo),
+        ...(storedAttachment || {}),
       });
 
       if (replyError) {
@@ -365,7 +420,7 @@ export async function POST(request: Request) {
       .update({
         subject,
         status: "New",
-        latest_message: textContent,
+        latest_message: messageWithAttachment,
         latest_message_at: now,
         last_sender: "user",
         unread_count: Number(thread?.unread_count || 0) + 1,
@@ -379,7 +434,7 @@ export async function POST(request: Request) {
       name: thread?.name || fromEmail,
       email: fromEmail,
       subject,
-      content: textContent,
+      content: messageWithAttachment,
       source: "Email Reply",
       userId: thread?.user_id,
       projectId: thread?.project_id,

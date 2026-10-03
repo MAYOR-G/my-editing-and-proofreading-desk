@@ -285,13 +285,13 @@ export function AiRefinementVisual({ compact = false }: { compact?: boolean }) {
 
 export function ContactVisual() {
   return (
-    <div className="relative min-h-[25rem] overflow-hidden border border-ink/10 bg-paper p-7 shadow-[0_28px_90px_rgba(17,17,15,0.055)]">
+    <div className="relative min-h-[25rem] min-w-0 overflow-hidden border border-ink/10 bg-paper p-4 shadow-[0_28px_90px_rgba(17,17,15,0.055)] sm:p-7">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-10" aria-hidden="true" />
-      <div className="absolute inset-x-7 top-7 flex items-center gap-4" aria-hidden="true">
+      <div className="absolute inset-x-4 top-5 flex min-w-0 items-center gap-3 sm:inset-x-7 sm:top-7 sm:gap-4" aria-hidden="true">
         <span className="h-px flex-1 bg-ink/20" />
-        <span className="text-xs uppercase tracking-[0.26em] text-gold-deep">Secure Comm Channel</span>
+        <span className="min-w-0 break-words text-[0.6rem] uppercase tracking-[0.14em] text-gold-deep sm:text-xs sm:tracking-[0.26em]">Secure contact</span>
       </div>
-      <div className="relative mx-auto mt-16 max-w-[25rem] border border-ink/10 bg-ivory p-6 shadow-[0_24px_80px_rgba(17,17,15,0.07)] editorial-float">
+      <div className="relative mx-auto mt-16 w-full max-w-[25rem] border border-ink/10 bg-ivory p-4 shadow-[0_24px_80px_rgba(17,17,15,0.07)] editorial-float sm:p-6">
         <div className="flex items-center gap-4 border-b border-ink/10 pb-4">
           <div className="h-10 w-10 border border-gold/30 bg-ink/5 flex items-center justify-center text-gold-deep">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -309,8 +309,8 @@ export function ContactVisual() {
           <div className="h-2 w-5/6 bg-ink/5" />
           <div className="h-2 w-4/6 bg-ink/5" />
         </div>
-        <div className="mt-8 flex items-center justify-between border-t border-ink/10 pt-5">
-          <span className="text-xs uppercase tracking-[0.24em] text-charcoal/45">Response path</span>
+        <div className="mt-8 flex min-w-0 items-center justify-between gap-3 border-t border-ink/10 pt-5">
+          <span className="min-w-0 break-words text-[0.6rem] uppercase tracking-[0.16em] text-charcoal/45 sm:text-xs sm:tracking-[0.24em]">Response path</span>
           <span className="h-px w-16 bg-gold/50" />
         </div>
       </div>

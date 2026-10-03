@@ -2,7 +2,7 @@
 > Human editing, proofreading, formatting, translation review, and document support for academic, business, author, application, and professional writing.
 
 ## Core pages
-- [Home](https://www.editandproofread.com/): Overview of professional editing and proofreading services, secure upload, pricing, and editorial process.
+- [Home](https://www.editandproofread.com/): Overview of human editing and proofreading services, document types, and editorial process.
 - [Services](https://www.editandproofread.com/services): Compare proofreading, editing, academic proofreading, dissertation proofreading, manuscript editing, business proofreading, formatting, CV/resume editing, and translation review.
 - [Pricing](https://www.editandproofread.com/pricing): Service rates, turnaround options, word-count based estimates, and custom review thresholds.
 - [Submit Document](https://www.editandproofread.com/submit): Secure upload path for document review requests.
@@ -29,6 +29,10 @@
 - [Dissertation Proofreading Checklist](https://www.editandproofread.com/blog/dissertation-proofreading-checklist): Long-document proofreading and final review guidance.
 - [Proofreading Rates](https://www.editandproofread.com/blog/proofreading-rates): Pricing factors for professional proofreading and editing.
 - [Thesis Submission Checklist](https://www.editandproofread.com/blog/thesis-submission-checklist): Final thesis submission steps and review reminders.
+- [What a Thesis Editing Service Includes](https://www.editandproofread.com/blog/what-thesis-editing-service-includes): Editing scope, language review, consistency checks, and author responsibilities.
+- [How to Choose a Thesis Editor](https://www.editandproofread.com/blog/how-to-choose-a-thesis-editor): Questions about scope, experience, privacy, turnaround, and deliverables.
+- [Document Formatting Preparation Guide](https://www.editandproofread.com/blog/document-formatting-services-what-to-prepare): Files and instructions to prepare for document-formatting support.
+- [Regulatory Document Formatting Checklist](https://www.editandproofread.com/blog/regulatory-document-formatting-checklist): Final-file presentation and version checks; does not replace specialist compliance review.
 
 ## Key facts
 - Brand: My Editing and Proofreading Desk.

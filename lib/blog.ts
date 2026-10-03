@@ -1,6 +1,7 @@
 import { newLearningCenterPosts } from "@/lib/new-learning-center-posts";
 import { requestedBlogPosts } from "@/lib/requested-blog-posts";
 import { seoOpportunityPosts } from "@/lib/seo-opportunity-posts";
+import { gscOpportunityBlogPosts } from "@/lib/gsc-opportunity-blog-posts";
 
 export type BlogTextPart =
   | string
@@ -59,10 +60,11 @@ export type BlogPost = {
 
 const brandAuthor = "My Editing and Proofreading Desk";
 
-export const blogPosts: BlogPost[] = [
+const allBlogPosts: BlogPost[] = [
   ...requestedBlogPosts,
   ...seoOpportunityPosts,
   ...newLearningCenterPosts,
+  ...gscOpportunityBlogPosts,
   {
     title: "Editing vs Proofreading: What Is the Difference?",
     slug: "editing-vs-proofreading",
@@ -634,10 +636,10 @@ export const blogPosts: BlogPost[] = [
     category: "Master's dissertation proofreading",
     author: brandAuthor,
     datePublished: "2026-06-28",
-    dateUpdated: "2026-08-10",
+    dateUpdated: "2026-10-03",
     readingTime: "8 min read",
-    metaTitle: "Master's Dissertation Proofreading Checklist: 15 Final Checks",
-    metaDescription: "Use this dissertation proofreading checklist for 15 final checks covering grammar, formatting, references, tables, figures, rules, and upload readiness.",
+    metaTitle: "Dissertation Proofreading Checklist: 15 Final Checks",
+    metaDescription: "Use 15 final checks for dissertation grammar, references, tables, figures, formatting, university rules, and submission readiness.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
     tableOfContents: [
@@ -1413,6 +1415,11 @@ export const blogPosts: BlogPost[] = [
     ],
   },
 ];
+
+// Keep the archive and homepage preview focused on the most recently published guides.
+export const blogPosts: BlogPost[] = [...allBlogPosts].sort((a, b) =>
+  b.datePublished.localeCompare(a.datePublished),
+);
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

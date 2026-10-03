@@ -6,7 +6,7 @@ import { absoluteUrl } from "@/lib/site";
 const BLOG_POSTS_PER_PAGE = 12;
 
 const staticRoutes: Array<{ path: string; lastModified?: string }> = [
-  { path: "/", lastModified: "2026-09-29" },
+  { path: "/", lastModified: "2026-10-03" },
   { path: "/about", lastModified: "2026-09-29" },
   { path: "/services", lastModified: "2026-09-29" },
   { path: "/submit", lastModified: "2026-09-29" },
@@ -14,7 +14,7 @@ const staticRoutes: Array<{ path: string; lastModified?: string }> = [
   { path: "/editorial-policy", lastModified: "2026-09-29" },
   { path: "/ai-editing-tool", lastModified: "2026-09-29" },
   { path: "/editors", lastModified: "2026-09-29" },
-  { path: "/blog", lastModified: "2026-09-29" },
+  { path: "/blog", lastModified: "2026-10-03" },
   { path: "/faq", lastModified: "2026-09-29" },
   { path: "/contact", lastModified: "2026-09-29" },
   { path: "/privacy", lastModified: "2026-09-29" },

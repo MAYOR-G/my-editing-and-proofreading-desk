@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
+import { createClient } from "@/utils/supabase/client";
 
 type ContactFormProps = {
   source?: string;
@@ -84,14 +85,44 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
     }
 
     setState("sending");
-    setFeedback("Sending...");
+    setFeedback("Preparing your message...");
 
     try {
       const attachment = formData.get("attachment");
       const hasAttachment = attachment instanceof File && attachment.size > 0;
-      const body = hasAttachment
-        ? formData
-        : JSON.stringify({
+      let attachmentDetails: { path: string; name: string; size: number; contentType: string } | null = null;
+
+      if (hasAttachment && attachment instanceof File) {
+        if (attachment.size > 25 * 1024 * 1024) throw new Error("Please keep support attachments under 25MB.");
+        setFeedback("Uploading your attachment securely...");
+        const uploadUrlResponse = await fetch("/api/contact/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: attachment.name, size: attachment.size }),
+        });
+        const uploadUrl = await uploadUrlResponse.json();
+        if (!uploadUrlResponse.ok || !uploadUrl.path || !uploadUrl.token) {
+          throw new Error(uploadUrl.error || "We couldn't prepare your attachment. Please try again.");
+        }
+
+        const supabase = createClient();
+        const { error: uploadError } = await supabase.storage.from("uploads").uploadToSignedUrl(
+          uploadUrl.path,
+          uploadUrl.token,
+          attachment,
+          { contentType: attachment.type || "application/octet-stream" },
+        );
+        if (uploadError) throw new Error("We couldn't upload your attachment. Please try again or email our support team.");
+        attachmentDetails = {
+          path: uploadUrl.path,
+          name: uploadUrl.name,
+          size: attachment.size,
+          contentType: attachment.type || "application/octet-stream",
+        };
+      }
+
+      setFeedback("Sending your message...");
+      const body = JSON.stringify({
             source,
             name: formData.get("name"),
             email: formData.get("email"),
@@ -103,16 +134,12 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
             message: formData.get("message"),
             website: formData.get("website"),
             turnstileToken,
+            attachment: attachmentDetails,
           });
-
-      if (hasAttachment) {
-        formData.set("source", source);
-        formData.set("turnstileToken", turnstileToken);
-      }
 
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: hasAttachment ? undefined : { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body,
       });
 

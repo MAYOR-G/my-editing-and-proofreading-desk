@@ -1,5 +1,17 @@
 # SEO, Content, and Security Changelog
 
+## 3 October 2026 — Homepage cleanup, mobile fixes, and large attachments
+
+- Removed the homepage's Submit Your Paper and Clear Pricing promotional sections while preserving the `/submit` and `/pricing` routes used elsewhere in customer journeys.
+- Updated homepage search title and description; refreshed snippets for the GSC-impression-leading dissertation, thesis tables/references, AI-proofreading comparison, and APA 7 posts.
+- Added four Search Console-informed articles on thesis editing scope, choosing a thesis editor, document-formatting preparation, and regulatory-document final-file checks.
+- Added these articles to the existing blog collection, sitemap input, and `llms.txt` guide list.
+- Tightened mobile wrapping for public-page headers and contact artwork; compacted the footer with mobile disclosures for office addresses and navigation.
+- Changed public support attachment handling to direct signed uploads to private Supabase Storage, then stored verified attachment metadata with the message so the admin thread can open the file.
+- Fixed the inbound email webhook to retain the first supported attachment's Resend reference and let admins obtain a fresh download link from the authenticated attachment route. This addresses the body-without-PDF behavior for emailed support requests without copying large attachment bytes through the webhook.
+- GSC baseline (9 June–26 September): 15,721 impressions and 47 clicks; homepage 3,515 impressions, 5 clicks, 0.14% CTR, average position 53.84.
+- No production crawl, Core Web Vitals export, deployed Supabase smoke check, or post-change mobile capture was available in this pass.
+
 Implementation date: 18 July 2026.
 
 ## Completed in the repository

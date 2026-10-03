@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
+import { getEmailClient } from "@/lib/email";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +28,23 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     if (result.error || !result.data?.attachment_file_path) {
       return NextResponse.json({ error: "Message attachment could not be found." }, { status: 404 });
+    }
+
+    if (result.data.attachment_file_path.startsWith("resend:")) {
+      const [, emailId, attachmentId] = result.data.attachment_file_path.split(":");
+      if (!emailId || !attachmentId) {
+        return NextResponse.json({ error: "Message attachment could not be found." }, { status: 404 });
+      }
+
+      const resend = getEmailClient();
+      const { data: attachment, error: attachmentError } = await resend.emails.receiving.attachments.get({ emailId, id: attachmentId });
+      const downloadUrl = attachment?.download_url;
+      if (attachmentError || !downloadUrl || new URL(downloadUrl).protocol !== "https:") {
+        console.error("Inbound attachment link refresh failed:", attachmentError);
+        return NextResponse.json({ error: "Attachment is temporarily unavailable." }, { status: 502 });
+      }
+
+      return NextResponse.redirect(downloadUrl);
     }
 
     const { data, error: signedUrlError } = await supabaseAdmin.storage

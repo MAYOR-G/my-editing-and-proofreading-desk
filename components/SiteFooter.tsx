@@ -42,7 +42,7 @@ export function SiteFooter() {
       </div>
       <div className="absolute inset-x-0 top-14 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" aria-hidden="true" />
 
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-14 pt-24 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:pb-20 lg:pt-28 relative">
+      <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-10 pt-20 sm:gap-10 sm:px-8 sm:pb-14 sm:pt-24 lg:grid-cols-[0.85fr_1.15fr] lg:pb-20 lg:pt-28 relative">
         <aside className="grid content-start gap-8 relative z-10">
           <div>
             <BrandMark tone="light" variant="footer" />
@@ -53,7 +53,7 @@ export function SiteFooter() {
 
           <div className="border-y border-hairline/10 py-6">
             <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Editorial inquiries</p>
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-3 block break-words font-display text-2xl font-bold leading-tight text-surface-soft transition hover:text-primary">
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-3 block break-all font-display text-lg font-bold leading-snug text-surface-soft transition hover:text-primary sm:break-words sm:text-2xl">
               {SUPPORT_EMAIL}
             </a>
             <a href={`tel:${COMPANY_PHONE_TEL}`} className="mt-3 block text-sm font-semibold text-surface-soft/75 transition hover:text-primary">
@@ -61,6 +61,18 @@ export function SiteFooter() {
             </a>
             <p className="mt-4 text-sm leading-6 text-surface-soft/50">Include document type, expected word count, and deadline.</p>
           </div>
+
+          <details className="border-b border-hairline/10 pb-5 md:hidden">
+            <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-[0.24em] text-primary">Global desks & offices</summary>
+            <div className="mt-4 grid gap-3">
+              {COMPANY_OFFICES.map((office) => (
+                <div key={office.id} className="rounded-xl border border-hairline/10 bg-white/[0.02] p-3 text-xs leading-relaxed text-surface-soft/75">
+                  <p className="font-semibold text-surface-soft">{office.flag} {office.name}{office.isHeadquarters ? " · HQ" : ""}</p>
+                  <address className="mt-1.5 break-words not-italic text-surface-soft/60">{office.fullAddress}</address>
+                </div>
+              ))}
+            </div>
+          </details>
 
           <div className="border-b border-hairline/10 pb-6">
             <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Subscribe</p>
@@ -96,7 +108,7 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div className="border-b border-hairline/10 pb-6">
+          <div className="hidden border-b border-hairline/10 pb-6 md:block">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Global Desks & Offices</p>
               <Link href="/contact" className="text-xs font-medium text-surface-soft/50 hover:text-primary transition">
@@ -133,12 +145,12 @@ export function SiteFooter() {
           </Link>
         </aside>
 
-        <div className="relative z-10 overflow-hidden rounded-[1.75rem] border border-hairline/10 bg-[linear-gradient(135deg,rgba(22,24,28,0.96),rgba(10,11,13,0.9))] p-5 shadow-[0_30px_110px_rgba(0,0,0,0.32)] sm:p-10">
+        <div className="relative z-10 min-w-0 overflow-hidden rounded-2xl border border-hairline/10 bg-[linear-gradient(135deg,rgba(22,24,28,0.96),rgba(10,11,13,0.9))] p-4 sm:rounded-[1.75rem] sm:p-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#174a7c,#ffffff66,#1f8f5a)]" aria-hidden="true" />
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="hidden gap-8 md:grid md:grid-cols-3">
             <div>
               <h2 className="mb-2 text-sm font-bold text-surface-soft">Services</h2>
-              <div className="mt-4 grid gap-3 text-sm text-surface-soft/60">
+              <div className="mt-4 grid gap-3 break-words text-sm text-surface-soft/60">
                 {seoServicePages.map((service) => (
                   <Link key={service.slug} href={`/${service.slug}`} className="transition hover:text-primary">
                     {service.name}
@@ -166,6 +178,29 @@ export function SiteFooter() {
                 ))}
               </div>
             </div>
+          </div>
+
+          <div className="grid gap-2 md:hidden">
+            {[
+              { title: "Services", links: seoServicePages.map((service) => ({ href: `/${service.slug}`, label: service.name })) },
+              { title: "Explore", links: platformLinks },
+              { title: "Trust and standards", links: [
+                { href: "/privacy", label: "Privacy policy" },
+                { href: "/editorial-policy", label: "Editorial policy" },
+                { href: "/editors", label: "Editor standards" },
+              ] },
+            ].map((group) => (
+              <details key={group.title} className="border-b border-hairline/10 py-3">
+                <summary className="cursor-pointer list-none font-display text-lg font-semibold text-surface-soft">{group.title}</summary>
+                <div className="mt-3 grid gap-3 pb-2 text-sm text-surface-soft/65">
+                  {group.links.map((item) => (
+                    <Link key={`${group.title}-${item.href}-${item.label}`} href={item.href} className="break-words transition hover:text-primary">
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+            ))}
           </div>
 
           <div className="mt-9 border-t border-hairline/10 pt-7">
@@ -223,4 +258,3 @@ export function SiteFooter() {
     </footer>
   );
 }
-
