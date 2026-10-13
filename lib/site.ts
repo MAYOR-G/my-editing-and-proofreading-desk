@@ -9,7 +9,7 @@ import {
   INSTAGRAM_URL,
   SUPPORT_EMAIL,
 } from "@/lib/contact-info";
-import { SERVICE_OPTIONS } from "@/lib/pricing";
+import { SERVICE_OPTIONS, STANDARD_EDITORIAL_RATE } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
 export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
@@ -76,6 +76,7 @@ type PageMetadataInput = {
   title: string;
   description: string;
   path?: string;
+  canonicalPath?: string;
   image?: string;
   imageAlt?: string;
   type?: "website" | "article";
@@ -86,12 +87,14 @@ export function buildPageMetadata({
   title,
   description,
   path = "/",
+  canonicalPath,
   image = siteConfig.defaultOgImage,
   imageAlt = siteConfig.defaultOgImageAlt,
   type = "website",
   noIndex = false,
 }: PageMetadataInput): Metadata {
   const url = absoluteUrl(path);
+  const canonicalUrl = absoluteUrl(canonicalPath ?? path);
   const imageUrl = assetUrl(image);
 
   return {
@@ -99,23 +102,12 @@ export function buildPageMetadata({
     description,
     metadataBase: new URL(siteConfig.siteUrl),
     alternates: {
-      canonical: url,
-      languages: {
-        "en-US": url,
-        "en-GB": url,
-        "en-CA": url,
-        "en-AE": url,
-        "en-NG": url,
-        "en-CN": url,
-        "zh-CN": url,
-        "en": url,
-        "x-default": url,
-      },
+      canonical: canonicalUrl,
     },
     openGraph: {
       title,
       description,
-      url,
+      url: canonicalUrl,
       siteName: siteConfig.siteName,
       images: [
         {
@@ -142,13 +134,6 @@ export function buildPageMetadata({
     robots: {
       index: !noIndex,
       follow: !noIndex,
-      googleBot: {
-        index: !noIndex,
-        follow: !noIndex,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-        "max-video-preview": -1,
-      },
     },
   };
 }
@@ -412,6 +397,39 @@ export function serviceJsonLd(service: { name: string; description: string; slug
     },
     areaServed: "Worldwide",
     mainEntityOfPage: absoluteUrl(path),
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: STANDARD_EDITORIAL_RATE,
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: STANDARD_EDITORIAL_RATE,
+        priceCurrency: "USD",
+        unitText: "word",
+      },
+    },
+  };
+}
+
+export function webApplicationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": `${siteConfig.siteUrl}/ai-editing-tool#webapp`,
+    name: "Free AI Grammar Checker and Editing Assistant",
+    url: `${siteConfig.siteUrl}/ai-editing-tool`,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "All",
+    browserRequirements: "Requires JavaScript. Requires HTML5.",
+    description: "Paste or upload your draft for a free first-pass grammar and clarity check, then bring in a human editor when the document matters.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    provider: {
+      "@id": `${siteConfig.siteUrl}/#organization`,
+    },
   };
 }
 

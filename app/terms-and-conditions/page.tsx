@@ -5,7 +5,8 @@ import { buildPageMetadata } from "@/lib/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Terms and Conditions | My Editing and Proofreading Desk",
   description: "Read the terms for using My Editing and Proofreading Desk editing, proofreading, payment, confidentiality, and delivery services.",
-  path: "/terms",
+  path: "/terms-and-conditions",
+  canonicalPath: "/terms",
 });
 
 export default function TermsAndConditionsPage() {
@@ -13,7 +14,7 @@ export default function TermsAndConditionsPage() {
     <LegalPage title="Terms and Conditions" path="/terms">
       
       <LegalSection title="1. Introduction">
-        <p>Welcome to MEP (editandproofread.com). By accessing or using our website and services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
+        <p>Welcome to My Editing and Proofreading Desk (editandproofread.com). By accessing or using our website and services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
       </LegalSection>
 
       <LegalSection title="2. Services Provided">

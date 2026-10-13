@@ -5,11 +5,11 @@ import { AiRefinementVisual } from "@/components/EditorialVisuals";
 import { HumanVsAiBlock } from "@/components/home/HumanVsAiBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript, webApplicationJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Free AI Grammar Checker & Editing Tool",
-  description: "Use our free AI editing tool for quick grammar checks and basic proofreading before submitting your documents for professional human review.",
+  title: "Free AI Grammar Checker and Editing Assistant",
+  description: "Paste or upload your draft for a free first-pass grammar and clarity check, then bring in a human editor when the document matters.",
   path: "/ai-editing-tool",
 });
 
@@ -18,10 +18,13 @@ export default function AiEditingToolPage() {
     <main className="min-h-screen bg-canvas text-ink">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Free AI Editing Tool", path: "/ai-editing-tool" },
-        ]))}
+        dangerouslySetInnerHTML={jsonLdScript([
+          webApplicationJsonLd(),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Free AI Editing Tool", path: "/ai-editing-tool" },
+          ]),
+        ])}
       />
       <SiteHeader />
 

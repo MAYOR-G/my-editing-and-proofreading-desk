@@ -7,8 +7,8 @@ import { CUSTOM_REVIEW_WORD_COUNT, MINIMUM_ORDER, SERVICE_CHARGE_PERCENTAGE, SER
 import { breadcrumbJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Editing & Proofreading Rates | Transparent Pricing",
-  description: "Use the editing and proofreading pricing calculator to estimate rates by service, word count, document type, and turnaround before secure upload.",
+  title: "Editing and Proofreading Rates and Price Calculator",
+  description: "See per-word rates for editing, proofreading and formatting, then estimate your price by word count, document type and turnaround.",
   path: "/pricing",
 });
 

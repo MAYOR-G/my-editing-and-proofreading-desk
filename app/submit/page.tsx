@@ -29,7 +29,7 @@ const steps = [
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Submit a Document for Editing or Proofreading",
-  description: "Upload your document securely for human editing, proofreading, formatting, or translation review. Check pricing, turnaround, and project details before payment.",
+  description: "Upload your document securely for human editing, proofreading, formatting, or translation review. Check pricing and turnaround before payment.",
   path: "/submit",
 });
 

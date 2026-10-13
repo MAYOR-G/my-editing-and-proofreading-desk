@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { faqs } from "@/lib/content";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
-import { buildPageMetadata, jsonLdScript, webPageJsonLd } from "@/lib/site";
+import { buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
@@ -37,6 +37,7 @@ export default function Home() {
             name: "Professional Editing and Proofreading Services",
             description: "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing.",
           }),
+          faqPageJsonLd(faqs.slice(0, 4)),
         ])}
       />
       {/* 

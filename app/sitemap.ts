@@ -6,21 +6,21 @@ import { absoluteUrl } from "@/lib/site";
 const BLOG_POSTS_PER_PAGE = 12;
 
 const staticRoutes: Array<{ path: string; lastModified?: string }> = [
-  { path: "/", lastModified: "2026-10-03" },
-  { path: "/about", lastModified: "2026-09-29" },
-  { path: "/services", lastModified: "2026-09-29" },
-  { path: "/submit", lastModified: "2026-09-29" },
-  { path: "/pricing", lastModified: "2026-08-10" },
-  { path: "/editorial-policy", lastModified: "2026-09-29" },
-  { path: "/ai-editing-tool", lastModified: "2026-09-29" },
-  { path: "/editors", lastModified: "2026-09-29" },
-  { path: "/blog", lastModified: "2026-10-03" },
-  { path: "/faq", lastModified: "2026-09-29" },
-  { path: "/contact", lastModified: "2026-09-29" },
-  { path: "/privacy", lastModified: "2026-09-29" },
-  { path: "/refund-policy", lastModified: "2026-09-29" },
-  { path: "/terms", lastModified: "2026-09-29" },
-] as const;
+  { path: "/" },
+  { path: "/about" },
+  { path: "/services" },
+  { path: "/submit" },
+  { path: "/pricing" },
+  { path: "/editorial-policy" },
+  { path: "/ai-editing-tool" },
+  { path: "/editors" },
+  { path: "/blog" },
+  { path: "/faq" },
+  { path: "/contact" },
+  { path: "/privacy" },
+  { path: "/refund-policy" },
+  { path: "/terms" },
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const seoServiceRoutes = seoServicePages.map((service) => ({
@@ -33,15 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: post.dateUpdated,
   }));
 
-  const paginatedBlogRoutes = Array.from(
-    { length: Math.max(Math.ceil(blogPosts.length / BLOG_POSTS_PER_PAGE) - 1, 0) },
-    (_, index) => ({
-      path: `/blog/page/${index + 2}`,
-      lastModified: "2026-09-29",
-    })
-  );
-
-  return [...staticRoutes, ...paginatedBlogRoutes, ...seoServiceRoutes, ...blogRoutes].map((route) => ({
+  return [...staticRoutes, ...seoServiceRoutes, ...blogRoutes].map((route) => ({
     url: route.path === "/" ? absoluteUrl(route.path).replace(/\/$/, "") : absoluteUrl(route.path),
     lastModified: route.lastModified ? new Date(`${route.lastModified}T00:00:00.000Z`) : undefined,
   }));

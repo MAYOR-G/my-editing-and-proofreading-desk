@@ -6,7 +6,8 @@ import { SUPPORT_EMAIL } from "@/lib/contact-info";
 export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy | My Editing and Proofreading Desk",
   description: "Read how My Editing and Proofreading Desk collects, uses, protects, retains, and handles personal information and uploaded documents.",
-  path: "/privacy",
+  path: "/privacy-policy",
+  canonicalPath: "/privacy",
 });
 
 export default function PrivacyPolicyPage() {

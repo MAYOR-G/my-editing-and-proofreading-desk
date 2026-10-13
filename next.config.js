@@ -39,11 +39,6 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/services/manuscript-formatting",
-        destination: "/manuscript-editing",
-        permanent: true,
-      },
-      {
         source: "/services/translation",
         destination: "/translation-review",
         permanent: true,
@@ -57,16 +52,6 @@ const nextConfig = {
         source: "/:path*",
         has: [{ type: "host", value: "editandproofread.com" }],
         destination: "https://www.editandproofread.com/:path*",
-        permanent: true,
-      },
-      {
-        source: "/privacy-policy",
-        destination: "/privacy",
-        permanent: true,
-      },
-      {
-        source: "/terms-and-conditions",
-        destination: "/terms",
         permanent: true,
       },
     ];

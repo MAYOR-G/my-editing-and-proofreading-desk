@@ -3,7 +3,7 @@ import { LegalList, LegalPage, LegalSection, LegalSubList } from "@/components/L
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Refund Policy",
+  title: "Refund Policy | My Editing and Proofreading Desk",
   description: "Review refund eligibility, non-refundable situations, duplicate payment handling, service delivery issues, and refund request timing.",
   path: "/refund-policy",
 });
@@ -12,7 +12,7 @@ export default function RefundPolicyPage() {
   return (
     <LegalPage title="Refund Policy" path="/refund-policy">
       <LegalSection title="1. General Policy">
-        <p>At MEP (editandproofread.com), we strive to provide high-quality editing and proofreading services. Because our work involves intellectual effort and time investment, refunds are limited and subject to the conditions below.</p>
+        <p>At My Editing and Proofreading Desk (editandproofread.com), we strive to provide high-quality editing and proofreading services. Because our work involves intellectual effort and time investment, refunds are limited and subject to the conditions below.</p>
       </LegalSection>
 
       <LegalSection title="2. Eligibility for Refunds">

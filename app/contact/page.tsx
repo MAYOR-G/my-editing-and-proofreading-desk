@@ -15,8 +15,8 @@ import { buildPageMetadata } from "@/lib/site";
 import { Building2, Globe2, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Contact Our Global Editing Desks | US, UK, Canada, UAE, China, & Africa",
-  description: "Get in touch with our global editorial desks in the US, UK, Canada, UAE, China, and Nigeria. Reach out for custom quotes, thesis proofreading, SCI journal editing, and corporate document support.",
+  title: "Contact My Editing and Proofreading Desk",
+  description: "Ask for a custom quote or send a question about thesis editing, proofreading, formatting or business documents. Uploads are open 24/7.",
   path: "/contact",
 });
 
