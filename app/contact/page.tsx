@@ -8,6 +8,8 @@ import {
   COMPANY_PHONE,
   COMPANY_PHONE_TEL,
   FACEBOOK_URL,
+  GOOGLE_BUSINESS_PROFILE_URL,
+  GOOGLE_REVIEW_URL,
   INSTAGRAM_URL,
   SUPPORT_EMAIL,
 } from "@/lib/contact-info";
@@ -87,6 +89,28 @@ export default function ContactPage() {
                       <InstagramIcon className="h-3.5 w-3.5 text-primary" />
                       <span>Instagram</span>
                     </a>
+                    {GOOGLE_BUSINESS_PROFILE_URL ? (
+                      <a
+                        href={GOOGLE_BUSINESS_PROFILE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-canvas px-4 text-xs font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary active:scale-[0.98]"
+                      >
+                        <Globe2 className="h-3.5 w-3.5 text-primary" />
+                        <span>Find us on Google</span>
+                      </a>
+                    ) : null}
+                    {GOOGLE_REVIEW_URL ? (
+                      <a
+                        href={GOOGLE_REVIEW_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-canvas px-4 text-xs font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary/40 hover:text-primary active:scale-[0.98]"
+                      >
+                        <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                        <span>Review us on Google</span>
+                      </a>
+                    ) : null}
                   </div>
                 </div>
 

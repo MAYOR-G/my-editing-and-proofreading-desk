@@ -7,6 +7,10 @@ export const INTERNAL_NOTIFICATION_EMAIL = "mudyblast@gmail.com";
 export const BRAND_NAME = "My Editing and Proofreading Desk";
 export const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61593299712622";
 export const INSTAGRAM_URL = "https://www.instagram.com/myepdesk/";
+export const GOOGLE_BUSINESS_PROFILE_URL = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_PROFILE_URL || "";
+export const GOOGLE_REVIEW_URL = process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || "";
+export const TRUSTPILOT_URL = process.env.NEXT_PUBLIC_TRUSTPILOT_URL || "";
+export const LINKEDIN_URL = process.env.NEXT_PUBLIC_LINKEDIN_URL || "";
 
 export interface OfficeLocation {
   id: string;

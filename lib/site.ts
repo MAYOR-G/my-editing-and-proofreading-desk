@@ -6,8 +6,12 @@ import {
   COMPANY_PHONE,
   COMPANY_PHONE_TEL,
   FACEBOOK_URL,
+  GOOGLE_BUSINESS_PROFILE_URL,
+  GOOGLE_REVIEW_URL,
   INSTAGRAM_URL,
+  LINKEDIN_URL,
   SUPPORT_EMAIL,
+  TRUSTPILOT_URL,
 } from "@/lib/contact-info";
 import { SERVICE_OPTIONS, STANDARD_EDITORIAL_RATE } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
@@ -33,7 +37,14 @@ export const siteConfig = {
   contactPhoneTel: COMPANY_PHONE_TEL,
   address: COMPANY_ADDRESS,
   offices: COMPANY_OFFICES,
-  socialLinks: [FACEBOOK_URL, INSTAGRAM_URL],
+  socialLinks: [
+    FACEBOOK_URL,
+    INSTAGRAM_URL,
+    GOOGLE_BUSINESS_PROFILE_URL,
+    GOOGLE_REVIEW_URL,
+    TRUSTPILOT_URL,
+    LINKEDIN_URL,
+  ].filter(Boolean),
 };
 
 export const siteAuthor = {
