@@ -9,7 +9,6 @@ import { SUPPORT_EMAIL } from "@/lib/contact-info";
 import { buildPageMetadata, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 import { ProcessFlow } from "@/components/home/ProcessFlow";
 import { FieldsCovered } from "@/components/home/FieldsCovered";
@@ -17,13 +16,13 @@ import { FlippingReviews } from "@/components/home/FlippingReviews";
 import { TrustedMarquee } from "@/components/home/TrustedMarquee";
 import { ReadyToBeginCTA } from "@/components/home/ReadyToBeginCTA";
 import { TrustedMapStats } from "@/components/home/TrustedMapStats";
-import { BlogResourcePreview } from "@/components/home/BlogResourcePreview";
+import { BASE_RATE_DISPLAY } from "@/lib/pricing";
 
 const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion").then(m => ({ default: m.AnimatedAccordion })));
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Thesis, Dissertation & Document Editing | Human Editors",
-  description: "Human editing and proofreading for theses, dissertations, research papers, manuscripts, and business documents. Clear service scope, careful review, and secure file handling.",
+  title: "Thesis & Document Editing | My Editing and Proofreading Desk",
+  description: `Human editors for your thesis, dissertation, research paper or business document. Tracked changes, secure upload and rates from ${BASE_RATE_DISPLAY} per word.`,
   path: "/",
 });
 
@@ -47,9 +46,6 @@ export default function Home() {
 
       {/* A. Premium Split Hero */}
       <HeroSplit />
-
-      {/* B. Services Grid */}
-      <ServicesGrid />
 
       {/* C. Why Choose Us (Horizontal Scroll) */}
       <WhyChooseUs />
@@ -104,8 +100,6 @@ export default function Home() {
 
       {/* G. Trusted By Infinite Marquee */}
       <TrustedMarquee />
-
-      <BlogResourcePreview />
 
       {/* H. FAQ Section */}
       <section className="bg-[#f8f9fa] py-24 sm:py-32 px-5 sm:px-10 border-t border-b border-ink/5">
