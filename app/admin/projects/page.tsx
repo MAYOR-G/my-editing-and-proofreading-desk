@@ -400,34 +400,41 @@ export default async function AdminProjectsPage({
             <form action={updateProjectStatus} className="border border-ink/10 bg-ivory/90 p-7">
               <input type="hidden" name="id" value={selected.id} />
               <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">Project status</p>
-              <label className="mt-5 grid gap-2 text-sm text-charcoal/70">
-                Status
-                <select name="status" defaultValue={displayProjectStatus(selected.status)} className="min-h-11 border border-hairline bg-paper px-3 text-ink">
+              <div className="mt-5 grid gap-1.5">
+                <label htmlFor="project-status" className="text-xs font-semibold uppercase tracking-wider text-charcoal/70">
+                  Status
+                </label>
+                <select
+                  id="project-status"
+                  name="status"
+                  defaultValue={displayProjectStatus(selected.status)}
+                  className="h-11 rounded-lg border border-hairline bg-paper px-3 text-sm text-ink transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
                   {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
-              </label>
+              </div>
               <PendingSubmitButton
                 idleLabel="Save status"
                 pendingLabel="Saving..."
-                className="mt-4 min-h-11 w-full rounded-full bg-gold px-5 text-sm font-semibold text-ink transition hover:bg-primary hover:text-white"
+                className="mt-4 h-11 w-full rounded-lg bg-gold px-5 text-sm font-semibold text-ink transition hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
               />
             </form>
 
-            <form action={sendCompletedFile} className="border border-ink/10 bg-ivory/90 p-7">
+            <form action={sendCompletedFile} className="border border-ink/10 bg-ivory/90 p-7 rounded-xl">
               <input type="hidden" name="id" value={selected.id} />
               <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">Final file delivery</p>
               <h3 className="mt-4 font-display text-3xl leading-tight text-ink">Send completed work</h3>
 
               {searchParams?.delivery === "sent" ? (
-                <div className="mt-5 rounded-xl border border-cta/20 bg-cta-soft p-4 text-sm leading-6 text-ink">
+                <div className="mt-5 rounded-lg border border-cta/20 bg-cta-soft p-4 text-sm leading-6 text-ink">
                   Completed file sent to the client and saved to this project.
                 </div>
               ) : null}
 
               {searchParams?.delivery === "failed" || searchParams?.delivery === "missing" || searchParams?.delivery === "attachment" ? (
-                <div className="mt-5 rounded-xl border border-status-danger/25 bg-status-danger-light p-4 text-sm leading-6 text-status-danger">
+                <div className="mt-5 rounded-lg border border-status-danger/25 bg-status-danger-light p-4 text-sm leading-6 text-status-danger">
                   {searchParams.delivery === "missing"
                     ? "Choose a completed file before sending."
                     : searchParams.delivery === "attachment"
@@ -437,7 +444,7 @@ export default async function AdminProjectsPage({
               ) : null}
 
               {selected.delivery_file_path ? (
-                <div className="mt-5 rounded-xl border border-hairline bg-paper p-4 text-sm leading-6 text-charcoal/70">
+                <div className="mt-5 rounded-lg border border-hairline bg-paper p-4 text-sm leading-6 text-charcoal/70">
                   <p className="font-semibold text-ink">Last delivery</p>
                   <p className="mt-1 break-all">{selected.delivery_file_name || fileName(selected.delivery_file_path)}</p>
                   {selected.delivery_sent_at ? <p className="mt-1 text-xs text-charcoal/50">{new Date(selected.delivery_sent_at).toLocaleString()}</p> : null}
@@ -447,29 +454,35 @@ export default async function AdminProjectsPage({
                 </div>
               ) : null}
 
-              <label className="mt-5 grid gap-2 text-sm text-charcoal/70">
-                Completed file
+              <div className="mt-5 grid gap-1.5">
+                <label htmlFor="completed-file" className="text-xs font-semibold uppercase tracking-wider text-charcoal/70">
+                  Completed file
+                </label>
                 <input
+                  id="completed-file"
                   name="completedFile"
                   type="file"
                   required
                   accept=".doc,.docx,.pdf,.txt,.rtf,.zip"
-                  className="min-h-11 border border-hairline bg-paper px-3 py-2 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                  className="h-11 rounded-lg border border-hairline bg-paper px-3 py-1.5 text-xs text-ink file:mr-3 file:h-8 file:rounded-md file:border-0 file:bg-primary file:px-3 file:text-xs file:font-semibold file:text-white transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
-              </label>
-              <label className="mt-4 grid gap-2 text-sm text-charcoal/70">
-                Message note
+              </div>
+              <div className="mt-4 grid gap-1.5">
+                <label htmlFor="delivery-note" className="text-xs font-semibold uppercase tracking-wider text-charcoal/70">
+                  Message note
+                </label>
                 <textarea
+                  id="delivery-note"
                   name="note"
                   rows={4}
-                  className="min-h-24 border border-hairline bg-paper p-3 text-sm leading-6 text-ink"
+                  className="rounded-lg border border-hairline bg-paper p-3 text-sm leading-6 text-ink transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                   placeholder="Optional note to include in the delivery email..."
                 />
-              </label>
+              </div>
               <PendingSubmitButton
                 idleLabel="Send completed file"
                 pendingLabel="Sending..."
-                className="mt-4 min-h-11 w-full rounded-full bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-active"
+                className="mt-4 h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-active focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
               />
             </form>
           </aside>
