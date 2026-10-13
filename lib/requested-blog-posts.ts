@@ -275,7 +275,7 @@ export const requestedBlogPosts: BlogPost[] = [
       {
         id: "quick-answer",
         heading: "How long dissertation proofreading takes",
-        paragraphs: [["Dissertation proofreading time depends on word count, language condition, formatting complexity, tables, figures, references, deadline, and the number of review passes needed. There is no universal timeline that fits every dissertation."]],
+        paragraphs: [["Dissertation proofreading typically takes between 3 to 7 days for drafts ranging from 10,000 to 25,000 words, while extensive doctoral dissertations up to 80,000 words generally require 10 to 14 days. Turnaround depends heavily on word count, citation complexity, technical tables, and whether structural editing or basic surface proofreading is requested."]],
       },
       {
         id: "time-factors",
@@ -358,7 +358,7 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "consistency", label: "Consistency checklist" },
     ],
     body: [
-      { id: "quick-answer", heading: "British vs American English: choose one and stay consistent", paragraphs: [["In academic writing, British and American English can both be correct. The problem is inconsistency. Follow your university, department, journal, or publisher rules first, then apply one variety consistently across spelling, punctuation, terminology, references, headings, tables, and figures."]] },
+      { id: "quick-answer", heading: "British vs American English: choose one and stay consistent", paragraphs: [["In academic writing, British and American English are both widely accepted, but mixing spelling conventions, punctuation rules, and vocabulary creates unintentional inconsistency. Authors should strictly follow target university or journal guidelines, maintaining uniform spelling (-ise versus -ize, -our versus -or), punctuation, and date formats across body text, tables, figures, footnotes, and appendices throughout the entire draft."]] },
       { id: "spelling", heading: "Spelling differences to check", paragraphs: [["Common differences include endings such as -ise or -ize, -our or -or, and -re or -er. Some journals accept either variety if the manuscript is consistent, while others specify one. Search the whole document rather than checking only body paragraphs."]], table: { headers: ["Area", "British English example", "American English example"], rows: [["Spelling", "analyse, colour, centre", "analyze, color, center"], ["Quotation punctuation", "Often follows the required style guide", "Often follows the required style guide"], ["Date style", "Often day-month-year", "Often month-day-year"]] } },
       { id: "punctuation", heading: "Punctuation and quotation conventions", paragraphs: [["Quotation-mark placement, punctuation with citations, serial comma use, and date formatting can vary by style guide. Do not rely only on national variety; APA, MLA, Chicago, house style, or university rules may decide the convention."]] },
       { id: "terminology", heading: "Terminology and academic vocabulary", paragraphs: [["Vocabulary can differ by region. Terms such as programme/program, module/course, mark/grade, and dissertation/thesis may carry different meanings depending on country and institution. Use the terminology expected by your reader."]] },
@@ -449,7 +449,7 @@ export const requestedBlogPosts: BlogPost[] = [
     internalLinks: [
       { href: "/cv-resume-editing", label: "CV and resume editing", description: "Improve application documents without inventing experience." },
       { href: "/proofreading-services", label: "Proofreading services", description: "Get a final check for completed professional documents." },
-      { href: "/submit", label: "Submit your CV", description: "Upload the application document securely for review." },
+      { href: "/blog/business-proposal-proofreading-checklist", label: "Business proposal checklist", description: "Review client-facing proposals and business writing." },
     ],
   },
   {
@@ -485,7 +485,7 @@ export const requestedBlogPosts: BlogPost[] = [
     internalLinks: [
       { href: "/business-proofreading", label: "Business proofreading", description: "Review client-facing proposals, reports, and business documents." },
       { href: "/editing-services", label: "Editing services", description: "Improve structure and message before final proofreading." },
-      { href: "/submit", label: "Submit a proposal", description: "Upload a final business document securely." },
+      { href: "/blog/cv-proofreading-checklist", label: "CV proofreading checklist", description: "Review professional and career documents before submission." },
     ],
   },
   {
@@ -538,7 +538,7 @@ export const requestedBlogPosts: BlogPost[] = [
     dateUpdated: published,
     readingTime: "8 min read",
     metaTitle: "Prepare a Document for Proofreading or Editing",
-    metaDescription: "Learn how to prepare a document for proofreading or editing, including version control, guidelines, audience notes, deadlines, Track Changes, and source files.",
+    metaDescription: "Learn how to prepare a document for proofreading or editing, including version control, style guidelines, deadlines, Track Changes, and source files.",
     heroImage: "/assets/premium_desk.png",
     heroImageAlt: "Professional editing desk with documents prepared for review",
     tableOfContents: [
@@ -563,7 +563,7 @@ export const requestedBlogPosts: BlogPost[] = [
       { question: "What if I do not know whether I need editing or proofreading?", answer: "Send the document condition, deadline, audience, and goals. The desk can help identify whether editing, proofreading, formatting, or translation review is more appropriate." },
     ],
     internalLinks: [
-      { href: "/submit", label: "Submit your document", description: "Upload the correct file and notes securely." },
+      { href: "/blog/how-much-does-proofreading-cost", label: "Proofreading cost guide", description: "Understand rates, calculators, and turnarounds." },
       { href: "/editing-services", label: "Editing services", description: "Choose deeper clarity, tone, and structure support." },
       { href: "/proofreading-services", label: "Proofreading services", description: "Choose a final correction pass for a stable document." },
     ],
@@ -578,7 +578,7 @@ export const requestedBlogPosts: BlogPost[] = [
     dateUpdated: published,
     readingTime: "9 min read",
     metaTitle: "How to Format a Thesis in Microsoft Word",
-    metaDescription: "Learn how to format a thesis in Microsoft Word with styles, headings, section breaks, page numbering, captions, contents lists, cross-references, and PDF checks.",
+    metaDescription: "Format your thesis in Word using styles, headings, section breaks, page numbers, captions, table of contents lists, cross-references, and PDF checks.",
     heroImage: "/images/blog/thesis-tables-figures-references-checklist.webp",
     heroImageAlt: "Thesis document formatted in Microsoft Word with headings, captions, and table of contents checks",
     tableOfContents: [
@@ -605,7 +605,7 @@ export const requestedBlogPosts: BlogPost[] = [
     internalLinks: [
       { href: "/document-formatting", label: "Document formatting", description: "Prepare thesis and dissertation files for submission." },
       { href: "/blog/thesis-tables-figures-references-checklist", label: "Tables and references checklist", description: "Audit captions, cross-references, citations, and final files." },
-      { href: "/submit", label: "Submit your thesis", description: "Upload the file and formatting requirements securely." },
+      { href: "/blog/thesis-proofreading-checklist", label: "PhD thesis checklist", description: "Review long-document consistency before final submission." },
     ],
   },
 ];

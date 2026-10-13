@@ -307,7 +307,7 @@ export const newLearningCenterPosts: BlogPost[] = [
     dateUpdated: "2026-07-12",
     readingTime: "13 min read",
     metaTitle: "Why Editing and Proofreading Matter Before Submission",
-    metaDescription: "Discover why editing and proofreading are essential before manuscript submission and use our practical checklist to improve clarity, accuracy and presentation.",
+    metaDescription: "Discover why editing and proofreading matter before manuscript submission and use our practical checklist to improve clarity, accuracy, and flow.",
     heroImage: "/images/blog/editing-proofreading-manuscript-submission.webp",
     heroImageAlt: "Academic author editing and proofreading a manuscript before submission",
     tableOfContents: [

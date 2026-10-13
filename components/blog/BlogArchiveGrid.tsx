@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { BlogPost } from "@/lib/blog";
+import { type BlogPost, blogPosts } from "@/lib/blog";
 
 type BlogArchiveGridProps = {
   posts: BlogPost[];
@@ -78,6 +78,22 @@ export function BlogArchiveGrid({ posts, currentPage, totalPages }: BlogArchiveG
                 ) : null}
               </nav>
             ) : null}
+
+            <div className="mt-16 border-t border-hairline pt-12">
+              <h2 className="font-display text-2xl text-ink">Browse all editorial guides</h2>
+              <p className="mt-2 text-sm text-muted">Complete index of academic writing, editing, proofreading, and document preparation resources.</p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {blogPosts.map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/blog/${post.slug}`}
+                    className="rounded-xl border border-hairline bg-surface-soft p-4 text-sm font-medium text-body transition hover:border-primary/40 hover:text-primary"
+                  >
+                    {post.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </>
         ) : (
           <div className="rounded-[1.35rem] border border-hairline bg-surface-soft px-6 py-16 text-center shadow-[0_24px_80px_rgba(17,17,15,0.045)] sm:px-10">

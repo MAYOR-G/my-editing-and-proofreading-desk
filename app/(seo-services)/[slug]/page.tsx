@@ -39,6 +39,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/editing-vs-proofreading", label: "Compare editing and proofreading stages" },
       { href: "/blog/edit-my-paper-online-guide", label: "Guide to editing research papers online" },
+      { href: "/blog/prepare-document-for-proofreading", label: "How to prepare a document for editing" },
       { href: "/pricing", label: "Check editorial rates and calculator" },
     ],
     bodyLinks: {
@@ -73,6 +74,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/editing-vs-proofreading", label: "When to choose proofreading over editing" },
       { href: "/blog/how-much-does-proofreading-cost", label: "Understand proofreading price factors" },
+      { href: "/blog/ai-proofreading-vs-human-proofreading", label: "AI proofreading versus human proofreading" },
       { href: "/pricing", label: "Explore proofreading pricing calculator" },
     ],
     bodyLinks: {
@@ -107,6 +109,8 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/canadian-academic-proofreading-and-thesis-guide", label: "Academic proofreading and thesis guidelines" },
       { href: "/blog/research-paper-editing-checklist-before-submission", label: "Research paper submission checklist" },
+      { href: "/blog/apa-7-reference-list-mistakes", label: "Common APA 7 referencing errors" },
+      { href: "/blog/how-to-choose-research-philosophy-for-thesis", label: "Choosing research philosophy for thesis" },
       { href: "/pricing", label: "Academic proofreading rates" },
     ],
     bodyLinks: {
@@ -211,6 +215,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/sci-journal-manuscript-editing-guide-esl-researchers", label: "SCI journal editing for ESL researchers" },
       { href: "/blog/editing-and-proofreading-before-manuscript-submission", label: "Manuscript submission preparation guide" },
+      { href: "/blog/manuscript-editing-vs-copyediting", label: "Manuscript editing vs copyediting differences" },
       { href: "/pricing", label: "Manuscript editing pricing" },
     ],
     bodyLinks: {
@@ -315,6 +320,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/document-formatting-services-what-to-prepare", label: "What to prepare for document formatting" },
       { href: "/blog/regulatory-document-formatting-checklist", label: "Regulatory document formatting checklist" },
+      { href: "/blog/format-thesis-in-microsoft-word", label: "Formatting a thesis in Microsoft Word" },
       { href: "/pricing", label: "Document formatting rates" },
     ],
     bodyLinks: {

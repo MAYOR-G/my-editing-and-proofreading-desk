@@ -103,6 +103,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-wrap gap-x-5 gap-y-2 border-b border-hairline pb-5 text-sm text-muted">
             <span>By {post.author}</span>
+            {post.reviewer ? <span>Reviewed by {post.reviewer}</span> : null}
             <time dateTime={post.datePublished}>Published {post.datePublished}</time>
             <time dateTime={post.dateUpdated}>Updated {post.dateUpdated}</time>
             <span>{post.readingTime}</span>

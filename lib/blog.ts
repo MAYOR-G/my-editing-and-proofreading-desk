@@ -24,6 +24,7 @@ export type BlogPost = {
   excerpt: string;
   category: string;
   author: string;
+  reviewer?: string;
   datePublished: string;
   dateUpdated: string;
   readingTime: string;
@@ -75,7 +76,7 @@ const allBlogPosts: BlogPost[] = [
     dateUpdated: "2026-08-10",
     readingTime: "9 min read",
     metaTitle: "Editing vs Proofreading: Key Differences Explained",
-    metaDescription: "Compare editing vs proofreading, see what each service fixes, and choose the right human review for academic, business, manuscript, or professional writing.",
+    metaDescription: "Compare editing vs proofreading, see what each service fixes, and choose the right human review for academic, business, manuscript, or career writing.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
     heroImageAlt: "Side-by-side documents showing structural editing marks and final proofreading corrections",
     tableOfContents: [
@@ -303,14 +304,14 @@ const allBlogPosts: BlogPost[] = [
         description: "Compare service, word-count, and turnaround options before you upload.",
       },
       {
-        href: "/submit",
-        label: "Submit your document",
-        description: "Still unsure which service you need? Submit your document and we’ll help you choose the right level of review.",
+        href: "/blog/ai-proofreading-vs-human-proofreading",
+        label: "AI vs human proofreading",
+        description: "Compare automated tools with thorough human proofreading for complex documents.",
       },
     ],
   },
   {
-    title: "PhD Thesis Proofreading Checklist: Final Checks Before Submission",
+    title: "PhD Thesis Proofreading Checklist for Final Submission",
     slug: "thesis-proofreading-checklist",
     excerpt: "Use this PhD thesis proofreading checklist to review cross-chapter consistency, research questions, terminology, tables, figures, references, front matter, appendices, and the final repository file.",
     category: "PhD thesis proofreading",
@@ -318,7 +319,7 @@ const allBlogPosts: BlogPost[] = [
     datePublished: "2026-06-22",
     dateUpdated: "2026-08-10",
     readingTime: "12 min read",
-    metaTitle: "PhD Thesis Proofreading Checklist: Final Checks Before Submission",
+    metaTitle: "PhD Thesis Proofreading Checklist for Final Submission",
     metaDescription: "Use this PhD thesis proofreading checklist to review research questions, terminology, tables, figures, references, appendices, and final PDF submission.",
     heroImage: "/images/blog/thesis-proofreading-checklist-hero-v2.png",
     heroImageAlt: "Thesis, proofreading checklist, reference pages, figures, and final PDF arranged for submission review",
@@ -623,14 +624,14 @@ const allBlogPosts: BlogPost[] = [
         description: "Estimate academic editing or proofreading by word count and turnaround.",
       },
       {
-        href: "/submit",
-        label: "Submit your thesis",
-        description: "Preparing your thesis for submission? Our academic editors can review grammar, structure, clarity, formatting, and final presentation.",
+        href: "/blog/how-to-choose-research-philosophy-for-thesis",
+        label: "Research philosophy guide",
+        description: "Choose pragmatism, positivism, or interpretivism for your thesis methodology.",
       },
     ],
   },
   {
-    title: "Master's Dissertation Proofreading Checklist: 15 Final Checks",
+    title: "Master's Dissertation Proofreading Checklist: 15 Checks",
     slug: "dissertation-proofreading-checklist",
     excerpt: "Use this concise 15-point master's dissertation proofreading checklist to check final language, formatting, references, tables, figures, university rules, and upload readiness.",
     category: "Master's dissertation proofreading",
@@ -638,7 +639,7 @@ const allBlogPosts: BlogPost[] = [
     datePublished: "2026-06-28",
     dateUpdated: "2026-10-03",
     readingTime: "8 min read",
-    metaTitle: "Dissertation Proofreading Checklist: 15 Final Checks",
+    metaTitle: "Master's Dissertation Proofreading Checklist: 15 Checks",
     metaDescription: "Use 15 final checks for dissertation grammar, references, tables, figures, formatting, university rules, and submission readiness.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Academic dissertation document with a red pen checking off items on a structured checklist, conveying academic preparation",
@@ -932,7 +933,7 @@ const allBlogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "How Much Does Proofreading Cost? Pricing Factors and Calculator",
+    title: "How Much Does Proofreading Cost? Rates & Calculator Guide",
     slug: "how-much-does-proofreading-cost",
     excerpt: "See how this desk calculates proofreading cost from service selection, word count, and turnaround, including the minimum order, service charge, and custom-review threshold.",
     category: "Pricing & Guides",
@@ -940,12 +941,13 @@ const allBlogPosts: BlogPost[] = [
     datePublished: "2026-06-28",
     dateUpdated: "2026-08-10",
     readingTime: "10 min read",
-    metaTitle: "How Much Does Proofreading Cost? Pricing Guide",
-    metaDescription: "See how proofreading cost is calculated from service selection, word count, and turnaround, including the minimum order, service charge, and custom-review threshold.",
+    metaTitle: "How Much Does Proofreading Cost? Rates & Calculator Guide",
+    metaDescription: "See how proofreading costs are calculated from word count, turnaround speed, and service level, with transparent base rates from $0.03 per word.",
     heroImage: "/images/blog/proofreading-cost-guide-hero.png",
     heroImageAlt: "Modern workspace with a calculator and a printed document, symbolizing calculating proofreading costs and pricing",
     tableOfContents: [
       { id: "cost-factors", label: "What affects proofreading cost?" },
+      { id: "rates-table", label: "Standard editorial rate table" },
       { id: "word-count", label: "Word count" },
       { id: "turnaround-time", label: "Turnaround time" },
       { id: "type-of-document", label: "Type of document" },
@@ -964,7 +966,7 @@ const allBlogPosts: BlogPost[] = [
         heading: "What affects proofreading cost?",
         paragraphs: [
           [
-            "When searching for editorial services, people immediately want to know: how much does proofreading cost? Because every document is unique, there is no single universal price. Instead, pricing depends on several specific factors.",
+            "Proofreading costs typically range from $0.03 to $0.06 per word depending on total document length, service tier, and requested delivery speed. For standard turnaround, a 5,000-word draft costs approximately $150 to $175 before applicable minimums or urgent turnaround adjustments, providing a predictable estimate before document upload.",
           ],
           [
             "Understanding these variables will help you evaluate quotes from freelancers or agencies and choose a service that fits your budget and quality requirements.",
@@ -977,6 +979,25 @@ const allBlogPosts: BlogPost[] = [
             ["Turnaround time", "The calculator applies its published per-word turnaround rate and disables timelines that are not available for the word count.", "A 12-hour option is available only for eligible short documents."],
             ["Selected services", "Each selected service contributes its published rate; formatting and translation use different base rates.", "Selecting more than one service changes the subtotal."],
             ["Order rules", "A $10 minimum and 5% service charge apply to automatic orders.", "Documents above 50,000 words require a custom review."],
+          ]
+        }
+      },
+      {
+        id: "rates-table",
+        heading: "Standard editorial rate table from pricing config",
+        paragraphs: [
+          [
+            "Our baseline rates start from $0.03 per word for standard delivery across all core editing and proofreading services. The table below outlines published service rates before turnaround adjustments:",
+          ],
+        ],
+        table: {
+          headers: ["Service", "Base Rate", "Turnaround Basis", "Included Inclusions"],
+          rows: [
+            ["Professional Proofreading", "$0.03 / word", "Standard delivery", "Grammar, spelling, punctuation & consistency checks"],
+            ["Academic Proofreading", "$0.03 / word", "Standard delivery", "Scholarly tone, terminology, formatting & citations"],
+            ["Professional Editing", "$0.03 / word", "Standard delivery", "Sentence structure, clarity, flow & tone refinement"],
+            ["Document Formatting", "$0.03 / word", "Standard delivery", "Styles, margins, headings, figures & final PDF"],
+            ["Translation Review", "$0.03 / word", "Standard delivery", "ESL review for natural English phrasing & terminology"],
           ]
         }
       },
@@ -1140,9 +1161,9 @@ const allBlogPosts: BlogPost[] = [
         description: "Learn how we support students and researchers with rigorous thesis and dissertation reviews.",
       },
       {
-        href: "/submit",
-        label: "Upload Your Document",
-        description: "Upload securely to confirm word count, turnaround, and final proofreading cost.",
+        href: "/blog/prepare-document-for-proofreading",
+        label: "Prepare document for proofreading",
+        description: "How to prepare files, guidelines, and word counts before requesting review.",
       },
       {
         href: "/contact",
