@@ -3,7 +3,7 @@ import { LegalList, LegalPage, LegalSection } from "@/components/LegalPage";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Terms and Conditions | Edit and Proofread",
+  title: "Terms and Conditions | My Editing and Proofreading Desk",
   description: "Read the terms for using My Editing and Proofreading Desk editing, proofreading, payment, confidentiality, and delivery services.",
   path: "/terms",
 });

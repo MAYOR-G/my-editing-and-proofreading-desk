@@ -123,7 +123,7 @@ export function generateMetadata({ params }: SeoServiceRouteProps): Metadata {
 
   if (!page) {
     return buildPageMetadata({
-      title: "Professional Editing and Proofreading Services | Edit and Proofread",
+      title: "Editorial Services | My Editing and Proofreading Desk",
       description: "Explore human editing, proofreading, formatting, and document review services for academic, business, author, and professional writing.",
       path: "/services",
       noIndex: true,

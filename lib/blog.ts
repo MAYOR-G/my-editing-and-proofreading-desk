@@ -74,7 +74,7 @@ const allBlogPosts: BlogPost[] = [
     datePublished: "2026-06-22",
     dateUpdated: "2026-08-10",
     readingTime: "9 min read",
-    metaTitle: "Editing vs Proofreading: What Is the Difference? | Edit and Proofread",
+    metaTitle: "Editing vs Proofreading: Key Differences Explained",
     metaDescription: "Compare editing vs proofreading, see what each service fixes, and choose the right human review for academic, business, manuscript, or professional writing.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
     heroImageAlt: "Side-by-side documents showing structural editing marks and final proofreading corrections",

@@ -17,7 +17,7 @@ export function BrandMark({ compact = false, href = "/", tone = "dark", variant 
   return (
     <Link
       href={href}
-      aria-label="My Editing and Proofreading Desk home"
+      aria-label="My Editing and Proofreading Desk"
       className="group inline-flex max-w-full min-w-0 items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold sm:gap-3.5"
     >
       <span
@@ -36,7 +36,7 @@ export function BrandMark({ compact = false, href = "/", tone = "dark", variant 
       </span>
       <span className={`hidden min-w-0 max-w-[6.9rem] leading-none min-[360px]:block min-[420px]:max-w-[9.25rem] sm:max-w-none ${textTone}`}>
         <span className="block truncate font-display text-[0.9rem] font-semibold tracking-normal min-[420px]:text-[1.02rem] sm:text-[1.16rem]">
-          My Editing
+          My Editing{" "}
         </span>
         <span className={`mt-1 block truncate text-[0.48rem] font-semibold uppercase tracking-[0.11em] min-[420px]:text-[0.55rem] min-[420px]:tracking-[0.13em] sm:text-[0.66rem] sm:tracking-[0.15em] ${subTextTone}`}>
           and Proofreading Desk

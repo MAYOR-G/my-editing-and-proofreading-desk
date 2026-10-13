@@ -804,7 +804,7 @@ The system will be considered ready for launch when:
 
 ## 22. Summary
 
-Edit & Proofread Desk is a premium editorial services platform built to streamline client intake, document management, payments, and delivery. The product combines a strong public-facing website with a secure backend workflow that improves professionalism, reduces manual coordination, and gives clients a better overall experience.
+My Editing and Proofreading Desk is a premium editorial services platform built to streamline client intake, document management, payments, and delivery. The product combines a strong public-facing website with a secure backend workflow that improves professionalism, reduces manual coordination, and gives clients a better overall experience.
 
 The recommended stack for version 1 is:
 
