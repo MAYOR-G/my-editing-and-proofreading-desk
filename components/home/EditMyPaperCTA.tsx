@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { ArrowRight, CheckCircle2, Clock, FileText, PenLine } from "lucide-react";
+import { BASE_RATE_DISPLAY } from "@/lib/pricing";
 
 const quickBenefits = [
   { text: "Grammar, spelling, and punctuation fixes", icon: CheckCircle2 },
@@ -101,7 +102,7 @@ export function EditMyPaperCTA() {
                   </div>
 
                   <p className="text-charcoal/60 text-xs text-center">
-                    All document types supported • From $0.03/word
+                    All document types supported • From {BASE_RATE_DISPLAY}/word
                   </p>
                 </div>
               </div>

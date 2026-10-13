@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { ArrowRight, CheckCircle2, Info } from "lucide-react";
-import { SERVICE_CHARGE_PERCENTAGE, MINIMUM_ORDER } from "@/lib/pricing";
+import { SERVICE_CHARGE_PERCENTAGE, MINIMUM_ORDER, BASE_RATE_DISPLAY } from "@/lib/pricing";
 
 export function PricingSnapshot() {
   return (
@@ -32,7 +32,7 @@ export function PricingSnapshot() {
               <h3 className="font-display text-xl font-bold text-ink mb-2">Proofreading</h3>
               <p className="text-charcoal/60 text-sm mb-6 h-10">Final review for grammar, spelling, and consistency.</p>
               <div className="mb-6 pb-6 border-b border-ink/5">
-                <span className="text-3xl font-display font-bold text-ink">$0.03</span>
+                <span className="text-3xl font-display font-bold text-ink">{BASE_RATE_DISPLAY}</span>
                 <span className="text-charcoal/60 text-sm"> / word</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -54,7 +54,7 @@ export function PricingSnapshot() {
               <h3 className="font-display text-xl font-bold text-ink mb-2 mt-2">Professional Editing</h3>
               <p className="text-charcoal/60 text-sm mb-6 h-10">Comprehensive structural and sentence-level polish.</p>
               <div className="mb-6 pb-6 border-b border-ink/5">
-                <span className="text-3xl font-display font-bold text-ink">$0.03</span>
+                <span className="text-3xl font-display font-bold text-ink">{BASE_RATE_DISPLAY}</span>
                 <span className="text-charcoal/60 text-sm"> / word</span>
                 <p className="text-[10px] text-primary mt-1 font-medium bg-primary/5 inline-block px-2 py-0.5 rounded">Same base rate as proofreading</p>
               </div>

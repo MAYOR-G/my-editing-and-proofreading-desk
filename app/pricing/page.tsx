@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PricingCalculator } from "@/components/PricingCalculator";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { CUSTOM_REVIEW_WORD_COUNT, MINIMUM_ORDER, SERVICE_CHARGE_PERCENTAGE, SERVICE_OPTIONS, TURNAROUND_OPTIONS } from "@/lib/pricing";
+import { BASE_RATE_DISPLAY, CUSTOM_REVIEW_WORD_COUNT, MINIMUM_ORDER, SERVICE_CHARGE_PERCENTAGE, SERVICE_OPTIONS, TURNAROUND_OPTIONS } from "@/lib/pricing";
 import { breadcrumbJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -98,6 +98,23 @@ export default function PricingPage() {
                       </p>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                <h3 className="font-display text-xl text-ink">Sample estimate breakdown (3,500 words at 14 days)</h3>
+                <p className="mt-2 text-sm leading-6 text-body">
+                  Understanding why the default calculator sample displays <strong>$80.50</strong> instead of the standard base product (3,500 × $0.030 = $105.00):
+                </p>
+                <div className="mt-4 grid gap-3 text-sm leading-6 sm:grid-cols-2">
+                  <div className="rounded-lg border border-hairline bg-canvas p-4">
+                    <p className="font-semibold text-ink">Base rate & turnaround adjustment</p>
+                    <p className="mt-1 text-muted">The published editorial base rate is {BASE_RATE_DISPLAY} ($0.030) per word for standard delivery pace. For a flexible 14-day turnaround on a 3,500-word draft, our turnaround curve scales the effective rate to <strong>$0.023 per word</strong> (3,500 × $0.023 = $80.50).</p>
+                  </div>
+                  <div className="rounded-lg border border-hairline bg-canvas p-4">
+                    <p className="font-semibold text-ink">Service charge & checkout total</p>
+                    <p className="mt-1 text-muted">The calculator displays the editorial subtotal ($80.50, satisfying our ${MINIMUM_ORDER} order minimum). At final checkout, our standard {SERVICE_CHARGE_PERCENTAGE}% processing fee ($4.03) is added, resulting in a final verified payment total of $84.53.</p>
+                  </div>
                 </div>
               </div>
             </div>
