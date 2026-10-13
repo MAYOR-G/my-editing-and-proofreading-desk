@@ -149,7 +149,7 @@ export function SiteFooter() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#174a7c,#ffffff66,#1f8f5a)]" aria-hidden="true" />
           <div className="hidden gap-8 md:grid md:grid-cols-3">
             <div>
-              <h2 className="mb-2 text-sm font-bold text-surface-soft">Services</h2>
+              <p className="mb-2 text-sm font-bold text-surface-soft">Services</p>
               <div className="mt-4 grid gap-3 break-words text-sm text-surface-soft/60">
                 {seoServicePages.map((service) => (
                   <Link key={service.slug} href={`/${service.slug}`} className="transition hover:text-primary">
@@ -159,7 +159,7 @@ export function SiteFooter() {
               </div>
             </div>
             <div>
-              <h2 className="mb-2 text-sm font-bold text-surface-soft">Platform</h2>
+              <p className="mb-2 text-sm font-bold text-surface-soft">Platform</p>
               <div className="mt-4 grid gap-3 text-sm text-surface-soft/60">
                 {platformLinks.map((item) => (
                   <Link key={item.href} href={item.href} className="transition hover:text-primary">
@@ -169,7 +169,7 @@ export function SiteFooter() {
               </div>
             </div>
             <div>
-              <h2 className="mb-2 text-sm font-bold text-surface-soft">Trust signals</h2>
+              <p className="mb-2 text-sm font-bold text-surface-soft">Trust signals</p>
               <div className="mt-4 grid gap-2">
                 {trustBadges.map((badge) => (
                   <span key={badge} className="rounded-lg border border-hairline/10 bg-white/[0.03] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-surface-soft/62">
@@ -204,7 +204,7 @@ export function SiteFooter() {
           </div>
 
           <div className="mt-9 border-t border-hairline/10 pt-7">
-            <h2 className="mb-2 text-sm font-bold text-surface-soft">Legal</h2>
+            <p className="mb-2 text-sm font-bold text-surface-soft">Legal</p>
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm text-surface-soft/60">
               {legalLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="transition hover:text-primary">
