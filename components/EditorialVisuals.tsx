@@ -334,7 +334,7 @@ export function FaqVisual() {
       <div className="relative z-10 flex min-h-[22rem] flex-col justify-end sm:min-h-[25rem]">
         <div className="max-w-[28rem] border border-white/35 bg-white/90 p-5 shadow-[0_24px_80px_rgba(10,11,13,0.18)] backdrop-blur-md sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Project questions</p>
-          <h3 className="mt-3 font-display text-3xl leading-tight text-ink">Clear answers before you upload.</h3>
+          <p className="mt-3 font-display text-3xl leading-tight text-ink">Clear answers before you upload.</p>
           <div className="mt-5 grid gap-3">
             {["Files and format", "Pricing and timelines", "Privacy and delivery"].map((item) => (
               <div key={item} className="flex items-center justify-between border-t border-ink/10 pt-3">

@@ -746,7 +746,7 @@ export const seoOpportunityPosts: BlogPost[] = [
     dateUpdated: "2026-09-29",
     readingTime: "10 min read",
     metaTitle: "Edit My Paper Online: Complete Guide to Academic Editing",
-    metaDescription: "Searching for 'edit my paper online'? Discover our step-by-step guide to editing your research paper, thesis, or essay for clarity, structure, and grammar.",
+    metaDescription: "Looking to edit your paper online? Follow our step-by-step guide to editing your research paper, thesis, or essay for clarity, structure, and grammar.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
     heroImageAlt: "Digital document with editing marks showing online paper editing process",
     tableOfContents: [
