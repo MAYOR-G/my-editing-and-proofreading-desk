@@ -31,230 +31,314 @@ const legalLinks = [
   { href: "/refund-policy", label: "Refund Policy" },
   { href: "/terms", label: "Terms and Conditions" },
 ];
-
 export function SiteFooter() {
   return (
-    <footer className="relative mt-10 overflow-hidden bg-dark-surface text-surface-soft">
-      <div className="pointer-events-none absolute inset-x-0 -top-1 h-16 text-dark-surface" aria-hidden="true">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="h-full w-full fill-current">
-          <path d="M0 50C112 12 226 8 340 38C475 74 574 94 712 61C838 31 930 2 1058 23C1202 47 1286 95 1440 61V120H0V50Z" />
-        </svg>
-      </div>
-      <div className="absolute inset-x-0 top-14 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" aria-hidden="true" />
+    <footer className="relative mt-12 overflow-hidden bg-dark-surface text-surface-soft border-t border-hairline/10">
+      {/* Top accent glow line */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent"
+        aria-hidden="true"
+      />
 
-      <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-10 pt-20 sm:gap-10 sm:px-8 sm:pb-14 sm:pt-24 lg:grid-cols-[0.85fr_1.15fr] lg:pb-20 lg:pt-28 relative">
-        <aside className="grid content-start gap-8 relative z-10">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12">
+        {/* ─── Top Tier: Brand, Inquiries & Quick Action Bar ─── */}
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center pb-12 border-b border-hairline/10">
           <div>
-            <BrandMark tone="light" variant="footer" />
-            <p className="mt-6 max-w-sm text-sm leading-7 text-surface-soft/68">
-              Human editing and proofreading for academic, business, manuscript, application, and professional documents worldwide.
-            </p>
-          </div>
-
-          <div className="border-y border-hairline/10 py-6">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Editorial inquiries</p>
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-3 block break-all font-display text-lg font-bold leading-snug text-surface-soft transition hover:text-primary sm:break-words sm:text-2xl">
-              {SUPPORT_EMAIL}
-            </a>
-            <a href={`tel:${COMPANY_PHONE_TEL}`} className="mt-3 block text-sm font-semibold text-surface-soft/75 transition hover:text-primary">
-              {COMPANY_PHONE}
-            </a>
-            <p className="mt-4 text-sm leading-6 text-surface-soft/50">Include document type, expected word count, and deadline.</p>
-          </div>
-
-          <details className="border-b border-hairline/10 pb-5 md:hidden">
-            <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-[0.24em] text-primary">Global desks & offices</summary>
-            <div className="mt-4 grid gap-3">
-              {COMPANY_OFFICES.map((office) => (
-                <div key={office.id} className="rounded-xl border border-hairline/10 bg-white/[0.02] p-3 text-xs leading-relaxed text-surface-soft/75">
-                  <p className="font-semibold text-surface-soft">{office.flag} {office.name}{office.isHeadquarters ? " · HQ" : ""}</p>
-                  <address className="mt-1.5 break-words not-italic text-surface-soft/60">{office.fullAddress}</address>
-                </div>
-              ))}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <BrandMark tone="light" variant="footer" />
+              <span className="hidden sm:inline-block h-6 w-px bg-white/10" aria-hidden="true" />
+              <span className="text-xs uppercase tracking-[0.2em] text-surface-soft/60">
+                Professional Editorial Desk
+              </span>
             </div>
-          </details>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-surface-soft/75">
+              Human editing and proofreading for academic papers, theses, dissertations, journal manuscripts, business proposals, and author publications worldwide.
+            </p>
 
-          <div className="border-b border-hairline/10 pb-6">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Subscribe</p>
-            <p className="mt-3 max-w-sm text-sm leading-6 text-surface-soft/55">
-              Receive occasional editorial updates and service notes from our desk.
+            {/* Editorial Inquiries Pill */}
+            <div className="mt-6 grid gap-4 rounded-2xl border border-hairline/10 bg-white/[0.03] p-4 sm:grid-cols-2 sm:p-5">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+                  Editorial Inquiries
+                </p>
+                <a
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                  className="mt-1 block font-display text-base font-bold text-white transition hover:text-sky-300 break-words sm:text-lg"
+                >
+                  {SUPPORT_EMAIL}
+                </a>
+                <p className="mt-1 text-xs text-surface-soft/50">
+                  Include document type, word count, and deadline.
+                </p>
+              </div>
+              <div className="sm:border-l sm:border-hairline/10 sm:pl-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+                  Phone & Availability
+                </p>
+                <a
+                  href={`tel:${COMPANY_PHONE_TEL}`}
+                  className="mt-1 block text-sm font-semibold text-white/90 transition hover:text-sky-300"
+                >
+                  {COMPANY_PHONE}
+                </a>
+                <p className="mt-1 text-xs text-surface-soft/50">
+                  24/7 Client Portal Intake & Secure Uploads
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side: Newsletter & Actions */}
+          <div className="rounded-2xl border border-hairline/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-5 sm:p-6 lg:ml-auto lg:w-full lg:max-w-md">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+              Subscribe to Editorial Notes
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-surface-soft/65">
+              Receive occasional editorial updates, style guides, and service notes.
             </p>
             <NewsletterSubscribeForm />
-          </div>
 
-          <div className="border-b border-hairline/10 pb-6">
-            <p className="text-xs uppercase tracking-[0.28em] text-primary font-semibold">Follow our desk</p>
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              <a
-                href={FACEBOOK_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on Facebook"
-                className="inline-flex items-center gap-2 rounded-full border border-hairline/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-surface-soft/80 transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-hairline/10 pt-4">
+              <Link
+                href="/submit"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-cta px-6 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition duration-200 hover:bg-cta-active active:scale-[0.98]"
               >
-                <FacebookIcon className="h-4 w-4" />
-                <span>Facebook</span>
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Follow us on Instagram"
-                className="inline-flex items-center gap-2 rounded-full border border-hairline/15 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-surface-soft/80 transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
-              >
-                <InstagramIcon className="h-4 w-4" />
-                <span>Instagram</span>
-              </a>
+                Start Secure Upload
+              </Link>
+              <div className="flex items-center gap-2">
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow us on Facebook"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/15 bg-white/[0.04] text-surface-soft/80 transition hover:border-sky-400 hover:bg-sky-500/20 hover:text-white"
+                >
+                  <FacebookIcon className="h-4 w-4" />
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow us on Instagram"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/15 bg-white/[0.04] text-surface-soft/80 transition hover:border-sky-400 hover:bg-sky-500/20 hover:text-white"
+                >
+                  <InstagramIcon className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="hidden border-b border-hairline/10 pb-6 md:block">
+        {/* ─── Middle Tier Desktop: 4-Column Balanced Grid (hidden on mobile) ─── */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 py-10">
+          {/* Column 1: Editorial Services */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+              Editorial Services
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-surface-soft/75">
+              {seoServicePages.map((service) => (
+                <li key={service.slug}>
+                  <Link
+                    href={`/${service.slug}`}
+                    className="inline-block transition hover:text-white hover:translate-x-0.5"
+                  >
+                    {service.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 2: Platform & Desk */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+              Platform & Desk
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-surface-soft/75">
+              {platformLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="inline-block transition hover:text-white hover:translate-x-0.5"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Global Desks & Presence */}
+          <div>
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Global Desks & Offices</p>
-              <Link href="/contact" className="text-xs font-medium text-surface-soft/50 hover:text-primary transition">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+                Global Desks
+              </p>
+              <Link
+                href="/contact"
+                className="text-xs text-surface-soft/50 transition hover:text-sky-300"
+              >
                 All offices →
               </Link>
             </div>
-            <div className="mt-4 grid gap-3">
+            <div className="mt-4 grid gap-2.5">
               {COMPANY_OFFICES.map((office) => (
                 <div
                   key={office.id}
-                  className="rounded-xl border border-hairline/10 bg-white/[0.02] p-3 text-xs leading-relaxed text-surface-soft/75 transition duration-200 hover:border-primary/30 hover:bg-white/[0.04]"
+                  className="rounded-lg border border-hairline/10 bg-white/[0.02] p-2.5 text-xs text-surface-soft/75 transition duration-150 hover:border-sky-500/30 hover:bg-white/[0.04]"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-surface-soft flex items-center gap-1.5">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span className="flex items-center gap-1.5 font-semibold text-white">
                       <span>{office.flag}</span>
                       <span>{office.name}</span>
                     </span>
                     {office.isHeadquarters ? (
-                      <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary">
+                      <span className="rounded border border-sky-500/30 bg-sky-500/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300">
                         HQ
                       </span>
                     ) : null}
                   </div>
-                  <address className="mt-1.5 not-italic text-surface-soft/60">
-                    {office.fullAddress}
-                  </address>
+                  <p className="mt-1 line-clamp-1 text-[11px] text-surface-soft/55">
+                    {office.city}, {office.country}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
-          <Link href="/submit" className="inline-flex min-h-12 w-fit items-center justify-center rounded-full bg-primary px-7 text-sm font-bold text-white shadow-[0_14px_34px_rgba(23,74,124,0.28)] transition duration-200 ease-premium-out hover:bg-primary-active active:scale-[0.98]">
-            Start Secure Upload
-          </Link>
-        </aside>
-
-        <div className="relative z-10 min-w-0 overflow-hidden rounded-2xl border border-hairline/10 bg-[linear-gradient(135deg,rgba(22,24,28,0.96),rgba(10,11,13,0.9))] p-4 sm:rounded-[1.75rem] sm:p-10">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#174a7c,#ffffff66,#1f8f5a)]" aria-hidden="true" />
-          <div className="hidden gap-8 md:grid md:grid-cols-3">
+          {/* Column 4: Trust Signals & Legal */}
+          <div className="flex flex-col justify-between">
             <div>
-              <p className="mb-2 text-sm font-bold text-surface-soft">Services</p>
-              <div className="mt-4 grid gap-3 break-words text-sm text-surface-soft/60">
-                {seoServicePages.map((service) => (
-                  <Link key={service.slug} href={`/${service.slug}`} className="transition hover:text-primary">
-                    {service.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="mb-2 text-sm font-bold text-surface-soft">Platform</p>
-              <div className="mt-4 grid gap-3 text-sm text-surface-soft/60">
-                {platformLinks.map((item) => (
-                  <Link key={item.href} href={item.href} className="transition hover:text-primary">
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="mb-2 text-sm font-bold text-surface-soft">Trust signals</p>
-              <div className="mt-4 grid gap-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+                Trust Signals
+              </p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
                 {trustBadges.map((badge) => (
-                  <span key={badge} className="rounded-lg border border-hairline/10 bg-white/[0.03] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-surface-soft/62">
+                  <span
+                    key={badge}
+                    className="rounded border border-hairline/10 bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-surface-soft/80"
+                  >
                     {badge}
                   </span>
                 ))}
               </div>
-            </div>
-          </div>
 
-          <div className="grid gap-2 md:hidden">
-            {[
-              { title: "Services", links: seoServicePages.map((service) => ({ href: `/${service.slug}`, label: service.name })) },
-              { title: "Explore", links: platformLinks },
-              { title: "Trust and standards", links: [
-                { href: "/privacy", label: "Privacy policy" },
-                { href: "/editorial-policy", label: "Editorial policy" },
-                { href: "/editors", label: "Editor standards" },
-              ] },
-            ].map((group) => (
-              <details key={group.title} className="border-b border-hairline/10 py-3">
-                <summary className="cursor-pointer list-none font-display text-lg font-semibold text-surface-soft">{group.title}</summary>
-                <div className="mt-3 grid gap-3 pb-2 text-sm text-surface-soft/65">
-                  {group.links.map((item) => (
-                    <Link key={`${group.title}-${item.href}-${item.label}`} href={item.href} className="break-words transition hover:text-primary">
+              <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-400">
+                Legal
+              </p>
+              <ul className="mt-3 space-y-2 text-sm text-surface-soft/75">
+                {legalLinks.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="transition hover:text-white"
+                    >
                       {item.label}
                     </Link>
-                  ))}
-                </div>
-              </details>
-            ))}
-          </div>
-
-          <div className="mt-9 border-t border-hairline/10 pt-7">
-            <p className="mb-2 text-sm font-bold text-surface-soft">Legal</p>
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm text-surface-soft/60">
-              {legalLinks.map((item) => (
-                <Link key={item.href} href={item.href} className="transition hover:text-primary">
-                  {item.label}
-                </Link>
-              ))}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
 
-          <div className="mt-10 grid gap-4 border-t border-hairline/10 pt-7 text-xs text-surface-soft/50 sm:grid-cols-[1fr_auto] sm:items-center">
-            <p className="font-medium">Secure document handling, clear project updates, and careful human review.</p>
-            <div className="flex flex-wrap gap-2 sm:justify-end">
-              {["Privacy first", "Confidential", "Secure connection"].map((item) => (
-                <span key={item} className="rounded border border-hairline/10 bg-dark-surface/70 px-3 py-2 font-bold">
-                  {item}
-                </span>
-              ))}
+            <div className="mt-6 rounded-xl border border-hairline/10 bg-white/[0.02] p-3.5 text-xs text-surface-soft/60">
+              <p className="font-semibold text-white/90">Secure Handling Guarantee</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-surface-soft/50">
+                Privacy-first editorial workflow, confidentiality protection, and encrypted document delivery.
+              </p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="border-t border-hairline/5 px-5 py-7 text-center">
-        <p className="font-display text-lg font-bold tracking-normal text-surface-soft sm:text-xl">
-          My Editing and Proofreading Desk
-        </p>
-        <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-surface-soft/35">
-          Clearer writing for important work.
-        </p>
-        <div className="mt-4 flex items-center justify-center gap-3 text-surface-soft/70">
-          <a
-            href={FACEBOOK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit our Facebook page"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/10 bg-white/[0.04] transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
-          >
-            <FacebookIcon className="h-4 w-4" />
-          </a>
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit our Instagram profile"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/10 bg-white/[0.04] transition duration-200 hover:border-primary hover:bg-primary hover:text-white"
-          >
-            <InstagramIcon className="h-4 w-4" />
-          </a>
+        {/* ─── Middle Tier Mobile Accordions (md:hidden) ─── */}
+        <div className="grid gap-2 py-6 md:hidden">
+          <details className="border-b border-hairline/10 py-3 group">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              <span>Editorial Services</span>
+              <span className="text-surface-soft/40 transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul className="mt-3 grid gap-2.5 pb-2 text-sm text-surface-soft/75">
+              {seoServicePages.map((service) => (
+                <li key={`mob-${service.slug}`}>
+                  <Link href={`/${service.slug}`} className="transition hover:text-white">
+                    {service.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </details>
+
+          <details className="border-b border-hairline/10 py-3 group">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              <span>Platform & Desk</span>
+              <span className="text-surface-soft/40 transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul className="mt-3 grid gap-2.5 pb-2 text-sm text-surface-soft/75">
+              {platformLinks.map((item) => (
+                <li key={`mob-${item.href}`}>
+                  <Link href={item.href} className="transition hover:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </details>
+
+          <details className="border-b border-hairline/10 py-3 group">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              <span>Global Desks ({COMPANY_OFFICES.length})</span>
+              <span className="text-surface-soft/40 transition group-open:rotate-180">▾</span>
+            </summary>
+            <div className="mt-3 grid gap-2 pb-2">
+              {COMPANY_OFFICES.map((office) => (
+                <div key={`mob-off-${office.id}`} className="rounded border border-hairline/10 bg-white/[0.02] p-2.5 text-xs">
+                  <p className="font-semibold text-white">{office.flag} {office.name}{office.isHeadquarters ? " · HQ" : ""}</p>
+                  <p className="text-surface-soft/55 text-[11px] mt-0.5">{office.city}, {office.country}</p>
+                </div>
+              ))}
+              <Link href="/contact" className="mt-1 text-xs text-sky-400 font-medium">
+                View full office addresses & phone numbers →
+              </Link>
+            </div>
+          </details>
+
+          <details className="border-b border-hairline/10 py-3 group">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              <span>Trust & Legal</span>
+              <span className="text-surface-soft/40 transition group-open:rotate-180">▾</span>
+            </summary>
+            <div className="mt-3 pb-2 text-xs">
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {trustBadges.map((badge) => (
+                  <span key={`mob-t-${badge}`} className="rounded border border-hairline/10 bg-white/[0.03] px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-surface-soft/80">
+                    {badge}
+                  </span>
+                ))}
+              </div>
+              <ul className="space-y-2 text-sm text-surface-soft/75">
+                {legalLinks.map((item) => (
+                  <li key={`mob-l-${item.href}`}>
+                    <Link href={item.href} className="transition hover:text-white">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        {/* ─── Bottom Tier: Copyright & Brand Statement ─── */}
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-hairline/10 pt-8 text-xs text-surface-soft/50 sm:flex-row">
+          <p>
+            © {new Date().getFullYear()} My Editing and Proofreading Desk. All rights reserved.
+          </p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-surface-soft/40">
+            Clearer writing for important work.
+          </p>
         </div>
       </div>
     </footer>
   );
 }
+
