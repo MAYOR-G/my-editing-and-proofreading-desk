@@ -1,5 +1,24 @@
 # SEO, Content, and Security Changelog
 
+## 20 October 2026 — Claude SEO Alignment & Strategic Content Expansion
+
+- Implemented Claude SEO framework standards across content quality, semantic clustering, AI search (GEO), and technical access policy.
+- Added five authoritative, long-form editorial guides targeting high-intent commercial gaps in referencing, academic chapters, ESL publishing, and book manuscripts:
+  - `/blog/chicago-vs-mla-vs-apa-citation-guide`: Comparative analysis of Chicago (CMOS 17), MLA 9, and APA 7 citation styles, in-text rules, block quote thresholds, and bibliography structures.
+  - `/blog/harvard-referencing-guide-common-errors`: Deep guide on Harvard author-date referencing, institutional variants (Cite Them Right), multi-author attributions, and fixes for 7 common formatting pitfalls.
+  - `/blog/how-to-edit-literature-review`: 3-pass academic framework for transforming descriptive summaries into synthesized thematic arguments before thesis submission.
+  - `/blog/esl-academic-proofreading-guide`: Language mechanics guide for multilingual scholars targeting international peer-reviewed journals (article usage, subject-verb agreement, collocations, false friends).
+  - `/blog/book-manuscript-proofreading-guide`: Comprehensive author guide covering the 4 editorial stages, author style sheets, galley proofing, widows/orphans, and publication readiness.
+- Generated and optimized 5 dedicated 16:9 WebP hero images in `/public/images/blog/` with descriptive alt text and zero layout shift.
+- Verified content quality through Claude SEO tooling:
+  - `content_humanize.py`: 0 invisible Unicode watermarks, 0 AI-cliché phrases.
+  - `content_quality.py`: 0 filler score, 0 AI pattern hits, 0.52 information density, 86 composite quality score.
+  - `metadata_template.py`: 0 templated titles or boilerplate descriptions, site risk verified low.
+- Updated `app/sitemap.ts` to dynamically calculate and include paginated blog archive routes (`/blog/page/2`, `/blog/page/3`, etc.) with accurate `lastModified` timestamps.
+- Enhanced `app/robots.ts` with comprehensive modern AI search engine user agents (`GPTBot`, `OAI-SearchBot`, `ChatGPT-User`, `ClaudeBot`, `Claude-SearchBot`, `Claude-User`, `PerplexityBot`, `Perplexity-User`, `Applebot-Extended`, `Google-Extended`) while preserving private path exclusions.
+- Updated `public/llms.txt` with direct citation links and summaries for all 5 new authoritative guides.
+- Verified Next.js production build: 105 static pages generated successfully with zero errors.
+
 ## 3 October 2026 — Homepage cleanup, mobile fixes, and large attachments
 
 - Removed the homepage's Submit Your Paper and Clear Pricing promotional sections while preserving the `/submit` and `/pricing` routes used elsewhere in customer journeys.

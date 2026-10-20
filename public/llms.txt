@@ -23,7 +23,12 @@
 - [Translation Review and Editing Services](https://www.editandproofread.com/translation-review): Human review of translated English for grammar, tone, terminology, clarity, and natural phrasing.
 
 ## Guides
-- [Blog](https://www.editandproofread.com/blog): Editing, proofreading, pricing, thesis, dissertation, and writing-support guides.
+- [Blog](https://www.editandproofread.com/blog): Editing, proofreading, pricing, thesis, dissertation, citation, and writing-support guides.
+- [Chicago vs MLA vs APA Style Guide](https://www.editandproofread.com/blog/chicago-vs-mla-vs-apa-citation-guide): In-text citation systems, block quotes, and end-matter rules across Chicago (CMOS), MLA 9, and APA 7.
+- [Harvard Referencing Style Guide](https://www.editandproofread.com/blog/harvard-referencing-guide-common-errors): Author-date in-text citations, multi-author attributions, reference lists, and fixes for 7 common formatting errors.
+- [How to Edit an Academic Literature Review](https://www.editandproofread.com/blog/how-to-edit-literature-review): Three-pass framework for transforming descriptive summaries into synthesized scholarly arguments.
+- [Academic Proofreading for ESL Authors](https://www.editandproofread.com/blog/esl-academic-proofreading-guide): Overcoming article errors, subject-verb agreement, false friends, and preposition collocations before journal peer review.
+- [Book and Manuscript Proofreading Guide](https://www.editandproofread.com/blog/book-manuscript-proofreading-guide): The complete author guide from developmental stages through galley proofs and typesetting checks.
 - [Editing vs Proofreading](https://www.editandproofread.com/blog/editing-vs-proofreading): Practical comparison of editing and proofreading stages.
 - [Thesis Proofreading Checklist](https://www.editandproofread.com/blog/thesis-proofreading-checklist): Checklist for thesis language, formatting, citations, figures, and final submission readiness.
 - [Dissertation Proofreading Checklist](https://www.editandproofread.com/blog/dissertation-proofreading-checklist): Long-document proofreading and final review guidance.

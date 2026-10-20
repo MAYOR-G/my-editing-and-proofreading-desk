@@ -2,6 +2,7 @@ import { newLearningCenterPosts } from "@/lib/new-learning-center-posts";
 import { requestedBlogPosts } from "@/lib/requested-blog-posts";
 import { seoOpportunityPosts } from "@/lib/seo-opportunity-posts";
 import { gscOpportunityBlogPosts } from "@/lib/gsc-opportunity-blog-posts";
+import { strategicSeoBlogPosts } from "@/lib/strategic-seo-blog-posts";
 
 export type BlogTextPart =
   | string
@@ -62,6 +63,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 const allBlogPosts: BlogPost[] = [
+  ...strategicSeoBlogPosts,
   ...requestedBlogPosts,
   ...seoOpportunityPosts,
   ...newLearningCenterPosts,

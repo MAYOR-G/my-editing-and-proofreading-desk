@@ -33,7 +33,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: post.dateUpdated,
   }));
 
-  return [...staticRoutes, ...seoServiceRoutes, ...blogRoutes].map((route) => ({
+  const totalBlogPages = Math.ceil(blogPosts.length / BLOG_POSTS_PER_PAGE);
+  const paginatedBlogRoutes = Array.from({ length: Math.max(totalBlogPages - 1, 0) }, (_, index) => ({
+    path: `/blog/page/${index + 2}`,
+    lastModified: blogPosts[0]?.dateUpdated,
+  }));
+
+  return [...staticRoutes, ...seoServiceRoutes, ...paginatedBlogRoutes, ...blogRoutes].map((route) => ({
     url: route.path === "/" ? absoluteUrl(route.path).replace(/\/$/, "") : absoluteUrl(route.path),
     lastModified: route.lastModified ? new Date(`${route.lastModified}T00:00:00.000Z`) : undefined,
   }));
