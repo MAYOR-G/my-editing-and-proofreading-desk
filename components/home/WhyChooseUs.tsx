@@ -11,8 +11,8 @@ const valuePoints = [
     icon: UserCheck
   },
   {
-    title: "Academic and professional precision",
-    body: "We improve grammar, structure, clarity, flow, and tone for high-stakes academic, business, and professional writing.",
+    title: "Academic & Graduate Research Precision",
+    body: "We improve grammar, structure, clarity, flow, and tone for high-stakes Academic & Graduate Research, theses, dissertations, and professional writing.",
     icon: FileText
   },
   {

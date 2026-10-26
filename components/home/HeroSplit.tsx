@@ -30,7 +30,7 @@ const flipWords = [
 
 const focusAreas = [
   "Human Review",
-  "Academic Editing",
+  "Academic & Graduate Research",
   "Business Proposals",
   "Scientific Documents",
   "CV & Résumé Review",
@@ -154,7 +154,7 @@ export function HeroSplit() {
               Professional editing and proofreading services for <span className="text-primary italic">important</span> documents.
             </h1>
             <p className="mb-5 max-w-xl text-base leading-8 text-charcoal/80 sm:text-lg">
-              Human-led editing for academic papers, business documents, manuscripts, applications, and professional writing that needs clarity, structure, and polish.
+              Human-led editing for Academic & Graduate Research, theses, dissertations, manuscripts, and professional writing that needs clarity, structure, and polish.
             </p>
             <div className="text-lg sm:text-xl text-charcoal font-medium leading-relaxed max-w-xl mb-12 flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <span className="opacity-80">Specialist support for:</span>

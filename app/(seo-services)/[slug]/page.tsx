@@ -96,7 +96,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     },
   },
   "academic-proofreading": {
-    heading: "A broad final review for essays, research papers, and academic submissions.",
+    heading: "A comprehensive final review for Academic & Graduate Research, essays, and journal submissions.",
     paragraphs: [
       "Academic proofreading concentrates on language and presentation across shorter papers and final research documents. It can check scholarly tone, terminology, headings, citations, references, tables, and figures within the material supplied.",
       "Thesis editing is more suitable for chapters that still need structural revision. Dissertation proofreading is a dedicated whole-document final pass for long graduate submissions with front matter, appendices, and institution-specific presentation rules.",
@@ -132,7 +132,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     },
   },
   "thesis-editing": {
-    heading: "Chapter-level revision before the thesis reaches its final proofread.",
+    heading: "Chapter-level revision for Academic & Graduate Research before the thesis reaches its final proofread.",
     paragraphs: [
       "Thesis editing can work across the abstract, introduction, literature review, methods, results, discussion, and conclusion, with attention to how each chapter supports the research purpose. Supervisor comments and institutional guidance help define the appropriate scope.",
       "The service improves the student's own draft through tracked changes, comments, and human editorial judgment. It can clarify transitions and flag gaps or inconsistencies, but decisions about methods, analysis, claims, and responses to supervisors remain with the author.",
@@ -167,7 +167,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     },
   },
   "dissertation-proofreading": {
-    heading: "A whole-document final pass after supervisor and content revisions.",
+    heading: "A whole-document final pass for Academic & Graduate Research after supervisor revisions.",
     paragraphs: [
       "A dissertation proofread checks consistency across chapters as well as front matter, pagination, headings, captions, tables, figures, references, appendices, and the exported submission file. The best time to begin is after the argument and chapter order are stable.",
       "Long documents need realistic scheduling and time for the author to review tracked changes, answer comments, refresh fields, and inspect the final PDF. Projects above the calculator's automatic word-count range require scope and turnaround confirmation before work begins.",

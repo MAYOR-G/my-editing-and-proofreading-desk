@@ -3,6 +3,9 @@ import { requestedBlogPosts } from "@/lib/requested-blog-posts";
 import { seoOpportunityPosts } from "@/lib/seo-opportunity-posts";
 import { gscOpportunityBlogPosts } from "@/lib/gsc-opportunity-blog-posts";
 import { strategicSeoBlogPosts } from "@/lib/strategic-seo-blog-posts";
+import { blogAiVsHumanGraduateResearch } from "@/lib/blog-ai-vs-human-graduate-research";
+import { blogFormattingChallengesPhd } from "@/lib/blog-formatting-challenges-phd";
+import { blogCanAiEditResearchPaper } from "@/lib/blog-can-ai-edit-research-paper";
 
 export type BlogTextPart =
   | string
@@ -63,6 +66,9 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 const allBlogPosts: BlogPost[] = [
+  blogAiVsHumanGraduateResearch,
+  blogFormattingChallengesPhd,
+  blogCanAiEditResearchPaper,
   ...strategicSeoBlogPosts,
   ...requestedBlogPosts,
   ...seoOpportunityPosts,

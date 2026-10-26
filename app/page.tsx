@@ -22,7 +22,7 @@ const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion")
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Thesis & Document Editing | My Editing and Proofreading Desk",
-  description: `Human editors for your thesis, dissertation, research paper or business document. Tracked changes, secure upload and rates from ${BASE_RATE_DISPLAY} per word.`,
+  description: `Human editors for Academic & Graduate Research, theses, dissertations, research papers, and professional writing. Tracked changes, secure upload, and rates from ${BASE_RATE_DISPLAY} per word.`,
   path: "/",
 });
 
@@ -35,7 +35,7 @@ export default function Home() {
           webPageJsonLd({
             path: "/",
             name: "Professional Editing and Proofreading Services",
-            description: "Human editing, proofreading, formatting, and document review for academic, business, author, and professional writing.",
+            description: "Human editing, proofreading, formatting, and document review for Academic & Graduate Research, business, author, and professional writing.",
           }),
           faqPageJsonLd(faqs.slice(0, 4)),
         ])}
