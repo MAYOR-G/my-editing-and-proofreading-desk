@@ -231,8 +231,9 @@ export default async function AdminRequestsPage({
     const enrichedMessages = await supabaseAdmin
       .from("contact_messages")
       .select(messageColumnsWithAttachments)
+      .order("latest_message_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
-      .limit(75);
+      .limit(100);
     data = enrichedMessages.data;
     error = enrichedMessages.error;
   } catch (e) {
@@ -244,8 +245,9 @@ export default async function AdminRequestsPage({
       const fallback = await supabaseAdmin
         .from("contact_messages")
         .select(baseMessageColumns)
+        .order("latest_message_at", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
-        .limit(75);
+        .limit(100);
       data = fallback.data;
       error = fallback.error;
     } catch (e) {
@@ -259,7 +261,7 @@ export default async function AdminRequestsPage({
         .from("contact_messages")
         .select(`id, name, email, subject, message, source, status, user_id, project_id, admin_reply, replied_at, created_at, updated_at`)
         .order("created_at", { ascending: false })
-        .limit(75);
+        .limit(100);
       data = legacyFallback.data;
       error = legacyFallback.error;
     } catch (e) {
@@ -268,40 +270,18 @@ export default async function AdminRequestsPage({
   }
 
   const allMessages: MessageRow[] = data || [];
-  const groupedByThread = allMessages.reduce<Map<string, MessageRow>>((threads, message) => {
-    const key = message.thread_key || makeThreadKey(message.email || "");
-    const current = threads.get(key);
-    const messageTime = new Date(message.latest_message_at || message.updated_at || message.created_at || 0).getTime();
-    const currentTime = current ? new Date(current.latest_message_at || current.updated_at || current.created_at || 0).getTime() : 0;
-    if (!current || messageTime > currentTime) {
-      threads.set(key, {
-        ...message,
-        thread_key: key,
-        thread_count: (current?.thread_count || 0) + 1,
-      });
-    } else if (current) {
-      current.thread_count = (current.thread_count || 1) + 1;
-    }
-    return threads;
-  }, new Map<string, MessageRow>());
-
-  const groupedMessages: MessageRow[] = Array.from(groupedByThread.values()).sort((a, b) => {
+  const messages: MessageRow[] = allMessages.slice().sort((a, b) => {
     const aTime = new Date(a.latest_message_at || a.updated_at || a.created_at || 0).getTime();
     const bTime = new Date(b.latest_message_at || b.updated_at || b.created_at || 0).getTime();
     return bTime - aTime;
   });
 
-  const messages: MessageRow[] = groupedMessages;
   const selected: MessageRow | null = messages.find((message) => message.id === searchParams?.message) || messages[0] || null;
-  const selectedThreadKey = selected ? selected.thread_key || makeThreadKey(selected.email || "") : "";
-  const selectedThreadRoots = selected
-    ? allMessages
-        .filter((message) => (message.thread_key || makeThreadKey(message.email || "")) === selectedThreadKey)
-        .sort((a, b) => new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime())
-    : [];
-  let threadReplies: Array<Record<string, any>> = [];
 
-  if (selected?.id) {
+  const messageIds = messages.map((m) => m.id);
+  let allReplies: Array<Record<string, any>> = [];
+
+  if (messageIds.length > 0) {
     try {
       const replyColumns = `
         id,
@@ -320,89 +300,102 @@ export default async function AdminRequestsPage({
       const enrichedReplies = await supabaseAdmin
         .from("contact_message_replies")
         .select(replyColumns)
-        .in("message_id", selectedThreadRoots.map((message) => message.id))
+        .in("message_id", messageIds)
         .order("created_at", { ascending: true });
 
       if (enrichedReplies.error) {
         const fallbackReplies = await supabaseAdmin
           .from("contact_message_replies")
           .select("id, message_id, reply, sent_to, created_at")
-          .in("message_id", selectedThreadRoots.map((message) => message.id))
+          .in("message_id", messageIds)
           .order("created_at", { ascending: true });
-        threadReplies = fallbackReplies.data || [];
+        allReplies = fallbackReplies.data || [];
       } else {
-        threadReplies = enrichedReplies.data || [];
+        allReplies = enrichedReplies.data || [];
       }
     } catch (e) {
       console.warn("Replies fetch caught error:", e);
     }
-
-    if (selected.last_sender === "user" && Number(selected.unread_count || 0) > 0) {
-      await supabaseAdmin
-        .from("contact_messages")
-        .update({ unread_count: 0, status: selected.status === "New" ? "Open" : selected.status, updated_at: new Date().toISOString() })
-        .eq("id", selected.id);
-      selected.unread_count = 0;
-      if (selected.status === "New") selected.status = "Open";
-    }
   }
 
-  const conversationEvents: ConversationEvent[] = selected
-    ? [
-        ...selectedThreadRoots.map((root) => ({
-          id: root.id,
-          messageId: root.id,
-          senderType: "user" as const,
-          senderName: root.name,
-          senderEmail: root.email,
-          content: root.message,
-          createdAt: root.created_at,
-          attachmentFilePath: root.attachment_file_path,
-          attachmentFileName: root.attachment_file_name,
-          attachmentContentType: root.attachment_content_type,
-          attachmentFileSize: root.attachment_file_size,
-        })),
-        ...threadReplies.map((reply) => ({
-          id: reply.id,
-          messageId: reply.message_id || selected.id,
-          senderType: (reply.sender_type || "admin") as "user" | "admin",
-          senderName: reply.sender_name || (reply.sender_type === "user" ? selected.name : "Support"),
-          senderEmail: reply.sender_email || (reply.sender_type === "user" ? selected.email : SUPPORT_EMAIL),
-          content: reply.reply,
-          createdAt: reply.created_at,
-          attachmentFilePath: reply.attachment_file_path,
-          attachmentFileName: reply.attachment_file_name,
-          attachmentContentType: reply.attachment_content_type,
-          attachmentFileSize: reply.attachment_file_size,
-        })),
-      ].sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime())
+  if (selected?.id && selected.last_sender === "user" && Number(selected.unread_count || 0) > 0) {
+    await supabaseAdmin
+      .from("contact_messages")
+      .update({ unread_count: 0, status: selected.status === "New" ? "Open" : selected.status, updated_at: new Date().toISOString() })
+      .eq("id", selected.id);
+    selected.unread_count = 0;
+    if (selected.status === "New") selected.status = "Open";
+  }
+
+  const conversationEventsByMessageId: Record<string, ConversationEvent[]> = {};
+  for (const m of messages) {
+    const rootEvent: ConversationEvent = {
+      id: `root-${m.id}`,
+      messageId: m.id,
+      senderType: "user",
+      senderName: m.name,
+      senderEmail: m.email,
+      content: m.message,
+      createdAt: m.created_at,
+      attachmentFilePath: m.attachment_file_path,
+      attachmentFileName: m.attachment_file_name,
+      attachmentContentType: m.attachment_content_type,
+      attachmentFileSize: m.attachment_file_size,
+    };
+
+    const repliesForM = allReplies
+      .filter((r) => r.message_id === m.id)
+      .map((reply) => ({
+        id: reply.id,
+        messageId: m.id,
+        senderType: (reply.sender_type || "admin") as "user" | "admin",
+        senderName: reply.sender_name || (reply.sender_type === "user" ? m.name : "Support"),
+        senderEmail: reply.sender_email || (reply.sender_type === "user" ? m.email : SUPPORT_EMAIL),
+        content: reply.reply,
+        createdAt: reply.created_at,
+        attachmentFilePath: reply.attachment_file_path,
+        attachmentFileName: reply.attachment_file_name,
+        attachmentContentType: reply.attachment_content_type,
+        attachmentFileSize: reply.attachment_file_size,
+      }));
+
+    conversationEventsByMessageId[m.id] = [rootEvent, ...repliesForM].sort(
+      (a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
+    );
+  }
+
+  const selectedConversationEvents: ConversationEvent[] = selected
+    ? conversationEventsByMessageId[selected.id] || []
     : [];
 
-  const formattedMessages: MessageItem[] = messages.map((m) => ({
-    id: m.id,
-    name: m.name,
-    email: m.email,
-    phone: m.phone,
-    subject: m.subject || "(No subject)",
-    message: m.message,
-    source: m.source,
-    status: m.status || "Open",
-    user_id: m.user_id,
-    project_id: m.project_id,
-    admin_reply: m.admin_reply,
-    replied_at: m.replied_at,
-    created_at: m.created_at,
-    updated_at: m.updated_at,
-    latest_message: m.latest_message,
-    latest_message_at: m.latest_message_at,
-    last_sender: m.last_sender,
-    unread_count: m.unread_count,
-    thread_count: m.thread_count,
-    attachment_file_path: m.attachment_file_path,
-    attachment_file_name: m.attachment_file_name,
-    attachment_content_type: m.attachment_content_type,
-    attachment_file_size: m.attachment_file_size,
-  }));
+  const formattedMessages: MessageItem[] = messages.map((m) => {
+    const threadRepliesCount = allReplies.filter((r) => r.message_id === m.id).length;
+    return {
+      id: m.id,
+      name: m.name,
+      email: m.email,
+      phone: m.phone,
+      subject: m.subject || "(No subject)",
+      message: m.message,
+      source: m.source,
+      status: m.status || "Open",
+      user_id: m.user_id,
+      project_id: m.project_id,
+      admin_reply: m.admin_reply,
+      replied_at: m.replied_at,
+      created_at: m.created_at,
+      updated_at: m.updated_at,
+      latest_message: m.latest_message,
+      latest_message_at: m.latest_message_at,
+      last_sender: m.last_sender,
+      unread_count: m.unread_count,
+      thread_count: threadRepliesCount + 1,
+      attachment_file_path: m.attachment_file_path,
+      attachment_file_name: m.attachment_file_name,
+      attachment_content_type: m.attachment_content_type,
+      attachment_file_size: m.attachment_file_size,
+    };
+  });
 
   return (
     <DashboardShell
@@ -418,7 +411,8 @@ export default async function AdminRequestsPage({
       <AdminMessagesManager
         messages={formattedMessages}
         selectedId={selected?.id}
-        conversationEvents={conversationEvents}
+        conversationEvents={selectedConversationEvents}
+        conversationEventsByMessageId={conversationEventsByMessageId}
         replyStatus={searchParams?.reply}
         supportEmail={SUPPORT_EMAIL}
         updateStatusAction={updateMessageStatus}

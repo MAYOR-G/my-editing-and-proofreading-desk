@@ -45,9 +45,10 @@ export default async function AdminDashboardPage() {
 
   const { data: recentMessages, error: messagesError } = await supabaseAdmin
     .from("contact_messages")
-    .select("id, name, email, subject, status, source, created_at")
+    .select("id, name, email, subject, message, latest_message, status, source, created_at, latest_message_at, updated_at")
+    .order("latest_message_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(6);
 
   if (projectsError) {
     console.error("Error fetching admin projects:", projectsError);
@@ -161,13 +162,18 @@ export default async function AdminDashboardPage() {
               <Link key={message.id} href={`/admin/requests?message=${message.id}`} className="block p-5 transition hover:bg-paper/70">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-ink">{message.subject}</p>
+                    <p className="truncate text-sm font-semibold text-ink">{message.subject || "(No subject)"}</p>
                     <p className="mt-1 truncate text-xs text-charcoal/52">{message.name} · {message.email}</p>
                   </div>
                   <StatusBadge>{message.status || "New"}</StatusBadge>
                 </div>
-                <p className="mt-3 text-xs uppercase tracking-[0.16em] text-charcoal/42">
-                  {message.source || "Contact Form"} · {new Date(message.created_at).toLocaleDateString()}
+                {(message.latest_message || message.message) ? (
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-charcoal/65">
+                    {message.latest_message || message.message}
+                  </p>
+                ) : null}
+                <p className="mt-2.5 text-xs uppercase tracking-[0.16em] text-charcoal/42">
+                  {message.source || "Contact Form"} · {new Date(message.latest_message_at || message.created_at).toLocaleDateString()}
                 </p>
               </Link>
             )) : (

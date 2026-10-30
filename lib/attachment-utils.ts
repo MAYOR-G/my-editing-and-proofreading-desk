@@ -6,7 +6,7 @@ export type StoredAttachment = {
   content: Buffer;
 };
 
-export const ADMIN_ATTACHMENT_MAX_BYTES = 25 * 1024 * 1024;
+export const ADMIN_ATTACHMENT_MAX_BYTES = 50 * 1024 * 1024;
 
 const ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS = new Set([
   ".doc",
@@ -35,7 +35,7 @@ export function validateAdminAttachment(file: File | null | undefined) {
   if (!file || file.size <= 0) return null;
 
   if (file.size > ADMIN_ATTACHMENT_MAX_BYTES) {
-    return "Attached files must be 25MB or smaller.";
+    return "Attached files must be 50MB or smaller.";
   }
 
   const extension = getExtension(file.name);

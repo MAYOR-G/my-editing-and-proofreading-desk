@@ -93,7 +93,7 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
       let attachmentDetails: { path: string; name: string; size: number; contentType: string } | null = null;
 
       if (hasAttachment && attachment instanceof File) {
-        if (attachment.size > 25 * 1024 * 1024) throw new Error("Please keep support attachments under 25MB.");
+        if (attachment.size > 50 * 1024 * 1024) throw new Error("Please keep support attachments under 50MB.");
         setFeedback("Uploading your attachment securely...");
         const uploadUrlResponse = await fetch("/api/contact/upload-url", {
           method: "POST",
@@ -269,7 +269,7 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
             className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
           />
           <span className="text-xs font-normal leading-5 text-body">
-            PDF, Word, text, spreadsheet, presentation, image, or ZIP files up to 25MB.
+            PDF, Word, text, spreadsheet, presentation, image, or ZIP files up to 50MB.
           </span>
         </label>
 

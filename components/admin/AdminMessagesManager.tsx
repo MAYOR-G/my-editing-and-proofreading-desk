@@ -48,7 +48,8 @@ export type ConversationEvent = {
 type AdminMessagesManagerProps = {
   messages: MessageItem[];
   selectedId?: string;
-  conversationEvents: ConversationEvent[];
+  conversationEvents?: ConversationEvent[];
+  conversationEventsByMessageId?: Record<string, ConversationEvent[]>;
   replyStatus?: string;
   supportEmail: string;
   updateStatusAction: (formData: FormData) => Promise<void>;
@@ -109,6 +110,7 @@ export function AdminMessagesManager({
   messages,
   selectedId,
   conversationEvents,
+  conversationEventsByMessageId,
   replyStatus,
   supportEmail,
   updateStatusAction,
@@ -126,6 +128,13 @@ export function AdminMessagesManager({
   const deleteModalRef = useRef<HTMLDivElement>(null);
   const deleteTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileBackButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Sync activeMessageId if selectedId prop changes (e.g. from page load or router navigation)
+  useEffect(() => {
+    if (selectedId) {
+      setActiveMessageId(selectedId);
+    }
+  }, [selectedId]);
 
   // Filter messages based on search query and unread status
   const filteredMessages = useMemo(() => {
@@ -150,6 +159,31 @@ export function AdminMessagesManager({
   const activeMessage = useMemo(() => {
     return messages.find((m) => m.id === activeMessageId) || filteredMessages[0] || null;
   }, [messages, filteredMessages, activeMessageId]);
+
+  const activeEvents = useMemo(() => {
+    if (!activeMessage) return [];
+    if (conversationEventsByMessageId && conversationEventsByMessageId[activeMessage.id]) {
+      return conversationEventsByMessageId[activeMessage.id];
+    }
+    const matching = (conversationEvents || []).filter((e) => e.messageId === activeMessage.id);
+    if (matching.length > 0) return matching;
+
+    return [
+      {
+        id: `root-${activeMessage.id}`,
+        messageId: activeMessage.id,
+        senderType: "user" as const,
+        senderName: activeMessage.name,
+        senderEmail: activeMessage.email,
+        content: activeMessage.message,
+        createdAt: activeMessage.created_at,
+        attachmentFilePath: activeMessage.attachment_file_path,
+        attachmentFileName: activeMessage.attachment_file_name,
+        attachmentContentType: activeMessage.attachment_content_type,
+        attachmentFileSize: activeMessage.attachment_file_size,
+      },
+    ];
+  }, [activeMessage, conversationEventsByMessageId, conversationEvents]);
 
   // Lock scroll when mobile sheet or delete modal is open
   useEffect(() => {
@@ -181,6 +215,11 @@ export function AdminMessagesManager({
   const handleSelectMessage = (id: string) => {
     setActiveMessageId(id);
     setMobileSheetOpen(true);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("message", id);
+      window.history.replaceState(null, "", url.toString());
+    }
   };
 
   const handleCopyEmail = (email: string) => {
@@ -311,7 +350,7 @@ export function AdminMessagesManager({
           {activeMessage ? (
             <MessageDetailCard
               message={activeMessage}
-              conversationEvents={conversationEvents}
+              conversationEvents={activeEvents}
               replyStatus={replyStatus}
               supportEmail={supportEmail}
               updateStatusAction={updateStatusAction}
@@ -357,7 +396,7 @@ export function AdminMessagesManager({
           <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             <MessageDetailCard
               message={activeMessage}
-              conversationEvents={conversationEvents}
+              conversationEvents={activeEvents}
               replyStatus={replyStatus}
               supportEmail={supportEmail}
               updateStatusAction={updateStatusAction}
@@ -476,7 +515,7 @@ function MessageDetailCard({
           {replyStatus === "missing"
             ? "Write a reply before sending."
             : replyStatus === "attachment"
-              ? "Attachment file invalid. Use DOC, DOCX, PDF, TXT, RTF, or ZIP under 25MB."
+              ? "Attachment file invalid. Use DOC, DOCX, PDF, TXT, RTF, or ZIP under 50MB."
               : "Failed to send reply. Please try again."}
         </div>
       ) : null}
@@ -571,10 +610,23 @@ function MessageDetailCard({
                     <RenderPlainTextWithLinks text={event.content} />
                   </div>
                   {event.attachmentFilePath ? (
-                    <div className="mt-3 border-t border-hairline/60 pt-2 text-xs text-charcoal/60">
-                      <span>Attachment: </span>
-                      <span className="font-semibold text-ink">{event.attachmentFileName || "File"}</span>
-                      {event.attachmentFileSize ? <span> ({formatFileSize(event.attachmentFileSize)})</span> : null}
+                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-hairline/60 pt-2.5 text-xs text-charcoal/70">
+                      <span className="font-semibold text-ink">Attachment:</span>
+                      <a
+                        href={
+                          event.id === event.messageId || event.id === `root-${event.messageId}`
+                            ? `/api/admin/messages/${event.messageId}/attachment`
+                            : `/api/admin/messages/${event.messageId}/attachment?reply=${event.id}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface-soft px-2.5 py-1 font-semibold text-primary underline underline-offset-2 hover:bg-canvas hover:text-primary-active transition"
+                      >
+                        <span>📎 {event.attachmentFileName || "Download attachment"}</span>
+                        {event.attachmentFileSize ? (
+                          <span className="text-charcoal/50 text-[11px] no-underline">({formatFileSize(event.attachmentFileSize)})</span>
+                        ) : null}
+                      </a>
                     </div>
                   ) : null}
                 </div>
@@ -645,7 +697,7 @@ function MessageDetailCard({
             accept=".doc,.docx,.pdf,.txt,.rtf,.zip"
             className="h-11 w-full rounded-lg border border-hairline bg-canvas px-3 py-1.5 text-xs text-ink file:mr-3 file:h-8 file:rounded-md file:border-0 file:bg-primary file:px-3 file:text-xs file:font-semibold file:text-white hover:file:bg-primary-active focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
-          <span className="text-[11px] text-charcoal/40 mt-1 block">Supported formats: DOC, DOCX, PDF, TXT, RTF, ZIP (max 25MB)</span>
+          <span className="text-[11px] text-charcoal/40 mt-1 block">Supported formats: DOC, DOCX, PDF, TXT, RTF, ZIP (max 50MB)</span>
         </div>
 
         <div className="mt-4 flex justify-end">

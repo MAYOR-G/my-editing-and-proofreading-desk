@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     const validation = validateDocumentFile(extension, buffer, {
       maxEntries: 1_000,
-      maxExpandedBytes: 25 * 1024 * 1024,
+      maxExpandedBytes: 150 * 1024 * 1024,
       maxCompressionRatio: 150,
     });
     if (!validation.valid) {

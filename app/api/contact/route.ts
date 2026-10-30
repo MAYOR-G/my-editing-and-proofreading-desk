@@ -18,7 +18,7 @@ function makeSubject(subject: string, service?: string) {
   return "Website inquiry";
 }
 
-const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+const MAX_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 const ALLOWED_ATTACHMENT_EXTENSIONS = new Set([
   ".doc",
   ".docx",
@@ -211,7 +211,7 @@ export async function POST(request: Request) {
     if (attachment instanceof File && attachment.size > 0) {
       if (attachment.size > MAX_ATTACHMENT_BYTES) {
         return NextResponse.json(
-          { error: "Attached file is too large. Please keep support attachments under 25MB." },
+          { error: "Attached file is too large. Please keep support attachments under 50MB." },
           { status: 413 }
         );
       }
@@ -261,44 +261,29 @@ export async function POST(request: Request) {
 
     const threadKey = makeThreadKey(email);
     const now = new Date().toISOString();
-    const { data: existingThread } = await supabaseAdmin
-      .from("contact_messages")
-      .select("id, unread_count")
-      .eq("thread_key", threadKey)
-      .order("latest_message_at", { ascending: false, nullsFirst: false })
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
 
-    const { error } = existingThread?.id
-      ? await supabaseAdmin.from("contact_message_replies").insert({
-          message_id: existingThread.id,
-          reply: content,
-          sent_to: SUPPORT_EMAIL,
-          sender_type: "user",
-          sender_name: name,
-          sender_email: email,
-          attachment_file_path: attachmentMeta?.attachment_file_path || null,
-          attachment_file_name: attachmentMeta?.attachment_file_name || null,
-          attachment_content_type: attachmentMeta?.attachment_content_type || null,
-          attachment_file_size: attachmentMeta?.attachment_file_size || null,
-        })
-      : await supabaseAdmin.from("contact_messages").insert({
-          thread_key: threadKey,
-          name,
-          email,
-          subject,
-          message: content,
-          source,
-          status: "New",
-          user_id: user?.id || null,
-          project_id: projectId,
-          latest_message: content,
-          latest_message_at: now,
-          last_sender: "user",
-          unread_count: 1,
-          ...(attachmentMeta || {}),
-        });
+    const { data: insertedMessage, error } = await supabaseAdmin
+      .from("contact_messages")
+      .insert({
+        thread_key: threadKey,
+        name,
+        email,
+        subject,
+        message: content,
+        source,
+        status: "New",
+        user_id: user?.id || null,
+        project_id: projectId,
+        latest_message: content,
+        latest_message_at: now,
+        last_sender: "user",
+        unread_count: 1,
+        created_at: now,
+        updated_at: now,
+        ...(attachmentMeta || {}),
+      })
+      .select("id")
+      .single();
 
     if (error) {
       console.error("Contact message save failed:", error);
@@ -308,52 +293,37 @@ export async function POST(request: Request) {
       );
     }
 
-    if (existingThread?.id) {
-      const { error: updateError } = await supabaseAdmin
-        .from("contact_messages")
-        .update({
-          name,
-          email,
-          subject,
-          source,
-          status: "New",
-          user_id: user?.id || null,
-          project_id: projectId,
-          latest_message: content,
-          latest_message_at: now,
-          last_sender: "user",
-          unread_count: Number(existingThread.unread_count || 0) + 1,
-          updated_at: now,
-        })
-        .eq("id", existingThread.id);
+    const appBaseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://business.editandproofread.com").replace(/\/$/, "");
+    const threadUrl = insertedMessage?.id ? `${appBaseUrl}/admin/requests?message=${insertedMessage.id}` : null;
 
-      if (updateError) {
-        console.error("Contact thread update failed:", updateError);
+    try {
+      const notification = await sendContactNotificationEmail({
+        name,
+        email,
+        subject,
+        content,
+        source,
+        userId: user?.id || null,
+        projectId,
+        threadUrl,
+      });
+
+      if (!notification.success) {
+        console.warn("Contact notification email could not be delivered:", notification.error);
       }
+    } catch (notifyErr) {
+      console.warn("Contact notification email caught error:", notifyErr);
     }
 
-    const notification = await sendContactNotificationEmail({
-      name,
-      email,
-      subject,
-      content,
-      source,
-      userId: user?.id || null,
-      projectId,
+    sendContactConfirmationEmail({ name, email, subject, source }).catch((err) => {
+      console.warn("Contact confirmation email failed:", err);
     });
 
-    if (!notification.success) {
-      return NextResponse.json(
-        { error: `We couldn't send your message right now. Please try again or email ${SUPPORT_EMAIL}.` },
-        { status: 502 }
-      );
-    }
-
-    sendContactConfirmationEmail({ name, email, subject, source }).catch((error) => {
-      console.warn("Contact confirmation email failed:", error);
+    return NextResponse.json({
+      success: true,
+      message: "Message sent successfully. Our team will get back to you soon.",
+      messageId: insertedMessage?.id,
     });
-
-    return NextResponse.json({ success: true, message: "Message sent successfully. Our team will get back to you soon." });
   } catch (error) {
     console.error("Contact route failed:", error);
     return NextResponse.json(

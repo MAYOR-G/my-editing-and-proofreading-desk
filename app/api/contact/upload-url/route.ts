@@ -5,7 +5,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
-const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+const MAX_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set([
   ".doc", ".docx", ".pdf", ".txt", ".rtf", ".odt", ".csv", ".xls", ".xlsx",
   ".ppt", ".pptx", ".zip", ".png", ".jpg", ".jpeg", ".webp",
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     const extension = originalName.includes(".") ? originalName.slice(originalName.lastIndexOf(".")).toLowerCase() : "";
 
     if (!originalName || !Number.isFinite(size) || size <= 0 || size > MAX_ATTACHMENT_BYTES) {
-      return NextResponse.json({ error: "Choose a file under 25MB." }, { status: 413 });
+      return NextResponse.json({ error: "Choose a file under 50MB." }, { status: 413 });
     }
     if (!ALLOWED_EXTENSIONS.has(extension)) {
       return NextResponse.json({ error: "This file type is not supported." }, { status: 415 });
