@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef, type FormEvent } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/DashboardShell";
 import { PendingSubmitButton } from "@/components/PendingSubmitButton";
 import { formatUtcDateTime, parseUtcTimestampMs } from "@/lib/message-threading";
+import { createClient } from "@/utils/supabase/client";
 
 export type MessageItem = {
   id: string;
@@ -513,6 +514,86 @@ function MessageDetailCard({
   copiedEmail: boolean;
 }) {
   const isUnread = Number(message.unread_count || 0) > 0 || message.status === "New";
+  const [replySubmitting, setReplySubmitting] = useState(false);
+  const [replyProgress, setReplyProgress] = useState<string>("");
+  const [replyClientError, setReplyClientError] = useState<string>("");
+
+  async function handleReplySubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (replySubmitting) return;
+
+    const form = event.currentTarget;
+    const rawFormData = new FormData(form);
+    const replyText = String(rawFormData.get("reply") || "").trim();
+    const attachmentEntry = rawFormData.get("attachment");
+    const attachmentFile = attachmentEntry instanceof File && attachmentEntry.size > 0 ? attachmentEntry : null;
+
+    if (!replyText) {
+      setReplyClientError("Write a reply before sending.");
+      return;
+    }
+
+    setReplyClientError("");
+    setReplySubmitting(true);
+
+    try {
+      const cleanFormData = new FormData();
+      cleanFormData.set("id", message.id);
+      cleanFormData.set("reply", replyText);
+
+      if (attachmentFile) {
+        if (attachmentFile.size > 50 * 1024 * 1024) {
+          throw new Error("Attached files must be 50MB or smaller.");
+        }
+
+        setReplyProgress(`Uploading ${attachmentFile.name} (${formatFileSize(attachmentFile.size)})...`);
+        const uploadUrlRes = await fetch("/api/admin/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            scope: "reply",
+            targetId: message.id,
+            name: attachmentFile.name,
+            size: attachmentFile.size,
+          }),
+        });
+
+        const uploadUrlData = await uploadUrlRes.json();
+        if (!uploadUrlRes.ok || !uploadUrlData.path || !uploadUrlData.token) {
+          throw new Error(uploadUrlData.error || "Could not prepare attachment upload.");
+        }
+
+        const supabase = createClient();
+        const { error: storageError } = await supabase.storage
+          .from(uploadUrlData.bucket || "uploads")
+          .uploadToSignedUrl(uploadUrlData.path, uploadUrlData.token, attachmentFile, {
+            contentType: attachmentFile.type || "application/octet-stream",
+          });
+
+        if (storageError) {
+          throw new Error("Attachment upload to storage failed. Please try again.");
+        }
+
+        cleanFormData.set("uploadedAttachmentPath", uploadUrlData.path);
+        cleanFormData.set("uploadedAttachmentName", uploadUrlData.name || attachmentFile.name);
+        cleanFormData.set("uploadedAttachmentType", attachmentFile.type || "application/octet-stream");
+        cleanFormData.set("uploadedAttachmentSize", String(attachmentFile.size));
+      }
+
+      setReplyProgress("Sending reply email...");
+      await replyAction(cleanFormData);
+      form.reset();
+      setReplyProgress("");
+      setReplySubmitting(false);
+    } catch (err: any) {
+      if (err && typeof err === "object" && "digest" in err && String(err.digest).startsWith("NEXT_REDIRECT")) {
+        throw err;
+      }
+      setReplyClientError(err instanceof Error ? err.message : "Failed to send reply. Please try again.");
+      setReplyProgress("");
+      setReplySubmitting(false);
+    }
+  }
 
   return (
     <div className="rounded-xl border border-hairline bg-ivory/95 p-6 shadow-sm">
@@ -698,22 +779,36 @@ function MessageDetailCard({
         </div>
       </form>
 
-      {/* In-app Reply Form with R16 Field Styles */}
-      <form action={replyAction} className="mt-6 rounded-lg border border-hairline bg-paper/50 p-4 sm:p-5">
+      {/* In-app Reply Form with Direct-to-Storage Upload for Large Attachments (Up to 50MB) */}
+      <form onSubmit={handleReplySubmit} action={replyAction} className="mt-6 rounded-lg border border-hairline bg-paper/50 p-4 sm:p-5">
         <input type="hidden" name="id" value={message.id} />
         <label htmlFor="reply-textarea" className="block text-xs font-bold uppercase tracking-wider text-charcoal/70 mb-1.5">
           Send Reply from {supportEmail}
         </label>
         <p className="text-xs text-charcoal/50 mb-2">
-          Your reply will be delivered via email and recorded in this thread.
+          Your reply will be delivered via email and recorded in this thread. Large files (up to 50MB) upload directly to secure storage and include a download link in the email.
         </p>
+
+        {replyClientError ? (
+          <div className="mb-3 rounded-lg border border-status-danger/25 bg-status-danger-light p-3 text-xs leading-5 text-status-danger">
+            {replyClientError}
+          </div>
+        ) : null}
+
+        {replyProgress ? (
+          <div className="mb-3 rounded-lg border border-primary/20 bg-primary/10 p-3 text-xs font-medium leading-5 text-primary">
+            {replyProgress}
+          </div>
+        ) : null}
+
         <textarea
           id="reply-textarea"
           name="reply"
           required
+          disabled={replySubmitting}
           rows={5}
           placeholder="Write a clear, professional reply..."
-          className="w-full rounded-lg border border-hairline bg-canvas p-3.5 text-sm leading-[1.6] text-ink transition-colors duration-200 placeholder:text-charcoal/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full rounded-lg border border-hairline bg-canvas p-3.5 text-sm leading-[1.6] text-ink transition-colors duration-200 placeholder:text-charcoal/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
         />
 
         <div className="mt-3">
@@ -724,18 +819,24 @@ function MessageDetailCard({
             id="reply-attachment"
             name="attachment"
             type="file"
-            accept=".doc,.docx,.pdf,.txt,.rtf,.zip"
-            className="h-11 w-full rounded-lg border border-hairline bg-canvas px-3 py-1.5 text-xs text-ink file:mr-3 file:h-8 file:rounded-md file:border-0 file:bg-primary file:px-3 file:text-xs file:font-semibold file:text-white hover:file:bg-primary-active focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            disabled={replySubmitting}
+            accept=".doc,.docx,.pdf,.txt,.rtf,.odt,.csv,.xls,.xlsx,.ppt,.pptx,.zip,.png,.jpg,.jpeg,.webp"
+            className="h-11 w-full rounded-lg border border-hairline bg-canvas px-3 py-1.5 text-xs text-ink file:mr-3 file:h-8 file:rounded-md file:border-0 file:bg-primary file:px-3 file:text-xs file:font-semibold file:text-white hover:file:bg-primary-active focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
           />
-          <span className="text-[11px] text-charcoal/40 mt-1 block">Supported formats: DOC, DOCX, PDF, TXT, RTF, ZIP (max 50MB)</span>
+          <span className="text-[11px] text-charcoal/40 mt-1 block">Supported formats: DOC, DOCX, PDF, TXT, RTF, ZIP, Office & image files (max 50MB)</span>
         </div>
 
         <div className="mt-4 flex justify-end">
-          <PendingSubmitButton
-            idleLabel="Send Reply Email"
-            pendingLabel="Sending..."
-            className="h-11 rounded-lg bg-primary px-6 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-primary-active focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-          />
+          <button
+            type="submit"
+            disabled={replySubmitting}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-primary-active focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {replySubmitting ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true" />
+            ) : null}
+            {replySubmitting ? (replyProgress || "Sending...") : "Send Reply Email"}
+          </button>
         </div>
       </form>
     </div>

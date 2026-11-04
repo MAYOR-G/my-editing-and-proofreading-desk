@@ -9,8 +9,17 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { adminNav } from "@/lib/admin-nav";
 import { sendProjectDeliveryEmail } from "@/lib/email";
-import { fileToStoredAttachment, validateAdminAttachment } from "@/lib/attachment-utils";
+import {
+  ADMIN_ATTACHMENT_MAX_BYTES,
+  ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS,
+  EMAIL_DIRECT_ATTACHMENT_MAX_BYTES,
+  fileToStoredAttachment,
+  getExtension,
+  sanitizeFilename,
+  validateAdminAttachment,
+} from "@/lib/attachment-utils";
 import { PendingSubmitButton } from "@/components/PendingSubmitButton";
+import { AdminProjectDeliveryForm } from "@/components/admin/AdminProjectDeliveryForm";
 import {
   displayPaymentStatus,
   displayProjectStatus,
@@ -81,14 +90,22 @@ async function sendCompletedFile(formData: FormData) {
   const id = String(formData.get("id") || "");
   const note = String(formData.get("note") || "").trim().slice(0, 2500);
   const file = formData.get("completedFile");
+  const uploadedPath = String(formData.get("uploadedDeliveryPath") || "").trim();
+  const uploadedName = sanitizeFilename(String(formData.get("uploadedDeliveryName") || "").trim());
+  const uploadedType = String(formData.get("uploadedDeliveryType") || "application/octet-stream").trim();
+  const uploadedSize = Number(formData.get("uploadedDeliverySize") || 0);
 
-  if (!id || !(file instanceof File) || file.size <= 0) {
+  const fileObj = file instanceof File && file.size > 0 ? file : null;
+
+  if (!id || (!uploadedPath && !fileObj)) {
     redirect(`/admin/projects?project=${id}&delivery=missing`);
   }
 
-  const attachmentError = validateAdminAttachment(file);
-  if (attachmentError) {
-    redirect(`/admin/projects?project=${id}&delivery=attachment`);
+  if (fileObj) {
+    const attachmentError = validateAdminAttachment(fileObj);
+    if (attachmentError) {
+      redirect(`/admin/projects?project=${id}&delivery=attachment`);
+    }
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
@@ -104,42 +121,107 @@ async function sendCompletedFile(formData: FormData) {
     redirect(`/admin/projects?project=${id}&delivery=failed`);
   }
 
-  const storedAttachment = await fileToStoredAttachment(file, `${project.client_id}/${project.id}/deliveries`);
-  const { error: uploadError } = await supabaseAdmin.storage
-    .from("deliveries")
-    .upload(storedAttachment.path, storedAttachment.content, {
-      contentType: storedAttachment.contentType,
-      upsert: false,
-    });
+  let finalMeta: {
+    path: string;
+    name: string;
+    contentType: string;
+    size: number;
+  } | null = null;
+  let emailAttachmentBuffer: Buffer | null = null;
 
-  if (uploadError) {
-    console.error("Project delivery upload failed:", uploadError);
-    redirect(`/admin/projects?project=${id}&delivery=attachment`);
+  if (uploadedPath) {
+    const ext = getExtension(uploadedName);
+    if (
+      !uploadedPath.includes(`/${project.id}/deliveries/`) ||
+      !ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS.has(ext) ||
+      !Number.isFinite(uploadedSize) ||
+      uploadedSize <= 0 ||
+      uploadedSize > ADMIN_ATTACHMENT_MAX_BYTES
+    ) {
+      redirect(`/admin/projects?project=${id}&delivery=attachment`);
+    }
+
+    finalMeta = {
+      path: uploadedPath,
+      name: uploadedName,
+      contentType: uploadedType || "application/octet-stream",
+      size: uploadedSize,
+    };
+
+    if (uploadedSize <= EMAIL_DIRECT_ATTACHMENT_MAX_BYTES) {
+      try {
+        const { data: downloadedBlob, error: downloadErr } = await supabaseAdmin.storage
+          .from("deliveries")
+          .download(uploadedPath);
+        if (!downloadErr && downloadedBlob) {
+          emailAttachmentBuffer = Buffer.from(await downloadedBlob.arrayBuffer());
+        }
+      } catch (err) {
+        console.warn("Could not read small delivery file for direct MIME inclusion, falling back to signed link:", err);
+      }
+    }
+  } else if (fileObj) {
+    const storedAttachment = await fileToStoredAttachment(fileObj, `${project.client_id}/${project.id}/deliveries`);
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from("deliveries")
+      .upload(storedAttachment.path, storedAttachment.content, {
+        contentType: storedAttachment.contentType,
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error("Project delivery upload failed:", uploadError);
+      redirect(`/admin/projects?project=${id}&delivery=attachment`);
+    }
+
+    finalMeta = {
+      path: storedAttachment.path,
+      name: storedAttachment.name,
+      contentType: storedAttachment.contentType,
+      size: storedAttachment.size,
+    };
+
+    if (storedAttachment.size <= EMAIL_DIRECT_ATTACHMENT_MAX_BYTES) {
+      emailAttachmentBuffer = storedAttachment.content;
+    }
   }
+
+  if (!finalMeta) {
+    redirect(`/admin/projects?project=${id}&delivery=missing`);
+  }
+
+  const { data: signedData } = await supabaseAdmin.storage
+    .from("deliveries")
+    .createSignedUrl(finalMeta.path, 7 * 24 * 60 * 60, { download: true });
+  const signedDownloadUrl = signedData?.signedUrl || null;
 
   const emailResult = await sendProjectDeliveryEmail(clientProfile.email, {
     clientName: clientProfile.full_name,
     friendlyId: project.friendly_id,
     note,
-    attachment: {
-      filename: storedAttachment.name,
-      content: storedAttachment.content,
-      contentType: storedAttachment.contentType,
-    },
+    attachment: emailAttachmentBuffer
+      ? {
+          filename: finalMeta.name,
+          content: emailAttachmentBuffer,
+          contentType: finalMeta.contentType,
+        }
+      : null,
+    attachmentDownloadUrl: signedDownloadUrl,
+    attachmentFilename: finalMeta.name,
   });
 
   if (!emailResult.success) {
-    await supabaseAdmin.storage.from("deliveries").remove([storedAttachment.path]);
+    await supabaseAdmin.storage.from("deliveries").remove([finalMeta.path]);
     redirect(`/admin/projects?project=${id}&delivery=failed`);
   }
 
   await supabaseAdmin
     .from("projects")
     .update({
-      delivery_file_path: storedAttachment.path,
-      delivery_file_name: storedAttachment.name,
-      delivery_content_type: storedAttachment.contentType,
-      delivery_file_size: storedAttachment.size,
+      delivery_file_path: finalMeta.path,
+      delivery_file_name: finalMeta.name,
+      delivery_content_type: finalMeta.contentType,
+      delivery_file_size: finalMeta.size,
       delivery_sent_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -425,69 +507,15 @@ export default async function AdminProjectsPage({
               />
             </form>
 
-            <form action={sendCompletedFile} className="border border-ink/10 bg-ivory/90 p-7 rounded-xl">
-              <input type="hidden" name="id" value={selected.id} />
-              <p className="text-xs uppercase tracking-[0.24em] text-gold-deep">Final file delivery</p>
-              <h3 className="mt-4 font-display text-3xl leading-tight text-ink">Send completed work</h3>
-
-              {searchParams?.delivery === "sent" ? (
-                <div className="mt-5 rounded-lg border border-cta/20 bg-cta-soft p-4 text-sm leading-6 text-ink">
-                  Completed file sent to the client and saved to this project.
-                </div>
-              ) : null}
-
-              {searchParams?.delivery === "failed" || searchParams?.delivery === "missing" || searchParams?.delivery === "attachment" ? (
-                <div className="mt-5 rounded-lg border border-status-danger/25 bg-status-danger-light p-4 text-sm leading-6 text-status-danger">
-                  {searchParams.delivery === "missing"
-                    ? "Choose a completed file before sending."
-                    : searchParams.delivery === "attachment"
-                      ? "Choose a DOC, DOCX, PDF, TXT, RTF, or ZIP file under 25MB."
-                      : "We could not send that file. Nothing was marked as delivered."}
-                </div>
-              ) : null}
-
-              {selected.delivery_file_path ? (
-                <div className="mt-5 rounded-lg border border-hairline bg-paper p-4 text-sm leading-6 text-charcoal/70">
-                  <p className="font-semibold text-ink">Last delivery</p>
-                  <p className="mt-1 break-all">{selected.delivery_file_name || fileName(selected.delivery_file_path)}</p>
-                  {selected.delivery_sent_at ? <p className="mt-1 text-xs text-charcoal/50">{new Date(selected.delivery_sent_at).toLocaleString()}</p> : null}
-                  <Link href={`/api/admin/projects/${selected.id}/download?file=delivery&action=download`} className="mt-3 inline-flex text-primary hover:underline">
-                    Download delivered file
-                  </Link>
-                </div>
-              ) : null}
-
-              <div className="mt-5 grid gap-1.5">
-                <label htmlFor="completed-file" className="text-xs font-semibold uppercase tracking-wider text-charcoal/70">
-                  Completed file
-                </label>
-                <input
-                  id="completed-file"
-                  name="completedFile"
-                  type="file"
-                  required
-                  accept=".doc,.docx,.pdf,.txt,.rtf,.zip"
-                  className="h-11 rounded-lg border border-hairline bg-paper px-3 py-1.5 text-xs text-ink file:mr-3 file:h-8 file:rounded-md file:border-0 file:bg-primary file:px-3 file:text-xs file:font-semibold file:text-white transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-              <div className="mt-4 grid gap-1.5">
-                <label htmlFor="delivery-note" className="text-xs font-semibold uppercase tracking-wider text-charcoal/70">
-                  Message note
-                </label>
-                <textarea
-                  id="delivery-note"
-                  name="note"
-                  rows={4}
-                  className="rounded-lg border border-hairline bg-paper p-3 text-sm leading-6 text-ink transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  placeholder="Optional note to include in the delivery email..."
-                />
-              </div>
-              <PendingSubmitButton
-                idleLabel="Send completed file"
-                pendingLabel="Sending..."
-                className="mt-4 h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:bg-primary-active focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-              />
-            </form>
+            <AdminProjectDeliveryForm
+              projectId={selected.id}
+              clientId={selected.client_id}
+              deliveryStatus={searchParams?.delivery}
+              deliveryFilePath={selected.delivery_file_path}
+              deliveryFileName={selected.delivery_file_name || (selected.delivery_file_path ? fileName(selected.delivery_file_path) : null)}
+              deliverySentAt={selected.delivery_sent_at}
+              sendCompletedFileAction={sendCompletedFile}
+            />
           </aside>
         </section>
       ) : (

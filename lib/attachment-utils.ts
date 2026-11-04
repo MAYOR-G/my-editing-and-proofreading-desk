@@ -7,14 +7,25 @@ export type StoredAttachment = {
 };
 
 export const ADMIN_ATTACHMENT_MAX_BYTES = 50 * 1024 * 1024;
+export const EMAIL_DIRECT_ATTACHMENT_MAX_BYTES = 8 * 1024 * 1024;
 
-const ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS = new Set([
+export const ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS = new Set([
   ".doc",
   ".docx",
   ".pdf",
   ".txt",
   ".rtf",
+  ".odt",
+  ".csv",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
   ".zip",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".webp",
 ]);
 
 export function getExtension(filename: string) {

@@ -300,10 +300,14 @@ export async function sendMessageReplyEmail(to: string, recipientName: string | 
   inReplyTo?: string | null;
   references?: string | null;
   attachment?: EmailAttachment | null;
+  attachmentDownloadUrl?: string | null;
+  attachmentFilename?: string | null;
 }) {
   const threadReplyTo = options?.threadId
     ? `support+thread-${options.threadId}@business.editandproofread.com`
     : SUPPORT_EMAIL;
+
+  const displayAttachmentName = options?.attachmentFilename || options?.attachment?.filename || null;
 
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
@@ -323,7 +327,13 @@ export async function sendMessageReplyEmail(to: string, recipientName: string | 
         <p>Hello ${escapeHtml(recipientName || "there")},</p>
         <p>Our support team has replied to your message.</p>
         ${messageCard(reply)}
-        <p>If you have questions, simply reply to this email.</p>
+        ${
+          options?.attachmentDownloadUrl
+            ? `<p style="margin:18px 0 6px;"><strong>Attached document:</strong> ${escapeHtml(displayAttachmentName || "Download file")}</p>
+               ${ctaButton(`Download ${displayAttachmentName || "Attached File"}`, options.attachmentDownloadUrl)}`
+            : ""
+        }
+        <p style="margin-top:18px;">If you have questions, simply reply to this email.</p>
       `,
     }),
   });
@@ -502,22 +512,32 @@ export async function sendProjectDeliveryEmail(to: string, project: {
   clientName?: string | null;
   friendlyId: string;
   note?: string | null;
-  attachment: EmailAttachment;
+  attachment?: EmailAttachment | null;
+  attachmentDownloadUrl?: string | null;
+  attachmentFilename?: string | null;
 }) {
+  const displayAttachmentName = project.attachmentFilename || project.attachment?.filename || null;
+
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
     replyTo: SUPPORT_EMAIL,
     to,
     subject: `Completed file for ${project.friendlyId}`,
-    attachments: [project.attachment],
+    attachments: project.attachment ? [project.attachment] : undefined,
     html: brandedEmail({
-      preheader: `Your completed file for ${project.friendlyId} is attached.`,
-      title: "Completed file attached",
+      preheader: `Your completed file for ${project.friendlyId} is ready.`,
+      title: "Completed file ready",
       children: `
         <p>Hello ${escapeHtml(project.clientName || "there")},</p>
-        <p>Your completed file for project <strong>${escapeHtml(project.friendlyId)}</strong> is attached to this email.</p>
+        <p>Your completed file for project <strong>${escapeHtml(project.friendlyId)}</strong> is ready${project.attachment ? " and attached to this email" : ""}.</p>
         ${project.note ? messageCard(project.note) : ""}
-        <p>If you have questions or need a revision clarification, simply reply to this email.</p>
+        ${
+          project.attachmentDownloadUrl
+            ? `<p style="margin:18px 0 6px;"><strong>Completed document:</strong> ${escapeHtml(displayAttachmentName || "Download file")}</p>
+               ${ctaButton(`Download ${displayAttachmentName || "Completed File"}`, project.attachmentDownloadUrl)}`
+            : ""
+        }
+        <p style="margin-top:18px;">If you have questions or need a revision clarification, simply reply to this email.</p>
         ${ctaButton("Open dashboard", `${getSiteUrl()}/dashboard/downloads`)}
       `,
     }),

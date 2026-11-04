@@ -6,7 +6,15 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { sendMessageReplyEmail, SUPPORT_EMAIL } from "@/lib/email";
 import { adminNav } from "@/lib/admin-nav";
 import { makeThreadKey, parseUtcTimestampMs, sanitizePlainText } from "@/lib/message-threading";
-import { fileToStoredAttachment, validateAdminAttachment } from "@/lib/attachment-utils";
+import {
+  ADMIN_ATTACHMENT_MAX_BYTES,
+  ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS,
+  EMAIL_DIRECT_ATTACHMENT_MAX_BYTES,
+  fileToStoredAttachment,
+  getExtension,
+  sanitizeFilename,
+  validateAdminAttachment,
+} from "@/lib/attachment-utils";
 import { AdminMessagesManager, type MessageItem, type ConversationEvent } from "@/components/admin/AdminMessagesManager";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +29,10 @@ async function replyToMessage(formData: FormData) {
   const id = String(formData.get("id") || "");
   const reply = sanitizePlainText(formData.get("reply"), 5000);
   const attachment = formData.get("attachment");
+  const uploadedPath = String(formData.get("uploadedAttachmentPath") || "").trim();
+  const uploadedName = sanitizeFilename(String(formData.get("uploadedAttachmentName") || "").trim());
+  const uploadedType = String(formData.get("uploadedAttachmentType") || "application/octet-stream").trim();
+  const uploadedSize = Number(formData.get("uploadedAttachmentSize") || 0);
 
   if (!id || !reply) {
     redirect(`/admin/requests${id ? `?message=${id}&reply=missing` : "?reply=missing"}`);
@@ -33,11 +45,21 @@ async function replyToMessage(formData: FormData) {
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
-  const { data: message, error } = await supabaseAdmin
+  let { data: message, error } = await supabaseAdmin
     .from("contact_messages")
     .select("id, name, email, subject, inbound_message_id, email_references")
     .eq("id", id)
     .single();
+
+  if (error || !message) {
+    const fallbackLookup = await supabaseAdmin
+      .from("contact_messages")
+      .select("id, name, email, subject")
+      .eq("id", id)
+      .single();
+    message = fallbackLookup.data as any;
+    error = fallbackLookup.error;
+  }
 
   if (error || !message) {
     console.error("Admin reply lookup failed:", error);
@@ -58,11 +80,48 @@ async function replyToMessage(formData: FormData) {
     redirect(`/admin/requests?message=${id}&reply=sent`);
   }
 
-  const storedAttachment = attachmentFile
-    ? await fileToStoredAttachment(attachmentFile, `admin/message-replies/${id}`)
-    : null;
+  let finalAttachmentMeta: {
+    path: string;
+    name: string;
+    contentType: string;
+    size: number;
+  } | null = null;
+  let emailAttachmentBuffer: Buffer | null = null;
 
-  if (storedAttachment) {
+  if (uploadedPath) {
+    const ext = getExtension(uploadedName);
+    if (
+      !uploadedPath.startsWith(`admin/message-replies/${id}/`) ||
+      !ALLOWED_ADMIN_ATTACHMENT_EXTENSIONS.has(ext) ||
+      !Number.isFinite(uploadedSize) ||
+      uploadedSize <= 0 ||
+      uploadedSize > ADMIN_ATTACHMENT_MAX_BYTES
+    ) {
+      redirect(`/admin/requests?message=${id}&reply=attachment`);
+    }
+
+    finalAttachmentMeta = {
+      path: uploadedPath,
+      name: uploadedName,
+      contentType: uploadedType || "application/octet-stream",
+      size: uploadedSize,
+    };
+
+    // Only download buffer to attach directly to email if <= 8MB; larger files (up to 50MB) are delivered via signed link in the email
+    if (uploadedSize <= EMAIL_DIRECT_ATTACHMENT_MAX_BYTES) {
+      try {
+        const { data: downloadedBlob, error: downloadErr } = await supabaseAdmin.storage
+          .from("uploads")
+          .download(uploadedPath);
+        if (!downloadErr && downloadedBlob) {
+          emailAttachmentBuffer = Buffer.from(await downloadedBlob.arrayBuffer());
+        }
+      } catch (err) {
+        console.warn("Could not read small attachment for direct MIME inclusion, falling back to signed link:", err);
+      }
+    }
+  } else if (attachmentFile) {
+    const storedAttachment = await fileToStoredAttachment(attachmentFile, `admin/message-replies/${id}`);
     const { error: uploadError } = await supabaseAdmin.storage
       .from("uploads")
       .upload(storedAttachment.path, storedAttachment.content, {
@@ -74,6 +133,25 @@ async function replyToMessage(formData: FormData) {
       console.error("Admin reply attachment upload failed:", uploadError);
       redirect(`/admin/requests?message=${id}&reply=attachment`);
     }
+
+    finalAttachmentMeta = {
+      path: storedAttachment.path,
+      name: storedAttachment.name,
+      contentType: storedAttachment.contentType,
+      size: storedAttachment.size,
+    };
+
+    if (storedAttachment.size <= EMAIL_DIRECT_ATTACHMENT_MAX_BYTES) {
+      emailAttachmentBuffer = storedAttachment.content;
+    }
+  }
+
+  let signedDownloadUrl: string | null = null;
+  if (finalAttachmentMeta) {
+    const { data: signedData } = await supabaseAdmin.storage
+      .from("uploads")
+      .createSignedUrl(finalAttachmentMeta.path, 7 * 24 * 60 * 60, { download: true });
+    signedDownloadUrl = signedData?.signedUrl || null;
   }
 
   const emailResult = await sendMessageReplyEmail(
@@ -83,39 +161,53 @@ async function replyToMessage(formData: FormData) {
     reply,
     {
       threadId: message.id,
-      inReplyTo: message.inbound_message_id,
-      references: [message.email_references, message.inbound_message_id].filter(Boolean).join(" ") || null,
-      attachment: storedAttachment ? {
-        filename: storedAttachment.name,
-        content: storedAttachment.content,
-        contentType: storedAttachment.contentType,
-      } : null,
+      inReplyTo: (message as any).inbound_message_id || null,
+      references: [(message as any).email_references, (message as any).inbound_message_id].filter(Boolean).join(" ") || null,
+      attachment:
+        finalAttachmentMeta && emailAttachmentBuffer
+          ? {
+              filename: finalAttachmentMeta.name,
+              content: emailAttachmentBuffer,
+              contentType: finalAttachmentMeta.contentType,
+            }
+          : null,
+      attachmentDownloadUrl: signedDownloadUrl,
+      attachmentFilename: finalAttachmentMeta?.name || null,
     }
   );
 
   if (!emailResult.success) {
-    if (storedAttachment) {
-      await supabaseAdmin.storage.from("uploads").remove([storedAttachment.path]);
+    if (finalAttachmentMeta) {
+      await supabaseAdmin.storage.from("uploads").remove([finalAttachmentMeta.path]);
     }
     redirect(`/admin/requests?message=${id}&reply=failed`);
   }
 
   const now = new Date().toISOString();
-  await supabaseAdmin.from("contact_message_replies").insert({
+  const { error: replyInsertError } = await supabaseAdmin.from("contact_message_replies").insert({
     message_id: id,
     reply,
     sent_to: message.email,
     sender_type: "admin",
     sender_name: "Support",
     sender_email: SUPPORT_EMAIL,
-    attachment_file_path: storedAttachment?.path || null,
-    attachment_file_name: storedAttachment?.name || null,
-    attachment_content_type: storedAttachment?.contentType || null,
-    attachment_file_size: storedAttachment?.size || null,
+    attachment_file_path: finalAttachmentMeta?.path || null,
+    attachment_file_name: finalAttachmentMeta?.name || null,
+    attachment_content_type: finalAttachmentMeta?.contentType || null,
+    attachment_file_size: finalAttachmentMeta?.size || null,
     created_at: now,
   });
 
-  await supabaseAdmin
+  if (replyInsertError) {
+    await supabaseAdmin.from("contact_message_replies").insert({
+      message_id: id,
+      reply,
+      sent_to: message.email,
+      created_at: now,
+    });
+  }
+
+  const { error: msgUpdateError } = await supabaseAdmin
     .from("contact_messages")
     .update({
       status: "Replied",
@@ -128,6 +220,18 @@ async function replyToMessage(formData: FormData) {
       updated_at: now,
     })
     .eq("id", id);
+
+  if (msgUpdateError) {
+    await supabaseAdmin
+      .from("contact_messages")
+      .update({
+        status: "Replied",
+        admin_reply: reply,
+        replied_at: now,
+        updated_at: now,
+      })
+      .eq("id", id);
+  }
 
   revalidatePath("/admin/requests");
   revalidatePath("/admin");
