@@ -1,5 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { DashboardShell, EmptyState, MetricPanel, StatusBadge } from "@/components/DashboardShell";
 import { requireAdmin } from "@/lib/admin-auth";
 import { adminNav } from "@/lib/admin-nav";

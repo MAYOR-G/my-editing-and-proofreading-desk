@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
@@ -7,6 +8,7 @@ import { makeThreadKey, sanitizePlainText } from "@/lib/message-threading";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function cleanText(value: unknown, maxLength: number) {
   return sanitizePlainText(value, maxLength);
@@ -262,7 +264,7 @@ export async function POST(request: Request) {
     const threadKey = makeThreadKey(email);
     const now = new Date().toISOString();
 
-    const { data: insertedMessage, error } = await supabaseAdmin
+    let { data: insertedMessage, error } = await supabaseAdmin
       .from("contact_messages")
       .insert({
         thread_key: threadKey,
@@ -286,6 +288,28 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
+      // Fallback insert if optional threading/attachment columns are not yet migrated
+      const fallbackInsert = await supabaseAdmin
+        .from("contact_messages")
+        .insert({
+          name,
+          email,
+          subject,
+          message: content,
+          source,
+          status: "New",
+          user_id: user?.id || null,
+          project_id: projectId,
+          created_at: now,
+          updated_at: now,
+        })
+        .select("id")
+        .single();
+      insertedMessage = fallbackInsert.data;
+      error = fallbackInsert.error;
+    }
+
+    if (error) {
       console.error("Contact message save failed:", error);
       return NextResponse.json(
         { error: `We couldn't send your message right now. Please try again or email ${SUPPORT_EMAIL}.` },
@@ -293,11 +317,14 @@ export async function POST(request: Request) {
       );
     }
 
+    revalidatePath("/admin/requests");
+    revalidatePath("/admin");
+
     const appBaseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://business.editandproofread.com").replace(/\/$/, "");
     const threadUrl = insertedMessage?.id ? `${appBaseUrl}/admin/requests?message=${insertedMessage.id}` : null;
 
-    try {
-      const notification = await sendContactNotificationEmail({
+    const [notificationResult, confirmationResult] = await Promise.allSettled([
+      sendContactNotificationEmail({
         name,
         email,
         subject,
@@ -306,23 +333,34 @@ export async function POST(request: Request) {
         userId: user?.id || null,
         projectId,
         threadUrl,
-      });
+        sentAt: now,
+      }),
+      sendContactConfirmationEmail({
+        name,
+        email,
+        subject,
+        source,
+        sentAt: now,
+      }),
+    ]);
 
-      if (!notification.success) {
-        console.warn("Contact notification email could not be delivered:", notification.error);
-      }
-    } catch (notifyErr) {
-      console.warn("Contact notification email caught error:", notifyErr);
+    if (notificationResult.status === "rejected") {
+      console.warn("Contact notification email caught error:", notificationResult.reason);
+    } else if (!notificationResult.value.success) {
+      console.warn("Contact notification email could not be delivered:", notificationResult.value.error);
     }
 
-    sendContactConfirmationEmail({ name, email, subject, source }).catch((err) => {
-      console.warn("Contact confirmation email failed:", err);
-    });
+    if (confirmationResult.status === "rejected") {
+      console.warn("Contact confirmation email failed:", confirmationResult.reason);
+    } else if (!confirmationResult.value.success) {
+      console.warn("Contact confirmation email could not be delivered:", confirmationResult.value.error);
+    }
 
     return NextResponse.json({
       success: true,
       message: "Message sent successfully. Our team will get back to you soon.",
       messageId: insertedMessage?.id,
+      sentAt: now,
     });
   } catch (error) {
     console.error("Contact route failed:", error);

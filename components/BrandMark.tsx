@@ -27,7 +27,7 @@ export function BrandMark({ compact = false, href = "/", tone = "dark", variant 
       >
         <Image
           src={logoSrc}
-          alt=""
+          alt="My Editing and Proofreading Desk logo"
           fill
           priority={!isFooter}
           sizes={compact ? "(min-width: 640px) 84px, 72px" : "(min-width: 640px) 104px, 88px"}

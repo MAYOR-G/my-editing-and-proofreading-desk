@@ -6,6 +6,7 @@ import { strategicSeoBlogPosts } from "@/lib/strategic-seo-blog-posts";
 import { blogAiVsHumanGraduateResearch } from "@/lib/blog-ai-vs-human-graduate-research";
 import { blogFormattingChallengesPhd } from "@/lib/blog-formatting-challenges-phd";
 import { blogCanAiEditResearchPaper } from "@/lib/blog-can-ai-edit-research-paper";
+import { eeatAuditBlogPosts } from "@/lib/eeat-audit-blog-posts";
 
 export type BlogTextPart =
   | string
@@ -22,6 +23,19 @@ export type BlogTable = {
   rows: string[][];
 };
 
+export type BlogTrackedChange = {
+  context?: string;
+  rawDraft: string;
+  humanRevision: string;
+  marginComment: string;
+  styleStandard?: string;
+};
+
+export type BlogChecklist = {
+  title: string;
+  items: BlogRichText[];
+};
+
 export type BlogPost = {
   title: string;
   slug: string;
@@ -29,6 +43,8 @@ export type BlogPost = {
   category: string;
   author: string;
   reviewer?: string;
+  editorialDesk?: string;
+  styleStandards?: string[];
   datePublished: string;
   dateUpdated: string;
   readingTime: string;
@@ -47,6 +63,8 @@ export type BlogPost = {
     bullets?: BlogRichText[];
     numberedSteps?: BlogRichText[];
     table?: BlogTable;
+    trackedChanges?: BlogTrackedChange;
+    checklist?: BlogChecklist;
     callout?: {
       title: string;
       text: BlogRichText;
@@ -66,6 +84,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 const allBlogPosts: BlogPost[] = [
+  ...eeatAuditBlogPosts,
   blogAiVsHumanGraduateResearch,
   blogFormattingChallengesPhd,
   blogCanAiEditResearchPaper,

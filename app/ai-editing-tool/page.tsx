@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AiEditingTool } from "@/components/AiEditingTool";
 import { AiRefinementVisual } from "@/components/EditorialVisuals";
+import { JsonLd } from "@/components/JsonLd";
+import { SampleEditCta } from "@/components/SampleEditCta";
 import { HumanVsAiBlock } from "@/components/home/HumanVsAiBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript, webApplicationJsonLd } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, webApplicationJsonLd } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Free AI Grammar Checker and Editing Assistant",
@@ -16,15 +18,14 @@ export const metadata: Metadata = buildPageMetadata({
 export default function AiEditingToolPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript([
+      <JsonLd
+        data={[
           webApplicationJsonLd(),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: "Free AI Editing Tool", path: "/ai-editing-tool" },
           ]),
-        ])}
+        ]}
       />
       <SiteHeader />
 
@@ -67,6 +68,9 @@ export default function AiEditingToolPage() {
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-7xl">
           <AiEditingTool />
+          <div className="mt-12">
+            <SampleEditCta contextLabel="Unpublished Thesis or Confidential Draft?" />
+          </div>
         </div>
       </section>
 

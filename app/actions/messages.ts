@@ -23,11 +23,13 @@ export async function sendMessage(projectId: string, content: string) {
 
   const isFromAdmin = profile?.role === "admin";
 
+  const now = new Date().toISOString();
   const { error } = await supabase.from("messages").insert({
     project_id: projectId,
     sender_id: user.id,
     content: content.trim(),
     is_from_admin: isFromAdmin,
+    created_at: now,
   });
 
   if (error) {
@@ -67,6 +69,7 @@ export async function sendMessage(projectId: string, content: string) {
 
   revalidatePath(`/dashboard/active/${projectId}`);
   revalidatePath(`/admin`);
+  revalidatePath(`/admin/requests`);
 
   return { success: true };
 }

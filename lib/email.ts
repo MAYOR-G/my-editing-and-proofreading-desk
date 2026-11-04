@@ -187,7 +187,16 @@ export async function sendContactNotificationEmail(message: {
   userId?: string | null;
   projectId?: string | null;
   threadUrl?: string | null;
+  sentAt?: string | null;
 }) {
+  const formattedSentAt = message.sentAt
+    ? new Date(message.sentAt).toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "UTC",
+      }) + " UTC"
+    : new Date().toISOString();
+
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
     replyTo: message.email,
@@ -202,6 +211,7 @@ export async function sendContactNotificationEmail(message: {
           ["Name", message.name],
           ["Email", message.email],
           ["Subject", message.subject],
+          ["Received (UTC)", formattedSentAt],
           ...(message.projectId ? [["Related project", message.projectId] as [string, unknown]] : []),
         ])}
         ${messageCard(message.content)}
@@ -217,7 +227,16 @@ export async function sendContactConfirmationEmail(message: {
   email: string;
   subject: string;
   source: string;
+  sentAt?: string | null;
 }) {
+  const formattedSentAt = message.sentAt
+    ? new Date(message.sentAt).toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "UTC",
+      }) + " UTC"
+    : new Date().toISOString();
+
   return sendEmail({
     from: `${BRAND_NAME} <${SUPPORT_EMAIL}>`,
     replyTo: SUPPORT_EMAIL,
@@ -232,6 +251,7 @@ export async function sendContactConfirmationEmail(message: {
         ${detailList([
           ["Subject", message.subject],
           ["Source", message.source],
+          ["Submitted (UTC)", formattedSentAt],
           ["Response window", "Within one business day"],
         ])}
         <p>You can reply directly to this email if you need to add anything before we respond.</p>

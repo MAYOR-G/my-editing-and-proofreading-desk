@@ -126,7 +126,7 @@ export function WorkPreviewModal({ example, onClose }: WorkPreviewModalProps) {
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-[#151a21] px-3 py-3 text-white sm:px-5">
           <div className="flex min-w-0 items-center gap-3">
             <span className="relative flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden rounded bg-white">
-              <Image src="/assets/logo.png" alt="" fill sizes="64px" className="object-contain" />
+              <Image src="/assets/logo.png" alt="My Editing and Proofreading Desk logo" fill sizes="64px" className="object-contain" />
             </span>
             <div className="min-w-0">
               <p className="truncate font-display text-base font-semibold text-white sm:text-lg" id="work-preview-title">
@@ -315,7 +315,7 @@ function DocumentPage({
               My Editing and Proofreading Desk
             </p>
             <span className="relative hidden h-12 w-20 shrink-0 overflow-hidden bg-white sm:block">
-              <Image src="/assets/logo.png" alt="" fill sizes="112px" className="object-contain" />
+              <Image src="/assets/logo.png" alt="My Editing and Proofreading Desk logo" fill sizes="112px" className="object-contain" />
             </span>
           </div>
         ) : null}

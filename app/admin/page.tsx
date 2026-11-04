@@ -6,6 +6,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { getPaymentSettings } from "@/lib/payment-settings";
 import { getPaymentProviderReadiness } from "@/lib/payment";
 import { adminNav } from "@/lib/admin-nav";
+import { formatUtcDateTime, parseUtcTimestampMs } from "@/lib/message-threading";
 import {
   displayPaymentStatus,
   displayProjectStatus,
@@ -17,6 +18,9 @@ import {
   projectServices,
   sortByNewest,
 } from "@/lib/admin-data";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function formatProvider(provider?: string | null) {
   if (!provider) return "N/A";
@@ -43,12 +47,22 @@ export default async function AdminDashboardPage() {
     `)
     .order("created_at", { ascending: false });
 
-  const { data: recentMessages, error: messagesError } = await supabaseAdmin
+  let { data: recentMessages, error: messagesError } = await supabaseAdmin
     .from("contact_messages")
-    .select("id, name, email, subject, message, latest_message, status, source, created_at, latest_message_at, updated_at")
+    .select("id, name, email, subject, message, latest_message, status, source, created_at, latest_message_at, replied_at, updated_at")
     .order("latest_message_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
-    .limit(6);
+    .limit(12);
+
+  if (messagesError) {
+    const fallbackMessages = await supabaseAdmin
+      .from("contact_messages")
+      .select("id, name, email, subject, message, status, source, created_at, replied_at, updated_at")
+      .order("created_at", { ascending: false })
+      .limit(12);
+    recentMessages = fallbackMessages.data as any;
+    messagesError = fallbackMessages.error;
+  }
 
   if (projectsError) {
     console.error("Error fetching admin projects:", projectsError);
@@ -64,7 +78,23 @@ export default async function AdminDashboardPage() {
   const completedProjects = projects.filter(isCompletedProject);
   const paymentIssues = sortByNewest(projects.filter(isPaymentIssue));
   const recentOrders = sortByNewest(projects).slice(0, 5);
-  const messages = recentMessages || [];
+  const messages = (recentMessages || [])
+    .slice()
+    .sort((a: any, b: any) => {
+      const aLatest = Math.max(
+        parseUtcTimestampMs(a.latest_message_at),
+        parseUtcTimestampMs(a.replied_at),
+        parseUtcTimestampMs(a.created_at)
+      );
+      const bLatest = Math.max(
+        parseUtcTimestampMs(b.latest_message_at),
+        parseUtcTimestampMs(b.replied_at),
+        parseUtcTimestampMs(b.created_at)
+      );
+      if (bLatest !== aLatest) return bLatest - aLatest;
+      return parseUtcTimestampMs(b.created_at) - parseUtcTimestampMs(a.created_at);
+    })
+    .slice(0, 6);
 
   const totalRevenue = paidProjects
     .reduce((sum, p) => sum + projectAmount(p), 0);
@@ -173,7 +203,7 @@ export default async function AdminDashboardPage() {
                   </p>
                 ) : null}
                 <p className="mt-2.5 text-xs uppercase tracking-[0.16em] text-charcoal/42">
-                  {message.source || "Contact Form"} · {new Date(message.latest_message_at || message.created_at).toLocaleDateString()}
+                  {message.source || "Contact Form"} · {formatUtcDateTime(message.latest_message_at || message.created_at)}
                 </p>
               </Link>
             )) : (

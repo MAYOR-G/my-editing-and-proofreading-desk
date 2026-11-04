@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CheckCircle2, FileCheck2, ShieldCheck } from "lucide-react";
 import { DissertationPlanningEstimator } from "@/components/DissertationPlanningEstimator";
+import { JsonLd } from "@/components/JsonLd";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { SampleEditCta } from "@/components/SampleEditCta";
 import { blogPosts, type BlogRichText, getBlogPost } from "@/lib/blog";
-import { blogPostingJsonLd, buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
+import { blogPostingJsonLd, buildPageMetadata, webPageJsonLd } from "@/lib/site";
 
 type BlogPostPageProps = {
   params: {
@@ -72,6 +75,11 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     id: section.id,
     label: section.heading,
   }));
+  const reviewingDivision =
+    post.reviewer || "Senior Academic Editorial Board — My Editing and Proofreading Desk";
+  const deskName = post.editorialDesk || "Subject-Matter Academic Review Desk";
+  const styleStandards = post.styleStandards ?? ["APA 7th Ed.", "Chicago 17th Ed. (CMOS)", "COPE Publication Ethics"];
+
   return (
     <PublicPageShell
       eyebrow={post.category}
@@ -84,9 +92,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         { name: post.title, path: `/blog/${post.slug}` },
       ]}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript([
+      <JsonLd
+        data={[
           blogPostingJsonLd(post),
           webPageJsonLd({
             path: `/blog/${post.slug}`,
@@ -94,19 +101,61 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             description: post.excerpt,
             dateModified: post.dateUpdated,
           }),
-        ])}
+        ]}
       />
-      {post.faq.length > 0 ? (
-        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(post.faq))} />
-      ) : null}
       <article className="px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-4xl">
-          <div className="flex flex-wrap gap-x-5 gap-y-2 border-b border-hairline pb-5 text-sm text-muted">
-            <span>By {post.author}</span>
-            {post.reviewer ? <span>Reviewed by {post.reviewer}</span> : null}
-            <time dateTime={post.datePublished}>Published {post.datePublished}</time>
-            <time dateTime={post.dateUpdated}>Updated {post.dateUpdated}</time>
-            <span>{post.readingTime}</span>
+          {/* Top Editorial Desk Review Box (Institutional E-E-A-T) */}
+          <div className="rounded-2xl border border-primary/20 bg-surface-soft p-5 shadow-[0_14px_40px_rgba(17,17,15,0.04)] sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-4">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                  {deskName}
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-primary">
+                <FileCheck2 className="h-3.5 w-3.5" aria-hidden="true" />
+                100% Human-Edited Standard
+              </span>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-[1.35fr_0.65fr] sm:items-center">
+              <div>
+                <p className="text-sm font-semibold text-ink">
+                  Reviewed by the {reviewingDivision}
+                </p>
+                <p className="mt-1 text-xs leading-6 text-body">
+                  Prepared and verified under our institutional editorial standards with zero automated content generation. Authored by{" "}
+                  <Link href="/editors" className="font-semibold text-primary underline underline-offset-2 hover:text-primary-active">
+                    {post.author}
+                  </Link>
+                  .
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-1.5 sm:justify-end">
+                {styleStandards.map((standard) => (
+                  <span
+                    key={standard}
+                    className="rounded-md border border-hairline bg-canvas px-2.5 py-1 text-[11px] font-semibold text-charcoal/80"
+                  >
+                    {standard}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-hairline pt-3.5 text-xs text-muted">
+              <time dateTime={post.datePublished}>Published {post.datePublished}</time>
+              <time dateTime={post.dateUpdated}>Updated {post.dateUpdated}</time>
+              <span>{post.readingTime}</span>
+              <Link href="/pricing" className="font-semibold text-primary hover:underline">
+                 Pricing Calculator →
+              </Link>
+              <Link href="/contact?type=sample-edit" className="font-semibold text-primary hover:underline">
+                Free 300-Word Sample Edit →
+              </Link>
+            </div>
           </div>
           <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-hairline">
             <Image src={post.heroImage} alt={post.heroImageAlt} fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 896px" />
@@ -139,10 +188,62 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                   {section.paragraphs.map((paragraph, index) => <p key={`${section.id}-paragraph-${index}`}><RichText content={paragraph} /></p>)}
                 </div>
 
+                {section.trackedChanges ? (
+                  <div className="mt-7 overflow-hidden rounded-2xl border border-primary/25 bg-surface-soft shadow-[0_18px_50px_rgba(17,17,15,0.05)]">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline bg-canvas px-5 py-3.5">
+                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                        MS Word Track Changes Comparison {section.trackedChanges.context ? `· ${section.trackedChanges.context}` : ""}
+                      </span>
+                      {section.trackedChanges.styleStandard ? (
+                        <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
+                          {section.trackedChanges.styleStandard}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
+                      <div className="rounded-xl border border-red-200 bg-red-50/45 p-4">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-700">
+                          Before (Raw Author / AI Draft)
+                        </p>
+                        <p className="mt-2 text-sm leading-7 text-body line-through decoration-red-600/60">
+                          {section.trackedChanges.rawDraft}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-primary/25 bg-primary/[0.06] p-4">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+                          After (Human Desk Revision)
+                        </p>
+                        <p className="mt-2 text-sm font-medium leading-7 text-ink">
+                          {section.trackedChanges.humanRevision}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="border-t border-hairline bg-canvas/90 px-5 py-3.5 text-xs leading-6 text-body sm:px-6">
+                      <strong className="font-semibold text-primary">Editor Margin Comment: </strong>
+                      {section.trackedChanges.marginComment}
+                    </div>
+                  </div>
+                ) : null}
+
                 {section.callout ? (
                   <div className="mt-6 rounded-2xl border border-primary/18 bg-primary/[0.045] p-6">
                     <h3 className="font-display text-2xl text-ink">{section.callout.title}</h3>
                     <p className="mt-3 text-sm leading-7 text-body"><RichText content={section.callout.text} /></p>
+                  </div>
+                ) : null}
+
+                {section.checklist ? (
+                  <div className="mt-7 rounded-2xl border border-primary/20 bg-surface-soft p-6">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Actionable Verification Checklist</p>
+                    <h3 className="mt-2 font-display text-2xl text-ink">{section.checklist.title}</h3>
+                    <ul className="mt-4 grid gap-3 text-sm leading-7 text-body">
+                      {section.checklist.items.map((item, idx) => (
+                        <li key={`${section.id}-check-${idx}`} className="flex items-start gap-3 rounded-xl border border-hairline bg-canvas p-3.5">
+                          <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                          <span><RichText content={item} /></span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ) : null}
 
@@ -208,10 +309,47 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             </section>
           ) : null}
 
+          {/* Bottom Editorial Desk Review Box & Free 300-Word Sample CTA */}
+          <section className="mt-14 rounded-2xl border border-hairline bg-surface-soft p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline pb-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">
+                  Editorial Verification &amp; Standards Sign-Off
+                </p>
+                <h2 className="mt-1 font-display text-2xl text-ink">
+                  Reviewed by the {reviewingDivision}
+                </h2>
+              </div>
+              <span className="rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                100% Human-Edited Standard
+              </span>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-body">
+              Every guide published by <strong>My Editing and Proofreading Desk</strong> is audited against current{" "}
+              <strong>{styleStandards.join(", ")}</strong> guidelines. Need human review for your own manuscript? Explore our{" "}
+              <Link href="/thesis-editing" className="font-semibold text-primary underline underline-offset-2">
+                Thesis Editing
+              </Link>
+              ,{" "}
+              <Link href="/dissertation-proofreading" className="font-semibold text-primary underline underline-offset-2">
+                Dissertation Proofreading
+              </Link>
+              , or{" "}
+              <Link href="/pricing" className="font-semibold text-primary underline underline-offset-2">
+                Pricing Calculator
+              </Link>
+              .
+            </p>
+          </section>
+
+          <div className="mt-10">
+            <SampleEditCta />
+          </div>
+
           {post.internalLinks.length > 0 ? (
-            <aside className="mt-14 rounded-[1.35rem] border border-hairline bg-primary p-7 text-white sm:p-9">
+            <aside className="mt-10 rounded-[1.35rem] border border-hairline bg-primary p-7 text-white sm:p-9">
               <h2 className="font-display text-3xl">Useful next steps</h2>
-              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {post.internalLinks.map((item) => (
                   <Link key={item.href} href={item.href} className="rounded-xl border border-white/20 bg-white/5 p-4 transition hover:bg-white/10">
                     <span className="block font-semibold">{item.label}</span>

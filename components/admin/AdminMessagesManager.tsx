@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/DashboardShell";
 import { PendingSubmitButton } from "@/components/PendingSubmitButton";
+import { formatUtcDateTime, parseUtcTimestampMs } from "@/lib/message-threading";
 
 export type MessageItem = {
   id: string;
@@ -59,7 +60,9 @@ type AdminMessagesManagerProps = {
 };
 
 function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
+  const targetMs = parseUtcTimestampMs(dateString);
+  if (!targetMs) return "N/A";
+  const date = new Date(targetMs);
   const now = new Date();
   const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
 
@@ -69,7 +72,7 @@ function formatRelativeTime(dateString: string): string {
   if (diffSec < 172800) return "Yesterday";
   if (diffSec < 604800) return `${Math.floor(diffSec / 86400)}d ago`;
 
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
 function formatFileSize(bytes?: number | null) {
@@ -136,9 +139,22 @@ export function AdminMessagesManager({
     }
   }, [selectedId]);
 
-  // Filter messages based on search query and unread status
+  // Filter messages based on search query and unread status, and strictly sort newest first
   const filteredMessages = useMemo(() => {
-    let result = messages;
+    let result = messages.slice().sort((a, b) => {
+      const aLatest = Math.max(
+        parseUtcTimestampMs(a.latest_message_at),
+        parseUtcTimestampMs(a.replied_at),
+        parseUtcTimestampMs(a.created_at)
+      );
+      const bLatest = Math.max(
+        parseUtcTimestampMs(b.latest_message_at),
+        parseUtcTimestampMs(b.replied_at),
+        parseUtcTimestampMs(b.created_at)
+      );
+      if (bLatest !== aLatest) return bLatest - aLatest;
+      return parseUtcTimestampMs(b.created_at) - parseUtcTimestampMs(a.created_at);
+    });
     if (filterType === "unread") {
       result = result.filter((m) => Number(m.unread_count || 0) > 0 || m.status === "New");
     }
@@ -316,8 +332,16 @@ export function AdminMessagesManager({
                           {msg.name}
                         </span>
                       </div>
-                      <span className="shrink-0 text-xs text-charcoal/50">
-                        {formatRelativeTime(msg.latest_message_at || msg.created_at)}
+                      <span
+                        className="shrink-0 text-right text-xs text-charcoal/50"
+                        title={formatUtcDateTime(msg.latest_message_at || msg.created_at)}
+                      >
+                        <span className="block font-medium text-charcoal/70">
+                          {formatRelativeTime(msg.latest_message_at || msg.created_at)}
+                        </span>
+                        <span className="block text-[10px] text-charcoal/45">
+                          {formatUtcDateTime(msg.latest_message_at || msg.created_at)}
+                        </span>
                       </span>
                     </div>
 
@@ -548,9 +572,15 @@ function MessageDetailCard({
             </div>
           ) : null}
           <div className="flex flex-wrap justify-between gap-2 border-b border-hairline/60 pb-2">
-            <dt className="text-charcoal/60">Date & Time:</dt>
-            <dd className="text-ink">{new Date(message.created_at).toLocaleString()}</dd>
+            <dt className="text-charcoal/60">Received Date & Time:</dt>
+            <dd className="text-ink">{formatUtcDateTime(message.created_at)}</dd>
           </div>
+          {message.latest_message_at && message.latest_message_at !== message.created_at ? (
+            <div className="flex flex-wrap justify-between gap-2 border-b border-hairline/60 pb-2">
+              <dt className="text-charcoal/60">Latest Activity:</dt>
+              <dd className="text-ink">{formatUtcDateTime(message.latest_message_at)}</dd>
+            </div>
+          ) : null}
           <div className="flex flex-wrap justify-between gap-2">
             <dt className="text-charcoal/60">Source page:</dt>
             <dd className="text-ink font-mono text-xs">{message.source || "Contact Form"}</dd>
@@ -604,7 +634,7 @@ function MessageDetailCard({
                     <span className={`text-xs font-bold uppercase tracking-wider ${isAdmin ? "text-cta" : "text-primary"}`}>
                       {isAdmin ? "Admin Reply" : "User Message"}
                     </span>
-                    <span className="text-xs text-charcoal/50">{new Date(event.createdAt).toLocaleString()}</span>
+                    <span className="text-xs text-charcoal/50">{formatUtcDateTime(event.createdAt)}</span>
                   </div>
                   <div className="mt-3 max-w-[65ch] text-sm leading-[1.6] text-ink [overflow-wrap:anywhere]">
                     <RenderPlainTextWithLinks text={event.content} />

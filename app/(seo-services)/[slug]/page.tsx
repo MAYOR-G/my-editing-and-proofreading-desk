@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/JsonLd";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { SampleEditCta } from "@/components/SampleEditCta";
 import { getSeoServicePage, seoServicePages } from "@/lib/seo-service-pages";
 import { STANDARD_EDITORIAL_RATE } from "@/lib/pricing";
-import { buildPageMetadata, faqPageJsonLd, jsonLdScript, serviceJsonLd, webPageJsonLd } from "@/lib/site";
+import { buildPageMetadata, serviceJsonLd, webPageJsonLd } from "@/lib/site";
 
 type SeoServiceRouteProps = {
   params: {
@@ -426,9 +428,8 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
         { name: page.name, path: `/${page.slug}` },
       ]}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript([
+      <JsonLd
+        data={[
           serviceJsonLd({
             name: page.name,
             description: page.metaDescription,
@@ -442,9 +443,8 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
             description: page.metaDescription,
             dateModified: page.dateUpdated,
           }),
-        ])}
+        ]}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScript(faqPageJsonLd(page.faq))} />
 
       <section className="bg-canvas px-5 py-16 sm:px-8 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.86fr_1.14fr]">
@@ -636,6 +636,10 @@ export default function SeoServicePage({ params }: SeoServiceRouteProps) {
                 Contact Us
               </Link>
             </div>
+          </div>
+
+          <div className="mt-8">
+            <SampleEditCta />
           </div>
         </div>
       </section>

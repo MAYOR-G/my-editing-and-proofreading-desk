@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText, LockKeyhole, MessageSquareText, ShieldCheck } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
+import { SampleEditCta } from "@/components/SampleEditCta";
 import { buildPageMetadata } from "@/lib/site";
 
 const steps = [
@@ -78,6 +79,9 @@ export default function SubmitPage() {
               ))}
             </div>
           </div>
+        </div>
+        <div className="mx-auto mt-12 max-w-7xl">
+          <SampleEditCta />
         </div>
       </section>
     </PublicPageShell>

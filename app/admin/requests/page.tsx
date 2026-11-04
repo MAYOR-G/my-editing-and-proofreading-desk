@@ -5,9 +5,12 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { sendMessageReplyEmail, SUPPORT_EMAIL } from "@/lib/email";
 import { adminNav } from "@/lib/admin-nav";
-import { makeThreadKey, sanitizePlainText } from "@/lib/message-threading";
+import { makeThreadKey, parseUtcTimestampMs, sanitizePlainText } from "@/lib/message-threading";
 import { fileToStoredAttachment, validateAdminAttachment } from "@/lib/attachment-utils";
 import { AdminMessagesManager, type MessageItem, type ConversationEvent } from "@/components/admin/AdminMessagesManager";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type MessageRow = Record<string, any>;
 
@@ -97,6 +100,7 @@ async function replyToMessage(formData: FormData) {
     redirect(`/admin/requests?message=${id}&reply=failed`);
   }
 
+  const now = new Date().toISOString();
   await supabaseAdmin.from("contact_message_replies").insert({
     message_id: id,
     reply,
@@ -108,9 +112,9 @@ async function replyToMessage(formData: FormData) {
     attachment_file_name: storedAttachment?.name || null,
     attachment_content_type: storedAttachment?.contentType || null,
     attachment_file_size: storedAttachment?.size || null,
+    created_at: now,
   });
 
-  const now = new Date().toISOString();
   await supabaseAdmin
     .from("contact_messages")
     .update({
@@ -126,6 +130,7 @@ async function replyToMessage(formData: FormData) {
     .eq("id", id);
 
   revalidatePath("/admin/requests");
+  revalidatePath("/admin");
   redirect(`/admin/requests?message=${id}&reply=sent`);
 }
 
@@ -194,7 +199,6 @@ export default async function AdminRequestsPage({
     id,
     name,
     email,
-    phone,
     subject,
     message,
     source,
@@ -270,15 +274,7 @@ export default async function AdminRequestsPage({
   }
 
   const allMessages: MessageRow[] = data || [];
-  const messages: MessageRow[] = allMessages.slice().sort((a, b) => {
-    const aTime = new Date(a.latest_message_at || a.updated_at || a.created_at || 0).getTime();
-    const bTime = new Date(b.latest_message_at || b.updated_at || b.created_at || 0).getTime();
-    return bTime - aTime;
-  });
-
-  const selected: MessageRow | null = messages.find((message) => message.id === searchParams?.message) || messages[0] || null;
-
-  const messageIds = messages.map((m) => m.id);
+  const messageIds = allMessages.map((m) => m.id);
   let allReplies: Array<Record<string, any>> = [];
 
   if (messageIds.length > 0) {
@@ -317,6 +313,57 @@ export default async function AdminRequestsPage({
       console.warn("Replies fetch caught error:", e);
     }
   }
+
+  // Compute each message thread's true latest message timestamp (never using updated_at from read/status toggles)
+  const latestReplyByMessageId: Record<string, { createdAt: string; reply: string }> = {};
+  for (const r of allReplies) {
+    if (!r.message_id || !r.created_at) continue;
+    const existing = latestReplyByMessageId[r.message_id];
+    if (!existing || parseUtcTimestampMs(r.created_at) >= parseUtcTimestampMs(existing.createdAt)) {
+      latestReplyByMessageId[r.message_id] = {
+        createdAt: r.created_at,
+        reply: r.reply,
+      };
+    }
+  }
+
+  const enrichedMessageRows: MessageRow[] = allMessages.map((m) => {
+    const latestReply = latestReplyByMessageId[m.id];
+    const candidates = [
+      m.latest_message_at,
+      latestReply?.createdAt,
+      m.replied_at,
+      m.created_at,
+    ].filter(Boolean) as string[];
+
+    let effectiveLatestAt = m.created_at;
+    let maxMs = parseUtcTimestampMs(m.created_at);
+    for (const candidate of candidates) {
+      const ms = parseUtcTimestampMs(candidate);
+      if (ms > maxMs) {
+        maxMs = ms;
+        effectiveLatestAt = candidate;
+      }
+    }
+
+    return {
+      ...m,
+      latest_message_at: effectiveLatestAt,
+      latest_message: m.latest_message || latestReply?.reply || m.admin_reply || m.message,
+      _sortLatestMs: maxMs,
+      _sortCreatedMs: parseUtcTimestampMs(m.created_at),
+    };
+  });
+
+  // Strict reverse-chronological sorting (newest message / active thread first)
+  const messages: MessageRow[] = enrichedMessageRows.slice().sort((a, b) => {
+    if (b._sortLatestMs !== a._sortLatestMs) {
+      return b._sortLatestMs - a._sortLatestMs;
+    }
+    return b._sortCreatedMs - a._sortCreatedMs;
+  });
+
+  const selected: MessageRow | null = messages.find((message) => message.id === searchParams?.message) || messages[0] || null;
 
   if (selected?.id && selected.last_sender === "user" && Number(selected.unread_count || 0) > 0) {
     await supabaseAdmin
@@ -360,7 +407,7 @@ export default async function AdminRequestsPage({
       }));
 
     conversationEventsByMessageId[m.id] = [rootEvent, ...repliesForM].sort(
-      (a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
+      (a, b) => parseUtcTimestampMs(a.createdAt) - parseUtcTimestampMs(b.createdAt)
     );
   }
 

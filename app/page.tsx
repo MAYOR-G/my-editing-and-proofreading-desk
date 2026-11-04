@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { JsonLd } from "@/components/JsonLd";
 import { faqs } from "@/lib/content";
 import { SUPPORT_EMAIL } from "@/lib/contact-info";
-import { buildPageMetadata, faqPageJsonLd, jsonLdScript, webPageJsonLd } from "@/lib/site";
+import { buildPageMetadata, organizationJsonLd, webPageJsonLd, websiteJsonLd } from "@/lib/site";
 
 import { HeroSplit } from "@/components/home/HeroSplit";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
@@ -29,16 +30,16 @@ export const metadata: Metadata = buildPageMetadata({
 export default function Home() {
   return (
     <main className="min-h-screen bg-ivory text-ink">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript([
+      <JsonLd
+        data={[
+          organizationJsonLd(),
+          websiteJsonLd(),
           webPageJsonLd({
             path: "/",
             name: "Professional Editing and Proofreading Services",
             description: "Human editing, proofreading, formatting, and document review for Academic & Graduate Research, business, author, and professional writing.",
           }),
-          faqPageJsonLd(faqs.slice(0, 4)),
-        ])}
+        ]}
       />
       {/* 
         Note: SiteHeader/SiteFooter are handled in their own components.

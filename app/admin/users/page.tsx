@@ -3,6 +3,9 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { adminNav } from "@/lib/admin-nav";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminUsersPage() {
   await requireAdmin();
 

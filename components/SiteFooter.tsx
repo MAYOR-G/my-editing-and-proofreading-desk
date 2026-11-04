@@ -76,10 +76,10 @@ export function SiteFooter() {
                   Phone & Availability
                 </p>
                 <a
-                  href={`tel:${COMPANY_PHONE_TEL}`}
+                  href="tel:+14088728603"
                   className="mt-1 block text-sm font-semibold text-white/90 transition hover:text-sky-300"
                 >
-                  {COMPANY_PHONE}
+                  US (+1) 408-872-8603
                 </a>
                 <p className="mt-1 text-xs text-surface-soft/50">
                   24/7 Client Portal Intake & Secure Uploads

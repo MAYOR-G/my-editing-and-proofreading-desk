@@ -41,8 +41,18 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
   const [state, setState] = useState<SubmitState>("idle");
   const [feedback, setFeedback] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [isSampleEdit, setIsSampleEdit] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("type") === "sample-edit" || params.get("sample") === "true") {
+        setIsSampleEdit(true);
+      }
+    }
+  }, []);
 
   function renderTurnstile() {
     if (!turnstileEnabled || !turnstileSiteKey || !turnstileRef.current || !window.turnstile || turnstileWidgetId.current) return;
@@ -171,8 +181,17 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
 
       {!compact ? (
         <>
-          <p className="text-xs uppercase tracking-[0.24em] text-primary">Inquiry form</p>
-          <h2 className="mt-3 font-display text-3xl leading-tight text-ink">Tell us about your project.</h2>
+          <p className="text-xs uppercase tracking-[0.24em] text-primary">
+            {isSampleEdit ? "Complimentary 300-Word Human Sample Edit" : "Inquiry form"}
+          </p>
+          <h2 className="mt-3 font-display text-3xl leading-tight text-ink">
+            {isSampleEdit ? "Request your free 300-word human sample edit." : "Tell us about your project."}
+          </h2>
+          {isSampleEdit ? (
+            <p className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3.5 text-xs leading-6 text-body">
+              Paste a 300-word excerpt into the message box below or attach your draft file. Our subject-matter desk will return a complimentary human edit with Microsoft Word Track Changes and margin notes.
+            </p>
+          ) : null}
         </>
       ) : null}
 
@@ -211,7 +230,14 @@ export function ContactForm({ source = "Contact Form", defaultName = "", default
           </label>
           <label className="grid min-w-0 gap-2 text-sm font-medium text-ink">
             Subject
-            <input name="subject" type="text" placeholder={compact ? "Support question" : "Project inquiry"} className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 text-base text-ink placeholder:text-body transition duration-200 ease-premium-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,82,255,0.08)]" />
+            <input
+              key={isSampleEdit ? "sample-subject" : "default-subject"}
+              name="subject"
+              type="text"
+              defaultValue={isSampleEdit ? "Free 300-Word Human Sample Edit Request" : ""}
+              placeholder={compact ? "Support question" : "Project inquiry"}
+              className="min-h-12 w-full rounded-xl border border-hairline bg-surface-soft px-4 text-base text-ink placeholder:text-body transition duration-200 ease-premium-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,82,255,0.08)]"
+            />
           </label>
         </div>
 

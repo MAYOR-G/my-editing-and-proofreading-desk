@@ -1,25 +1,25 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/blog";
 import { seoServicePages } from "@/lib/seo-service-pages";
-import { absoluteUrl } from "@/lib/site";
+import { SITE_LAST_MODIFIED, absoluteUrl } from "@/lib/site";
 
 const BLOG_POSTS_PER_PAGE = 12;
 
 const staticRoutes: Array<{ path: string; lastModified?: string }> = [
-  { path: "/" },
-  { path: "/about" },
-  { path: "/services" },
-  { path: "/submit" },
-  { path: "/pricing" },
-  { path: "/editorial-policy" },
-  { path: "/ai-editing-tool" },
-  { path: "/editors" },
-  { path: "/blog" },
-  { path: "/faq" },
-  { path: "/contact" },
-  { path: "/privacy" },
-  { path: "/refund-policy" },
-  { path: "/terms" },
+  { path: "/", lastModified: SITE_LAST_MODIFIED },
+  { path: "/about", lastModified: SITE_LAST_MODIFIED },
+  { path: "/services", lastModified: SITE_LAST_MODIFIED },
+  { path: "/submit", lastModified: SITE_LAST_MODIFIED },
+  { path: "/pricing", lastModified: SITE_LAST_MODIFIED },
+  { path: "/editorial-policy", lastModified: SITE_LAST_MODIFIED },
+  { path: "/ai-editing-tool", lastModified: SITE_LAST_MODIFIED },
+  { path: "/editors", lastModified: SITE_LAST_MODIFIED },
+  { path: "/blog", lastModified: SITE_LAST_MODIFIED },
+  { path: "/faq", lastModified: SITE_LAST_MODIFIED },
+  { path: "/contact", lastModified: SITE_LAST_MODIFIED },
+  { path: "/privacy", lastModified: SITE_LAST_MODIFIED },
+  { path: "/refund-policy", lastModified: SITE_LAST_MODIFIED },
+  { path: "/terms", lastModified: SITE_LAST_MODIFIED },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

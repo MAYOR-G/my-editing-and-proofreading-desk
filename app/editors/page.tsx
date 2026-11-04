@@ -12,9 +12,10 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { breadcrumbJsonLd, buildPageMetadata, jsonLdScript } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/site";
 
 const fields = [
   "Academic writing",
@@ -85,6 +86,65 @@ const trustItems = [
   { title: "On-time delivery", body: "Projects are reviewed within the selected timeline, with clear status updates in the dashboard.", icon: ShieldCheck },
 ];
 
+const editorialDesks = [
+  {
+    title: "STEM & Clinical Medicine Desk",
+    code: "DESK 01 · EMPIRICAL & BIOMEDICAL",
+    disciplineFocus:
+      "IMRaD manuscript structure, statistical reporting clarity (p-values, confidence intervals, effect sizes), CONSORT/PRISMA/STROBE alignment, and LaTeX/Word mathematical equation preservation.",
+    styleGuides: "AMA 11th, IEEE, Vancouver, CSE, Nature/Elsevier/Springer Author Guidelines, APA 7th Quantitative",
+    verificationProtocol:
+      "Dual-pass technical terminology audit, cross-verification of in-text numerical values against tables/figures, and non-destructive editing around inline equations and nomenclature.",
+    sampleTrackedStandard: {
+      before: "Treatment group A showed a significant reduction in biomarkers (p = 0.04), proving the intervention cures the pathology.",
+      after: "Treatment Group A demonstrated a statistically significant reduction in target biomarkers (p = .04), indicating that the intervention may attenuate disease progression.",
+      note: "Calibrated causal overclaiming to match empirical scope and standardized statistical reporting notation.",
+    },
+  },
+  {
+    title: "Social Sciences, Education & Humanities Desk",
+    code: "DESK 02 · QUALITATIVE & THEORETICAL",
+    disciplineFocus:
+      "Qualitative rigor, ethnographic and phenomenological voice preservation, theoretical framing, literature synthesis cohesion, and chapter-to-chapter argument transitions.",
+    styleGuides: "APA 7th Edition, Chicago Manual of Style (17th Ed. Notes & Bibliography / Author-Date), MLA 9th, Harvard",
+    verificationProtocol:
+      "Cross-chapter thesis thread audit, participant quote integrity lock (ensuring zero alterations to verbatim transcripts), and full in-text citation to bibliography reconciliation.",
+    sampleTrackedStandard: {
+      before: "The interviewees all agreed that institutional barriers are the main reason why pedagogical reform fails in urban schools.",
+      after: "Across semi-structured interviews, participants consistently identified institutional barriers as a primary constraint on pedagogical reform in urban school districts.",
+      note: "Replaced informal generalization with methodologically precise qualitative reporting.",
+    },
+  },
+  {
+    title: "Law, Policy & Jurisprudence Desk",
+    code: "DESK 03 · LEGAL & STATUTORY",
+    disciplineFocus:
+      "Statutory interpretation clarity, comparative constitutional analysis, treaty and case-law syntax, regulatory precision, and exhaustive footnote integrity.",
+    styleGuides: "OSCOLA (4th Ed.), The Bluebook (21st Ed.), AGLC4, McGill Guide (10th Ed.), Chicago Legal",
+    verificationProtocol:
+      "Pinpoint citation syntax verification, supra/ibid cross-reference validation, Latin legal maxim standardization, and strict preservation of normative legal terms of art (shall vs. may).",
+    sampleTrackedStandard: {
+      before: "The court's ruling in Smith makes it clear that directors must always consider creditor interests whenever insolvency is possible.",
+      after: "The appellate holding in Smith clarifies that fiduciary duties require directors to consider creditor interests once insolvent liquidation becomes probable.",
+      note: "Sharpened doctrinal precision around the insolvency threshold and aligned verb tense with case-law convention.",
+    },
+  },
+  {
+    title: "Corporate, Executive & Regulatory Desk",
+    code: "DESK 04 · INSTITUTIONAL & ENTERPRISE",
+    disciplineFocus:
+      "Technical whitepapers, R&D grant proposals (NIH, NSF, Horizon Europe, UKRI), multilateral policy briefs, ESG disclosures, and institutional compliance documentation.",
+    styleGuides: "Associated Press (AP), Economist Style Guide, European Commission Interinstitutional Style Guide, Custom House Guides",
+    verificationProtocol:
+      "Executive summary alignment check, active-voice decision framing, acronym/glossary registry compilation, and strict compliance with funder page/word-count ceilings.",
+    sampleTrackedStandard: {
+      before: "Our consortium hopes to utilize the grant funding to potentially build a scalable framework for regional supply chain resilience.",
+      after: "The consortium will deploy grant funding to establish a scalable, auditable framework that strengthens regional supply-chain resilience across three pilot corridors.",
+      note: "Eliminated tentative hedging to project institutional readiness and measurable deliverable scope.",
+    },
+  },
+];
+
 export const metadata: Metadata = buildPageMetadata({
   title: "Human Editors for Academic, Business, and Manuscript Editing",
   description: "Learn how documents are matched with human editors who consider subject, purpose, audience, tone, structure, and delivery standards.",
@@ -148,12 +208,11 @@ function EditorialReviewVisual() {
 export default function EditorsPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdScript(breadcrumbJsonLd([
+      <JsonLd
+        data={breadcrumbJsonLd([
           { name: "Home", path: "/" },
           { name: "Editor Standards", path: "/editors" },
-        ]))}
+        ])}
       />
       <SiteHeader />
 
@@ -377,13 +436,82 @@ export default function EditorsPage() {
       </section>
 
       <section className="px-5 pb-16 sm:px-8 lg:pb-24">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-hairline bg-surface-soft p-6 sm:p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Future verified profiles</p>
-          <h2 className="mt-3 font-display text-3xl text-ink">Named editor profiles will be added after owner approval.</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-body">
-            This page currently explains editorial standards and project matching only. Real names, photographs, biographies, qualifications, and professional links will appear here only after the owner supplies and approves them.
-          </p>
-          {/* Reserved for owner-approved editor profile data. Do not render unverified names, photos, biographies, degrees, or links. */}
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary">Institutional specialization</p>
+            <h2 className="mt-4 font-display text-[clamp(2.2rem,4vw,4rem)] leading-tight text-ink">
+              Subject-Matter Editorial Desks &amp; Review Standards
+            </h2>
+            <p className="mt-4 text-base leading-8 text-body">
+              Every submission is routed to one of four specialized institutional desks. Rather than relying on generalist freelancers, each desk enforces discipline-specific style conventions, methodological boundaries, and tracked-change protocols.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            {editorialDesks.map((desk) => (
+              <article
+                key={desk.title}
+                className="flex flex-col justify-between rounded-2xl border border-hairline bg-surface-soft p-6 shadow-[0_18px_55px_rgba(17,17,15,0.04)] sm:p-8"
+              >
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline pb-4">
+                    <span className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-primary">
+                      {desk.code}
+                    </span>
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-primary">
+                      100% Human Review
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 font-display text-3xl leading-tight text-ink">
+                    {desk.title}
+                  </h3>
+
+                  <dl className="mt-6 grid gap-4 text-sm leading-6">
+                    <div className="rounded-xl border border-hairline bg-canvas p-4">
+                      <dt className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                        Discipline Focus
+                      </dt>
+                      <dd className="mt-1.5 text-body">{desk.disciplineFocus}</dd>
+                    </div>
+
+                    <div className="rounded-xl border border-hairline bg-canvas p-4">
+                      <dt className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                        Style Guides Covered
+                      </dt>
+                      <dd className="mt-1.5 font-medium text-ink">{desk.styleGuides}</dd>
+                    </div>
+
+                    <div className="rounded-xl border border-hairline bg-canvas p-4">
+                      <dt className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                        Quality Verification Protocol
+                      </dt>
+                      <dd className="mt-1.5 text-body">{desk.verificationProtocol}</dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <div className="mt-6 rounded-xl border border-primary/20 bg-canvas p-4 shadow-sm">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                    Sample Tracked-Change Standard
+                  </p>
+                  <div className="mt-3 grid gap-2.5 text-xs leading-6">
+                    <div className="rounded-lg border border-red-200/80 bg-red-50/50 p-3 text-body">
+                      <span className="font-bold uppercase tracking-wider text-red-700">Raw Draft: </span>
+                      <span className="line-through decoration-red-600/60">{desk.sampleTrackedStandard.before}</span>
+                    </div>
+                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-ink">
+                      <span className="font-bold uppercase tracking-wider text-primary">Human Desk Revision: </span>
+                      <span className="font-medium">{desk.sampleTrackedStandard.after}</span>
+                    </div>
+                    <p className="text-[11px] italic text-muted">
+                      Margin rationale: {desk.sampleTrackedStandard.note}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
