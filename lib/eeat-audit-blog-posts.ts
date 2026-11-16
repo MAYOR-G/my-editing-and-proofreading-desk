@@ -14,11 +14,11 @@ export const eeatAuditBlogPosts: BlogPost[] = [
     editorialDesk: "STEM & Clinical Medicine Review Desk",
     styleStandards: ["APA 7th Ed.", "COPE AI Authorship Guidelines", "ICMJE Recommendations", "AMA 11th Ed."],
     datePublished: "2026-11-04",
-    dateUpdated: "2026-11-04",
+    dateUpdated: "2026-11-16",
     readingTime: "11 min read",
-    metaTitle: 'Why AI Grammar Tools Trigger "Synthetic Voice" Desk Rejections',
+    metaTitle: 'Why AI Grammar Tools Trigger "Synthetic Voice" Rejections',
     metaDescription:
-      "Learn why Grammarly and LLM rewrites trigger synthetic-voice desk rejections in peer-reviewed journals by flattening epistemic hedging, and how human editing fixes it.",
+      "Learn why Grammarly and LLM rewrites trigger synthetic-voice journal desk rejections by flattening hedging, and how human academic editing fixes it.",
     heroImage: "/images/blog/esl-academic-proofreading-guide.webp",
     heroImageAlt: "Peer-reviewed journal manuscript showing human tracked changes restoring scholarly hedging over automated AI phrasing",
     tableOfContents: [
@@ -251,11 +251,11 @@ export const eeatAuditBlogPosts: BlogPost[] = [
     editorialDesk: "Social Sciences, Education & Humanities Desk",
     styleStandards: ["APA 7th Ed.", "Chicago Manual of Style 17th Ed.", "UK / Commonwealth Viva Standards"],
     datePublished: "2026-11-04",
-    dateUpdated: "2026-11-04",
+    dateUpdated: "2026-11-16",
     readingTime: "12 min read",
     metaTitle: "Citation Drift in PhD Theses: 80,000-Word Structural Audit",
     metaDescription:
-      "Case-study walkthrough of how cross-chapter methodology drift and missing bibliography entries nearly derailed an 80,000-word PhD thesis—and our 4-pass human audit.",
+      "Case study of an 80,000-word PhD thesis audit: fixing citation drift, orphan references, methodology tense shifts, and cross-chapter misalignment.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "80,000-word PhD dissertation undergoing cross-chapter citation reconciliation and structural human editing",
     tableOfContents: [
@@ -463,11 +463,11 @@ export const eeatAuditBlogPosts: BlogPost[] = [
     editorialDesk: "STEM & Social Sciences Joint Benchmark Desk",
     styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "CONSORT / Empirical Reporting"],
     datePublished: "2026-11-04",
-    dateUpdated: "2026-11-04",
+    dateUpdated: "2026-11-16",
     readingTime: "10 min read",
-    metaTitle: "AI vs. Human Editor on a 3,500-Word Research Draft ($80.50 Test)",
+    metaTitle: "AI vs. Human Editor on a 3,500-Word Research Draft ($80.50)",
     metaDescription:
-      "We tested an LLM grammar tool vs. a senior human editor on a 3,500-word research paper ($80.50 baseline). See the full scorecard across grammar, hedging, and citations.",
+      "We tested an AI grammar checker against a senior human academic editor ($80.50 at 14-day pace) on a 3,500-word draft. See what each caught and missed.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
     heroImageAlt: "Scorecard comparing AI editing tool versus human academic editor on a 3,500-word research paper",
     tableOfContents: [
@@ -626,6 +626,20 @@ export const eeatAuditBlogPosts: BlogPost[] = [
             ". Compare our editor's MS Word Track Changes and margin comments against any automated tool before you spend a cent.",
           ],
         },
+        checklist: {
+          title: "Decision Checklist: Automated Pass vs. Human Edit ($80.50 Benchmark)",
+          items: [
+            [
+              "Use the Free AI Editing Tool only on early, non-confidential paragraphs to catch basic spelling slips and repeated words.",
+            ],
+            [
+              "Never accept an AI rewrite without cross-checking every p-value, percentage, and Table/Figure callout against your raw output.",
+            ],
+            [
+              "Commission a human edit before journal submission or thesis defense so epistemic hedging, APA/Chicago citations, and logic flow are audited in Track Changes.",
+            ],
+          ],
+        },
       },
     ],
     faq: [
@@ -674,11 +688,11 @@ export const eeatAuditBlogPosts: BlogPost[] = [
     editorialDesk: "Social Sciences, Education & STEM Thesis Desk",
     styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "MS Word Styles & Repository Rules"],
     datePublished: "2026-11-04",
-    dateUpdated: "2026-11-04",
+    dateUpdated: "2026-11-16",
     readingTime: "9 min read",
-    metaTitle: "The 60-Minute Pre-Submission Thesis Audit: 4 Essential Checks",
+    metaTitle: "The 60-Minute Pre-Submission Thesis Audit: 4 Key Checks",
     metaDescription:
-      "Run this tactical 60-minute pre-submission thesis audit before hiring an editor: citation cross-checking, verb calibration, Word style locking, and editorial briefs.",
+      "Run this 60-minute pre-submission thesis audit before hiring an editor: check Heading styles, citation-to-bibliography locks, tables, and English dialect.",
     heroImage: "/images/blog/thesis-proofreading-checklist-hero-v2.png",
     heroImageAlt: "Doctoral researcher running a 60-minute pre-submission thesis audit in Microsoft Word before professional editing",
     tableOfContents: [
@@ -865,11 +879,11 @@ export const eeatAuditBlogPosts: BlogPost[] = [
     editorialDesk: "Law, Policy & Academic Integrity Desk",
     styleStandards: ["University Proofreading Policies (UK/US/CA/AU)", "COPE Authorship Ethics", "APA 7th / OSCOLA"],
     datePublished: "2026-11-04",
-    dateUpdated: "2026-11-04",
+    dateUpdated: "2026-11-16",
     readingTime: "11 min read",
-    metaTitle: "Turnitin AI Detection & University Ethics: Human Track Changes",
+    metaTitle: "Turnitin AI Detection & Ethics: Human Track Changes Guide",
     metaDescription:
-      "Understand why LLM paragraph rewrites trigger Turnitin AI flags in theses and how timestamped human MS Word Track Changes protect your authentic student authorship.",
+      "Why LLM rewrites trigger Turnitin AI flags and how timestamped MS Word Track Changes from a human editor provide an auditable authorship trail.",
     heroImage: "/images/blog/research-paper-editing-checklist-before-submission.webp",
     heroImageAlt: "Microsoft Word document showing timestamped human Track Changes and margin queries that document authentic student authorship",
     tableOfContents: [

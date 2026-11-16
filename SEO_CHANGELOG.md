@@ -1,5 +1,24 @@
 # SEO, Content, and Security Changelog
 
+## 16 November 2026 — Comprehensive SEO Audit, Thin-Content Blog Expansion & Reddit/GSC Trending Guides
+
+- Conducted a full technical, metadata, E-E-A-T, GSC, and Reddit/web demand SEO audit without modifying visual UI, Tailwind layouts, or design components; documented full findings in `SEO_AUDIT_NOVEMBER_2026.md`.
+- **Metadata & Schema Fixes (Zero Layout Changes):**
+  - Shortened `app/page.tsx` meta description from 177 to 148 characters for full SERP visibility.
+  - Shortened `metaDescription` (`<= 155` chars) and refreshed `dateUpdated` (`2026-11-16`) on `/academic-proofreading`, `/dissertation-proofreading`, and `/thesis-editing` in `lib/seo-service-pages.ts`.
+  - Added `editorialTeamJsonLd()` and `webPageJsonLd()` to `app/editors/page.tsx` and updated `SITE_LAST_MODIFIED` in `lib/site.ts`.
+  - Tightened all blog `metaTitle` (`30–60` chars) and `metaDescription` (`70–155` chars) values across `lib/eeat-audit-blog-posts.ts`, `lib/blog-ai-vs-human-graduate-research.ts`, `lib/blog-formatting-challenges-phd.ts`, `lib/blog-can-ai-edit-research-paper.ts`, `lib/strategic-seo-blog-posts.ts`, and `lib/requested-blog-posts.ts`.
+  - Removed banned crawler strings (`"Edit and Proofread"` in the `how-to-edit-literature-review` title and `"Flawless"` in `lib/blog-can-ai-edit-research-paper.ts`).
+- **E-E-A-T & Thin-Content Remediation:**
+  - Expanded all 10 guides in `lib/requested-blog-posts.ts` (raising thin 144–374 prose-word posts to 874–1,236 total rendered words) with `reviewer`, `editorialDesk`, `styleStandards`, MS Word `trackedChanges` examples, verification `checklist` boxes, comparison `table` blocks, and updated `cv-proofreading-checklist` to a WebP blog hero image.
+  - Added institutional `reviewer`, `editorialDesk`, `styleStandards`, `trackedChanges`, and `checklist` blocks across `lib/blog-ai-vs-human-graduate-research.ts`, `lib/blog-formatting-challenges-phd.ts`, `lib/blog-can-ai-edit-research-paper.ts`, `lib/strategic-seo-blog-posts.ts`, and `ai-vs-human-editing-3500-word-experiment`.
+- **Three New Trending Guides (`lib/trending-reddit-seo-blog-posts.ts`):**
+  - `/blog/how-to-respond-to-peer-reviewers-rebuttal-letter-guide` (Revise & Resubmit package, Reviewer 2 pushback templates, point-by-point matrix, language critiques).
+  - `/blog/academic-cv-vs-industry-resume-phd-masters-guide` (PhD/Master's Academic CV vs. ATS-safe Industry Resume conversion, publication formatting, cover letters).
+  - `/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules` (US/UK/Canada/Australia university third-party proofreading policies, copyediting vs. ghostwriting boundaries, Track Changes provenance).
+- Wired contextual internal links from `/academic-proofreading`, `/thesis-editing`, `/dissertation-proofreading`, `/manuscript-editing`, and `/cv-resume-editing` in `app/(seo-services)/[slug]/page.tsx`, added all 3 new guides to `lib/blog.ts` and `public/llms.txt`.
+- Verified `npx tsc --noEmit` (0 errors), `npm run build` (117 static pages), `scripts/seo-verify/crawler-verify.mjs` (71/71 sitemap URLs passed with 0 errors, Home Page Guard passed), and `claude-seo` `metadata_template.py` (0 templated pages across 71 URLs) and `content_quality.py` (scores 97, 99, and 90 on the 3 new guides).
+
 ## 20 October 2026 — Claude SEO Alignment & Strategic Content Expansion
 
 - Implemented Claude SEO framework standards across content quality, semantic clustering, AI search (GEO), and technical access policy.

@@ -9,11 +9,14 @@ export const blogAiVsHumanGraduateResearch: BlogPost = {
   excerpt: "Learn how to balance AI editing tools with professional human editing for graduate research, master's thesis chapters, and PhD dissertations without sacrificing your authentic scholarly voice.",
   category: "Academic Writing",
   author: brandAuthor,
+  reviewer: "Social Sciences, Education & Humanities Desk — My Editing and Proofreading Desk",
+  editorialDesk: "Social Sciences & Graduate Research Desk",
+  styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "COPE Publication Ethics"],
   datePublished: publishedDate,
-  dateUpdated: publishedDate,
+  dateUpdated: "2026-11-16",
   readingTime: "10 min read",
-  metaTitle: "AI vs Human Editing for Graduate Research: Protect Your Voice",
-  metaDescription: "Explore AI vs human editing for Academic & Graduate Research. Discover how to keep your authentic scholarly voice, avoid automated flattening, and pass defense scrutiny.",
+  metaTitle: "AI vs Human Editing for Graduate Research & Academic Voice",
+  metaDescription: "Compare AI grammar tools and human academic editors for Master's and PhD drafts. Learn how to protect your scholarly voice, hedging, and citations.",
   heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
   heroImageAlt: "Graduate researcher comparing automated AI suggestions with professional human editorial marks on an academic draft",
   tableOfContents: [
@@ -105,7 +108,17 @@ export const blogAiVsHumanGraduateResearch: BlogPost = {
         [
           "Crucially, ethical human editing operates within recognized university integrity frameworks: editors offer suggestions, tracked changes, and explanatory comments, ensuring the work remains entirely your own intellectual product."
         ]
-      ]
+      ],
+      trackedChanges: {
+        context: "Master's Dissertation Discussion Chapter (Qualitative Education)",
+        rawDraft:
+          "Moreover, this groundbreaking study clearly proves that blended learning totally transforms academic outcomes for every undergraduate cohort.",
+        humanRevision:
+          "Within this three-campus cohort (N = 64), blended learning modules were associated with higher mid-term assessment completion rates, suggesting potential value for flexible undergraduate instruction.",
+        marginComment:
+          "COMMENT [Social Sciences Desk]: Removed automated hyperbole ('groundbreaking', 'clearly proves', 'totally transforms') and anchored the interpretation to your actual cohort size and findings.",
+        styleStandard: "APA 7th Ed. Scholarly Voice & Empirical Hedging",
+      }
     },
     {
       id: "ai-vs-human-comparison",
@@ -182,7 +195,16 @@ export const blogAiVsHumanGraduateResearch: BlogPost = {
           { text: "pricing calculator", href: "/pricing" },
           " to budget for professional human editorial review well ahead of your thesis submission deadline."
         ]
-      ]
+      ],
+      checklist: {
+        title: "Graduate Voice Preservation Checklist",
+        items: [
+          ["Verify every causal verb ('proves', 'causes', 'guarantees') matches your actual research design before submission."],
+          ["Restore discipline-specific terms that an automated checker may have swapped for generic synonyms."],
+          ["Confirm no confidential interview data or unpublished results were pasted into public AI tools."],
+          ["Archive the editor's MS Word Track Changes file alongside your draft history for supervisor review."],
+        ]
+      }
     }
   ],
   faq: [

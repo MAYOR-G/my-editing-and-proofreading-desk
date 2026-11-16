@@ -9,11 +9,14 @@ export const blogFormattingChallengesPhd: BlogPost = {
   excerpt: "Overcome the five most pervasive formatting and writing hurdles in Master's and PhD drafts, from cross-chapter cohesion and citation drift to complex front matter and viva readiness.",
   category: "Thesis & Dissertation",
   author: brandAuthor,
+  reviewer: "Social Sciences, Education & Humanities Desk — My Editing and Proofreading Desk",
+  editorialDesk: "Thesis Architecture & Formatting Desk",
+  styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "University Repository & ProQuest Rules"],
   datePublished: publishedDate,
-  dateUpdated: publishedDate,
+  dateUpdated: "2026-11-16",
   readingTime: "11 min read",
-  metaTitle: "Top 5 Formatting & Writing Challenges in Master's & PhD Drafts",
-  metaDescription: "Master the top 5 formatting and writing challenges in Academic & Graduate Research drafts: cross-chapter flow, citation drift, front matter rules, table formatting, and viva readiness.",
+  metaTitle: "Top 5 Formatting & Writing Challenges in PhD & Master's",
+  metaDescription: "Overcome the top 5 formatting and writing challenges in Master's and PhD theses: Word styles, literature synthesis, hedging, and reference consistency.",
   heroImage: "/images/blog/thesis-proofreading-checklist-hero-v2.png",
   heroImageAlt: "Doctoral candidate reviewing thesis chapter formatting, citations, and structural layout against university guidelines",
   tableOfContents: [
@@ -131,7 +134,17 @@ export const blogFormattingChallengesPhd: BlogPost = {
         [
           "Calibrating academic tone requires expert editorial judgment. Professional editors help you articulate your contributions with authority while framing conclusions within proper scientific boundaries."
         ]
-      ]
+      ],
+      trackedChanges: {
+        context: "PhD Thesis Chapter 2 & Chapter 4 Cross-Chapter Terminology Alignment",
+        rawDraft:
+          "In Chapter 2 we surveyed 120 respondents, yet our empirical findings in Chapter 4 clearly prove that participant burnout always undermines organizational trust.",
+        humanRevision:
+          "Consistent with the survey frame described in Chapter 3 (N = 114 valid responses), the Chapter 4 regression analysis indicates that perceived workload strain is significantly associated with lower institutional trust.",
+        marginComment:
+          "COMMENT [Thesis Desk]: (1) Aligned sample label ('respondents' -> 'valid responses') and sample size (120 -> 114) with Chapter 3 Table 3.2—please verify. (2) Softened 'clearly prove... always' to empirical association.",
+        styleStandard: "APA 7th Ed. Cross-Chapter Cohesion",
+      }
     },
     {
       id: "challenges-overview-table",
@@ -179,7 +192,16 @@ export const blogFormattingChallengesPhd: BlogPost = {
         [
           "2 weeks before deadline: Perform final test prints or institutional PDF exports, checking page breaks, bookmark trees, and declaration signatures."
         ]
-      ]
+      ],
+      checklist: {
+        title: "Master's & PhD Pre-Deposit Verification Checklist",
+        items: [
+          ["Confirm front matter uses lowercase Roman numerals (i, ii, iii) and Chapter 1 starts cleanly at Arabic 1 via unlinked Next Page Section Breaks."],
+          ["Refresh the Table of Contents, List of Tables, and List of Figures (`Update Entire Table`) after accepting all tracked edits."],
+          ["Check that every multi-page table repeats its header row and places table/figure captions consistently per your style manual."],
+          ["Verify a single English dialect (UK/US/CA) and consistent construct naming across all chapters."],
+        ]
+      }
     }
   ],
   faq: [

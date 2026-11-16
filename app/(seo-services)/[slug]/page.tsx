@@ -111,6 +111,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/canadian-academic-proofreading-and-thesis-guide", label: "Academic proofreading and thesis guidelines" },
       { href: "/blog/research-paper-editing-checklist-before-submission", label: "Research paper submission checklist" },
+      { href: "/blog/how-to-respond-to-peer-reviewers-rebuttal-letter-guide", label: "Responding to peer-review language critiques" },
       { href: "/blog/apa-7-reference-list-mistakes", label: "Common APA 7 referencing errors" },
       { href: "/blog/how-to-choose-research-philosophy-for-thesis", label: "Choosing research philosophy for thesis" },
       { href: "/pricing", label: "Academic proofreading rates" },
@@ -148,6 +149,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/what-thesis-editing-service-includes", label: "What thesis editing includes" },
       { href: "/blog/how-to-choose-a-thesis-editor", label: "How to choose a thesis editor" },
+      { href: "/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules", label: "University rules on hiring a thesis editor" },
       { href: "/pricing", label: "Check thesis editing pricing" },
     ],
     bodyLinks: {
@@ -183,6 +185,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     guides: [
       { href: "/blog/uk-dissertation-and-phd-thesis-proofreading-guide", label: "UK dissertation proofreading guide" },
       { href: "/blog/dissertation-proofreading-checklist", label: "15-point dissertation proofreading checklist" },
+      { href: "/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules", label: "University third-party proofreading rules" },
       { href: "/pricing", label: "Dissertation proofreading pricing" },
     ],
     bodyLinks: {
@@ -216,6 +219,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     ],
     guides: [
       { href: "/blog/sci-journal-manuscript-editing-guide-esl-researchers", label: "SCI journal editing for ESL researchers" },
+      { href: "/blog/how-to-respond-to-peer-reviewers-rebuttal-letter-guide", label: "How to respond to peer reviewers (R&R guide)" },
       { href: "/blog/editing-and-proofreading-before-manuscript-submission", label: "Manuscript submission preparation guide" },
       { href: "/blog/manuscript-editing-vs-copyediting", label: "Manuscript editing vs copyediting differences" },
       { href: "/pricing", label: "Manuscript editing pricing" },
@@ -285,6 +289,7 @@ const serviceEnhancements: Record<string, ServiceEnhancement> = {
     ],
     guides: [
       { href: "/blog/cv-proofreading-checklist", label: "Essential CV proofreading checklist" },
+      { href: "/blog/academic-cv-vs-industry-resume-phd-masters-guide", label: "Academic CV vs. industry resume for PhDs & Master's" },
       { href: "/blog/editing-vs-proofreading", label: "Choose editing or proofreading for CVs" },
       { href: "/pricing", label: "Estimate CV editing pricing" },
     ],

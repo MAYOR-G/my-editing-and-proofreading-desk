@@ -17,7 +17,7 @@ import { SERVICE_OPTIONS, STANDARD_EDITORIAL_RATE } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
 export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
-export const SITE_LAST_MODIFIED = "2026-08-04";
+export const SITE_LAST_MODIFIED = "2026-11-16";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";

@@ -232,8 +232,8 @@ export const seoServicePages: SeoServicePage[] = [
     name: "Academic Proofreading Services",
     eyebrow: "Students and researchers",
     metaTitle: "Academic Proofreading Services for Students & Researchers",
-    metaDescription: "Academic & Graduate Research proofreading for essays, theses, and journal manuscripts: grammar, clarity, formatting, and reference consistency checked by human editors.",
-    dateUpdated: "2026-10-26",
+    metaDescription: "Academic & Graduate Research proofreading for essays, theses, and journal papers: grammar, clarity, formatting, and citations checked by human editors.",
+    dateUpdated: "2026-11-16",
     h1: "Academic Proofreading Services for Students and Researchers",
     intro: "Academic proofreading provides thorough linguistic and formatting review for essays, research papers, and journal submissions before committee or publisher evaluation. Designed for undergraduate, postgraduate, and international researchers, human editors check grammar, scholarly terminology, citations, and reference styles. Base academic pricing begins at " + BASE_RATE_DISPLAY + " per word, with final costs determined by word count and turnaround pace.",
     sectionHeadings: {
@@ -319,8 +319,8 @@ export const seoServicePages: SeoServicePage[] = [
     name: "Dissertation Proofreading Service",
     eyebrow: "Graduate submission",
     metaTitle: "Dissertation Proofreading Service for Final Submission",
-    metaDescription: "Final-pass Academic & Graduate Research dissertation proofreading by human editors: grammar, citations, tables, figures, and formatting checked. Secure upload, from " + BASE_RATE_DISPLAY + " per word.",
-    dateUpdated: "2026-10-26",
+    metaDescription: "Final-pass Academic & Graduate Research dissertation proofreading by human editors: grammar, citations, tables, and formatting from " + BASE_RATE_DISPLAY + "/word.",
+    dateUpdated: "2026-11-16",
     h1: "Dissertation Proofreading Services for Final Graduate Submission",
     intro: "Dissertation proofreading delivers comprehensive final-pass review for doctoral and Master's candidates preparing for submission or defense. Our human editors verify grammar, punctuation, reference citations, tables, figures, and institutional formatting without modifying your research findings. Standard dissertation proofreading rates start from " + BASE_RATE_DISPLAY + " per word, calculated transparently from total word count and selected turnaround timeline.",
     sectionHeadings: {
@@ -409,8 +409,8 @@ export const seoServicePages: SeoServicePage[] = [
     name: "Thesis Editing Services",
     eyebrow: "Master's and PhD drafts",
     metaTitle: "Thesis Editing Services for Master's and PhD Students",
-    metaDescription: "Human thesis editing for Academic & Graduate Research, Master's, and PhD chapters: clarity, flow, academic tone, and citations. Tracked changes from " + BASE_RATE_DISPLAY + " per word.",
-    dateUpdated: "2026-10-26",
+    metaDescription: "Human thesis editing for Academic & Graduate Research, Master's, and PhD chapters: clarity, flow, tone, and Tracked Changes from " + BASE_RATE_DISPLAY + "/word.",
+    dateUpdated: "2026-11-16",
     h1: "Comprehensive Thesis Editing Services for Master's and PhD Chapters",
     intro: "Thesis editing refines chapter organization, academic tone, methodology narrative, and sentence clarity for Master's and PhD candidates. Tailored for graduate scholars addressing supervisor feedback before final proofreading, editors supply tracked changes while preserving research ownership. Editorial rates begin from " + BASE_RATE_DISPLAY + " per word, with pricing calculated transparently based on total chapter length and chosen turnaround schedule.",
     sectionHeadings: {

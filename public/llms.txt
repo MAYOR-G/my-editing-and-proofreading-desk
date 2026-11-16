@@ -55,6 +55,9 @@ My Editing and Proofreading Desk (https://www.editandproofread.com) provides 100
 - [Translation Review and Editing Services](https://www.editandproofread.com/translation-review)
 
 ## Featured Research & Editorial Guides
+- [How to Respond to Peer Reviewers (Reviewer 2): Point-by-Point Rebuttal Letter & Revise-and-Resubmit Guide](https://www.editandproofread.com/blog/how-to-respond-to-peer-reviewers-rebuttal-letter-guide): 3-part R&R resubmission package, point-by-point response matrix, diplomatic pushback templates, and resolving 'English needs editing' peer-review critiques.
+- [Academic CV vs. Industry Resume for PhD & Master's Graduates: Structure, Proofreading & Conversion Guide](https://www.editandproofread.com/blog/academic-cv-vs-industry-resume-phd-masters-guide): Converting doctoral and Master's CVs into ATS-safe 1–2 page industry resumes, publication citation formatting, grant summaries, and proofreading checklist.
+- [Is It Ethical to Hire a Thesis or Dissertation Editor? University Proofreading Rules, Supervisor Boundaries & Track Changes](https://www.editandproofread.com/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules): University senate proofreading policies across the US, UK, Canada, and Australia, copyediting vs. ghostwriting boundaries, and MS Word Track Changes provenance.
 - [Why Grammarly and LLMs Trigger "Synthetic Voice" Desk Rejections in Peer-Reviewed Journals](https://www.editandproofread.com/blog/why-ai-grammar-tools-trigger-journal-desk-rejections)
 - [Citation Drift & Cross-Chapter Disconnection: How an 80,000-Word PhD Thesis Almost Failed Before Deposit](https://www.editandproofread.com/blog/citation-drift-phd-thesis-structural-audit)
 - [We Tested AI vs. a Human Editor on a 3,500-Word Research Draft: What Each Caught and Missed](https://www.editandproofread.com/blog/ai-vs-human-editing-3500-word-experiment)

@@ -7,6 +7,7 @@ import { blogAiVsHumanGraduateResearch } from "@/lib/blog-ai-vs-human-graduate-r
 import { blogFormattingChallengesPhd } from "@/lib/blog-formatting-challenges-phd";
 import { blogCanAiEditResearchPaper } from "@/lib/blog-can-ai-edit-research-paper";
 import { eeatAuditBlogPosts } from "@/lib/eeat-audit-blog-posts";
+import { trendingRedditSeoBlogPosts } from "@/lib/trending-reddit-seo-blog-posts";
 
 export type BlogTextPart =
   | string
@@ -84,6 +85,7 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 const allBlogPosts: BlogPost[] = [
+  ...trendingRedditSeoBlogPosts,
   ...eeatAuditBlogPosts,
   blogAiVsHumanGraduateResearch,
   blogFormattingChallengesPhd,

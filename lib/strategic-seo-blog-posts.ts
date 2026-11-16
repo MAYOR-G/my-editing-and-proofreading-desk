@@ -10,10 +10,13 @@ export const strategicSeoBlogPosts: BlogPost[] = [
     excerpt: "Compare Chicago (CMOS 17), MLA 9, and APA 7 citation styles. Understand in-text rules, bibliography formats, block quote thresholds, and common formatting pitfalls.",
     category: "Academic editing",
     author,
+    reviewer: "Social Sciences, Education & Humanities Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Social Sciences & Humanities Citation Desk",
+    styleStandards: ["Chicago 17th Ed. (CMOS)", "MLA 9th Ed.", "APA 7th Ed."],
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-11-16",
     readingTime: "12 min read",
-    metaTitle: "Chicago vs MLA vs APA Style: Academic Citation & Format Guide",
+    metaTitle: "Chicago vs MLA vs APA Style: Citation & Formatting Guide",
     metaDescription: "Compare Chicago, MLA, and APA citation styles. Learn in-text rules, bibliography formats, block quote limits, and how human editors format each guide.",
     heroImage: "/images/blog/chicago-vs-mla-vs-apa-citation-guide.webp",
     heroImageAlt: "Side-by-side comparison of Chicago Manual of Style, MLA 9, and APA 7 citation formats with editorial notes on academic manuscripts",
@@ -176,7 +179,7 @@ export const strategicSeoBlogPosts: BlogPost[] = [
             "Citation management software such as Zotero, Mendeley, and EndNote provides a valuable repository for tracking sources, but exported citations frequently contain structural errors. These programs import raw metadata from databases, which often contains all-caps author names, inconsistent publisher cities, truncated page ranges, or missing volume numbers."
           ],
           [
-            "An automated manager cannot detect whether an APA reference title violates sentence case rules, whether a Chicago book citation requires an archival series title, or whether an MLA journal citation lacks container numbering. A professional editorial review checks every citation against primary style manuals, verifies in-text references against the bibliography, and ensures flawless formatting."
+            "An automated manager cannot detect whether an APA reference title violates sentence case rules, whether a Chicago book citation requires an archival series title, or whether an MLA journal citation lacks container numbering. A professional editorial review checks every citation against primary style manuals, verifies in-text references against the bibliography, and ensures consistent formatting."
           ],
           [
             "If your manuscript has accumulated multiple drafts or requires restyling from MLA to APA or Chicago, exploring our specialized ",
@@ -185,7 +188,17 @@ export const strategicSeoBlogPosts: BlogPost[] = [
             { text: "academic proofreading services", href: "/academic-proofreading" },
             " guarantees your document conforms to target guidelines."
           ]
-        ]
+        ],
+        trackedChanges: {
+          context: "Bibliography Re-Styling (Cross-Contaminated APA/MLA Draft -> Strict APA 7)",
+          rawDraft:
+            "Chen, Lin, & Miller, D. R. (2024). \"Neural Mechanisms of Academic Synthesis.\" Journal of cognitive studies, 14(2), pp. 115-132. doi:10.1016/j.jcs.2024.01.004",
+          humanRevision:
+            "Chen, L., & Miller, D. R. (2024). Neural mechanisms of academic synthesis. Journal of Cognitive Studies, 14(2), 115–132. https://doi.org/10.1016/j.jcs.2024.01.004",
+          marginComment:
+            "COMMENT [Citation Desk]: Converted MLA full first name and title-case quotation marks to APA 7 initials and unquoted sentence-case article title; restored title case on journal name and updated DOI to active https://doi.org/ link.",
+          styleStandard: "APA 7th Ed. Reference Integrity",
+        }
       },
       {
         id: "style-selection-matrix",
@@ -199,7 +212,16 @@ export const strategicSeoBlogPosts: BlogPost[] = [
           ["Target Publication or Department Guidelines: University dissertation templates and journal 'Instructions for Authors' supersede all general manuals."],
           ["Academic Discipline: When no specific journal rule is stated, apply APA for social sciences, health, and business; MLA for literature, theatre, and cultural studies; and Chicago Notes for history, theology, and philosophy."],
           ["Audience Readability: For trade non-fiction or monograph publishing, Chicago Notes & Bibliography provides the most unobtrusive reading experience."]
-        ]
+        ],
+        checklist: {
+          title: "Cross-Style Citation Verification Checklist",
+          items: [
+            ["Confirm one governing manual across every chapter (no MLA page-only tags mixed into APA author-year text)."],
+            ["Check block-quote indentation thresholds: 40+ words (APA), >4 prose lines (MLA), or 100+ words / 5+ lines (Chicago)."],
+            ["Audit title casing: sentence case for articles/books in APA vs. headline title case in MLA and Chicago."],
+            ["Cross-match every in-text citation against the terminal reference section before PDF export."],
+          ]
+        }
       }
     ],
     faq: [
@@ -249,8 +271,11 @@ export const strategicSeoBlogPosts: BlogPost[] = [
     excerpt: "Master Harvard referencing with complete rules for in-text citations, multi-author attribution, reference list mechanics, and fixes for the 7 most common formatting errors.",
     category: "Referencing and formatting",
     author,
+    reviewer: "Social Sciences, Education & Humanities Desk — My Editing and Proofreading Desk",
+    editorialDesk: "UK & Commonwealth Academic Referencing Desk",
+    styleStandards: ["Harvard (Cite Them Right)", "OSCOLA / MHRA Compatibility", "UK University Guidelines"],
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-11-16",
     readingTime: "11 min read",
     metaTitle: "Harvard Referencing Guide: In-Text Rules & Reference Lists",
     metaDescription: "Master Harvard referencing style with rules for in-text citations, reference lists, multi-author sources, and fixes for common formatting mistakes.",
@@ -396,7 +421,17 @@ export const strategicSeoBlogPosts: BlogPost[] = [
             { text: "dissertation proofread", href: "/dissertation-proofreading" },
             " verifies name spellings across chapters, confirms chronological ordering, and ensures strict adherence to your department's specific Harvard style guide."
           ]
-        ]
+        ],
+        trackedChanges: {
+          context: "UK Postgraduate Dissertation Reference List (Harvard Cite Them Right)",
+          rawDraft:
+            "Saunders, Mark & Lewis, P. 2022. Methodological rigor in business dissertations. Journal of Management Education, 36(4), 410-428.",
+          humanRevision:
+            "Saunders, M. and Lewis, P. (2022) 'Methodological rigor in business dissertations', Journal of Management Education, 36(4), pp. 410–428. doi: 10.1177/10525629221088219.",
+          marginComment:
+            "COMMENT [UK Referencing Desk]: Converted full first name 'Mark' to initial 'M.', replaced '&' with 'and' per Cite Them Right, wrapped article title in single quotes, italicized journal title, and added 'pp.' + DOI.",
+          styleStandard: "Harvard Cite Them Right (12th Ed.)",
+        }
       },
       {
         id: "pre-submission-checklist",
@@ -413,7 +448,16 @@ export const strategicSeoBlogPosts: BlogPost[] = [
           ["Same author and same year publications are labeled '2024a', '2024b' in text and list."],
           ["All electronic URL sources include active links and accurate access dates."],
           ["Page numbers are provided for all direct quotations and specific empirical citations."]
-        ]
+        ],
+        checklist: {
+          title: "Harvard Cite Them Right Pre-Deposit Checklist",
+          items: [
+            ["Verify 'and' (not '&') between two authors in UK/Australian Harvard in-text and bibliography entries."],
+            ["Check single quotation marks around article/chapter titles and italics strictly on standalone book/journal titles."],
+            ["Confirm '(Accessed: Day Month Year)' appears on all web pages and online institutional reports."],
+            ["Ensure 'et al.' is italicized only if required by your department and always carries a period after 'al.'."],
+          ]
+        }
       }
     ],
     faq: [
@@ -458,15 +502,18 @@ export const strategicSeoBlogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "How to Edit and Proofread an Academic Literature Review: A Step-by-Step Editorial Framework",
+    title: "How to Edit an Academic Literature Review: A Step-by-Step Editorial Framework",
     slug: "how-to-edit-literature-review",
     excerpt: "Learn how to edit an academic literature review for synthesis, argument flow, critical voice, paragraph structure, and citation density before dissertation submission.",
     category: "Academic writing support",
     author,
+    reviewer: "Social Sciences, Education & Humanities Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Literature Synthesis & Dissertation Desk",
+    styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "Doctoral Synthesis Standards"],
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-11-16",
     readingTime: "13 min read",
-    metaTitle: "How to Edit a Literature Review: Academic Writing & Flow Guide",
+    metaTitle: "How to Edit a Literature Review: Academic Writing Guide",
     metaDescription: "Learn how to edit an academic literature review for synthesis, argument flow, critical voice, paragraph structure, and citation density before submission.",
     heroImage: "/images/blog/how-to-edit-literature-review.webp",
     heroImageAlt: "Academic literature review synthesis matrix with thematic outlines, sticky notes, and editorial feedback marks",
@@ -604,7 +651,15 @@ export const strategicSeoBlogPosts: BlogPost[] = [
           ["At least 70% of citations reflect peer-reviewed literature published within the last 5-7 years, supplemented by seminal foundational works."],
           ["All primary disagreements in the literature are balanced with objective, scholarly critique."],
           ["The chapter concludes with a dedicated 'Summary of Gaps' section establishing the explicit rationale for your empirical methodology."]
-        ]
+        ],
+        checklist: {
+          title: "Literature Review Synthesis Verification Checklist",
+          items: [
+            ["Audit the first sentence of every paragraph: verify it makes a thematic claim rather than starting with 'Smith (2022) studied...'."],
+            ["Check every multi-citation bracket to ensure each cited source adds distinct empirical or theoretical evidence."],
+            ["Verify that every theoretical construct introduced in Chapter 2 matches the exact terminology in your Methodology and Discussion."],
+          ]
+        }
       },
       {
         id: "developmental-vs-proofreading",
@@ -618,9 +673,19 @@ export const strategicSeoBlogPosts: BlogPost[] = [
           [
             "If your chapter structure has received supervisor approval and you require a final check of punctuation, academic tone, style compliance, and citation accuracy, an ",
             { text: "academic proofreading service", href: "/academic-proofreading" },
-            " guarantees your submission is flawless."
+            " helps ensure your submission is publication-ready."
           ]
-        ]
+        ],
+        trackedChanges: {
+          context: "PhD Literature Review (Section 2.3 — Converting Summary to Thematic Synthesis)",
+          rawDraft:
+            "Author A (2021) found remote onboarding reduces retention. Author B (2023) studied remote mentoring and said structured check-ins help new hires stay longer.",
+          humanRevision:
+            "Although unstructured remote onboarding has been linked to higher early-tenure turnover (Author A, 2021), longitudinal trials indicate that formalized peer-mentoring check-ins substantially mitigate this attrition risk (Author B, 2023).",
+          marginComment:
+            "COMMENT [Humanities & Social Sciences Desk]: Synthesized both sequential summaries into a single cause-and-mitigation analytical sentence so your own scholarly argument leads the paragraph.",
+          styleStandard: "APA 7th Ed. Thematic Synthesis",
+        }
       }
     ],
     faq: [
@@ -670,10 +735,13 @@ export const strategicSeoBlogPosts: BlogPost[] = [
     excerpt: "Essential academic proofreading guide for ESL researchers. Fix article errors, subject-verb agreement, false friends, and preposition collocations before journal peer review.",
     category: "ESL academic support",
     author,
+    reviewer: "STEM & International ESL Editorial Desk — My Editing and Proofreading Desk",
+    editorialDesk: "International ESL Academic Review Desk",
+    styleStandards: ["IEEE / Springer / Elsevier ESL Guidelines", "APA 7th Ed.", "COPE Authorship Rules"],
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-11-16",
     readingTime: "12 min read",
-    metaTitle: "ESL Academic Proofreading Guide: Grammar, Syntax & Journal Flow",
+    metaTitle: "ESL Academic Proofreading Guide: Grammar & Journal Flow",
     metaDescription: "Essential academic proofreading guide for ESL researchers. Fix article errors, subject-verb agreement, false friends, and preposition collocations.",
     heroImage: "/images/blog/esl-academic-proofreading-guide.webp",
     heroImageAlt: "Academic manuscript with ESL editorial corrections highlighting academic phrase bank usage and natural English syntax",
@@ -824,7 +892,26 @@ export const strategicSeoBlogPosts: BlogPost[] = [
             { text: "academic editing team", href: "/academic-proofreading" },
             " ensure that subject-matter specialists review your text. An experienced human editor understands both your technical discipline and English stylistic requirements, preserving your exact scientific voice."
           ]
-        ]
+        ],
+        trackedChanges: {
+          context: "Materials Engineering Manuscript (Introduction — Mandarin L1 Transfer)",
+          rawDraft:
+            "In this paper, it investigates effect of thermal annealing on the microstructure, meanwhile the hardness value prove the grain boundary improved.",
+          humanRevision:
+            "This study investigates the effect of thermal annealing on alloy microstructure; concurrently, Vickers hardness measurements indicate increased grain-boundary stability.",
+          marginComment:
+            "COMMENT [ESL Science Desk]: Removed dummy subject 'it', restored definite article before 'effect', resolved comma splice around 'meanwhile', and calibrated 'prove' to 'indicate'.",
+          styleStandard: "IEEE & Springer ESL Academic English",
+        },
+        checklist: {
+          title: "ESL Journal Pre-Submission Language Audit",
+          items: [
+            ["Inspect definite/indefinite articles ('the', 'a', 'an') before measurable physical quantities and uncountable nouns ('research', 'evidence', 'equipment')."],
+            ["Check comma splices before conjunctive adverbs ('however', 'moreover', 'therefore') and replace commas with semicolons or period breaks."],
+            ["Audit prepositional collocations ('consistent with', 'dependent on', 'participate in') across headings, tables, and the abstract."],
+            ["Confirm British (UK) or American (US) spelling matches the target journal's Instructions for Authors."],
+          ]
+        }
       }
     ],
     faq: [
@@ -874,10 +961,13 @@ export const strategicSeoBlogPosts: BlogPost[] = [
     excerpt: "A comprehensive guide to book and manuscript proofreading for authors. Learn proofing stages, style sheets, typesetting anomalies, and galley reviews before printing.",
     category: "Manuscript editing",
     author,
+    reviewer: "Book & Long-Form Manuscript Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Long-Form Book & Monograph Editorial Desk",
+    styleStandards: ["Chicago Manual of Style 17th Ed.", "New Hart's Rules (Oxford)", "Galley Proof Standards"],
     datePublished: published,
-    dateUpdated: published,
+    dateUpdated: "2026-11-16",
     readingTime: "14 min read",
-    metaTitle: "Book Manuscript Proofreading Guide: From Draft to Publication",
+    metaTitle: "Book Manuscript Proofreading Guide: Draft to Publication",
     metaDescription: "A comprehensive guide to book and manuscript proofreading for authors. Learn proofing stages, style sheets, typesetting checks, and galley reviews.",
     heroImage: "/images/blog/book-manuscript-proofreading-guide.webp",
     heroImageAlt: "Author manuscript pages with standard proofreading symbols, galley proofs, and editorial style sheet",
@@ -1040,6 +1130,25 @@ export const strategicSeoBlogPosts: BlogPost[] = [
           ["Front matter, ISBNs, copyright year, and barcode numbers are validated."],
           ["Back cover blurb and author bio match the interior text tone and spelling."]
         ],
+        trackedChanges: {
+          context: "Non-Fiction Monograph Galley Proof (Chapter 4 — Chicago 17th Ed.)",
+          rawDraft:
+            "\"We have to move toward the archive before 14 October, 2026\", insisted Dr. Alistair—but the librarian looked towards the locked door.",
+          humanRevision:
+            "\"We have to move toward the archive before October 14, 2026,\" insisted Dr. Alastair—but the librarian looked toward the locked door.",
+          marginComment:
+            "COMMENT [Manuscript Desk]: Standardized US comma placement inside closing quotes, matched 'toward' (removed variant 'towards'), unified date style to 'October 14, 2026', and aligned 'Alastair' to your Author Style Sheet.",
+          styleStandard: "Chicago 17th Ed. & Author Style Sheet Consistency",
+        },
+        checklist: {
+          title: "Book & Galley Proofing Sign-Off Checklist",
+          items: [
+            ["Lock a master Author Style Sheet covering proper nouns, variant spellings ('toward' vs 'towards'), hyphenation, and number conventions."],
+            ["Check typeset PDF proofs page-by-page for widows, orphans, hyphen ladders (3+ consecutive hyphens), and mismatched running headers."],
+            ["Cross-check every Table of Contents chapter title and page number against actual interior book pages."],
+            ["Validate copyright page ISBNs, dedication attributions, back-cover blurb, and dialogue punctuation before upload to print or KDP/IngramSpark."],
+          ]
+        },
         callout: {
           title: "Book Publication Support",
           text: [

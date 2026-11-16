@@ -9,11 +9,14 @@ export const blogCanAiEditResearchPaper: BlogPost = {
   excerpt: "Discover what peer reviewers and journal editors really evaluate in submitted manuscripts, why automated AI editing tools fall short, and how expert human review protects papers from desk rejection.",
   category: "Journal Publication",
   author: brandAuthor,
+  reviewer: "STEM & Clinical Medicine Desk — My Editing and Proofreading Desk",
+  editorialDesk: "STEM & Clinical Medicine Review Desk",
+  styleStandards: ["ICMJE Recommendations", "APA 7th Ed.", "Nature/Elsevier Author Guidelines"],
   datePublished: publishedDate,
-  dateUpdated: publishedDate,
+  dateUpdated: "2026-11-16",
   readingTime: "10 min read",
   metaTitle: "Can AI Edit a Research Paper? Journal Reviewers' Criteria",
-  metaDescription: "Can AI edit a research paper effectively? Discover what peer reviewers and journal editors actually look for in Academic & Graduate Research submissions, and why human nuance prevents rejection.",
+  metaDescription: "Can AI edit a research paper for peer review? See what journal reviewers look for in IMRaD structure, epistemic hedging, citations, and human editing.",
   heroImage: "/images/blog/research-paper-editing-checklist-before-submission.webp",
   heroImageAlt: "Academic journal peer review evaluation checklist analyzing research methodology, clarity, and scientific accuracy",
   tableOfContents: [
@@ -101,7 +104,7 @@ export const blogCanAiEditResearchPaper: BlogPost = {
       table: {
         headers: ["Journal Review Criterion", "Automated AI Editing Tools", "Expert Human Editorial Review"],
         rows: [
-          ["Basic Grammar & Spelling", "High proficiency in catching standard surface slips", "Flawless mechanical review with regional orthography awareness"],
+          ["Basic Grammar & Spelling", "High proficiency in catching standard surface slips", "Thorough mechanical review with regional orthography awareness"],
           ["Terminology & Nomenclature", "High risk of introducing false synonyms and imprecise phrasing", "Subject-literate editors preserve exact discipline-specific terminology"],
           ["Hedging & Scientific Caution", "Often strips vital hedges to improve artificial readability scores", "Calibrates claims precisely to study constraints and empirical data"],
           ["Methodological Clarity", "Blind to analytical logic, sample power, and protocol omissions", "Identifies ambiguous descriptions and gaps in procedural explanations"],
@@ -148,7 +151,17 @@ export const blogCanAiEditResearchPaper: BlogPost = {
         [
           "Working with human professional editors provides an uncompromised audit trail: you receive a marked-up Word document containing visible tracked changes and comments that demonstrate continuous human intellectual authorship."
         ]
-      ]
+      ],
+      trackedChanges: {
+        context: "Biomedical Journal Manuscript (Methods & Results Section)",
+        rawDraft:
+          "We leveraged an innovative incubation workflow to stream-line testing, and the outcomes totally validate our drug mechanism (p < 0.05).",
+        humanRevision:
+          "Samples were incubated for 45 min at 37°C prior to assay quantification (Section 2.3), and the observed fluorescence shift was statistically significant (p = .021), supporting the hypothesized mechanism.",
+        marginComment:
+          "COMMENT [STEM Desk]: Restored concrete incubation duration and temperature stripped by automated 'concision' rewrite; replaced 'totally validate' with empirical framing and exact p-value.",
+        styleStandard: "ICMJE & IMRaD Reproducibility Standard",
+      }
     },
     {
       id: "the-dual-stage-publication-protocol",
@@ -175,7 +188,16 @@ export const blogCanAiEditResearchPaper: BlogPost = {
         [
           "Phase 4: Pre-submission verification: Audit your final PDF or Word file against the target journal's submission portal checklist before formal upload."
         ]
-      ]
+      ],
+      checklist: {
+        title: "Peer-Review Readiness & AI Ethics Checklist",
+        items: [
+          ["Check that Methods retains every numerical parameter (sample size, timing, concentrations, statistical model) needed for replication."],
+          ["Verify that Results values in prose match every figure axis and table row to the decimal."],
+          ["Confirm required publisher declarations (funding, ethics approval, conflict of interest, AI tool disclosure if applicable) follow journal wording."],
+          ["Keep the editor's Tracked-Changes Word file in your submission archive before uploading clean PDF/DOCX copies."],
+        ]
+      }
     }
   ],
   faq: [

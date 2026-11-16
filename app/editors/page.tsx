@@ -15,7 +15,7 @@ import {
 import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, buildPageMetadata, editorialTeamJsonLd, webPageJsonLd } from "@/lib/site";
 
 const fields = [
   "Academic writing",
@@ -209,10 +209,19 @@ export default function EditorsPage() {
   return (
     <main className="min-h-screen bg-canvas text-ink">
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Editor Standards", path: "/editors" },
-        ])}
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Editor Standards", path: "/editors" },
+          ]),
+          editorialTeamJsonLd(),
+          webPageJsonLd({
+            path: "/editors",
+            name: "Human Editors for Academic, Business, and Manuscript Editing",
+            description: "Learn how documents are matched with human editors who consider subject, purpose, audience, tone, structure, and delivery standards.",
+            dateModified: "2026-11-16",
+          }),
+        ]}
       />
       <SiteHeader />
 

@@ -23,7 +23,7 @@ const AnimatedAccordion = dynamic(() => import("@/components/AnimatedAccordion")
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Thesis & Document Editing | My Editing and Proofreading Desk",
-  description: `Human editors for Academic & Graduate Research, theses, dissertations, research papers, and professional writing. Tracked changes, secure upload, and rates from ${BASE_RATE_DISPLAY} per word.`,
+  description: `Human editors for Academic & Graduate Research, theses, dissertations, and papers. Tracked changes, secure upload, and rates from ${BASE_RATE_DISPLAY}/word.`,
   path: "/",
 });
 

@@ -2,6 +2,7 @@ import type { BlogPost } from "@/lib/blog";
 
 const author = "My Editing and Proofreading Desk";
 const published = "2026-08-04";
+const updated = "2026-11-16";
 
 export const requestedBlogPosts: BlogPost[] = [
   {
@@ -10,9 +11,12 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Compare AI proofreading and human proofreading for grammar, meaning, tone, consistency, confidentiality, and final document risk.",
     category: "AI and Writing Tools",
     author,
+    reviewer: "Senior Academic & Professional Editorial Board — My Editing and Proofreading Desk",
+    editorialDesk: "AI Ethics & Human Quality-Control Desk",
+    styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "COPE Publication Ethics"],
     datePublished: published,
-    dateUpdated: "2026-10-03",
-    readingTime: "8 min read",
+    dateUpdated: updated,
+    readingTime: "10 min read",
     metaTitle: "AI vs Human Proofreading: Key Differences and Limits",
     metaDescription: "Compare AI and human proofreading for accuracy, context, confidentiality, and final review. See what each can miss and when a human editor helps.",
     heroImage: "/images/blog/editing-vs-proofreading-hero-v2.png",
@@ -65,6 +69,16 @@ export const requestedBlogPosts: BlogPost[] = [
           ["Formatting, captions, references, and final-file issues"],
           ["Questions that require author confirmation rather than automatic rewriting"],
         ],
+        trackedChanges: {
+          context: "Public Health Manuscript (Results Narrative vs. Table 3)",
+          rawDraft:
+            "Moreover, this important intervention completely proves that school meal subsidies eliminate chronic absenteeism across rural districts (p < 0.05).",
+          humanRevision:
+            "In this multi-district sample (n = 1,240), subsidized breakfast access was associated with a 9.4% reduction in chronic absenteeism (p = .031; see Table 3), indicating a measurable attendance benefit.",
+          marginComment:
+            "COMMENT [Editorial Desk]: Replaced AI-suggested causal verbs ('completely proves', 'eliminate') with bounded observational phrasing matching your regression table. Confirmed p = .031 from Table 3.",
+          styleStandard: "APA 7th Ed. Empirical Caution & Table Alignment",
+        },
       },
       {
         id: "comparison",
@@ -144,6 +158,14 @@ export const requestedBlogPosts: BlogPost[] = [
           ["Use a human proofreader for the final document."],
           ["Review the returned file before submission."],
         ],
+        checklist: {
+          title: "AI-to-Human Quality-Control Checklist",
+          items: [
+            ["Confirm unpublished datasets, participant quotes, and NDA corporate figures never enter third-party public prompts."],
+            ["Inspect every sentence revised by software for unintended swaps of technical terminology or statistical hedges."],
+            ["Run a whole-document human pass in MS Word Track Changes to catch cross-section inconsistency and citation mismatches."],
+          ],
+        },
       },
       {
         id: "choose-human",
@@ -175,11 +197,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Learn when AI proofreading may help thesis or dissertation writers, where it can create risk, and why human final review still matters.",
     category: "AI and Writing Tools",
     author,
+    reviewer: "Law, Policy & Academic Ethics Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Graduate Ethics & Dissertation Review Desk",
+    styleStandards: ["University Senate Proofreading Policies", "Turnitin Authorship Standards", "APA 7th / Chicago 17th"],
     datePublished: published,
-    dateUpdated: "2026-08-10",
-    readingTime: "8 min read",
-    metaTitle: "AI Proofreading Thesis Guide | Risks and Human Review",
-    metaDescription: "Learn how to use AI proofreading for a thesis carefully, including risks to meaning, confidentiality, citations, policies, and human review.",
+    dateUpdated: updated,
+    readingTime: "10 min read",
+    metaTitle: "Can You Use AI to Proofread a Thesis? Rules & Risks Guide",
+    metaDescription: "Can you use AI to proofread a thesis or dissertation? Compare university AI policies, Turnitin risks, data privacy, and safe human Track Changes review.",
     heroImage: "/images/blog/thesis-proofreading-checklist-hero-v2.png",
     heroImageAlt: "Doctoral thesis pages beside proofreading notes and cautious AI review prompts",
     tableOfContents: [
@@ -196,47 +221,89 @@ export const requestedBlogPosts: BlogPost[] = [
         heading: "Can you use AI to proofread a thesis?",
         paragraphs: [
           ["You may be able to use AI to proofread a thesis or dissertation for basic language prompts, but only if your institution permits it and the tool's data handling is appropriate for your material. AI should not be used to hide authorship, bypass academic-integrity rules, invent citations, or make research decisions."],
-          ["Use AI as an early support tool, then rely on your own judgment, supervisor guidance, and a human final review for the submission version."],
+          ["Graduate communities across r/AskAcademia, r/GradSchool, and r/PhD frequently note a critical trap: students who paste self-written dissertation chapters into general-purpose chatbots with broad prompts like 'rewrite this academically' often trigger 40–80% synthetic-text flags on institutional Turnitin checks, even when all underlying research is original. Use AI cautiously only as a diagnostic prompt on non-sensitive snippets, and rely on your own judgment, supervisor guidance, and a human final review with transparent MS Word Track Changes for the submission version."],
         ],
+        callout: {
+          title: "Distinguish Diagnostic Checking from Generative Rewriting",
+          text: [
+            "Using a checker to flag a comma splice or repeated word is fundamentally different from asking a language model to paraphrase whole thesis paragraphs. Most university integrity boards prohibit unattributed generative rewriting of assessed chapters.",
+          ],
+        },
       },
       {
         id: "appropriate-use",
-        heading: "Appropriate support AI can provide",
-        paragraphs: [["AI may help you spot repeated words, long sentences, spelling variants, inconsistent capitalization, or places where a sentence seems unclear. It can also help you build a checklist for your own manual proofreading pass."]],
-        bullets: [
-          ["Finding possible grammar or punctuation issues"],
-          ["Flagging sentences that may be too long"],
-          ["Prompting you to check terminology consistency"],
-          ["Helping create a proofreading schedule"],
+        heading: "Appropriate support AI can provide (and where to stop)",
+        paragraphs: [
+          ["When permitted by your faculty or graduate school, basic language tools can act as a fast early-stage diagnostic filter before your draft goes to a human specialist. In limited, low-risk contexts, AI can help you spot repeated words, long multi-clause sentences, spelling variants, inconsistent capitalization, or places where a transition feels abrupt."],
+          ["For quick browser-based sentence checks on non-confidential paragraphs up to 1,000 words, our ", { text: "free AI editing tool", href: "/ai-editing-tool" }, " uses zero-data-retention routing so you can test surface clarity before commissioning a human editor."],
         ],
+        bullets: [
+          ["Flagging possible subject-verb agreement, punctuation, or spelling slips in short paragraphs"],
+          ["Identifying sentences above 35–40 words that could be split for examiner readability"],
+          ["Prompting you to verify consistent spelling (e.g., British -ise vs. American -ize) within a single section"],
+          ["Helping organize a personal proofreading checklist before you review your own chapters"],
+        ],
+        table: {
+          headers: ["Editing Action", "AI Tool / Grammar Plugin", "Human Dissertation Proofreader"],
+          rows: [
+            ["Comma, typo, and hyphenation checks", "Permitted in most departments on non-sensitive drafts", "Permitted across full thesis with MS Word Track Changes"],
+            ["Full-paragraph paraphrasing", "High risk — flattens academic voice and triggers Turnitin AI flags", "Prohibited under ethical proofreading; edits stay local to clarity"],
+            ["Participant interview transcripts & ethics data", "Risky — public tools may violate IRB/ethics confidentiality", "Handled securely in private encrypted portal with NDA-level privacy"],
+            ["Cross-chapter citations & reference list audit", "Cannot verify 150+ entries across 250 pages reliably", "Audits in-text vs. bibliography alignment and flags missing details"],
+            ["Proof of authorship trail", "None if pasted over in clean document", "Timestamped MS Word Track Changes + margin queries returned"],
+          ],
+        },
       },
       {
         id: "risks",
-        heading: "Risks to meaning, confidentiality, and academic integrity",
+        heading: "Risks to meaning, confidentiality, Turnitin scores, and academic integrity",
         paragraphs: [
-          ["Theses and dissertations contain specialist terminology, unpublished research, participant information, ethics material, and intellectual property. Uploading restricted text to a tool without permission can create confidentiality problems."],
-          ["AI can also flatten academic tone, strengthen claims beyond the evidence, remove cautious wording, or change a technical term. Review every suggestion before accepting it."],
+          ["Theses and dissertations contain specialist terminology, unpublished empirical findings, human-participant interview transcripts, ethics committee material, and institutional intellectual property. Pasting embargoed chapters or medical data into consumer AI platforms without institutional authorization can breach ethics approvals and data-protection rules."],
+          ["Even when privacy is not violated, automated rewrites routinely flatten cautious scholarly language. An AI tool often replaces careful empirical hedges ('these findings suggest a tentative association within our sample') with sweeping absolutes ('this proves definitively') or swaps domain-specific terminology for generic business synonyms. Worse still, Grammarly's generative rewrite suggestions and LLM paraphrasers reduce natural sentence-length variance (burstiness), which causes university AI indicators to flag your own original ideas."],
         ],
+        trackedChanges: {
+          context: "PhD Education Thesis Chapter 4 (Qualitative Participant Findings)",
+          rawDraft:
+            "Moreover, this pivotal thematic analysis clearly demonstrates that digital onboarding always bridges every equity gap in remote classrooms.",
+          humanRevision:
+            "Across the 24 faculty interviews analyzed in Chapter 4, structured digital onboarding appeared to mitigate early navigation barriers, though access inequities persisted in low-bandwidth households.",
+          marginComment:
+            "COMMENT [Humanities & Education Desk]: Removed automated filler ('pivotal', 'clearly demonstrates', 'always bridges every gap') and anchored the interpretation to your actual qualitative sub-theme from Section 4.3.",
+          styleStandard: "University Third-Party Proofreading Ethics & APA 7th",
+        },
       },
       {
         id: "policy",
-        heading: "Check institutional policies before using AI",
+        heading: "Check institutional policies and supervisor expectations before using AI",
         paragraphs: [
-          ["Universities and departments set their own rules for AI use, acknowledgement, data security, and acceptable writing support. Follow the policy that applies to your degree, module, supervisor, or journal. If the rule is unclear, ask before using the tool."],
-          ["Our ", { text: "editorial policy", href: "/editorial-policy" }, " follows the same principle: editing support should preserve the writer's authorship and should not create research, evidence, or assessed content."],
+          ["Universities and departments publish explicit rules governing AI disclosure, data security, and third-party proofreading. Before submitting a dissertation or thesis, verify your graduate school handbook: some faculties allow grammar checkers without declaration, others mandate a formal AI-use disclosure statement in the front matter, and many strictly forbid generative paraphrasing tools."],
+          ["By contrast, third-party human proofreading is broadly recognized across UK Russell Group universities, North American graduate schools, and Australian institutions when confined to grammar, syntax, clarity, punctuation, formatting, and citation consistency. Our ", { text: "editorial policy", href: "/editorial-policy" }, " enforces strict authorship preservation: editors refine the writing you supply without inventing data, writing chapters, or altering research conclusions. For a deep look at senate regulations worldwide, read our guide on ", { text: "university rules on hiring a thesis editor", href: "/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules" }, "."],
         ],
       },
       {
         id: "citations",
-        heading: "AI should not verify sources or citations for you",
-        paragraphs: [["Do not ask AI to invent missing references, complete DOIs, or confirm a source it cannot inspect. Citation accuracy belongs to the author. Use your reference manager, source PDFs, library records, journal pages, and institutional style guidance to verify source details."]],
+        heading: "AI should not verify sources, DOIs, or citations for you",
+        paragraphs: [
+          ["Never ask a generative AI model to complete missing bibliography details, generate DOIs, format obscure archival sources from memory, or verify whether an in-text citation accurately represents a cited paper. Language models frequently fabricate plausible-looking page numbers, volume issues, and author initials—errors that thesis examiners catch during spot-checks."],
+          ["Citation accuracy belongs strictly to the author. Manage references in Zotero, EndNote, or Mendeley alongside verified publisher PDFs, then use a human proofreader to cross-check spelling, publication years, hanging indents, and one-to-one alignment between your body text and reference list."],
+        ],
       },
       {
         id: "human-review",
-        heading: "Use a human final review for the submission version",
+        heading: "Use a human final review with MS Word Track Changes for the submission version",
         paragraphs: [
-          ["A human reviewer can consider meaning, discipline, formatting, citations, tables, figures, and comments that require author decisions. For a staged workflow, start with ", { text: "how to proofread a dissertation", href: "/blog/how-to-proofread-a-dissertation-before-submission" }, ", then use the ", { text: "dissertation proofreading service", href: "/dissertation-proofreading" }, " if you want an independent final read."],
+          ["A specialist human proofreader inspects the entire dissertation as one connected argument—preserving your voice, respecting verbatim participant quotes, checking tables and captions, and inserting clear margin comments wherever a claim needs author verification. Every edit arrives in timestamped Microsoft Word Track Changes (`All Markup`), giving you an auditable revision record if your committee or integrity officer ever reviews your drafting history."],
+          ["For a complete pre-submission sequence, follow ", { text: "how to proofread a dissertation", href: "/blog/how-to-proofread-a-dissertation-before-submission" }, ", compare ", { text: "thesis editing", href: "/thesis-editing" }, " vs. our ", { text: "dissertation proofreading service", href: "/dissertation-proofreading" }, ", or test our approach with a Free 300-Word Human Sample Edit."],
         ],
+        checklist: {
+          title: "Safe Thesis Proofreading Compliance Checklist",
+          items: [
+            ["Read your department's AI disclosure and third-party proofreading policy before running any automated tool."],
+            ["Never paste unpublished human-subject transcripts or proprietary lab data into consumer AI chatbots."],
+            ["Reject automated rewrites that introduce stock phrases ('delve', 'tapestry', 'underscores') or remove methodological hedging."],
+            ["Keep your pre-edit draft, the human editor's Tracked-Changes `.docx`, and your final accepted file in one archive folder."],
+          ],
+        },
       },
     ],
     faq: [
@@ -248,6 +315,7 @@ export const requestedBlogPosts: BlogPost[] = [
       { href: "/ai-editing-tool", label: "AI editing tool", description: "Use a quick first pass on short, permitted text." },
       { href: "/dissertation-proofreading", label: "Dissertation proofreading", description: "Get human review for language, consistency, formatting, and presentation." },
       { href: "/editorial-policy", label: "Editorial policy", description: "Review the boundaries of ethical editing support." },
+      { href: "/blog/is-it-ethical-to-hire-a-thesis-editor-university-rules", label: "University proofreading rules", description: "Understand third-party editing rules across US, UK, Canadian, and Australian universities." },
     ],
   },
   {
@@ -256,11 +324,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Understand the factors that affect dissertation proofreading time, including word count, draft quality, references, formatting, review passes, and tracked changes.",
     category: "Thesis and Dissertation",
     author,
+    reviewer: "Senior Academic Editorial Board — My Editing and Proofreading Desk",
+    editorialDesk: "Doctoral Scheduling & Production Desk",
+    styleStandards: ["APA 7th Ed.", "Chicago 17th Ed.", "Harvard / OSCOLA / University Deposit Rules"],
     datePublished: published,
-    dateUpdated: "2026-08-10",
-    readingTime: "7 min read",
-    metaTitle: "How Long Does Dissertation Proofreading Take?",
-    metaDescription: "Learn how long dissertation proofreading takes and what affects timing: word count, draft quality, tables, references, formatting, and review passes.",
+    dateUpdated: updated,
+    readingTime: "10 min read",
+    metaTitle: "How Long Does Dissertation Proofreading Take? (Time Guide)",
+    metaDescription: "See how long dissertation proofreading takes for 10,000 to 80,000+ words: realistic 24-hour to 14-day turnaround schedules, pass order, and Track Changes.",
     heroImage: "/images/blog/dissertation-proofreading-checklist-hero.png",
     heroImageAlt: "Dissertation draft, calendar, and proofreading notes showing turnaround planning",
     tableOfContents: [
@@ -275,53 +346,98 @@ export const requestedBlogPosts: BlogPost[] = [
       {
         id: "quick-answer",
         heading: "How long dissertation proofreading takes",
-        paragraphs: [["Dissertation proofreading typically takes between 3 to 7 days for drafts ranging from 10,000 to 25,000 words, while extensive doctoral dissertations up to 80,000 words generally require 10 to 14 days. Turnaround depends heavily on word count, citation complexity, technical tables, and whether structural editing or basic surface proofreading is requested."]],
+        paragraphs: [
+          ["Dissertation proofreading typically takes 3 to 7 days for Master's dissertations ranging from 10,000 to 25,000 words, while full doctoral dissertations of 50,000 to 80,000+ words generally require 7 to 14 days. Express 24-hour to 72-hour turnarounds are feasible for shorter drafts or individual chapters, provided the draft language is reasonably clear and formatting rules are supplied up front."],
+          ["Crucially, total timeline planning must include two distinct blocks: (1) the editor's multi-pass review window, and (2) your own post-delivery buffer of 2 to 4 days to inspect Microsoft Word Track Changes, answer editor margin queries, refresh automated tables of contents, and verify the exported submission PDF."],
+        ],
+        callout: {
+          title: "Realistic Human Reading Speed Benchmark",
+          text: [
+            "An experienced academic proofreader accurately processes roughly 1,800 to 3,000 words per hour for final proofreading (or 1,000 to 1,800 words per hour for ESL-heavy substantive editing), plus dedicated time for bibliography matching and layout checks.",
+          ],
+        },
       },
       {
         id: "time-factors",
         heading: "Factors that affect dissertation proofreading turnaround",
-        paragraphs: [["A 12,000-word dissertation with clean formatting is different from a 45,000-word dissertation with many tables, appendices, citations, and unresolved comments. The stronger the draft and the clearer the guidelines, the easier it is to confirm a realistic schedule."]],
+        paragraphs: [
+          ["A 12,000-word dissertation with clean formatting is very different from a 45,000-word thesis packed with statistical tables, archival footnotes, appendices, and unresolved supervisor comments. Understanding the five main pacing variables helps you select a realistic schedule in our ", { text: "pricing calculator", href: "/pricing" }, " without risking rushed work."],
+          ["Remember also that documents above 50,000 words exceed standard automated calculator thresholds and receive a custom timeline assessment so an appropriate senior specialist can review all chapters consecutively without quality loss."],
+        ],
         table: {
           headers: ["Factor", "Why it affects time", "What to prepare"],
           rows: [
-            ["Word count", "More words require more reading and checking time", "Confirm the final word count before requesting a quote"],
-            ["Draft quality", "Heavy sentence-level issues slow the review", "Send the most stable version available"],
-            ["Tables and figures", "Captions, labels, numbers, and callouts need separate checks", "Provide final tables, figures, and source notes"],
-            ["References", "Citation-reference matching takes time", "State the required style and supply source details"],
-            ["Formatting", "Margins, headings, pagination, and appendices can shift", "Attach university guidelines"],
+            ["Word count", "More words require more reading and cross-checking hours", "Confirm the final word count (including footnotes and bibliography) before booking"],
+            ["Draft language condition", "Heavy ESL syntax fixes or structural polishing take 1.5×–2× longer than surface proofreading", "Send the cleanest, most stable version after supervisor feedback"],
+            ["Tables, figures, and equations", "Captions, axis labels, units, and in-text callouts require independent verification", "Ensure final tables and figures are embedded in the master Word file"],
+            ["Citations and bibliography", "Auditing 150–300 references for APA/Harvard/Chicago consistency adds hours of precision work", "State the exact style manual and keep Zotero/EndNote fields clean"],
+            ["Institutional formatting", "Front matter pagination, Roman/Arabic breaks, and margins require layout checks", "Attach your graduate school or ProQuest formatting template"],
           ],
         },
       },
       {
         id: "review-passes",
-        heading: "A good proofread uses more than one pass",
-        paragraphs: [["A careful dissertation proofread may involve separate passes for language, consistency, references, formatting, tables and figures, and the exported final file. Combining everything into one rushed reading increases the chance of missed errors."]],
+        heading: "A thorough dissertation proofread uses more than one pass",
+        paragraphs: [
+          ["Asking one hurried read-through to catch grammar errors, terminology drift, broken cross-references, citation mismatches, and margin shifts almost guarantees missed mistakes. A disciplined dissertation review separates tasks into sequential passes:"],
+        ],
+        numberedSteps: [
+          ["Pass 1 — Mechanical language and syntax review: Correcting grammar, spelling consistency (UK, US, or Canadian), punctuation, tense shifts, and awkward phrasing line by line."],
+          ["Pass 2 — Terminology and construct consistency: Checking that variable names, participant labels, acronym expansions, and theoretical terms match from Abstract through Conclusion."],
+          ["Pass 3 — Tables, figures, and cross-references: Verifying caption sequence, narrative callouts, units, and decimal consistency."],
+          ["Pass 4 — Citation and reference reconciliation: Matching in-text author-year tags or footnotes against the terminal reference list and checking style-guide punctuation."],
+          ["Pass 5 — Front matter, heading hierarchy, and final layout: Auditing Word styles, Table of Contents accuracy, page breaks, and pagination before final delivery."],
+        ],
       },
       {
         id: "timeline-examples",
-        heading: "Example proofreading timelines by dissertation condition",
+        heading: "Example proofreading timelines by dissertation length and condition",
         paragraphs: [
-          ["The examples below are planning guidance, not guaranteed turnaround times. Availability, document condition, service scope, and file complexity can change what is realistic. The safest approach is to share the stable draft, current word count, deadline, and formatting requirements before committing to a schedule."],
+          ["The planning ranges below illustrate typical schedules rather than rigid guarantees—availability, file complexity, and whether you require substantive editing versus final proofreading all influence exact delivery dates. When your deadline is tight, submitting early chapters individually while finishing your Conclusion can keep your schedule on track."],
         ],
         table: {
-          headers: ["Dissertation situation", "Likely scheduling pressure", "Planning advice"],
+          headers: ["Dissertation length & condition", "Typical editorial window", "Recommended author review buffer", "Best planning strategy"],
           rows: [
-            ["Short, clean master's dissertation", "May fit a shorter final-review window if the file is stable", "Leave time after delivery to review changes and export the final PDF"],
-            ["Long dissertation with many tables and references", "Needs more time for consistency, captions, callouts, citations, and formatting", "Send guidelines and avoid changing chapters during the proofread"],
-            ["Draft with heavy sentence problems", "May need editing rather than only proofreading", "Start earlier or choose a deeper review stage before final proofreading"],
-            ["Very near deadline", "Only a limited pass may be realistic", "Prioritize the highest-risk sections and final-file checks"],
+            ["5,000–10,000 words (Single chapter or short thesis)", "24 hours to 3 days", "1 day", "Ideal for chapter-by-chapter editing ahead of supervisor meetings"],
+            ["12,000–20,000 words (Master's dissertation)", "3 to 7 days", "1–2 days", "Book once supervisor approves chapter order; reserve time for PDF check"],
+            ["25,000–45,000 words (Extended thesis / MPhil)", "5 to 10 days", "2–3 days", "Choose a 7-day or 14-day turnaround for careful citation cross-checking"],
+            ["50,000–80,000+ words (Full PhD dissertation)", "10 to 14+ days (custom quote)", "3–4 days", "Submit custom review request 3 weeks before deposit deadline"],
           ],
+        },
+        trackedChanges: {
+          context: "PhD Dissertation Proofreading (Front Matter & Chapter 4 Consistency Check)",
+          rawDraft:
+            "As illustrated in Figure 4.2 below, average response latency dropped 18% (table 4.1), demonstrating the protocol works.",
+          humanRevision:
+            "As illustrated in Figure 4.2, mean response latency declined by 18.2% compared with baseline (see Table 4.1), supporting the efficiency of the revised protocol.",
+          marginComment:
+            "COMMENT [Doctoral Desk]: Standardized 'Table 4.1' capitalization, aligned percentage to '18.2%' reported in Table 4.1 Row 2 (please confirm), and clarified Figure 4.2 placement (note: Figure 4.2 currently sits at the top of the next page).",
+          styleStandard: "APA 7th Ed. Figure/Table Cross-Reference Audit",
         },
       },
       {
         id: "tracked-changes",
-        heading: "Leave time to review tracked changes",
-        paragraphs: [["Proofreading is not finished when the file returns to you. You need time to review corrections, respond to comments, accept or reject changes, refresh fields, export the final PDF, and inspect the submission file. Microsoft explains that tracked changes must be accepted or rejected to remove markup from a Word document; build that review step into your deadline.", { text: "Microsoft's Track Changes guidance", href: "https://support.microsoft.com/en-us/word/training/track-changes-in-word", external: true }]],
+        heading: "Leave time to review tracked changes and update Word fields",
+        paragraphs: [
+          ["Proofreading is not finished the moment the file returns to your dashboard. You still need focused time to review suggested corrections, resolve any editor queries where factual confirmation is required, accept or reject Track Changes, update your Table of Contents and List of Figures (`Update Entire Table`), and export the final PDF. Microsoft explains that tracked changes must be explicitly accepted or rejected to remove markup cleanly; build that final check into your deadline using ", { text: "Microsoft's Track Changes guidance", href: "https://support.microsoft.com/en-us/word/training/track-changes-in-word", external: true }, "."],
+          ["Never click 'Accept All Changes' blindly without reading margin comments—some comments deliberately ask you to choose between two technical phrasings or supply a missing page number for a direct quotation."],
+        ],
       },
       {
         id: "plan",
-        heading: "How to plan your dissertation proofreading deadline",
-        paragraphs: [["Start with the final submission date and work backwards. Reserve time for supervisor questions, formatting fixes, final PDF checks, and technical upload issues. For the full sequence, use our ", { text: "step-by-step dissertation proofreading workflow", href: "/blog/how-to-proofread-a-dissertation-before-submission" }, "."]],
+        heading: "How to plan backward from your dissertation submission deadline",
+        paragraphs: [
+          ["Start with your university repository or ProQuest upload cutoff and work backward by at least 7 to 14 days. Lock your content first, run a quick pre-flight check using our ", { text: "step-by-step dissertation proofreading workflow", href: "/blog/how-to-proofread-a-dissertation-before-submission" }, ", and pair it with our ", { text: "dissertation proofreading service", href: "/dissertation-proofreading" }, " or ", { text: "thesis editing service", href: "/thesis-editing" }, " so your final deposit happens calmly rather than minutes before portal lock."],
+        ],
+        checklist: {
+          title: "Backward-Planning Dissertation Timeline Checklist",
+          items: [
+            ["T-14 to T-21 days (PhD) / T-7 days (Master's): Freeze content and merge chapters into one clean `.docx` file."],
+            ["T-10 days: Upload draft with university style guide, dialect preference (UK/US/CA), and exact word count."],
+            ["T-3 to T-2 days: Receive Tracked Changes, resolve every margin comment, and accept changes systematically."],
+            ["T-1 day: Refresh Table of Contents, List of Tables, and List of Figures; export PDF/A and inspect every page visually."],
+          ],
+        },
       },
     ],
     faq: [
@@ -342,11 +458,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Compare British and American English in academic writing, including spelling, punctuation, terminology, quotation conventions, university rules, and consistency.",
     category: "Academic Editing",
     author,
+    reviewer: "UK & North American Academic Desks — My Editing and Proofreading Desk",
+    editorialDesk: "Cross-Dialect Academic Style Desk",
+    styleStandards: ["New Hart's Rules (Oxford UK)", "APA 7th / Chicago 17th (US)", "Canadian Oxford Standard"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "7 min read",
-    metaTitle: "British vs American English in Academic Writing",
-    metaDescription: "Compare British vs American English in academic writing for spelling, punctuation, terminology, quotations, university rules, and consistency.",
+    dateUpdated: updated,
+    readingTime: "9 min read",
+    metaTitle: "British vs American English in Academic Writing (Full Guide)",
+    metaDescription: "Compare British vs American English in academic writing: -ise/-ize spelling, quotation punctuation, date formats, academic vocabulary, and journal rules.",
     heroImage: "/images/blog/research-philosophy-thesis-guide.webp",
     heroImageAlt: "Academic draft showing British and American English spelling choices marked for consistency",
     tableOfContents: [
@@ -358,12 +477,89 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "consistency", label: "Consistency checklist" },
     ],
     body: [
-      { id: "quick-answer", heading: "British vs American English: choose one and stay consistent", paragraphs: [["In academic writing, British and American English are both widely accepted, but mixing spelling conventions, punctuation rules, and vocabulary creates unintentional inconsistency. Authors should strictly follow target university or journal guidelines, maintaining uniform spelling (-ise versus -ize, -our versus -or), punctuation, and date formats across body text, tables, figures, footnotes, and appendices throughout the entire draft."]] },
-      { id: "spelling", heading: "Spelling differences to check", paragraphs: [["Common differences include endings such as -ise or -ize, -our or -or, and -re or -er. Some journals accept either variety if the manuscript is consistent, while others specify one. Search the whole document rather than checking only body paragraphs."]], table: { headers: ["Area", "British English example", "American English example"], rows: [["Spelling", "analyse, colour, centre", "analyze, color, center"], ["Quotation punctuation", "Often follows the required style guide", "Often follows the required style guide"], ["Date style", "Often day-month-year", "Often month-day-year"]] } },
-      { id: "punctuation", heading: "Punctuation and quotation conventions", paragraphs: [["Quotation-mark placement, punctuation with citations, serial comma use, and date formatting can vary by style guide. Do not rely only on national variety; APA, MLA, Chicago, house style, or university rules may decide the convention."]] },
-      { id: "terminology", heading: "Terminology and academic vocabulary", paragraphs: [["Vocabulary can differ by region. Terms such as programme/program, module/course, mark/grade, and dissertation/thesis may carry different meanings depending on country and institution. Use the terminology expected by your reader."]] },
-      { id: "rules", heading: "University or journal rules come first", paragraphs: [["If your university or target journal specifies British or American English, follow that instruction even if your personal preference differs. If no rule is given, choose the variety most appropriate for the audience and apply it consistently."]] },
-      { id: "consistency", heading: "British and American English consistency checklist", paragraphs: [["Before submission, search for spelling variants, date formats, punctuation patterns, headings, table text, figure captions, appendices, references, and file names. A professional ", { text: "academic proofreading service", href: "/academic-proofreading" }, " can help catch mixed usage across long documents."]], bullets: [["Search for common spelling pairs."], ["Check captions and table cells."], ["Review references and title capitalization according to the required style."], ["Confirm the English variety in journal or university instructions."]] },
+      {
+        id: "quick-answer",
+        heading: "British vs American English: choose one and stay consistent",
+        paragraphs: [
+          ["In academic writing, British and American English are both widely accepted, but mixing spelling conventions, punctuation rules, and regional vocabulary within the same manuscript creates distracting editorial inconsistency. Authors should follow target university or journal guidelines first, maintaining uniform spelling (-ise versus -ize, -our versus -or), quotation punctuation, collective verb agreement, and date formats across body text, tables, figure labels, footnotes, and appendices."],
+          ["Mixed English varieties occur frequently when graduate students cite US papers inside a UK thesis, use a US spellchecker by default, or collaborate across international co-author teams."],
+        ],
+        callout: {
+          title: "Never Rely on Default Word-Processor Spellcheck Alone",
+          text: [
+            "If your Microsoft Word language setting switches between English (UK) and English (US) across pasted paragraphs, both 'analyse' and 'analyze' can pass spellcheck silently in the exact same chapter.",
+          ],
+        },
+      },
+      {
+        id: "spelling",
+        heading: "Key spelling differences to audit across the entire document",
+        paragraphs: [
+          ["British and American orthography differ across several systematic suffix patterns. Note an important subtlety in UK academic publishing: while general UK universities and many journals favour '-ise' ('analyse', 'organise', 'realise'), Oxford University Press and some Commonwealth style manuals accept '-ize' ('organize', 'realize') paired with British '-our' and '-re' spellings—though 'analyse' and 'paralyse' always keep the 's'. Pick one verified system and apply it everywhere."],
+          ["Do not stop at body paragraphs: check abstract keywords, headings, table column headers, figure legends, and appendix titles. Only direct quotations and published book/article titles in your reference list retain their original source spelling."],
+        ],
+        table: {
+          headers: ["Category", "British English (UK)", "American English (US)", "Editorial Rule"],
+          rows: [
+            ["-ise / -ize verbs", "analyse, organise, recognise, emphasise", "analyze, organize, recognize, emphasize", "Oxford -ize is valid in UK style only if used uniformly (analyse remains -yse)"],
+            ["-our / -or nouns", "behaviour, colour, labour, favour", "behavior, color, labor, favor", "Check derived forms too (behavioural vs. behavioral)"],
+            ["-re / -er endings", "centre, metre, fibre, theatre", "center, meter, fiber, theater", "Note scientific SI unit exception: 'meter' for measuring devices vs. 'metre' for length in UK"],
+            ["-ogue / -og", "dialogue, catalogue, analogue", "dialog (or dialogue), catalog, analog", "US academic prose often retains 'dialogue' while favoring 'analog'"],
+            ["Double 'l' before suffixes", "travelling, cancelled, labelled, modelling", "traveling, canceled, labeled, modeling", "Common source of quiet inconsistency in longitudinal methods sections"],
+            ["ae / oe ligatures", "anaemia, paediatric, foetus, diarrhoea", "anemia, pediatric, fetus, diarrhea", "Critical in clinical medicine and nursing manuscripts"],
+          ],
+        },
+      },
+      {
+        id: "punctuation",
+        heading: "Quotation marks, commas, periods, and date conventions",
+        paragraphs: [
+          ["Dialect conventions extend well beyond spelling into punctuation mechanics. In traditional British publishing (such as MHRA and Oxford style), initial quotations use single quotation marks ('like this') with double quotes nested inside, and periods or commas sit outside closing quotation marks unless part of the original quoted sentence ('logical punctuation'). In American style (APA 7, MLA 9, Chicago 17), double quotation marks (\"like this\") are standard, and periods and commas sit inside closing quotation marks."],
+          ["Serial (Oxford) commas also differ: American APA and Chicago manuals strictly mandate the serial comma ('data, methods, and ethics'), whereas many British style guides omit it unless needed to prevent ambiguity. Date formatting follows '16 November 2026' (day-month-year, no comma) in British prose versus 'November 16, 2026' (month-day-year, with comma) in American prose."],
+        ],
+        trackedChanges: {
+          context: "International Business Manuscript (Converted from Mixed US/UK to Strict British English)",
+          rawDraft:
+            "On November 16, 2026, the labor ministry emphasized that \"organizational behavior\" programs improved outcomes, analyzing data across 4 urban centers.",
+          humanRevision:
+            "On 16 November 2026, the labour ministry emphasised that 'organisational behaviour' programmes improved outcomes, analysing data across four urban centres.",
+          marginComment:
+            "COMMENT [UK & Commonwealth Desk]: Standardized US dates, spelling ('labour', 'emphasised', 'organisational behaviour', 'programmes', 'analysing', 'centres'), single quotation marks, and spelled-out numeral 'four' for UK university submission.",
+          styleStandard: "British Academic English (New Hart's Rules)",
+        },
+      },
+      {
+        id: "terminology",
+        heading: "Academic vocabulary, collective nouns, and false assumptions",
+        paragraphs: [
+          ["Regional terminology differences can alter how examiners or reviewers read your paper. In US universities, 'thesis' typically denotes a Master's project and 'dissertation' a PhD project; in the UK, that usage is reversed ('dissertation' for Bachelor's/Master's and 'thesis' for PhD). Similarly, UK institutions use 'mark', 'module', and 'programme' (except 'computer program'), whereas US institutions use 'grade', 'course', and 'program'."],
+          ["Collective nouns also take different verb agreements: American academic English treats institutions, committees, and governments strictly as singular ('the committee has decided'), whereas British academic English allows plural verbs when referring to members acting together ('the government have argued' or 'the team are reviewing'), though singular consistency is safer in formal scientific prose."],
+        ],
+      },
+      {
+        id: "rules",
+        heading: "University, journal, and regional rules always take priority",
+        paragraphs: [
+          ["If your UK university department instructs you to submit in APA 7th Edition, follow APA's punctuation and reference rules while keeping British spelling—unless your supervisor specifies US English throughout. Conversely, if a UK-based researcher submits to an American IEEE or APA journal, adopting American English conventions (or confirming the journal accepts consistent British English) prevents unnecessary copyediting queries."],
+          ["Canadian and Australian researchers face hybrid standards: Canadian academic style generally pairs British '-our' and '-re' with American '-ize' ('colour' + 'organize'), whereas Australian style leans British ('colour' + 'organise') while maintaining 'program'. Always specify your target dialect before commissioning ", { text: "translation review", href: "/translation-review" }, " or ", { text: "academic proofreading", href: "/academic-proofreading" }, "."],
+        ],
+      },
+      {
+        id: "consistency",
+        heading: "British and American English consistency checklist",
+        paragraphs: [
+          ["Before submitting a thesis or journal paper, run targeted Ctrl+F searches across the whole manuscript—including footnotes, figure labels, and tables—to catch leftover cross-dialect spellings. Use our ", { text: "academic proofreading service", href: "/academic-proofreading" }, " or pair this check with our ", { text: "PhD thesis proofreading checklist", href: "/blog/thesis-proofreading-checklist" }, " for complete final verification."],
+        ],
+        checklist: {
+          title: "Dialect Lock Pre-Submission Checklist",
+          items: [
+            ["Set the entire Microsoft Word document proofing language uniformly to English (UK), English (US), English (Canada), or English (Australia)."],
+            ["Run targeted searches for '-ize/-ise', '-our/-or', '-re/-er', 'modelling/modeling', and 'programme/program'."],
+            ["Check quotation mark style (single vs. double) and punctuation placement inside vs. outside closing quotes."],
+            ["Preserve original spelling strictly inside verbatim direct quotes and reference-list source titles."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Is British English better for academic writing?", answer: "No. British and American English can both be acceptable. The required style depends on your university, journal, publisher, discipline, and audience." },
@@ -382,11 +578,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Review common APA 7 reference list mistakes before submission, including missing entries, author names, dates, titles, DOIs, URLs, and hanging indents.",
     category: "Formatting and References",
     author,
+    reviewer: "Social Sciences & APA Compliance Desk — My Editing and Proofreading Desk",
+    editorialDesk: "APA 7th Edition Verification Desk",
+    styleStandards: ["APA Publication Manual (7th Ed.)", "Crossref DOI Guidelines"],
     datePublished: published,
-    dateUpdated: "2026-10-03",
-    readingTime: "8 min read",
-    metaTitle: "APA 7 Reference List: Common Errors Before Submission",
-    metaDescription: "Check APA 7 references for missing entries, author and date errors, DOI links, italics, capitalization, and hanging indents before submission.",
+    dateUpdated: updated,
+    readingTime: "10 min read",
+    metaTitle: "APA 7 Reference List Mistakes: 10 Errors to Fix Now",
+    metaDescription: "Fix the most common APA 7 reference list mistakes before submission: sentence-case article titles, 20-author et al. rules, DOIs, and hanging indents.",
     heroImage: "/images/blog/thesis-tables-figures-references-checklist.webp",
     heroImageAlt: "Reference list and citation notes being checked before academic submission",
     tableOfContents: [
@@ -398,12 +597,89 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "final-check", label: "Final check" },
     ],
     body: [
-      { id: "quick-answer", heading: "APA 7 reference list mistakes to check first", paragraphs: [["The most important APA 7 reference-list errors are missing entries, uncited entries, incorrect author names, wrong dates, inconsistent titles, incomplete source details, broken DOIs or URLs, and formatting that does not follow the required institutional or publication rules."]] },
-      { id: "missing-mismatched", heading: "1. Missing or mismatched citations and references", paragraphs: [["Every in-text citation should have a reference-list entry, and every reference-list entry should connect to a cited source unless your assignment has a different rule. Run the check in both directions before formatting the list."]] },
-      { id: "elements", heading: "2. Incorrect reference elements", paragraphs: [["APA's official guidance organizes reference-list entries around author, date, title, and source elements. Use the ", { text: "APA reference examples", href: "https://apastyle.apa.org/style-grammar-guidelines/references/examples", external: true }, " and ", { text: "reference element guidance", href: "https://apastyle.apa.org/style-grammar-guidelines/references/elements-list-entry", external: true }, " to confirm the source type rather than guessing from memory."]], table: { headers: ["Element", "Common problem", "Safe check"], rows: [["Author", "Initials, group authors, or order are inconsistent", "Compare with the source record"], ["Date", "Year differs between citation and reference", "Check publication date"], ["Title", "Capitalization or italicization is inconsistent", "Follow APA and assignment rules"], ["Source", "Journal, publisher, DOI, or URL is incomplete", "Verify against the source page"]] } },
-      { id: "doi-url", heading: "3. DOI and URL errors", paragraphs: [["Broken or incomplete DOI and URL details are common in final drafts. APA has separate ", { text: "DOI and URL guidance", href: "https://apastyle.apa.org/style-grammar-guidelines/references/dois-urls", external: true }, "; use it with your university instructions and verify that links resolve to the intended source."]] },
-      { id: "formatting", heading: "4. Reference-list formatting problems", paragraphs: [["Check hanging indents, line spacing, alphabetization, punctuation, italics, capitalization, and entries that wrap awkwardly after copy-pasting from databases. Do not focus on spacing before confirming that the source details are correct."]] },
-      { id: "final-check", heading: "Final APA 7 reference-list check", paragraphs: [["Before submission, compare references against citations, update any reference manager output, test important links, and ask the author to confirm uncertain sources. A proofreader can flag visible inconsistencies, but authors remain responsible for source accuracy. Our ", { text: "academic proofreading service", href: "/academic-proofreading" }, " can include reference presentation checks within the supplied document."]] },
+      {
+        id: "quick-answer",
+        heading: "APA 7 reference list mistakes to check first",
+        paragraphs: [
+          ["The most frequent APA 7th Edition reference-list mistakes are missing or uncited entries, lingering APA 6th habits (such as writing 'Retrieved from' or including publisher cities), headline-case article titles instead of sentence case, truncated author lists before 20 authors, inconsistent DOI links, and missing 0.5-inch hanging indents."],
+          ["Examiners and journal copyeditors routinely spot-check the References section first because citation discipline reflects overall research care."],
+        ],
+        callout: {
+          title: "Top APA 6 -> APA 7 Changes Students Still Miss",
+          text: [
+            "APA 7 removed publisher city/state locations for books, removed 'Retrieved from' before standard URLs, switched DOIs strictly to clickable 'https://doi.org/...' URLs, and expanded the in-text 'et al.' rule to 3+ authors from the very first citation.",
+          ],
+        },
+      },
+      {
+        id: "missing-mismatched",
+        heading: "1. Missing, orphaned, or mismatched in-text citations and references",
+        paragraphs: [
+          ["In APA 7, the References list must match your body text one-to-one (the sole narrow exceptions are classical works, personal communications, and whole websites mentioned generally). Every parenthetical or narrative citation in your chapters must have a complete entry in References, and every entry in References must be cited at least once in the text."],
+          ["Run a two-way reconciliation check after final revisions: authors commonly delete a paragraph during editing without removing its bibliography item, leaving 'orphan references', or merge drafts from two co-authors whose surname spellings or publication years conflict (e.g., 'McAllister, 2022' in Chapter 2 vs. 'MacAllister, 2023' in the reference list)."],
+        ],
+      },
+      {
+        id: "elements",
+        heading: "2. Incorrect author counts, dates, and title capitalization",
+        paragraphs: [
+          ["APA's official framework organizes every entry into four core elements: author, date, title, and source. Consult the ", { text: "APA reference examples", href: "https://apastyle.apa.org/style-grammar-guidelines/references/examples", external: true }, " and ", { text: "reference element guidance", href: "https://apastyle.apa.org/style-grammar-guidelines/references/elements-list-entry", external: true }, " whenever formatting an unusual report, preprint, or dataset rather than trusting database exports blindly."],
+          ["Four mechanical errors account for most deductions: (a) leaving article or book titles in Title Case rather than Sentence Case (only the first word, first word after a colon, and proper nouns should be capitalized); (b) forgetting that APA 7 lists up to 20 authors in References (use '...' before the final author only for 21+ authors); (c) writing full author first names instead of initials with spaces ('Smith, J. R.'); and (d) italicizing the article title instead of the journal title and volume number."],
+        ],
+        table: {
+          headers: ["Element", "Common APA 7 mistake", "Correct APA 7 rule"],
+          rows: [
+            ["Authors (References)", "Truncating at 7 authors (old APA 6 rule) or omitting spaces between initials", "List up to 20 authors; format initials with spaces ('Patel, S. K., & Lee, H.')"],
+            ["In-text citations", "Listing 3–5 authors on first mention before switching to 'et al.'", "Use 'et al.' from the very first citation for 3 or more authors"],
+            ["Article / Book Title", "Using Title Case downloaded from Google Scholar or Scopus", "Use sentence case (capitalize first word, subtitle word after colon, proper nouns)"],
+            ["Book Publisher", "Including 'New York, NY: Routledge' or 'SAGE Publications Inc.'", "Omit city/state locations and corporate suffixes ('Routledge')"],
+            ["Journal Italics", "Italicizing article title or omitting italics on volume number", "Italicize the journal title and volume number only (e.g., *Journal Name, 14*(2))"],
+          ],
+        },
+        trackedChanges: {
+          context: "Psychology Dissertation Reference List (Fixing Legacy APA 6 + Scraper Defects)",
+          rawDraft:
+            "Patel, Sanjay & Lee, H.W. (2024). Cognitive Load in Remote Teams: A Meta-Analysis. Journal of Applied Psychology, 109(3), pp. 412-429. doi:10.1037/apl0001122",
+          humanRevision:
+            "Patel, S., & Lee, H. W. (2024). Cognitive load in remote teams: A meta-analysis. *Journal of Applied Psychology*, *109*(3), 412–429. https://doi.org/10.1037/apl0001122",
+          marginComment:
+            "COMMENT [APA 7th Desk]: Converted full name 'Sanjay' to initial, spaced 'H. W.', converted article title to sentence case (preserving 'A' after colon), removed 'pp.' (never used for journal articles in APA), italicized journal and volume, and updated DOI to active https://doi.org/ URL.",
+          styleStandard: "APA Publication Manual (7th Edition)",
+        },
+      },
+      {
+        id: "doi-url",
+        heading: "3. Broken DOIs, 'Retrieved from' prefixes, and dead URLs",
+        paragraphs: [
+          ["Database exports routinely output outdated formats such as `doi:10.xxxx`, `http://dx.doi.org/`, or `Retrieved from https://...`. Under APA 7th Edition rules, all DOIs must be formatted as active `https://doi.org/` links with no trailing period after the link, and 'Retrieved from' is omitted unless citing an unstable webpage that updates continuously (in which case an archival retrieval date is added)."],
+          ["Review APA's official ", { text: "DOI and URL guidance", href: "https://apastyle.apa.org/style-grammar-guidelines/references/dois-urls", external: true }, " and click-test every URL before PDF conversion. Never allow an AI tool to guess or complete a missing DOI—always verify via Crossref or the publisher page."],
+        ],
+      },
+      {
+        id: "formatting",
+        heading: "4. Reference-list hanging indents, alphabetization, and spacing",
+        paragraphs: [
+          ["Visual layout matters just as much as citation syntax. Ensure the section heading **References** is bold and centered, entries are double-spaced throughout with zero extra blank lines between entries, and every entry uses a true **0.5-inch hanging indent** created via Paragraph settings (not manual Tab keys or Enter breaks that collapse when margins shift)."],
+          ["Sort entries strictly alphabetically letter-by-letter by the first author's surname (ignoring spaces and hyphens—so 'De La Cruz' precedes 'Delgado'), and order multiple works by the exact same sole author chronologically from earliest to latest, using `2024a`, `2024b` for same-year works."],
+        ],
+      },
+      {
+        id: "final-check",
+        heading: "Final APA 7 reference-list check before upload",
+        paragraphs: [
+          ["Before submitting your thesis, research paper, or dissertation, run a two-way citation cross-check, convert automated Zotero or EndNote bibliography errors cleanly, and inspect your exported PDF. Our ", { text: "academic proofreading service", href: "/academic-proofreading" }, " and ", { text: "document formatting service", href: "/document-formatting" }, " review APA 7 reference presentation alongside language clarity, while authors retain full responsibility for source accuracy."],
+        ],
+        checklist: {
+          title: "10-Point APA 7 Reference List Audit Checklist",
+          items: [
+            ["Every in-text citation matches an entry in References—and zero uncited 'orphan' entries remain."],
+            ["All 3+ author works use 'et al.' from the first in-text mention, while References lists up to 20 authors."],
+            ["Article, chapter, and book titles use sentence case; journal names use title case and italics."],
+            ["Book publisher locations (cities/states) and 'Retrieved from' prefixes are completely removed."],
+            ["Every DOI uses 'https://doi.org/...' without a trailing period, and a true 0.5-inch hanging indent is applied."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Can a proofreader fix APA 7 references?", answer: "A proofreader can check visible consistency, formatting, missing details, and citation-reference matching in the supplied document. Full source verification should be agreed separately." },
@@ -422,12 +698,15 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Use this CV proofreading checklist before applying to check contact details, dates, tense, achievement wording, layout, spelling, file naming, and PDF export.",
     category: "Careers and Applications",
     author,
+    reviewer: "Executive Careers & Academic CV Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Careers, Fellowship & Application Review Desk",
+    styleStandards: ["ATS-Safe Document Formatting", "Academic CV Conventions", "US / UK / CA Resume Standards"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "7 min read",
-    metaTitle: "CV Proofreading Checklist Before Applying",
-    metaDescription: "Use this CV proofreading checklist before applying to check contact details, dates, tense, achievements, layout, spelling, file naming, and PDF export.",
-    heroImage: "/assets/og-image.jpg",
+    dateUpdated: updated,
+    readingTime: "9 min read",
+    metaTitle: "CV & Resume Proofreading Checklist for Job & PhD Applicants",
+    metaDescription: "Run this CV and resume proofreading checklist before applying: fix tense consistency, date formatting, achievement metrics, ATS layout, and PDF exports.",
+    heroImage: "/images/blog/research-paper-editing-checklist-before-submission.webp",
     heroImageAlt: "CV and resume document being reviewed for spelling, dates, layout, and final export",
     tableOfContents: [
       { id: "quick-answer", label: "Quick answer" },
@@ -436,10 +715,77 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "final-file", label: "Final file" },
     ],
     body: [
-      { id: "quick-answer", heading: "CV proofreading checklist: what to check before applying", paragraphs: [["Before sending a CV or resume, check contact details, job dates, tense, spelling, achievement wording, layout consistency, file naming, PDF export, and role-specific tailoring. A clean application document helps the reader scan your experience without avoidable distractions."]] },
-      { id: "checklist", heading: "CV and resume proofreading checklist", paragraphs: [["Use this checklist after the content is complete and before uploading the file to an application portal."]], table: { headers: ["Area", "What to check", "Done"], rows: [["Contact details", "Email, phone, location, links, and profile URLs", "□"], ["Dates", "Employment dates, education dates, and month/year consistency", "□"], ["Tense", "Past roles in past tense; current role consistent", "□"], ["Achievements", "Specific truthful outcomes without invented metrics", "□"], ["Spelling", "Names, tools, employers, certifications, and keywords", "□"], ["Layout", "Headings, spacing, bullets, alignment, and page breaks", "□"], ["File name", "Clear professional file name with your name and document type", "□"], ["PDF export", "Open the exported file and check links, spacing, and page count", "□"]] } },
-      { id: "tailoring", heading: "Tailor the CV without inventing experience", paragraphs: [["Role-specific tailoring means emphasizing relevant truthful experience, skills, tools, and outcomes. It does not mean inventing achievements, employers, qualifications, certifications, dates, or references. Our ", { text: "CV and resume editing service", href: "/cv-resume-editing" }, " improves the material you provide while preserving accuracy."]] },
-      { id: "final-file", heading: "Final file checks before applying", paragraphs: [["Export the document to the requested file type, open it on another device if possible, test links, confirm the filename, and check that no comments or draft notes remain. Keep a separate editable copy for future applications."]] },
+      {
+        id: "quick-answer",
+        heading: "CV proofreading checklist: what to check before applying",
+        paragraphs: [
+          ["Before sending an industry resume, academic CV, fellowship application, or cover letter, audit eight high-impact details: verified contact links, uniform date ranges, active verb tense consistency, truthful achievement phrasing, company and technical spelling, clean hierarchy without broken tables, professional file naming, and final PDF rendering."],
+          ["Hiring managers and doctoral admissions committees spend seconds scanning the first page of a CV. Even minor mechanical slips—a misspelled employer name, mixed hyphen/en-dash date formats, or shifting between past and present tense in the same role—undermine your credibility before your qualifications are evaluated."],
+        ],
+        callout: {
+          title: "Academic CV vs. Industry Resume Scope",
+          text: [
+            "Academic CVs showcase publications, grants, teaching, and service at full length, while industry resumes condense measurable outcomes into 1–2 scannable pages. Never mix both formats in one application.",
+          ],
+        },
+      },
+      {
+        id: "checklist",
+        heading: "Complete CV and resume proofreading checklist",
+        paragraphs: [
+          ["Run through each area systematically after all experience updates are complete and before uploading your file to Workday, Greenhouse, Interfolio, or university recruitment portals."],
+          ["Pay particular attention to consistency across bullets: either end every full-sentence bullet with a period or omit trailing periods consistently across every job entry—never alternate randomly."],
+        ],
+        table: {
+          headers: ["Audit Area", "What to verify", "Common Mistake to Catch"],
+          rows: [
+            ["Contact & Links", "Email, phone, city, LinkedIn URL, ORCID/Google Scholar links", "Broken mailto: links or outdated university emails"],
+            ["Date Formatting", "Consistent Month Year–Month Year (e.g., May 2023–Aug 2026)", "Mixing '05/23 - present', 'May 2023–Current', and single hyphens"],
+            ["Verb Tense", "Present tense for active current responsibilities; past tense for completed roles", "Writing 'Manage team' alongside 'Developed roadmap' in one job"],
+            ["Action Verbs & Impact", "Strong active verbs leading each bullet with truthful scope", "Passive 'Responsible for...' or 'Helped with...' phrasing"],
+            ["Publications & Degrees", "Exact journal titles, italicization, co-author order, degree names", "Writing 'Bachelors' instead of 'Bachelor's' or misquoting paper status"],
+            ["Typography & Layout", "Margins, bullet alignment, consistent font sizes, zero orphan headings", "Section header stranded alone at the bottom of Page 1"],
+            ["File Naming", "FirstName-LastName-CV-2026.pdf or Role-Specific-Resume.pdf", "Uploading 'Resume_FINAL_v4_edited(1).docx'"],
+            ["PDF & ATS Export", "Selectable text, working hyperlinks, clean copy-paste order", "Multi-column text boxes garbled by Applicant Tracking Systems"],
+          ],
+        },
+        trackedChanges: {
+          context: "PhD Graduate Resume & Cover Letter Application (Biotech R&D Role)",
+          rawDraft:
+            "Responsible for doing assays and helping manage lab inventory from Jan 2022 - present; also led a team of 4 undergrads and improved data processing speed.",
+          humanRevision:
+            "• Standardized qPCR assay workflows across 180+ weekly samples and supervised four undergraduate research assistants.\n• Automated Python quality-control scripts, reducing raw dataset preprocessing time from 4 hours to 45 minutes.",
+          marginComment:
+            "COMMENT [Careers Desk]: Replaced passive 'Responsible for...' with active past/present-aligned bullets, separated distinct accomplishments, spelled out 'four' under 10, and preserved exact metrics supplied in your lab notes.",
+          styleStandard: "Executive & STEM Resume Clarity Standard",
+        },
+      },
+      {
+        id: "tailoring",
+        heading: "Tailor your CV or resume without inventing experience",
+        paragraphs: [
+          ["Role-specific tailoring means foregrounding the skills, tools, coursework, publications, and measurable deliverables most relevant to the target job or fellowship—not inventing roles, employers, inflated metrics, or unearned credentials. Even well-meaning AI resume builders frequently hallucinate inflated percentages or corporate buzzwords that candidates cannot defend during technical interviews."],
+          ["Instead of padding bullets with vague adjectives ('dynamic', 'results-driven', 'synergistic'), mirror the exact operational nouns and technical competencies stated in the job advertisement or fellowship call. Keep a master archive CV containing every publication, grant, teaching module, and project metric you have ever completed, then duplicate and prune a clean, targeted file for each application so you never accidentally drop dates or misquote award totals under deadline pressure."],
+          ["Our ", { text: "CV and resume editing service", href: "/cv-resume-editing" }, " sharpens sentence clarity, verb strength, hierarchy, and scannability strictly from the facts you supply. If you are transitioning from graduate school into private industry or applying for academic postdocs, see our dedicated guide on ", { text: "converting an academic CV into an industry resume", href: "/blog/academic-cv-vs-industry-resume-phd-masters-guide" }, "."],
+        ],
+      },
+      {
+        id: "final-file",
+        heading: "Final file, cover letter, and ATS checks before applying",
+        paragraphs: [
+          ["Before clicking submit, export your edited `.docx` file to PDF (unless the application portal explicitly requests Word `.docx`), open the PDF on a second screen or phone, highlight and copy all text into plain Notepad/TextEdit to verify the ATS reading order stays intact, and confirm your cover letter repeats the exact job title, company spelling, and hiring manager name cleanly."],
+          ["When reviewing your cover letter beside your CV, ensure employment dates, job titles, degree names, and key metrics match across both documents without discrepancy. Finally, verify that hyperlinks to your LinkedIn profile, ORCID record, Google Scholar profile, or online portfolio resolve correctly rather than pointing to broken or private pages."],
+        ],
+        checklist: {
+          title: "Pre-Upload Application File Sign-Off",
+          items: [
+            ["Verify company name, target role title, and recipient greeting inside your cover letter match the posting word-for-word."],
+            ["Check that every bullet period, en-dash in dates (`–`), and bold/italic formatting pattern is uniform from top to bottom."],
+            ["Confirm no Word Track Changes, hidden comments, or draft file metadata remain inside the exported PDF."],
+            ["Save a clean master `.docx` copy alongside the submitted PDF for interview preparation."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Should a CV be proofread as a PDF or Word file?", answer: "Check both when possible. Edit in the source file, then inspect the exported PDF because spacing, links, and page breaks can change." },
@@ -450,6 +796,7 @@ export const requestedBlogPosts: BlogPost[] = [
       { href: "/cv-resume-editing", label: "CV and resume editing", description: "Improve application documents without inventing experience." },
       { href: "/proofreading-services", label: "Proofreading services", description: "Get a final check for completed professional documents." },
       { href: "/blog/business-proposal-proofreading-checklist", label: "Business proposal checklist", description: "Review client-facing proposals and business writing." },
+      { href: "/blog/academic-cv-vs-industry-resume-phd-masters-guide", label: "Academic CV vs industry resume", description: "Convert and proofread PhD and Master's CVs for academic or corporate applications." },
     ],
   },
   {
@@ -458,10 +805,13 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Use this business proposal proofreading checklist before sending a client-ready proposal, including names, figures, dates, scope, pricing, grammar, formatting, and final PDF checks.",
     category: "Business Writing",
     author,
+    reviewer: "Corporate, Executive & Regulatory Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Corporate Proposals & Tender Review Desk",
+    styleStandards: ["AP / Economist Business Style", "RFP Compliance Alignment", "Executive Tone Standards"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "7 min read",
-    metaTitle: "Business Proposal Proofreading Checklist",
+    dateUpdated: updated,
+    readingTime: "9 min read",
+    metaTitle: "Business Proposal Proofreading Checklist for Client Bids",
     metaDescription: "Use this business proposal proofreading checklist to check client names, figures, dates, scope, deliverables, pricing, grammar, formatting, and final PDF.",
     heroImage: "/images/hero/editor_business_1777475328522.png",
     heroImageAlt: "Business proposal being proofread before client delivery",
@@ -472,10 +822,76 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "final-pdf", label: "Final PDF" },
     ],
     body: [
-      { id: "quick-answer", heading: "Business proposal proofreading before sending", paragraphs: [["A business proposal should be proofread after the offer, scope, deliverables, pricing, dates, and approvals are final. The last review should catch errors that weaken trust: wrong client names, inconsistent figures, unclear scope wording, grammar problems, formatting slips, and the wrong file version."]] },
-      { id: "proposal-checklist", heading: "Business proposal proofreading checklist", paragraphs: [["Use this checklist before sending a client-facing proposal."]], table: { headers: ["Area", "What to check", "Done"], rows: [["Client name", "Company name, contact name, spelling, and pronouns", "□"], ["Figures", "Totals, percentages, quantities, dates, and units", "□"], ["Scope", "Services, exclusions, assumptions, and responsibilities", "□"], ["Deliverables", "Names, order, deadlines, and acceptance criteria", "□"], ["Pricing", "Currency, taxes, payment schedule, and totals", "□"], ["Grammar", "Typos, punctuation, repeated words, and sentence clarity", "□"], ["Formatting", "Headings, tables, bullets, branding, and page breaks", "□"], ["Final PDF", "Links, filename, metadata, attachments, and email subject", "□"]] } },
-      { id: "version-control", heading: "Control the final proposal version", paragraphs: [["Many proposal errors happen because an old file is sent after pricing or scope changes. Keep one approved final version, remove duplicate drafts, and make sure every attachment matches the email or portal submission."]] },
-      { id: "final-pdf", heading: "Check the final PDF and delivery package", paragraphs: [["Open the PDF you will actually send. Check page breaks, table widths, clickable links, image quality, signatures, appendices, file name, and whether the email includes every promised attachment. Our ", { text: "business proofreading service", href: "/business-proofreading" }, " can review client-ready documents before delivery."]] },
+      {
+        id: "quick-answer",
+        heading: "Business proposal proofreading before sending",
+        paragraphs: [
+          ["A business proposal, RFP response, consulting tender, or investor deck should be proofread only after the commercial offer, deliverable schedule, pricing structure, and internal approvals are locked. The final editorial check exists to eliminate errors that quietly erode buyer confidence: misspelled client stakeholder names, mismatched totals between narrative text and fee tables, leftover template text from a previous bid, vague scope exclusions, grammatical slips, and broken PDF formatting."],
+          ["When competing bids offer comparable technical capabilities and fees, procurement committees routinely treat clean, internally consistent documentation as a proxy for operational rigor."],
+        ],
+        callout: {
+          title: "Never Copy-Paste a Prior Client Bid Without a Global Search",
+          text: [
+            "One of the most costly proposal failures occurs when a recycled case study or scope paragraph still carries a former client's company name, currency symbol, or delivery date inside the final PDF.",
+          ],
+        },
+      },
+      {
+        id: "proposal-checklist",
+        heading: "Business proposal proofreading checklist",
+        paragraphs: [
+          ["Use this structured audit table across every page—including cover slides, executive summary, technical approach, commercial fee schedule, and legal appendices—before sending a client-facing proposal."],
+        ],
+        table: {
+          headers: ["Area", "What to verify in detail", "High-Risk Failure Prevented"],
+          rows: [
+            ["Client Identity", "Exact legal entity name, stakeholder titles, spelling, and pronouns", "Leftover competitor or prior client names in recycled sections"],
+            ["Commercial Figures", "Line-item prices, subtotals, tax treatment (VAT/sales tax), currencies, discounts", "Executive summary quoting $48,000 while fee table totals $52,000"],
+            ["Scope & Exclusions", "Included deliverables, client dependencies, out-of-scope assumptions, SLA terms", "Ambiguous 'will support' wording that triggers scope creep disputes"],
+            ["Timeline & Milestones", "Phase durations, calendar dates, kickoff assumptions, sign-off gates", "Milestone dates falling on weekends or contradicting RFP deadlines"],
+            ["Executive Tone", "Active voice, concrete verbs, client-benefit framing, jargon control", "Tentative hedging ('we hope to try to deliver') weakening authority"],
+            ["Compliance Matrix", "Every mandatory RFP question number, word ceiling, and required annex", "Automatic procurement disqualification for missing a numbered response"],
+            ["Visual Hierarchy", "Table alignment, chart legibility, header/footer pagination, brand colors", "Split pricing tables missing column headers on Page 2"],
+            ["Final Package", "PDF hyperlinks, file naming, attachment alignment, email subject line", "Sending an unflattened draft with internal margin comments visible"],
+          ],
+        },
+        trackedChanges: {
+          context: "Enterprise Consulting RFP Response (Executive Summary & Scope Exclusion)",
+          rawDraft:
+            "Our team hopes to utilize agile workflows to maybe deliver the Phase 2 portal migration for ClientCorp by Q4, assuming they provide us timely server access and all assets.",
+          humanRevision:
+            "Our delivery team will execute the Phase 2 portal migration in two-week agile sprints targeting Q4 completion, contingent on ClientCorp provisioning staging server access and finalized brand assets by Week 2.",
+          marginComment:
+            "COMMENT [Corporate Desk]: Replaced tentative phrasing ('hopes to utilize', 'maybe deliver') with authoritative active voice and converted informal 'assuming they provide' into a clear milestone dependency. Please verify 'Week 2' matches Schedule B.",
+          styleStandard: "Corporate Executive & Tender Clarity Standard",
+        },
+      },
+      {
+        id: "version-control",
+        heading: "Control the final proposal version across commercial and technical authors",
+        paragraphs: [
+          ["Most proposal errors happen in the final four hours before submission, when finance adjusts the pricing schedule in Excel while project managers edit deliverables in Word or PowerPoint. Freeze a single master file, assign one person to merge final pricing numbers into the executive summary, and run a targeted `Ctrl+F` check for `[INSERT]`, `TBD`, `Draft`, and previous client names."],
+          ["Where multiple subject-matter experts wrote different sections, a human proofreader harmonizes tone, tense ('we will deliver' vs. 'the vendor delivers'), acronym definitions, and number formatting (`$1.2M` vs. `$1,200,000`) into a unified corporate voice. Cross-check every section cross-reference ('see Appendix B', 'as detailed in Section 3.4') after final pagination changes so evaluators never land on the wrong page or table number."],
+        ],
+      },
+      {
+        id: "final-pdf",
+        heading: "Check the final PDF, security metadata, and delivery package",
+        paragraphs: [
+          ["Export the approved document to PDF and inspect every page at 100% zoom. Confirm no tracked changes or internal negotiation comments remain in the exported file, test clickable links to case studies or terms, check table borders across page breaks, and ensure the PDF filename matches the client's procurement naming rules."],
+          ["Verify document properties (`File > Info` or PDF Document Properties) so the file title and author metadata reflect your organization rather than a former template or employee name. Confirm that all compliance forms, pricing annexes, and signed declarations appear in the exact sequence mandated by the buyer's RFP checklist."],
+          ["Our ", { text: "business proofreading service", href: "/business-proofreading" }, " reviews client proposals, annual reports, white papers, and executive decks on rapid turnarounds; if a draft still requires stronger persuasive structure or executive narrative tightening, start with ", { text: "editing services", href: "/editing-services" }, " before final proofreading."],
+        ],
+        checklist: {
+          title: "15-Minute Pre-Send Corporate Proposal Gate",
+          items: [
+            ["Confirm every instance of the prospect's company name, project title, and currency matches across cover, header, and fee table."],
+            ["Reconcile total contract price in the Executive Summary, Fee Schedule, and Payment Milestones down to the cent."],
+            ["Ensure all tracked changes are accepted and all internal reviewer comments are deleted before PDF export."],
+            ["Verify attachment count, file size limits, and email recipient addresses before clicking send."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "When should I proofread a business proposal?", answer: "Proofread after the offer, scope, pricing, dates, and internal approvals are final. Earlier drafts may need editing rather than final proofreading." },
@@ -494,11 +910,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Authors can compare manuscript editing, copyediting, and proofreading, including what each stage improves and when a book or research manuscript needs each review.",
     category: "Research and Manuscripts",
     author,
+    reviewer: "Book & Journal Manuscript Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Long-Form Book & Journal Manuscript Desk",
+    styleStandards: ["Chicago Manual of Style 17th Ed.", "APA 7th Ed.", "ICMJE / Publisher House Styles"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "8 min read",
-    metaTitle: "Manuscript Editing vs Copyediting vs Proofreading",
-    metaDescription: "Compare manuscript editing vs copyediting vs proofreading for authors, including scope, timing, book manuscripts, research papers, and final review.",
+    dateUpdated: updated,
+    readingTime: "10 min read",
+    metaTitle: "Manuscript Editing vs Copyediting vs Proofreading Guide",
+    metaDescription: "Compare manuscript editing, copyediting, and proofreading for book authors and journal researchers: scope, timing, Track Changes, and per-word pricing.",
     heroImage: "/images/blog/editing-proofreading-manuscript-submission.webp",
     heroImageAlt: "Author manuscript pages marked for editing, copyediting, and proofreading stages",
     tableOfContents: [
@@ -510,12 +929,83 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "choose", label: "How authors choose" },
     ],
     body: [
-      { id: "quick-answer", heading: "Manuscript editing vs copyediting vs proofreading", paragraphs: [["For authors, manuscript editing improves the larger reading experience, copyediting improves sentence-level clarity and consistency, and proofreading checks the final approved version for surface errors. The right stage depends on whether the manuscript still needs development, language refinement, or final correction."]] },
-      { id: "manuscript-editing", heading: "Manuscript editing improves the reader's experience", paragraphs: [["Manuscript editing can address chapter flow, pacing, organization, argument, voice, repetition, transitions, and reader confusion. For research manuscripts, it may focus on section logic, cautious claims, terminology, and journal fit."]] },
-      { id: "copyediting", heading: "Copyediting improves language and consistency", paragraphs: [["Copyediting sits closer to the sentence. It can improve wording, grammar, style, terminology, capitalization, abbreviations, and consistency across chapters or sections without taking over the author's ideas."]] },
-      { id: "proofreading", heading: "Proofreading is the final check", paragraphs: [["Proofreading happens after editing decisions are complete. It checks grammar, spelling, punctuation, typos, formatting slips, captions, page elements, and final presentation. For the broad distinction, see ", { text: "editing vs proofreading", href: "/blog/editing-vs-proofreading" }, "."]] },
-      { id: "comparison", heading: "Author-focused comparison", paragraphs: [["Use this table to identify the stage your manuscript is actually in."]], table: { headers: ["Stage", "Best timing", "Main focus"], rows: [["Manuscript editing", "When chapters or sections still need strengthening", "Structure, flow, voice, argument, readability"], ["Copyediting", "When the manuscript is complete but language needs refinement", "Sentences, style, consistency, clarity"], ["Proofreading", "After edits are accepted and the file is close to final", "Typos, grammar, punctuation, formatting, final presentation"]] } },
-      { id: "choose", heading: "How authors choose the right review", paragraphs: [["Choose ", { text: "manuscript editing services", href: "/manuscript-editing" }, " when readers may struggle with structure, flow, clarity, or consistency. Choose ", { text: "professional proofreading services", href: "/proofreading-services" }, " when the manuscript is final and only needs a last careful check."]], bullets: [["Early draft: manuscript editing."], ["Complete but uneven language: copyediting or line editing."], ["Final approved manuscript: proofreading."], ["Submission-ready file with complex presentation: proofreading plus formatting review."]] },
+      {
+        id: "quick-answer",
+        heading: "Manuscript editing vs copyediting vs proofreading",
+        paragraphs: [
+          ["For both book authors and academic researchers, manuscript editing strengthens large-scale structure, pacing, argument flow, and reader engagement; copyediting refines sentence-level clarity, grammar, tone, terminology, and style-manual consistency; and proofreading provides the final surface check on an approved or typeset draft before submission or print."],
+          ["Booking the wrong editorial stage wastes both budget and time: sending a rough early draft for surface proofreading will not fix structural gaps, while asking for substantive restructuring after a book is already typeset forces expensive layout reflow."],
+        ],
+      },
+      {
+        id: "manuscript-editing",
+        heading: "Manuscript editing improves structure, pacing, and argument flow",
+        paragraphs: [
+          ["Manuscript editing (often overlapping with developmental or substantive editing) zooms out to the chapter and whole-work level. In non-fiction books and fiction manuscripts, an editor evaluates chapter order, narrative pacing, character or thematic continuity, voice consistency, scene transitions, and places where readers lose momentum."],
+          ["In peer-reviewed journal manuscripts and academic monographs, manuscript editing evaluates IMRaD section alignment, whether the Introduction states a clear scholarly gap, whether Methods and Results align logically, and whether Discussion claims match empirical scope without overclaiming."],
+        ],
+        bullets: [
+          ["Reordering uneven chapters or flagging repetitive paragraphs across sections"],
+          ["Clarifying the central thesis, narrative arc, or research contribution"],
+          ["Calibrating scholarly hedging or narrative voice consistency across long drafts"],
+          ["Leaving margin queries wherever missing evidence or exposition needs the author's input"],
+        ],
+      },
+      {
+        id: "copyediting",
+        heading: "Copyediting refines sentences, mechanics, and style-sheet consistency",
+        paragraphs: [
+          ["Copyediting sits directly at the sentence and paragraph level once structural decisions are settled. A copyeditor enforces a single governing style manual—such as Chicago 17th Edition for trade non-fiction and history, APA 7th for social sciences, or AMA/IEEE for biomedical and engineering manuscripts—while building an internal style sheet to lock spelling variants, hyphenation, numbers, character names, and terminology."],
+          ["Copyediting eliminates awkward syntax, wordiness, tense drift, dangling modifiers, and mismatched in-text citations without rewriting the author's intellectual voice."],
+        ],
+        trackedChanges: {
+          context: "Trade Non-Fiction & Academic Monograph (Copyediting Pass — Chicago 17th Ed.)",
+          rawDraft:
+            "In chapter 3, Dr. Elena Vance argued that 8 different coastal cities saw a 14% rise in housing costs, however her earlier data in Table 2 lists nine municipalities.",
+          humanRevision:
+            "In Chapter 3, Dr. Elena Vance argued that eight coastal cities experienced a 14 percent rise in housing costs; however, Table 2 lists nine municipalities.",
+          marginComment:
+            "COMMENT [Manuscript Desk]: (1) Capitalized 'Chapter 3' per style sheet; spelled out 'eight' and 'percent' per CMOS 17 general text rules. (2) Resolved comma splice around 'however'. (3) AUTHOR QUERY: Please confirm whether Table 2 includes an extra city or if Chapter 3 text should read 'nine coastal cities'.",
+          styleStandard: "Chicago Manual of Style (17th Ed.) Copyediting",
+        },
+      },
+      {
+        id: "proofreading",
+        heading: "Proofreading is the final quality-control check before release",
+        paragraphs: [
+          ["Proofreading happens only after all structural edits and copyedits have been accepted and the manuscript is locked for submission or publication. Proofreaders hunt for surviving typographical errors, doubled words, punctuation slips, broken cross-references, mismatched Table of Contents page numbers, bad line breaks, widows and orphans in galley PDFs, and inconsistent front/back matter."],
+          ["For the broader distinction between developmental revision and surface correction across shorter papers and business files, see our guide to ", { text: "editing vs proofreading", href: "/blog/editing-vs-proofreading" }, "."],
+        ],
+      },
+      {
+        id: "comparison",
+        heading: "Author-focused comparison across all three editorial stages",
+        paragraphs: [["Use this breakdown to match your manuscript's current condition to the right service tier and turnaround budget."]],
+        table: {
+          headers: ["Editorial Stage", "Best Draft Timing", "Core Focus", "Deliverables Returned"],
+          rows: [
+            ["Manuscript Editing (Substantive)", "Complete 1st/2nd draft still needing structural clarity", "Chapter logic, pacing, transitions, voice, argument strength, claim framing", "MS Word Track Changes + strategic margin notes on structure"],
+            ["Copyediting (Line & Mechanics)", "Structure settled; prose needs fluency and style precision", "Grammar, syntax, concision, hedging, citations, style-sheet consistency", "MS Word Track Changes + style consistency notes + clean copy"],
+            ["Proofreading (Final QA)", "Edited & formatted final file or typeset PDF galley", "Remaining typos, punctuation, captions, TOC sync, widows/orphans, layout slips", "Final surface corrections in Track Changes / PDF notes + clean file"],
+          ],
+        },
+      },
+      {
+        id: "choose",
+        heading: "How authors choose the right review (and avoid double-paying)",
+        paragraphs: [
+          ["Choose ", { text: "manuscript editing services", href: "/manuscript-editing" }, " when chapters still feel uneven, wordy, or structurally disconnected, or when a journal manuscript needs tighter academic clarity and reviewer readiness. Under our Unified Academic Rate policy on the ", { text: "pricing calculator", href: "/pricing" }, ", substantive line editing and final proofreading share the same transparent per-word turnaround curve ($0.022–$0.038/word), so you never feel pressured to under-select proofreading when your draft actually needs copyediting."],
+          ["Once you have accepted every Tracked Change and formatted your submission file or book layout, book ", { text: "professional proofreading services", href: "/proofreading-services" }, " for one final, objective quality pass."],
+        ],
+        checklist: {
+          title: "Manuscript Stage Selection Checklist",
+          items: [
+            ["Still moving sections, cutting chapters, or clarifying argument transitions? -> Choose Manuscript / Substantive Editing."],
+            ["Structure locked, but sentences feel wordy, translated, or style-inconsistent? -> Choose Copyediting / Line Editing."],
+            ["All edits accepted and manuscript formatted for journal portal, KDP, or print? -> Choose Final Proofreading."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Do authors need both editing and proofreading?", answer: "Many manuscripts benefit from both. Editing improves the manuscript, while proofreading checks the final approved version after edits are accepted." },
@@ -534,11 +1024,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Prepare a document for professional editing or proofreading by freezing the right version, providing guidelines, explaining the audience, cleaning tracked changes, and sharing deadlines.",
     category: "Editing services",
     author,
+    reviewer: "Client Intake & Editorial Operations Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Editorial Intake & Document Preparation Desk",
+    styleStandards: ["MS Word Track Changes Hygiene", "Zotero / Mendeley / EndNote Field Safety", "Style-Brief Standards"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "8 min read",
-    metaTitle: "Prepare a Document for Proofreading or Editing",
-    metaDescription: "Learn how to prepare a document for proofreading or editing, including version control, style guidelines, deadlines, Track Changes, and source files.",
+    dateUpdated: updated,
+    readingTime: "9 min read",
+    metaTitle: "How to Prepare a Document for Proofreading or Editing",
+    metaDescription: "Learn how to prepare a thesis, paper, or report for professional editing: version freeze, reference manager locks, style sheets, and Track Changes setup.",
     heroImage: "/assets/premium_desk.png",
     heroImageAlt: "Professional editing desk with documents prepared for review",
     tableOfContents: [
@@ -550,12 +1043,80 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "submit", label: "Submit cleanly" },
     ],
     body: [
-      { id: "quick-answer", heading: "How to prepare a document for professional editing", paragraphs: [["Before sending a document for editing or proofreading, freeze the correct version, provide the guidelines, identify the audience, explain the deadline, clean unresolved tracked changes where appropriate, supply the reference style, remove duplicate files, and include source text for translation review when available."]] },
-      { id: "version", heading: "Freeze the correct version", paragraphs: [["Choose the version you want reviewed and stop making parallel edits. If multiple people are still changing the document, assign one person to combine changes before submission."]] },
-      { id: "guidelines", heading: "Provide the rules the editor should follow", paragraphs: [["Attach university guidelines, journal instructions, publisher rules, company style guides, word limits, marking criteria, reference style, or client requirements. Specific rules are more useful than broad instructions such as 'make it better.'"]] },
-      { id: "audience", heading: "Explain the audience, purpose, and deadline", paragraphs: [["Tell the editor who will read the document and what the document must do. A business proposal, PhD chapter, CV, translated report, and journal manuscript need different editorial judgment."]] },
-      { id: "tracked-changes", heading: "Clean tracked changes and comments carefully", paragraphs: [["If the document has unresolved Track Changes, decide whether the editor should review them, ignore them, or work from a clean version. Microsoft explains how to accept or reject tracked changes in Word; use that process only when you are ready to finalize those edits.", { text: "Microsoft Track Changes support", href: "https://support.microsoft.com/en-us/word/accept-or-reject-tracked-changes-in-word", external: true }]] },
-      { id: "submit", heading: "Submit the document with the right service notes", paragraphs: [["Use ", { text: "editing services", href: "/editing-services" }, " for clarity, tone, flow, and structure. Use ", { text: "proofreading services", href: "/proofreading-services" }, " for final correction. For translated English, include the source text when available and choose ", { text: "translation review", href: "/translation-review" }, ". Then ", { text: "upload the document securely", href: "/submit" }, "."]] },
+      {
+        id: "quick-answer",
+        heading: "How to prepare a document for professional editing",
+        paragraphs: [
+          ["Preparing your manuscript cleanly before uploading ensures your human editor spends 100% of their review time sharpening your prose, logic, and citations rather than untangling broken versions or guessing which rules apply. Before submitting, freeze one master file, verify whether Zotero/Mendeley/EndNote fields should stay live or be flattened on a copy, attach your university or journal guidelines, state your target English dialect and deadline, and resolve outdated Track Changes."],
+        ],
+        table: {
+          headers: ["Preparation Step", "Recommended Action", "Why It Improves Your Edit"],
+          rows: [
+            ["1. Version Freeze", "Merge co-author/supervisor drafts into one dated `.docx` master", "Prevents paying to edit text you later overwrite"],
+            ["2. Reference Fields", "Keep a backup with live Zotero/EndNote fields; decide if upload copy stays live", "Prevents citation software from reverting manual editor fixes"],
+            ["3. Style & Dialect Rules", "Attach Guide for Authors or state US/UK/CA/AU + APA/Chicago/Harvard", "Eliminates guesswork on spelling, serial commas, and reference rules"],
+            ["4. Locked Passages", "Highlight verbatim participant quotes, statutory text, or fixed formulas", "Signals which excerpts must remain untouched"],
+            ["5. Track Changes Hygiene", "Accept/reject old prior-round redlines before submitting", "Keeps your new editor's Track Changes crisp and easy to inspect"],
+          ],
+        },
+      },
+      {
+        id: "version",
+        heading: "Freeze the correct master version and handle reference manager fields",
+        paragraphs: [
+          ["Choose the single draft version you want edited and pause parallel revisions until the edited file returns. If co-authors or committee members are still adding paragraphs to a separate Google Doc, combine everything into one Microsoft Word (`.docx`) file before upload so terminology, headings, and word count are accurate."],
+          ["If you use Zotero, Mendeley, or EndNote, save a master backup with active field codes intact. Remember that if an editor corrects a citation's punctuation inside an active citation field, clicking 'Refresh' later in Zotero can overwrite that fix unless the underlying library entry is updated—or unless you intentionally export a flattened plain-text copy for final proofreading."],
+        ],
+      },
+      {
+        id: "guidelines",
+        heading: "Provide the exact style rules and word limits the editor should follow",
+        paragraphs: [
+          ["Attach university thesis handbooks, target journal Instructions for Authors, publisher house style sheets, RFP formatting rules, or maximum word limits alongside your draft. Specific constraints—such as 'Target British English (-ise), Harvard Cite Them Right, maximum 4,000 words excluding tables'—are vastly more actionable than generic instructions like 'please polish this.'"],
+          ["If certain passages must not be altered (such as verbatim qualitative interview transcripts, legal statutes, questionnaire items, or copyrighted block quotes), note that clearly in your submission brief."],
+        ],
+      },
+      {
+        id: "audience",
+        heading: "Explain the audience, purpose, dialect, and real deadline",
+        paragraphs: [
+          ["Tell your editor who will evaluate the file and what decision depends on it. An IEEE engineering paper, a qualitative sociology dissertation, an executive consulting RFP, an academic CV, and a translated corporate report call for very different register and hedging choices."],
+          ["State your hard submission deadline rather than just your desired return date, and leave at least 24 to 72 hours after delivery to review Track Changes, answer margin comments, and inspect your final exported PDF."],
+        ],
+        trackedChanges: {
+          context: "Author Submission Brief & Document Clean-Up Example",
+          rawDraft:
+            "Please edit my paper asap and make it sound good for publishing. Ignore the yellow highlights from my co-author.",
+          humanRevision:
+            "Target: Journal of Environmental Policy (British English -ise, APA 7th Ed., 6,500-word limit). Note: Yellow highlights in Section 3.2 mark resolved co-author notes—ready to edit; please keep verbatim interview quotes in italics untouched. Hard submission deadline: 28 November.",
+          marginComment:
+            "COMMENT [Intake Desk]: Clear scope notes like this allow our specialist editor to verify APA 7 compliance, preserve verbatim quotes, and trim 180 excess words to meet your 6,500-word limit immediately.",
+          styleStandard: "Editorial Brief Best Practice",
+        },
+      },
+      {
+        id: "tracked-changes",
+        heading: "Clean prior tracked changes and resolved comments carefully",
+        paragraphs: [
+          ["If your file still contains leftover redlines or resolved margin balloons from a supervisor or colleague, accept or reject those earlier edits and delete resolved comments before uploading. Overlapping Track Changes from multiple authors make it harder to distinguish your new editor's revisions from old suggestions. Follow ", { text: "Microsoft Track Changes support", href: "https://support.microsoft.com/en-us/word/accept-or-reject-tracked-changes-in-word", external: true }, " only after saving an untouched pre-edit backup copy."],
+        ],
+      },
+      {
+        id: "submit",
+        heading: "Submit the document with the right service notes",
+        paragraphs: [
+          ["Use ", { text: "editing services", href: "/editing-services" }, " when sentences, flow, tone, or chapter transitions still need work. Use ", { text: "proofreading services", href: "/proofreading-services" }, " when structure is settled and you want final mechanical quality control. For translated English manuscripts, include the original source file if available and select ", { text: "translation review", href: "/translation-review" }, ". When your file is ready, check rates on ", { text: "pricing", href: "/pricing" }, " or ", { text: "upload the document securely", href: "/submit" }, "."],
+        ],
+        checklist: {
+          title: "5-Minute Pre-Upload Preparation Checklist",
+          items: [
+            ["Saved a dated local backup of the pre-edit `.docx` file (and live Zotero/EndNote library if applicable)."],
+            ["Accepted or rejected outdated redlines and removed resolved internal comments."],
+            ["Confirmed target English dialect (US, UK, CA, or AU) and citation manual (APA 7, Chicago, MLA, Harvard, OSCOLA, IEEE)."],
+            ["Flagged any verbatim quotes, figures, or sections that must remain unchanged and stated your real deadline."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Should I send a Word file or PDF for proofreading?", answer: "An editable file is usually best for corrections. A PDF can also be useful for final layout checks when presentation matters." },
@@ -574,11 +1135,14 @@ export const requestedBlogPosts: BlogPost[] = [
     excerpt: "Learn how to format a thesis or dissertation in Microsoft Word with styles, heading levels, section breaks, page numbering, captions, table of contents, cross-references, and final PDF checks.",
     category: "Formatting and References",
     author,
+    reviewer: "Thesis Formatting & Repository Compliance Desk — My Editing and Proofreading Desk",
+    editorialDesk: "Long-Document & ProQuest Formatting Desk",
+    styleStandards: ["MS Word Styles & Section Breaks", "ProQuest / University ETD PDF/A Rules", "APA 7th / Chicago Layout"],
     datePublished: published,
-    dateUpdated: published,
-    readingTime: "9 min read",
-    metaTitle: "How to Format a Thesis in Microsoft Word",
-    metaDescription: "Format your thesis in Word using styles, headings, section breaks, page numbers, captions, table of contents lists, cross-references, and PDF checks.",
+    dateUpdated: updated,
+    readingTime: "12 min read",
+    metaTitle: "How to Format a Thesis in Microsoft Word (Step-by-Step)",
+    metaDescription: "Format your thesis or dissertation in Microsoft Word without broken layouts: Section Breaks, Roman/Arabic page numbers, auto Table of Contents, and PDF/A.",
     heroImage: "/images/blog/thesis-tables-figures-references-checklist.webp",
     heroImageAlt: "Thesis document formatted in Microsoft Word with headings, captions, and table of contents checks",
     tableOfContents: [
@@ -590,12 +1154,94 @@ export const requestedBlogPosts: BlogPost[] = [
       { id: "final-pdf", label: "Final PDF" },
     ],
     body: [
-      { id: "quick-answer", heading: "How to format a thesis in Microsoft Word", paragraphs: [["Format a thesis or dissertation in Word by using paragraph styles for headings, planning section breaks before page numbering, creating captions for tables and figures, inserting cross-references, generating the table of contents from headings, updating fields, and checking the final exported PDF. Always follow your institution's formatting rules first."]] },
-      { id: "styles", heading: "Use styles for heading levels", paragraphs: [["Word's table of contents is based on headings, according to ", { text: "Microsoft's table of contents guidance", href: "https://support.microsoft.com/en-US/Word/training/insert-a-table-of-contents", external: true }, ". Apply Heading 1, Heading 2, and Heading 3 consistently instead of manually enlarging text to look like a heading."]] },
-      { id: "sections", heading: "Plan section breaks and page numbering", paragraphs: [["Theses often use different numbering for front matter and main chapters. Set section breaks deliberately before adjusting page numbers, headers, and footers. After any layout change, inspect the document page by page because section breaks can affect later chapters."]] },
-      { id: "captions", heading: "Use captions and cross-references for tables and figures", paragraphs: [["Create captions before cross-referencing tables, figures, headings, or page numbers. Microsoft notes that a cross-reference links to an item already present in the document and can be inserted as a hyperlink.", { text: "Microsoft cross-reference guidance", href: "https://support.microsoft.com/en-us/word/create-a-cross-reference", external: true }]] },
-      { id: "contents", heading: "Update the table of contents and lists", paragraphs: [["After headings, captions, and pagination are stable, update the table of contents, list of tables, and list of figures. Missing entries often indicate that the heading or caption was not created with the correct Word feature."]] },
-      { id: "final-pdf", heading: "Check the final PDF before submission", paragraphs: [["Export the exact file required by your university and inspect every page. Check page breaks, fonts, images, equations, table widths, bookmarks, hyperlinks, file size, and filename. Our ", { text: "document formatting service", href: "/document-formatting" }, " can help prepare complex thesis and dissertation files."]] },
+      {
+        id: "quick-answer",
+        heading: "How to format a thesis in Microsoft Word without breaking pagination",
+        paragraphs: [
+          ["Format a thesis or dissertation cleanly in Microsoft Word by configuring built-in Heading styles (`Heading 1`, `Heading 2`, `Heading 3`) instead of manual bolding, isolating front matter from Chapter 1 with `Next Page` Section Breaks, disabling `Link to Previous` before switching from Roman numerals (`i, ii, iii`) to Arabic numerals (`1, 2, 3`), generating captions and cross-references dynamically, updating entire contents tables, and verifying embedded fonts in the final PDF/A export."],
+          ["Graduate students across r/GradSchool and r/PhD consistently rank broken Word pagination and unsynchronized Tables of Contents as the #1 cause of last-minute graduate school repository rejections. Following the sequence below keeps a 200-page `.docx` stable."],
+        ],
+        callout: {
+          title: "Avoid Word's Legacy 'Master Document' Feature",
+          text: [
+            "Do not link separate chapter files using Word's legacy Master Document feature, which frequently corrupts heading styles and Zotero/EndNote field codes. Draft chapters separately if needed, then paste cleanly into one unified `.docx` once content is stable.",
+          ],
+        },
+      },
+      {
+        id: "styles",
+        heading: "Use built-in Heading Styles for every chapter and subheading",
+        paragraphs: [
+          ["Word's automated Table of Contents, PDF bookmarks, and Navigation Pane rely strictly on built-in Heading styles, as detailed in ", { text: "Microsoft's table of contents guidance", href: "https://support.microsoft.com/en-US/Word/training/insert-a-table-of-contents", external: true }, ". If you manually increase font size to 16pt bold without applying `Heading 1`, Word treats that chapter title as ordinary body text and omits it from your Table of Contents."],
+          ["Modify `Normal`, `Heading 1`, `Heading 2`, and `Heading 3` directly via the Styles pane (`Right-click > Modify`) so font family, line spacing, keep-with-next pagination, and chapter page-break rules update globally across the entire dissertation in seconds."],
+        ],
+        bullets: [
+          ["Set 'Keep with next' on every Heading style so a subheading never sits orphaned at the bottom of a page."],
+          ["Avoid blank 'Enter' lines between paragraphs; set exact 'Space Before / Space After' values inside Paragraph settings."],
+          ["Turn on the Pilcrow (`¶`) formatting marks button on the Home tab whenever auditing hidden breaks or accidental blank pages."],
+        ],
+      },
+      {
+        id: "sections",
+        heading: "Plan Section Breaks and mixed Roman / Arabic page numbering",
+        paragraphs: [
+          ["Most universities require unnumbered Title/Declaration pages, lowercase Roman numerals (`i, ii, iii`) on Abstracts, Acknowledgements, and Table of Contents pages, and Arabic numerals starting cleanly at `1` on the first page of Chapter 1. Standard Page Breaks (`Ctrl+Enter`) cannot change numbering formats or page orientation—only **Section Breaks** can."],
+          ["Insert `Layout > Breaks > Next Page` at the end of your Title page and again at the end of your Front Matter. Then double-click inside Chapter 1's footer, critically **uncheck `Link to Previous`** in the Header & Footer toolbar, set `Format Page Numbers` to `1, 2, 3`, and select `Start at: 1`. Only after unlinking sections can you safely format front matter to `i, ii, iii` or switch a wide data table page to Landscape without distorting the rest of your thesis."],
+        ],
+        table: {
+          headers: ["Word Layout Problem", "Root Cause", "Exact Fix in Microsoft Word"],
+          rows: [
+            ["Chapter 1 starts on page 9 instead of page 1", "Used a Page Break instead of Next Page Section Break, or 'Continue from previous section' is active", "Insert Next Page Section Break, uncheck 'Link to Previous', set 'Start at: 1'"],
+            ["Roman numerals disappear from Abstract when editing Chapter 1", "'Link to Previous' remained toggled ON in Chapter 1 footer", "Turn OFF 'Link to Previous' in BOTH headers and footers of the new section"],
+            ["Accidental blank page appears before a chapter", "Trailing empty paragraphs or an Odd-Page Section Break pushed content", "Enable Pilcrow (`¶`), inspect break markers, switch Odd-Page to Next-Page break"],
+            ["Landscape appendix rotates the header/footer awkwardly", "Margins and tab stops were not unlinked inside the Landscape section", "Unlink header/footer for the Landscape section and reset tab stops to 9.5 in"],
+            ["Table of Contents shows wrong page numbers before export", "Text edits shifted pagination without refreshing TOC field codes", "Right-click TOC -> Update Field -> Update Entire Table before PDF save"],
+          ],
+        },
+        trackedChanges: {
+          context: "PhD Thesis Formatting Audit (Front Matter to Chapter 1 Transition)",
+          rawDraft:
+            "[Manual Page Break] ... Table of Contents (p. 4) | Chapter 1: Introduction (p. 5) [Manually typed TOC leaders] | Table 2.1 [Bold normal text]",
+          humanRevision:
+            "[Next Page Section Break · Link to Previous OFF] ... Table of Contents (p. iv) | Chapter 1: Introduction (p. 1, Heading 1) | Table 2.1 (Insert Caption -> Automated List of Tables)",
+          marginComment:
+            "COMMENT [Formatting Desk]: Replaced manual TOC and Page Break with unlinked Section Break (restarting Arabic numbering at 1 on Chapter 1), applied Heading 1 style, and converted table labels to live Word captions.",
+          styleStandard: "University ETD & ProQuest Submission Standard",
+        },
+      },
+      {
+        id: "captions",
+        heading: "Automate captions and cross-references for tables and figures",
+        paragraphs: [
+          ["Never type 'Table 3.2' or 'see Figure 4' manually if you might still insert or delete visual items before defense. Use `References > Insert Caption` so every table and figure receives a dynamic sequence number. Then insert in-text mentions via `References > Cross-reference` (set to 'Only label and number'). Microsoft confirms that dynamic cross-references update automatically whenever chapters shift; see ", { text: "Microsoft cross-reference guidance", href: "https://support.microsoft.com/en-us/word/create-a-cross-reference", external: true }, "."],
+          ["Remember APA and university conventions: table captions normally appear **above** the table, while figure captions appear **below** the figure (unless your department template specifies otherwise)."],
+        ],
+      },
+      {
+        id: "contents",
+        heading: "Generate and refresh Table of Contents, List of Tables, and List of Figures",
+        paragraphs: [
+          ["Once Heading styles and automated captions are in place, generate your Table of Contents (`References > Table of Contents > Custom Table of Contents`) and separate Lists of Tables and Figures (`References > Insert Table of Figures`). Match your TOC typography (e.g., Times New Roman 12pt, clean dot leaders, right-aligned numbers) by editing `TOC 1`, `TOC 2`, and `TOC 3` styles rather than overriding the text manually—manual font edits get wiped out the moment fields refresh."],
+          ["Before final submission, press `Ctrl+A` (or `Cmd+A` on Mac) and update all fields (`F9`), choosing **Update Entire Table** every single time so newly edited headings and shifted page numbers sync cleanly."],
+        ],
+      },
+      {
+        id: "final-pdf",
+        heading: "Export to ProQuest-ready PDF/A and inspect every page",
+        paragraphs: [
+          ["Export using `File > Save As > PDF` (checking `Options > ISO 19005-1 compliant (PDF/A)` and `Create bookmarks using Headings` if required by ProQuest or your university library). Open the exported PDF independently and scroll page by page to check that mathematical symbols, Greek characters, high-resolution charts, landscape margins, and clickable bookmarks survived conversion intact."],
+          ["If broken section breaks, stubborn numbering jumps, or strict institutional margins are costing you days right before deposit, our ", { text: "document formatting service", href: "/document-formatting" }, " can format your `.docx` and PDF cleanly alongside our ", { text: "tables, figures, and references checklist", href: "/blog/thesis-tables-figures-references-checklist" }, "."],
+        ],
+        checklist: {
+          title: "ProQuest & University Word-to-PDF Final Formatting Checklist",
+          items: [
+            ["Built-in Heading 1/2/3 styles govern every chapter and subheading (visible in the Navigation Pane)."],
+            ["Front matter uses Roman numerals (`i, ii, iii`) and Chapter 1 restarts cleanly at Arabic `1` with `Link to Previous` disabled."],
+            ["All tables, figures, and cross-references use live Word captions (`Update Entire Table` executed right before PDF export)."],
+            ["Exported PDF/A file verified page-by-page for embedded fonts, bookmarks, margins, and zero `Error! Reference source not found` warnings."],
+          ],
+        },
+      },
     ],
     faq: [
       { question: "Should I use manual headings in a thesis?", answer: "Use Word heading styles when possible. Manual formatting can look correct but fail to appear properly in generated contents lists." },
