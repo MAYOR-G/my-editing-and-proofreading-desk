@@ -43,7 +43,7 @@ export function LoginEmailPanel() {
 
       <div className="mt-7">
         <GoogleSignInButton
-          nextPath="/dashboard"
+          nextPath="/dashboard/uploads"
           label="Continue with Google"
           onError={(msg) => setError(msg || null)}
         />

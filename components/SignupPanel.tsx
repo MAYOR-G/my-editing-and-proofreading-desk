@@ -78,7 +78,7 @@ export function SignupPanel() {
         <>
           <div className="mt-1">
             <GoogleSignInButton
-              nextPath="/dashboard"
+              nextPath="/dashboard/uploads"
               label="Continue with Google"
               onError={(msg) => setError(msg || null)}
             />

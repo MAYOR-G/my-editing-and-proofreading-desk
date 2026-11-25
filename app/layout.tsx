@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JsonLd } from "@/components/JsonLd";
+import { OAuthRedirectWatcher } from "@/components/OAuthRedirectWatcher";
 import { TawkWidget } from "@/components/TawkWidget";
 import { buildPageMetadata, organizationJsonLd, siteConfig, siteNavigationJsonLd, websiteJsonLd } from "@/lib/site";
 import "./globals.css";
@@ -46,6 +47,7 @@ export default function RootLayout({
           ]}
         />
         {children}
+        <OAuthRedirectWatcher />
         <TawkWidget />
       </body>
     </html>

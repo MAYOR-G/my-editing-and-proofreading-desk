@@ -3,6 +3,18 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const searchParams = request.nextUrl.searchParams;
+
+  // Catch-all for Supabase OAuth PKCE codes or token hashes that land on the root
+  // homepage (/) when Supabase's Redirect URL whitelist falls back to Site URL.
+  if (pathname === "/" && (searchParams.has("code") || searchParams.has("token_hash"))) {
+    const callbackUrl = request.nextUrl.clone();
+    callbackUrl.pathname = "/auth/callback";
+    if (!callbackUrl.searchParams.has("next")) {
+      callbackUrl.searchParams.set("next", "/dashboard/uploads");
+    }
+    return NextResponse.redirect(callbackUrl);
+  }
 
   let response = NextResponse.next({
     request: {
@@ -153,6 +165,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/admin/:path*",
   ],

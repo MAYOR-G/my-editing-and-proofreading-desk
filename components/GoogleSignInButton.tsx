@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { signInWithGoogle } from "@/app/actions/auth";
+import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 type GoogleSignInButtonProps = {
   nextPath?: string;
@@ -11,37 +11,67 @@ type GoogleSignInButtonProps = {
   onError?: (message: string) => void;
 };
 
+function sanitizeNextPath(requestedNext?: string | null) {
+  if (
+    requestedNext &&
+    requestedNext.startsWith("/") &&
+    !requestedNext.startsWith("//") &&
+    !requestedNext.includes("\\")
+  ) {
+    return requestedNext;
+  }
+  return "/dashboard/uploads";
+}
+
 export function GoogleSignInButton({
-  nextPath = "/dashboard",
+  nextPath = "/dashboard/uploads",
   label = "Continue with Google",
   className = "",
   compact = false,
   onError,
 }: GoogleSignInButtonProps) {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setLocalError(null);
     onError?.("");
+    setIsPending(true);
 
-    startTransition(async () => {
-      try {
-        const result = await signInWithGoogle(nextPath);
-        if (result?.error) {
-          setLocalError(result.error);
-          onError?.(result.error);
-          return;
-        }
-        if (result?.url) {
-          window.location.assign(result.url);
-        }
-      } catch {
-        const fallbackMsg = "Unable to connect to Google Sign-In. Please try again or use your email.";
-        setLocalError(fallbackMsg);
-        onError?.(fallbackMsg);
+    try {
+      const safeNext = sanitizeNextPath(nextPath);
+      const origin = window.location.origin;
+      const supabase = createClient();
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error || !data?.url) {
+        const msg =
+          error?.message ||
+          "Unable to initialize Google Sign-In. Please try again or use your email.";
+        setLocalError(msg);
+        onError?.(msg);
+        setIsPending(false);
+        return;
       }
-    });
+
+      window.location.assign(data.url);
+    } catch {
+      const fallbackMsg =
+        "Unable to connect to Google Sign-In. Please try again or use your email.";
+      setLocalError(fallbackMsg);
+      onError?.(fallbackMsg);
+      setIsPending(false);
+    }
   };
 
   return (
@@ -55,7 +85,10 @@ export function GoogleSignInButton({
         } w-full items-center justify-center gap-3 rounded-full border border-hairline bg-white font-semibold text-ink shadow-sm transition duration-200 ease-premium-out hover:border-primary hover:bg-surface-soft hover:text-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       >
         {isPending ? (
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" aria-hidden="true" />
+          <span
+            className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary"
+            aria-hidden="true"
+          />
         ) : (
           <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path
