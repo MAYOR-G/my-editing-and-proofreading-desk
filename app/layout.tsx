@@ -28,7 +28,10 @@ export const metadata: Metadata = {
     ],
     shortcut: "/assets/logo.png",
     apple: "/assets/logo.png",
-  }
+  },
+  other: {
+    "trustpilot-one-time-domain-verification-id": "5957a02b-9c29-4b7f-9106-c65c67cdf12b",
+  },
 };
 
 export default function RootLayout({
