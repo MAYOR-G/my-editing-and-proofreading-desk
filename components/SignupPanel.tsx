@@ -4,6 +4,7 @@ import { useTransition, useState } from "react";
 import { signup } from "@/app/actions/auth";
 import Link from "next/link";
 import { TurnstileField, isClientTurnstileEnabled } from "@/components/TurnstileField";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 function getPasswordStrength(password: string): { level: number; label: string; color: string } {
   if (!password) return { level: 0, label: "", color: "" };
@@ -75,6 +76,22 @@ export function SignupPanel() {
       
       {!success && (
         <>
+          <div className="mt-1">
+            <GoogleSignInButton
+              nextPath="/dashboard"
+              label="Continue with Google"
+              onError={(msg) => setError(msg || null)}
+            />
+            <div className="relative my-5 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-ink/10" />
+              </div>
+              <span className="relative bg-paper px-3 text-xs uppercase tracking-[0.22em] text-charcoal/45">
+                Or register with email
+              </span>
+            </div>
+          </div>
+
           <label className="grid gap-2 text-sm text-charcoal/70">
             Full name
             <input 

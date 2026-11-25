@@ -25,7 +25,7 @@ function RichText({ content }: { content: BlogRichText }) {
             key={`${part.href}-${index}`}
             href={part.href}
             target={part.external ? "_blank" : undefined}
-            rel={part.external ? "noreferrer" : undefined}
+            rel={part.external ? "noopener noreferrer" : undefined}
             className="font-medium text-primary underline decoration-primary/25 underline-offset-4 transition hover:decoration-primary"
           >
             {part.text}

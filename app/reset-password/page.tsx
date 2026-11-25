@@ -4,8 +4,8 @@ import { ResetPasswordPanel } from "@/components/ResetPasswordPanel";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Set a New Password",
-  description: "Set a new secure password for your My Editing and Proofreading Desk account.",
+  title: "Set New Password | My Editing and Proofreading Desk",
+  description: "Choose a new secure password for your My Editing and Proofreading Desk client account to access your dashboard, uploads, and completed deliveries.",
   path: "/reset-password",
   noIndex: true,
 });

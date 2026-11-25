@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ClipboardPenLine, FileUp, ShieldCheck, Sparkles, UploadCloud } from "lucide-react";
 import { FormEvent, useMemo, useRef, useState } from "react";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import {
   AI_ALLOWED_EXTENSIONS,
   AI_FILE_SIZE_LIMIT,
@@ -249,7 +250,7 @@ export function AiEditingTool() {
           <div className="mt-8 grid gap-3 text-sm text-body">
             {[
               ["Limit", `${AI_WORD_LIMIT.toLocaleString()} words maximum`],
-              ["Anonymous use", "Limited daily tries"],
+              ["Anonymous use", "3 daily tries (12 when signed in)"],
               ["Cost control", "Short prompts and capped output"],
               ["Review style", "AI-assisted editing"]
             ].map(([label, value]) => (
@@ -258,6 +259,21 @@ export function AiEditingTool() {
                 <span className="text-right text-ink">{value}</span>
               </div>
             ))}
+          </div>
+          <div className="mt-6 rounded-2xl border border-primary/15 bg-canvas p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              One-click client access
+            </p>
+            <p className="mt-1.5 text-xs leading-5 text-body">
+              Sign in with Google to unlock 12 daily AI passes, save pricing quotes, and access your editorial dashboard.
+            </p>
+            <div className="mt-3">
+              <GoogleSignInButton
+                nextPath="/ai-editing-tool"
+                label="Continue with Google"
+                compact
+              />
+            </div>
           </div>
         </aside>
 

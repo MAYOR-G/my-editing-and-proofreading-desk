@@ -17,8 +17,12 @@ export default async function DashboardProfilePage() {
     .eq("id", user.id)
     .single();
 
-  const displayName = profile?.full_name || user.user_metadata?.full_name || "Client";
+  const displayName = profile?.name || profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || "Client";
   const displayEmail = profile?.email || user.email || "No email found";
+  const avatarUrl = profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
+  const authProvider =
+    profile?.auth_provider ||
+    (user.app_metadata?.provider === "google" ? "google" : "credentials");
 
   return (
     <>
@@ -35,9 +39,21 @@ export default async function DashboardProfilePage() {
       </div>
 
       <section className="mt-8 border border-ink/10 bg-ivory/90 p-7 max-w-2xl">
-        <h2 className="font-display text-3xl leading-tight text-ink capitalize">{displayName}</h2>
+        <div className="flex items-center gap-4">
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={avatarUrl}
+              alt={`${displayName} profile avatar`}
+              className="h-12 w-12 rounded-full border border-ink/10 object-cover"
+              referrerPolicy="no-referrer"
+            />
+          ) : null}
+          <h2 className="font-display text-3xl leading-tight text-ink capitalize">{displayName}</h2>
+        </div>
         <div className="mt-6 grid gap-3 text-sm text-charcoal/64">
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Email</span><span className="text-ink">{displayEmail}</span></div>
+          <div className="flex justify-between border-t border-ink/10 pt-3"><span>Sign-in method</span><span className="text-ink capitalize">{authProvider === "google" ? "Google OAuth 2.0" : "Email & Password"}</span></div>
           <div className="flex justify-between border-t border-ink/10 pt-3"><span>Currency</span><span className="text-ink">USD</span></div>
           <div className="flex justify-between gap-4 border-t border-ink/10 pt-3"><span>Document handling</span><Link href="/privacy" className="text-primary underline underline-offset-4">See Privacy Policy</Link></div>
         </div>

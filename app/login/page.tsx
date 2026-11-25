@@ -12,7 +12,7 @@ const portalNotes = [
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Client Login | My Editing and Proofreading Desk",
-  description: "Log in to your secure editorial desk to track projects, download completed files, and message support.",
+  description: "Sign in to your secure editorial portal with email or Google to track active projects, save pricing quotes, download edited files, and message support.",
   path: "/login",
   noIndex: true,
 });

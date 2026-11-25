@@ -12,7 +12,7 @@ const trustBadges = [
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Create an Editorial Desk Account",
-  description: "Create a secure client account to manage editing projects, track progress, and communicate with your editor.",
+  description: "Create a secure client account with Google or email to submit manuscripts, save pricing quotes, track editing progress, and download reviewed files.",
   path: "/signup",
   noIndex: true,
 });

@@ -1,10 +1,54 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+
+function sanitizeNextPath(requestedNext?: string | null) {
+  if (
+    requestedNext &&
+    requestedNext.startsWith("/") &&
+    !requestedNext.startsWith("//") &&
+    !requestedNext.includes("\\")
+  ) {
+    return requestedNext;
+  }
+  return "/dashboard";
+}
+
+export async function signInWithGoogle(nextPath = "/dashboard") {
+  const safeNext = sanitizeNextPath(nextPath);
+  const headerStore = headers();
+  const host = headerStore.get("x-forwarded-host") || headerStore.get("host");
+  const proto = headerStore.get("x-forwarded-proto") || (host?.includes("localhost") || host?.includes("127.0.0.1") ? "http" : "https");
+  const origin = host
+    ? `${proto}://${host}`
+    : process.env.NEXT_PUBLIC_SITE_URL || "https://www.editandproofread.com";
+
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
+      queryParams: {
+        access_type: "offline",
+        prompt: "select_account",
+      },
+    },
+  });
+
+  if (error || !data?.url) {
+    return {
+      error: error?.message || "Unable to initialize Google Sign-In. Please try again or sign in with your email.",
+    };
+  }
+
+  return { url: data.url };
+}
 
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
@@ -62,18 +106,40 @@ export async function signup(formData: FormData) {
 
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { data: signUpData, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
         full_name: fullName,
+        name: fullName,
+        auth_provider: "credentials",
       },
     },
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (signUpData?.user) {
+    try {
+      const supabaseAdmin = createSupabaseAdminClient();
+      await supabaseAdmin
+        .from("profiles")
+        .upsert(
+          {
+            id: signUpData.user.id,
+            email,
+            full_name: fullName,
+            name: fullName,
+            auth_provider: "credentials",
+          },
+          { onConflict: "id" }
+        );
+    } catch {
+      // Fallback safely if optional profile columns have not yet been migrated
+    }
   }
 
   // Instead of redirecting immediately, we return success so the UI can show the email verification popup

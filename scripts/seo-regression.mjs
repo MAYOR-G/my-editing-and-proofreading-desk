@@ -1,8 +1,11 @@
 const baseUrl = (process.env.SEO_TEST_BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
 const productionOrigin = "https://www.editandproofread.com";
 const requiredNewPaths = [
-  "/blog/research-paper-editing-checklist-before-submission",
-  "/blog/thesis-tables-figures-references-checklist",
+  "/blog/2027-university-journal-ai-disclosure-policies",
+  "/blog/academic-editing-proofreading-rates-2027",
+  "/blog/best-ai-proofreading-tools-vs-human-editors-2027",
+  "/blog/2027-thesis-dissertation-submission-checklist",
+  "/blog/2027-academic-cv-industry-resume-proofreading-standards",
 ];
 const forbiddenSitemapPrefixes = ["/admin", "/api", "/auth", "/dashboard", "/login", "/signup", "/indexnow-key"];
 const errors = [];

@@ -4,8 +4,8 @@ import { ForgotPasswordPanel } from "@/components/ForgotPasswordPanel";
 import { buildPageMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Reset Your Password",
-  description: "Request a secure password reset link for your My Editing and Proofreading Desk account.",
+  title: "Reset Password | My Editing and Proofreading Desk",
+  description: "Request a secure password recovery link for your My Editing and Proofreading Desk client account to regain access to your projects and edited files.",
   path: "/forgot-password",
   noIndex: true,
 });

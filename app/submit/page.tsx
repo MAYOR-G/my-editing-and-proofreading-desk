@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FileText, LockKeyhole, MessageSquareText, ShieldCheck } from "lucide-react";
 import { PublicPageShell } from "@/components/PublicPageShell";
 import { SampleEditCta } from "@/components/SampleEditCta";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { buildPageMetadata } from "@/lib/site";
 
 const steps = [
@@ -58,6 +59,10 @@ export default function SubmitPage() {
               <Link href="/dashboard/uploads" className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition hover:bg-primary-active">
                 Continue to Secure Upload
               </Link>
+              <GoogleSignInButton
+                nextPath="/dashboard/uploads"
+                label="Continue with Google"
+              />
               <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary/25 bg-canvas px-6 text-sm font-semibold text-primary transition hover:border-primary">
                 Check Pricing First
               </Link>

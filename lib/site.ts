@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import {
   BRAND_NAME,
+  CAPTERRA_URL,
   COMPANY_ADDRESS,
   COMPANY_OFFICES,
   COMPANY_PHONE,
   COMPANY_PHONE_TEL,
+  CRUNCHBASE_URL,
   FACEBOOK_URL,
+  G2_URL,
+  GITHUB_URL,
   GOOGLE_BUSINESS_PROFILE_URL,
   GOOGLE_REVIEW_URL,
   INSTAGRAM_URL,
   LINKEDIN_URL,
+  PRODUCT_HUNT_URL,
   SUPPORT_EMAIL,
   TRUSTPILOT_URL,
 } from "@/lib/contact-info";
@@ -17,7 +22,7 @@ import { SERVICE_OPTIONS, STANDARD_EDITORIAL_RATE } from "@/lib/pricing";
 import { seoServicePages } from "@/lib/seo-service-pages";
 
 export const PRODUCTION_SITE_URL = "https://www.editandproofread.com";
-export const SITE_LAST_MODIFIED = "2026-11-16";
+export const SITE_LAST_MODIFIED = "2026-11-25";
 
 function normalizePath(path = "/") {
   if (!path || path === "/") return "/";
@@ -37,6 +42,7 @@ export const siteConfig = {
   contactPhoneTel: COMPANY_PHONE_TEL,
   address: COMPANY_ADDRESS,
   offices: COMPANY_OFFICES,
+  // Ready for official directory and profile verification URLs (G2, Capterra, Crunchbase, Product Hunt, GitHub, etc.)
   socialLinks: [
     FACEBOOK_URL,
     INSTAGRAM_URL,
@@ -44,6 +50,11 @@ export const siteConfig = {
     GOOGLE_REVIEW_URL,
     TRUSTPILOT_URL,
     LINKEDIN_URL,
+    G2_URL,
+    CAPTERRA_URL,
+    CRUNCHBASE_URL,
+    PRODUCT_HUNT_URL,
+    GITHUB_URL,
   ].filter(Boolean),
 };
 
@@ -235,9 +246,7 @@ export function organizationJsonLd() {
     ],
   };
 
-  if (siteConfig.socialLinks.length > 0) {
-    organization.sameAs = siteConfig.socialLinks;
-  }
+  organization.sameAs = siteConfig.socialLinks;
 
   return organization;
 }
@@ -430,8 +439,8 @@ export function webApplicationJsonLd() {
     "@id": `${siteConfig.siteUrl}/ai-editing-tool#webapp`,
     name: "Free AI Grammar Checker and Editing Assistant",
     url: `${siteConfig.siteUrl}/ai-editing-tool`,
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "All",
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Web",
     browserRequirements: "Requires JavaScript. Requires HTML5.",
     description: "Paste or upload your draft for a free first-pass grammar and clarity check (up to 1,000 words), or request a free 300-word human sample edit when the document matters.",
     offers: {
@@ -464,11 +473,25 @@ export function blogPostingJsonLd(post: {
   metaDescription?: string;
 }) {
   const url = absoluteUrl(`/blog/${post.slug}`);
-  const textBlocks = post.body?.flatMap((section) => [
+  function flattenText(node: unknown): string {
+    if (!node) return "";
+    if (typeof node === "string") return node;
+    if (Array.isArray(node)) return node.map(flattenText).join(" ");
+    if (typeof node === "object" && "text" in node && typeof (node as { text: unknown }).text === "string") {
+      return (node as { text: string }).text;
+    }
+    return "";
+  }
+
+  const textBlocks = post.body?.flatMap((section: Record<string, unknown>) => [
     section.heading,
-    ...section.paragraphs.flat(),
-    ...(section.bullets?.flat() ?? []),
-    ...(section.numberedSteps?.flat() ?? []),
+    flattenText(section.paragraphs),
+    flattenText(section.bullets),
+    flattenText(section.numberedSteps),
+    section.callout ? flattenText([((section.callout as Record<string, unknown>).title), ((section.callout as Record<string, unknown>).text)]) : "",
+    section.checklist ? flattenText([((section.checklist as Record<string, unknown>).title), ((section.checklist as Record<string, unknown>).items)]) : "",
+    section.table ? flattenText([((section.table as Record<string, unknown>).headers), ((section.table as Record<string, unknown>).rows)]) : "",
+    section.trackedChanges ? flattenText(Object.values(section.trackedChanges as Record<string, unknown>)) : "",
   ]) ?? [];
   const wordCount = textBlocks
     .map((block) => typeof block === "string" ? block : "")
@@ -496,14 +519,14 @@ export function blogPostingJsonLd(post: {
     wordCount: wordCount > 0 ? wordCount : undefined,
     author: {
       "@type": "Organization",
-      "@id": `${siteConfig.siteUrl}/#editorial-board`,
-      name: "My Editing and Proofreading Desk Editorial Board",
+      "@id": `${siteConfig.siteUrl}/#organization`,
+      name: "My Editing and Proofreading Desk",
       url: `${siteConfig.siteUrl}/editors`,
     },
     publisher: {
       "@type": "Organization",
       "@id": `${siteConfig.siteUrl}/#organization`,
-      name: "My Editing and Proofreading Desk Editorial Board",
+      name: "My Editing and Proofreading Desk",
       url: siteConfig.siteUrl,
       logo: {
         "@type": "ImageObject",

@@ -13,6 +13,9 @@ CREATE TABLE public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
+  name TEXT,
+  avatar_url TEXT,
+  auth_provider TEXT DEFAULT 'credentials' NOT NULL,
   role user_role DEFAULT 'client'::user_role NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
@@ -31,9 +34,29 @@ CREATE POLICY "Admins can view all profiles" ON public.profiles FOR SELECT USING
 -- Trigger to create a profile automatically when a user signs up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  v_provider TEXT;
+  v_name TEXT;
+  v_avatar TEXT;
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name, role)
-  VALUES (new.id, new.email, new.raw_user_meta_data->>'full_name', 'client');
+  v_provider := CASE
+    WHEN COALESCE(new.raw_app_meta_data->>'provider', 'email') = 'google' THEN 'google'
+    ELSE 'credentials'
+  END;
+  v_name := COALESCE(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name');
+  v_avatar := COALESCE(new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'picture');
+
+  INSERT INTO public.profiles (id, email, full_name, name, avatar_url, auth_provider, role)
+  VALUES (new.id, new.email, v_name, v_name, v_avatar, v_provider, 'client')
+  ON CONFLICT (email) DO UPDATE
+  SET
+    full_name = COALESCE(public.profiles.full_name, EXCLUDED.full_name),
+    name = COALESCE(public.profiles.name, EXCLUDED.name),
+    avatar_url = COALESCE(EXCLUDED.avatar_url, public.profiles.avatar_url),
+    auth_provider = CASE
+      WHEN EXCLUDED.auth_provider = 'google' THEN 'google'
+      ELSE public.profiles.auth_provider
+    END;
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

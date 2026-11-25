@@ -11,6 +11,11 @@ export const GOOGLE_BUSINESS_PROFILE_URL = process.env.NEXT_PUBLIC_GOOGLE_BUSINE
 export const GOOGLE_REVIEW_URL = process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || "";
 export const TRUSTPILOT_URL = process.env.NEXT_PUBLIC_TRUSTPILOT_URL || "";
 export const LINKEDIN_URL = process.env.NEXT_PUBLIC_LINKEDIN_URL || "";
+export const G2_URL = process.env.NEXT_PUBLIC_G2_URL || "";
+export const CAPTERRA_URL = process.env.NEXT_PUBLIC_CAPTERRA_URL || "";
+export const CRUNCHBASE_URL = process.env.NEXT_PUBLIC_CRUNCHBASE_URL || "";
+export const PRODUCT_HUNT_URL = process.env.NEXT_PUBLIC_PRODUCT_HUNT_URL || "";
+export const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL || "";
 
 export interface OfficeLocation {
   id: string;

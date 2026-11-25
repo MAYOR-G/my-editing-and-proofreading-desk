@@ -4,6 +4,7 @@ import { useTransition, useState } from "react";
 import { login } from "@/app/actions/auth";
 import Link from "next/link";
 import { TurnstileField, isClientTurnstileEnabled } from "@/components/TurnstileField";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 export function LoginEmailPanel() {
   const [isPending, startTransition] = useTransition();
@@ -40,7 +41,23 @@ export function LoginEmailPanel() {
         </div>
       )}
 
-      <div className="mt-8 grid gap-5">
+      <div className="mt-7">
+        <GoogleSignInButton
+          nextPath="/dashboard"
+          label="Continue with Google"
+          onError={(msg) => setError(msg || null)}
+        />
+        <div className="relative my-6 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center" aria-hidden="true">
+            <div className="w-full border-t border-hairline" />
+          </div>
+          <span className="relative bg-surface-soft px-3 text-xs uppercase tracking-[0.22em] text-charcoal/45">
+            Or sign in with email
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-5">
         <label className="grid gap-2 text-sm text-charcoal/70">
           Email address
           <input

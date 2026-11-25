@@ -8,6 +8,8 @@ import { blogFormattingChallengesPhd } from "@/lib/blog-formatting-challenges-ph
 import { blogCanAiEditResearchPaper } from "@/lib/blog-can-ai-edit-research-paper";
 import { eeatAuditBlogPosts } from "@/lib/eeat-audit-blog-posts";
 import { trendingRedditSeoBlogPosts } from "@/lib/trending-reddit-seo-blog-posts";
+import { blog2027SeoGeoPostsPart1 } from "@/lib/blog-2027-seo-geo-posts-part1";
+import { blog2027SeoGeoPostsPart2 } from "@/lib/blog-2027-seo-geo-posts-part2";
 
 export type BlogTextPart =
   | string
@@ -85,6 +87,8 @@ export type BlogPost = {
 const brandAuthor = "My Editing and Proofreading Desk";
 
 const allBlogPosts: BlogPost[] = [
+  ...blog2027SeoGeoPostsPart1,
+  ...blog2027SeoGeoPostsPart2,
   ...trendingRedditSeoBlogPosts,
   ...eeatAuditBlogPosts,
   blogAiVsHumanGraduateResearch,
